@@ -12,7 +12,7 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/example-mod/icon.png",
+	"icon": "assets/examplemod/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -25,7 +25,7 @@
 	"mixins": [
       "examplemod.mixins.json",
 		{
-			"config": "example-mod.client.mixins.json",
+			"config": "examplemod.client.mixins.json",
 			"environment": "client"
 		}
 	],
