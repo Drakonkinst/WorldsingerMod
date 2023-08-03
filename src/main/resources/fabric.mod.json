@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "examplemod",
 	"version": "${version}",
-	"name": "Example mod",
+	"name": "Example Mod",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"
@@ -12,25 +12,25 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/example-mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"io.github.drakonkinst.examplemod.ExampleMod"
 		],
 		"client": [
-			"com.example.ExampleModClient"
+			"io.github.drakonkinst.examplemod.ExampleModClient"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
+      "examplemod.mixins.json",
 		{
-			"config": "modid.client.mixins.json",
+			"config": "example-mod.client.mixins.json",
 			"environment": "client"
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.14.21",
+		"fabricloader": ">=0.14.22",
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*"

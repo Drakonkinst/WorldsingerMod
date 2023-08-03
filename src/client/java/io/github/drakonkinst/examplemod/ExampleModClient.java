@@ -1,4 +1,4 @@
-package com.example;
+package io.github.drakonkinst.examplemod;
 
 import net.fabricmc.api.ClientModInitializer;
 
