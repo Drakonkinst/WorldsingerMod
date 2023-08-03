@@ -2,6 +2,7 @@
   "item.examplemod.default_cube": "Default Cube",
   "item.examplemod.balls": "Balls",
   "item.examplemod.custom_item.tooltip": "Please don't erase me!",
+  "item.examplemod.verdant_spores_bucket": "Bucket of Verdant Spores",
   "itemGroup.tutorial.test_group": "Modded Items",
   "block.examplemod.discord_block": "Discord Block"
 }

@@ -5,10 +5,12 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -18,14 +20,13 @@ import net.minecraft.util.Identifier;
 
 public final class ModItems {
 
-    private ModItems() {}
+    private ModItems() {
+    }
 
     public static final Item DEFAULT_CUBE = ModItems.register(
             new DefaultCubeItem(new FabricItemSettings()), "default_cube"
     );
-
-    // By popular vote
-    public static final Item BALLS = ModItems.register(
+    public static final Item BALLS = ModItems.register( // By popular vote
             new Item(new FabricItemSettings()
                     // Probably best to make a separate ModFoodComponents static class and have these all in one place
                     .food(new FoodComponent.Builder()
@@ -37,16 +38,20 @@ public final class ModItems {
                             .build())),
             "balls"
     );
+    public static final Item VERDANT_SPORES_BUCKET = ModItems.register(
+            new BucketItem(ModFluids.VERDANT_SPORES, new FabricItemSettings()
+                    .recipeRemainder(Items.BUCKET).maxCount(1)), "verdant_spores_bucket"
+    );
 
     private static final ItemGroup MODDED_ITEMS_GROUP = FabricItemGroup.builder()
             .icon(() -> new ItemStack(DEFAULT_CUBE))
             .displayName(Text.translatable("itemGroup.tutorial.test_group"))
             .build();
 
+
     public static <T extends Item> T register(T item, String id) {
         Identifier itemId = new Identifier(ExampleMod.MOD_ID, id);
-        T registeredItem = Registry.register(Registries.ITEM, itemId, item);
-        return registeredItem;
+        return Registry.register(Registries.ITEM, itemId, item);
     }
 
     public static void initialize() {
@@ -62,6 +67,8 @@ public final class ModItems {
         ItemGroupEvents.modifyEntriesEvent(moddedItemsItemGroupKey).register((itemGroup) -> {
             itemGroup.add(ModItems.DEFAULT_CUBE);
             itemGroup.add(ModItems.BALLS);
+            itemGroup.add(ModBlocks.DISCORD_BLOCK.asItem());
+            itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
         });
     }
 

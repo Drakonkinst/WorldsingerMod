@@ -1,10 +1,10 @@
 package io.github.drakonkinst.examplemod.mixin;
 
+import io.github.drakonkinst.examplemod.ModFluidTags;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,7 +23,7 @@ public abstract class WaterWalkMixin extends Entity {
 
     @Inject(method = "canWalkOnFluid", at = @At("HEAD"), cancellable = true)
     public void examplemod$allowPlayersToWalkOnWater(FluidState state, CallbackInfoReturnable<Boolean> cir) {
-        if (state.isIn(FluidTags.WATER) && getWorld().isRaining()) {
+        if (state.isIn(ModFluidTags.AETHER_SPORES) && getWorld().isRaining()) {
             cir.setReturnValue(true);
         }
     }
