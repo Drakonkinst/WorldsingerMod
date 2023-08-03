@@ -5,13 +5,9 @@
 	"name": "Example Mod",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Me!"
+		"Drakonkinst"
 	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/examplemod/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -23,19 +19,12 @@
 		]
 	},
 	"mixins": [
-      "examplemod.mixins.json",
-		{
-			"config": "examplemod.client.mixins.json",
-			"environment": "client"
-		}
+      "examplemod.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.14.22",
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }

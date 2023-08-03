@@ -20,6 +20,7 @@ public class ExampleMod implements ModInitializer {
 
 		LOGGER.info("Hello Fabric world!");
 
+		ModBlocks.initialize();
 		ModItems.initialize();
 	}
 }
