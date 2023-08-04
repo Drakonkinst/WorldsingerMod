@@ -17,7 +17,8 @@
     "WaterloggableMixin",
     "WaterWalkMixin",
     "accessor.AbstractBlockAccessor",
-    "accessor.AbstractBlockSettingsAccessor"
+    "accessor.AbstractBlockSettingsAccessor",
+    "client.BackgroundRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

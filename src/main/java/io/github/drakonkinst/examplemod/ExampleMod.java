@@ -4,7 +4,11 @@ import io.github.drakonkinst.examplemod.block.ModBlocks;
 import io.github.drakonkinst.examplemod.fluid.Fluidlogged;
 import io.github.drakonkinst.examplemod.fluid.ModFluids;
 import io.github.drakonkinst.examplemod.item.ModItems;
+import io.github.drakonkinst.examplemod.util.fog.FogModifier;
+import io.github.drakonkinst.examplemod.util.fog.FogModifiers;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.render.FogShape;
+import net.minecraft.world.biome.BiomeKeys;
 
 public class ExampleMod implements ModInitializer {
 
@@ -17,5 +21,15 @@ public class ExampleMod implements ModInitializer {
         ModItems.initialize();
 
         Fluidlogged.initialize();
+
+        FogModifiers.register(FogModifier.InjectionPoint.WATER,
+                FogModifiers.create(
+                        fogFunction -> fogFunction.biomeEntry() != null && fogFunction.biomeEntry().matchesKey(BiomeKeys.OCEAN),
+                        fogFunction -> fogFunction.viewDistance() * .05f,                   // fog start
+                        fogFunction -> Math.min(fogFunction.viewDistance(), 192f) * .5f,    // fog end
+                        0.001f,
+                        FogShape.SPHERE
+                )
+        );
     }
 }

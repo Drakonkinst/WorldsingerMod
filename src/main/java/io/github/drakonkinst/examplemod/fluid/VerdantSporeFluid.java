@@ -10,6 +10,15 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 
 public abstract class VerdantSporeFluid extends AetherSporeFluid {
+
+    private static final float FOG_RED = 0.0f;
+    private static final float FOG_GREEN = 1.0f;
+    private static final float FOG_BLUE = 0.0f;
+
+    public VerdantSporeFluid() {
+        super(FOG_RED, FOG_GREEN, FOG_BLUE);
+    }
+
     @Override
     public Fluid getStill() {
         return ModFluids.VERDANT_SPORES;

@@ -14,6 +14,18 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
 public abstract class AetherSporeFluid extends FlowableFluid {
+
+    private final float fogRed;
+    private final float fogGreen;
+    private final float fogBlue;
+
+    public AetherSporeFluid(float fogRed, float fogGreen, float fogBlue) {
+        super();
+        this.fogRed = fogRed;
+        this.fogGreen = fogGreen;
+        this.fogBlue = fogBlue;
+    }
+
     @Override
     public int getLevel(FluidState state) {
         return state.getLevel();
@@ -58,5 +70,17 @@ public abstract class AetherSporeFluid extends FlowableFluid {
     @Override
     protected float getBlastResistance() {
         return 100.0F;
+    }
+
+    public float getFogRed() {
+        return fogRed;
+    }
+
+    public float getFogGreen() {
+        return fogGreen;
+    }
+
+    public float getFogBlue() {
+        return fogBlue;
     }
 }
