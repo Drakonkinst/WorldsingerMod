@@ -37,7 +37,7 @@ public class FogModifier {
     private DensityState densityState;
     private int time;
 
-    private FogModifier(InjectionPoint injectionPoint, Predicate<FogContext> predicate, Function<FogContext, Float> fogStart, Function<FogContext, Float> fogEnd, Operation operation, FogShape fogShape, float densitySpeed, Function<FogContext, Integer> color, @Nullable RegistryKey<Biome> biomeKey, @Nullable Vec3d pos, double innerBounds, double outerBounds, BackgroundRenderer.FogType fogType, int priority) {
+    private FogModifier(InjectionPoint injectionPoint, Predicate<FogContext> predicate, Function<FogContext, Float> fogStart, Function<FogContext, Float> fogEnd, Operation operation, FogShape fogShape, float densitySpeed, Function<FogContext, Integer> color, @Nullable RegistryKey<Biome> biomeKey, @Nullable Vec3d pos, double innerBounds, double outerBounds, BackgroundRenderer.FogType fogType, int priority, DensityState densityState) {
         this.injectionPoint = injectionPoint;
         this.predicate = predicate;
         this.fogStart = fogStart;
@@ -52,8 +52,8 @@ public class FogModifier {
         this.outerBounds = outerBounds;
         this.fogType = fogType;
         this.priority = priority;
+        this.densityState = densityState;
         time = -1;
-        densityState = DensityState.FROZEN;
     }
 
     public InjectionPoint getInjectionPoint() {
@@ -172,6 +172,7 @@ public class FogModifier {
         private double innerBounds = -1d;
         private double outerBounds = -1d;
         private int priority = 1;
+        private DensityState densityState = DensityState.FROZEN;
         private BackgroundRenderer.FogType fogType = BackgroundRenderer.FogType.FOG_SKY;
 
         public Builder injectionPoint(InjectionPoint injectionPoint) {
@@ -263,8 +264,13 @@ public class FogModifier {
             return this;
         }
 
+        public Builder densityState(DensityState densityState) {
+            this.densityState = densityState;
+            return this;
+        }
+
         public FogModifier build() {
-            return new FogModifier(injectionPoint, predicate, fogStart, fogEnd, operation, fogShape, densitySpeed, color, biomeKey, pos, innerBounds, outerBounds, fogType, priority);
+            return new FogModifier(injectionPoint, predicate, fogStart, fogEnd, operation, fogShape, densitySpeed, color, biomeKey, pos, innerBounds, outerBounds, fogType, priority, densityState);
         }
     }
 

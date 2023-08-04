@@ -23,13 +23,14 @@ public class ExampleMod implements ModInitializer {
         Fluidlogged.initialize();
 
         FogModifiers.register(FogModifier.InjectionPoint.WATER,
-                FogModifiers.create(
-                        fogFunction -> fogFunction.biomeEntry() != null && fogFunction.biomeEntry().matchesKey(BiomeKeys.OCEAN),
-                        fogFunction -> fogFunction.viewDistance() * .05f,                   // fog start
-                        fogFunction -> Math.min(fogFunction.viewDistance(), 192f) * .5f,    // fog end
-                        0.001f,
-                        FogShape.SPHERE
-                )
+                new FogModifier.Builder()
+                        .predicate(fogFunction -> fogFunction.biomeEntry() != null && fogFunction.biomeEntry().matchesKey(BiomeKeys.OCEAN))
+                        .fogStart(fogFunction -> fogFunction.viewDistance() * .5f)
+                        .fogEnd(fogFunction -> Math.min(fogFunction.viewDistance(), 192f) * .5f)
+                        .densitySpeedTicks(0.001f)
+                        .fogShape(FogShape.SPHERE)
+                        .color(0x00ff00)
+                        .build()
         );
     }
 }

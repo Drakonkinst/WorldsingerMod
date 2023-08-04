@@ -33,53 +33,43 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Environment(EnvType.CLIENT)
 @Mixin(BackgroundRenderer.class)
 public class BackgroundRendererMixin {
-
-    private static float prevFogStart = 0f;
-    private static float prevFogEnd = 1f;
-    private static Vec3d prevFogColor = Vec3d.unpackRgb(-1);
-
-    private static boolean shouldApplyFogDensity = true;
-
-    private static FogModifier previous;
-    private static FogModifier current;
-
     @Inject(method = "applyFog", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private static void creo_applyPreFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData, BackgroundRenderer.StatusEffectFogModifier statusEffectFogModifier) {
+    private static void applyPreFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData, BackgroundRenderer.StatusEffectFogModifier statusEffectFogModifier) {
         applyModifiedFogDensity(FogModifier.InjectionPoint.PRE, entity.getWorld(), camera, fogType, viewDistance, thickFog, tickDelta, cameraSubmersionType, entity, fogData, ci);
     }
 
     @Inject(method = "applyFog", at = @At(value = "CONSTANT", args = "floatValue=1f", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private static void creo_lib_applyLavaFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
+    private static void applyLavaFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
         applyModifiedFogDensity(FogModifier.InjectionPoint.LAVA, entity.getWorld(), camera, fogType, viewDistance, thickFog, tickDelta, cameraSubmersionType, entity, fogData, ci);
     }
 
     @Inject(method = "applyFog", at = @At(value = "CONSTANT", args = "floatValue=2f", shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private static void creo_lib_applyPowderSnowFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
+    private static void applyPowderSnowFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
         applyModifiedFogDensity(FogModifier.InjectionPoint.POWDER_SNOW, entity.getWorld(), camera, fogType, viewDistance, thickFog, tickDelta, cameraSubmersionType, entity, fogData, ci);
     }
 
     @Inject(method = "applyFog", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;applyStartEndModifier(Lnet/minecraft/client/render/BackgroundRenderer$FogData;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/effect/StatusEffectInstance;FF)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private static void creo_lib_applyStatusEffectFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
+    private static void applyStatusEffectFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
         applyModifiedFogDensity(FogModifier.InjectionPoint.STATUS_EFFECT, entity.getWorld(), camera, fogType, viewDistance, thickFog, tickDelta, cameraSubmersionType, entity, fogData, ci);
     }
 
     @Inject(method = "applyFog", at = @At(value = "CONSTANT", args = "floatValue=.85f", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private static void creo_lib_applyCloserWaterFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData, BackgroundRenderer.StatusEffectFogModifier statusEffectFogModifier, ClientPlayerEntity clientPlayerEntity, RegistryEntry<Biome> registryEntry) {
+    private static void applyCloserWaterFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData, BackgroundRenderer.StatusEffectFogModifier statusEffectFogModifier, ClientPlayerEntity clientPlayerEntity, RegistryEntry<Biome> registryEntry) {
         applyModifiedFogDensity(FogModifier.InjectionPoint.CLOSER_WATER, entity.getWorld(), camera, fogType, viewDistance, thickFog, tickDelta, cameraSubmersionType, entity, fogData, ci);
     }
 
     @Inject(method = "applyFog", at = @At(value = "CONSTANT", args = "floatValue=.85f", shift = At.Shift.BY, by = 4), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private static void creo_lib_applyWaterFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData, BackgroundRenderer.StatusEffectFogModifier statusEffectFogModifier) {
+    private static void applyWaterFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData, BackgroundRenderer.StatusEffectFogModifier statusEffectFogModifier) {
         applyModifiedFogDensity(FogModifier.InjectionPoint.WATER, entity.getWorld(), camera, fogType, viewDistance, thickFog, tickDelta, cameraSubmersionType, entity, fogData, ci);
     }
 
     @Inject(method = "applyFog", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(FF)F", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private static void creo_lib_applyThickFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
+    private static void applyThickFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
         applyModifiedFogDensity(FogModifier.InjectionPoint.THICK_FOG, entity.getWorld(), camera, fogType, viewDistance, thickFog, tickDelta, cameraSubmersionType, entity, fogData, ci);
     }
 
     @Inject(method = "applyFog", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogStart(F)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private static void creo_lib_applyRainAndPostFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
+    private static void applyRainAndPostFogDensities(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData) {
         if (entity.getWorld().isThundering()) {
             applyModifiedFogDensity(FogModifier.InjectionPoint.THUNDER, entity.getWorld(), camera, fogType, viewDistance, thickFog, tickDelta, cameraSubmersionType, entity, fogData, ci);
         } else if (entity.getWorld().isRaining()) {
@@ -91,7 +81,9 @@ public class BackgroundRendererMixin {
 
     @Unique
     private static void applyModifiedFogDensity(FogModifier.InjectionPoint injectionPoint, World world, Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CameraSubmersionType cameraSubmersionType, Entity entity, BackgroundRenderer.FogData fogData, CallbackInfo ci) {
-        if (injectionPoint.getModifiers().isEmpty()) return;
+        if (injectionPoint.getModifiers().isEmpty()) {
+            return;
+        }
         boolean apply = false;
 
         for (FogModifier modifier : injectionPoint.getModifiers()) {
@@ -171,8 +163,6 @@ public class BackgroundRendererMixin {
 
             } else {
                 int time = Math.max(modifier.getTime(), 0);
-                System.out.println(time + " | " + modifier.getInterpolationState().name());
-
                 switch (modifier.getInterpolationState()) {
                     case FROZEN -> {
                         if (modifier.getTime() > 0)
