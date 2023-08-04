@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "examplemod:block/discord_block" }
+    "": {
+      "model": "examplemod:block/discord_block"
+    }
   }
 }

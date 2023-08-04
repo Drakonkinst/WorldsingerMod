@@ -1,5 +1,9 @@
 package io.github.drakonkinst.examplemod.fluid;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.AbstractSignBlock;
 import net.minecraft.block.AmethystClusterBlock;
@@ -45,113 +49,109 @@ import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 // Manages making blocks fluidloggable by fluids other than water.
 public class Fluidlogged {
-    public static final List<Class<? extends Block>> VANILLA_WATERLOGGABLES = getVanillaWaterloggables();
-    public static final List<Identifier> WATERLOGGABLE_FLUIDS = List.of(
-            new Identifier("minecraft", "water"),
-            new Identifier("minecraft", "lava"),
-            new Identifier("examplemod", "verdant_spores"));
-    public static final FluidProperty PROPERTY_FLUID = FluidProperty.of("fluidlogged");
 
-    private static final Map<Fluid, FluidBlock> fluidToFluidBlocks = new HashMap<>();
+  public static final List<Class<? extends Block>> VANILLA_WATERLOGGABLES = getVanillaWaterloggables();
+  public static final List<Identifier> WATERLOGGABLE_FLUIDS = List.of(
+      new Identifier("minecraft", "water"),
+      new Identifier("minecraft", "lava"),
+      new Identifier("examplemod", "verdant_spores"));
+  public static final FluidProperty PROPERTY_FLUID = FluidProperty.of("fluidlogged");
 
-    public static void initialize() {
+  private static final Map<Fluid, FluidBlock> fluidToFluidBlocks = new HashMap<>();
+
+  public static void initialize() {
+  }
+
+  public static Fluid getFluid(BlockState state) {
+    if (state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED)) {
+      return Fluids.WATER;
     }
-
-    public static Fluid getFluid(BlockState state) {
-        if (state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED)) {
-            return Fluids.WATER;
-        }
-        if (!state.contains(Fluidlogged.PROPERTY_FLUID)) {
-            return null;
-        }
-        int index = state.get(Fluidlogged.PROPERTY_FLUID) - 1;
-        if (index < 0) {
-            return Fluids.EMPTY;
-        }
-        if (index >= Fluidlogged.WATERLOGGABLE_FLUIDS.size()) {
-            return null;
-        }
-        Identifier id = Fluidlogged.WATERLOGGABLE_FLUIDS.get(index);
-        if (id == null) {
-            return null;
-        }
-        return Registries.FLUID.get(id);
+    if (!state.contains(Fluidlogged.PROPERTY_FLUID)) {
+      return null;
     }
-
-    public static void registerFluidBlockForFluid(Fluid fluid, FluidBlock fluidBlock) {
-        fluidToFluidBlocks.put(fluid, fluidBlock);
+    int index = state.get(Fluidlogged.PROPERTY_FLUID) - 1;
+    if (index < 0) {
+      return Fluids.EMPTY;
     }
-
-    public static FluidBlock getFluidBlockForFluid(Fluid fluid) {
-        return fluidToFluidBlocks.get(fluid);
+    if (index >= Fluidlogged.WATERLOGGABLE_FLUIDS.size()) {
+      return null;
     }
-
-    public static int getFluidIndex(Fluid fluid) {
-        if (fluid.equals(Fluids.EMPTY)) {
-            return 0;
-        }
-        return Fluidlogged.WATERLOGGABLE_FLUIDS.indexOf(Registries.FLUID.getId(fluid)) + 1;
+    Identifier id = Fluidlogged.WATERLOGGABLE_FLUIDS.get(index);
+    if (id == null) {
+      return null;
     }
+    return Registries.FLUID.get(id);
+  }
 
-    public static boolean isVanillaWaterloggable(Object block) {
-        Class<?> blockClass = block.getClass();
-        for (Class<? extends Block> waterloggableBlockClass : VANILLA_WATERLOGGABLES) {
-            if (waterloggableBlockClass.isAssignableFrom(blockClass)) {
-                return true;
-            }
-        }
-        return false;
+  public static void registerFluidBlockForFluid(Fluid fluid, FluidBlock fluidBlock) {
+    fluidToFluidBlocks.put(fluid, fluidBlock);
+  }
+
+  public static FluidBlock getFluidBlockForFluid(Fluid fluid) {
+    return fluidToFluidBlocks.get(fluid);
+  }
+
+  public static int getFluidIndex(Fluid fluid) {
+    if (fluid.equals(Fluids.EMPTY)) {
+      return 0;
     }
+    return Fluidlogged.WATERLOGGABLE_FLUIDS.indexOf(Registries.FLUID.getId(fluid)) + 1;
+  }
 
-    // https://minecraft.fandom.com/wiki/Waterlogging
-    // Any vanilla block class that implements Waterloggable
-    private static List<Class<? extends Block>> getVanillaWaterloggables() {
-        return Arrays.asList(
-                AbstractRailBlock.class,
-                AbstractSignBlock.class,
-                AmethystClusterBlock.class,
-                // BarrierBlock.class, // Not until 1.20.2
-                BigDripleafBlock.class,
-                BigDripleafStemBlock.class,
-                CampfireBlock.class,
-                CandleBlock.class,
-                ChainBlock.class,
-                ChestBlock.class,
-                ConduitBlock.class,
-                CoralParentBlock.class,
-                DecoratedPotBlock.class,
-                EnderChestBlock.class,
-                FenceBlock.class,
-                GlowLichenBlock.class,
-                HangingRootsBlock.class,
-                HangingSignBlock.class,
-                HorizontalConnectingBlock.class,
-                LadderBlock.class,
-                LanternBlock.class,
-                LeavesBlock.class,
-                LightBlock.class,
-                LightningRodBlock.class,
-                MangroveRootsBlock.class,
-                PointedDripstoneBlock.class,
-                PropaguleBlock.class,
-                ScaffoldingBlock.class,
-                SculkSensorBlock.class,
-                SculkShriekerBlock.class,
-                SculkVeinBlock.class,
-                SeaPickleBlock.class,
-                SlabBlock.class,
-                SmallDripleafBlock.class,
-                StairsBlock.class,
-                TrapdoorBlock.class,
-                WallBlock.class
-
-        );
+  public static boolean isVanillaWaterloggable(Object block) {
+    Class<?> blockClass = block.getClass();
+    for (Class<? extends Block> waterloggableBlockClass : VANILLA_WATERLOGGABLES) {
+      if (waterloggableBlockClass.isAssignableFrom(blockClass)) {
+        return true;
+      }
     }
+    return false;
+  }
+
+  // https://minecraft.fandom.com/wiki/Waterlogging
+  // Any vanilla block class that implements Waterloggable
+  private static List<Class<? extends Block>> getVanillaWaterloggables() {
+    return Arrays.asList(
+        AbstractRailBlock.class,
+        AbstractSignBlock.class,
+        AmethystClusterBlock.class,
+        // BarrierBlock.class, // Not until 1.20.2
+        BigDripleafBlock.class,
+        BigDripleafStemBlock.class,
+        CampfireBlock.class,
+        CandleBlock.class,
+        ChainBlock.class,
+        ChestBlock.class,
+        ConduitBlock.class,
+        CoralParentBlock.class,
+        DecoratedPotBlock.class,
+        EnderChestBlock.class,
+        FenceBlock.class,
+        GlowLichenBlock.class,
+        HangingRootsBlock.class,
+        HangingSignBlock.class,
+        HorizontalConnectingBlock.class,
+        LadderBlock.class,
+        LanternBlock.class,
+        LeavesBlock.class,
+        LightBlock.class,
+        LightningRodBlock.class,
+        MangroveRootsBlock.class,
+        PointedDripstoneBlock.class,
+        PropaguleBlock.class,
+        ScaffoldingBlock.class,
+        SculkSensorBlock.class,
+        SculkShriekerBlock.class,
+        SculkVeinBlock.class,
+        SeaPickleBlock.class,
+        SlabBlock.class,
+        SmallDripleafBlock.class,
+        StairsBlock.class,
+        TrapdoorBlock.class,
+        WallBlock.class
+
+    );
+  }
 }

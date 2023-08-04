@@ -17,37 +17,39 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FallingBlockEntity.class)
 public abstract class FallingBlockEntityMixin extends Entity {
-    @Shadow
-    private BlockState block;
 
-    @Shadow
-    public boolean dropItem;
+  @Shadow
+  private BlockState block;
 
-    @Shadow
-    public abstract BlockState getBlockState();
+  @Shadow
+  public boolean dropItem;
 
-    @Shadow
-    public abstract void setDestroyedOnLanding();
+  @Shadow
+  public abstract BlockState getBlockState();
 
-    public FallingBlockEntityMixin(EntityType<?> type, World world) {
-        super(type, world);
+  @Shadow
+  public abstract void setDestroyedOnLanding();
+
+  public FallingBlockEntityMixin(EntityType<?> type, World world) {
+    super(type, world);
+  }
+
+  @Inject(method = "tick", at = @At("TAIL"))
+  private void destroyIfInSporeSea(CallbackInfo ci) {
+    BlockPos blockPos = this.getBlockPos();
+    FluidState fluidState = this.getWorld().getFluidState(blockPos);
+    if (fluidState.isIn(ModFluidTags.AETHER_SPORES) && fluidState.getLevel() >= 8
+        && fluidState.isStill()) {
+      // Allow spore blocks through as they will fluidize anyway
+      if (this.getBlockState().isIn(ModBlockTags.AETHER_SPORE_BLOCKS)) {
+        this.setDestroyedOnLanding();
+        return;
+      }
+
+      this.discard();
+      if (this.dropItem) {
+        this.dropItem(this.block.getBlock());
+      }
     }
-
-    @Inject(method = "tick", at = @At("TAIL"))
-    private void destroyIfInSporeSea(CallbackInfo ci) {
-        BlockPos blockPos = this.getBlockPos();
-        FluidState fluidState = this.getWorld().getFluidState(blockPos);
-        if (fluidState.isIn(ModFluidTags.AETHER_SPORES) && fluidState.getLevel() >= 8 && fluidState.isStill()) {
-            // Allow spore blocks through as they will fluidize anyway
-            if (this.getBlockState().isIn(ModBlockTags.AETHER_SPORE_BLOCKS)) {
-                this.setDestroyedOnLanding();
-                return;
-            }
-
-            this.discard();
-            if (this.dropItem) {
-                this.dropItem(this.block.getBlock());
-            }
-        }
-    }
+  }
 }

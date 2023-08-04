@@ -22,8 +22,11 @@ public abstract class BlockMixin {
     @Shadow
     public abstract BlockState getDefaultState();
 
-    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/state/StateManager$Builder;build(Ljava/util/function/Function;Lnet/minecraft/state/StateManager$Factory;)Lnet/minecraft/state/StateManager;", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void injectFluidProperty(AbstractBlock.Settings settings, CallbackInfo ci, StateManager.Builder<Block, BlockState> builder) {
+    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/state/StateManager$Builder;build" +
+            "(Ljava/util/function/Function;Lnet/minecraft/state/StateManager$Factory;)" +
+            "Lnet/minecraft/state/StateManager;", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void injectFluidProperty(AbstractBlock.Settings settings, CallbackInfo ci, StateManager.Builder<Block,
+            BlockState> builder) {
         if (isWaterloggable()) {
             builder.add(Fluidlogged.PROPERTY_FLUID);
         }

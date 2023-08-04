@@ -11,15 +11,19 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class ExampleModClient implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
 
-        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.VERDANT_SPORES, ModFluids.FLOWING_VERDANT_SPORES, new SimpleFluidRenderHandler(
-                new Identifier(Constants.MOD_ID, "block/aether_spore_sea_block_still"),
-                new Identifier(Constants.MOD_ID, "block/aether_spore_sea_block_flow"),
-                0x00ff00
+  @Override
+  public void onInitializeClient() {
+
+    FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.VERDANT_SPORES,
+        ModFluids.FLOWING_VERDANT_SPORES,
+        new SimpleFluidRenderHandler(
+            new Identifier(Constants.MOD_ID, "block/aether_spore_sea_block_still"),
+            new Identifier(Constants.MOD_ID, "block/aether_spore_sea_block_flow"),
+            0x00ff00
         ));
 
-        // BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.VERDANT_SPORES, ModFluids.FLOWING_VERDANT_SPORES);
-    }
+    // BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.VERDANT_SPORES, ModFluids
+    // .FLOWING_VERDANT_SPORES);
+  }
 }

@@ -44,7 +44,8 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
         if (fluidized instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
             aetherSporeFluidBlock.setSolidBlockState(this.getDefaultState());
         } else {
-            Constants.LOGGER.error("Expected fluidized block for " + this.getClass().getName() + " to be an instance of AetherSporeFluidBlock");
+            Constants.LOGGER.error("Expected fluidized block for " + this.getClass().getName() +
+                    " to be an instance of AetherSporeFluidBlock");
         }
     }
 
@@ -68,7 +69,8 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
     // }
 
     @Override
-    public void onLanding(World world, BlockPos pos, BlockState fallingBlockState, BlockState currentStateInPos, FallingBlockEntity fallingBlockEntity) {
+    public void onLanding(World world, BlockPos pos, BlockState fallingBlockState, BlockState currentStateInPos,
+                          FallingBlockEntity fallingBlockEntity) {
         if (AetherSporeBlock.shouldFluidize(world, pos, currentStateInPos)) {
             world.setBlockState(pos, this.fluidizedState, Block.NOTIFY_ALL);
         }

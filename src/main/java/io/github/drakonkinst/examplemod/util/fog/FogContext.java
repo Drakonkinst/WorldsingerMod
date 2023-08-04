@@ -12,4 +12,5 @@ public record FogContext(MinecraftClient client, FogModifier vanillaFog, Camera 
                          ClientWorld world, Entity focusedEntity,
                          @Nullable RegistryEntry<Biome> biomeEntry, float viewDistance,
                          boolean thickFog, float tickDelta) {
+
 }

@@ -13,7 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SlabBlock.class)
 public abstract class SlabBlockMixin {
     @Inject(method = "getPlacementState", at = @At("RETURN"), cancellable = true)
-    private void injectRemoveFluidloggedStateIfDoubleSlab(ItemPlacementContext ctx, CallbackInfoReturnable<BlockState> cir) {
+    private void injectRemoveFluidloggedStateIfDoubleSlab(ItemPlacementContext ctx,
+                                                          CallbackInfoReturnable<BlockState> cir) {
         BlockState blockState = ctx.getWorld().getBlockState(ctx.getBlockPos());
         if (blockState.isOf((Block) (Object) this)) {
             cir.setReturnValue(cir.getReturnValue().with(Fluidlogged.PROPERTY_FLUID, 0));

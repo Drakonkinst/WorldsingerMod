@@ -11,8 +11,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(FluidBlock.class)
 public abstract class FluidBlockMixin {
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void registerFluidBlocks(FlowableFluid fluid, AbstractBlock.Settings settings, CallbackInfo ci) {
-        Fluidlogged.registerFluidBlockForFluid(fluid, (FluidBlock) (Object) this);
-    }
+
+  @Inject(method = "<init>", at = @At("TAIL"))
+  private void registerFluidBlocks(FlowableFluid fluid, AbstractBlock.Settings settings,
+      CallbackInfo ci) {
+    Fluidlogged.registerFluidBlockForFluid(fluid, (FluidBlock) (Object) this);
+  }
 }
