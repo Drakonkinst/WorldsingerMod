@@ -15,7 +15,7 @@ public class ModFluids {
     }
 
     public static <T extends Fluid> T register(T fluid, String id) {
-        Identifier fluidId = new Identifier(ExampleMod.MOD_ID, id);
+        Identifier fluidId = new Identifier(Constants.MOD_ID, id);
         return Registry.register(Registries.FLUID, fluidId, fluid);
     }
 }

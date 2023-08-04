@@ -1,0 +1,18 @@
+package io.github.drakonkinst.examplemod.mixin;
+
+import io.github.drakonkinst.examplemod.Fluidlogged;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.FluidBlock;
+import net.minecraft.fluid.FlowableFluid;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(FluidBlock.class)
+public abstract class FluidBlockMixin {
+    @Inject(method = "<init>", at = @At("TAIL"))
+    private void registerFluidBlocks(FlowableFluid fluid, AbstractBlock.Settings settings, CallbackInfo ci) {
+        Fluidlogged.registerFluidBlockForFluid(fluid, (FluidBlock) (Object) this);
+    }
+}

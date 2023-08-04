@@ -22,7 +22,7 @@ public final class ModBlocks {
     public static final Block VERDANT_SPORES = register(new AetherSporeFluidBlock(ModFluids.VERDANT_SPORES, FabricBlockSettings.copy(Blocks.WATER)), "verdant_spores_block", false);
 
     public static <T extends Block> T register(T block, String id, boolean shouldRegisterItem) {
-        Identifier blockId = new Identifier(ExampleMod.MOD_ID, id);
+        Identifier blockId = new Identifier(Constants.MOD_ID, id);
 
         if (shouldRegisterItem) {
             BlockItem blockItem = new BlockItem(block, new FabricItemSettings());
@@ -33,7 +33,7 @@ public final class ModBlocks {
     }
 
     public static void initialize() {
-        Identifier moddedItemsIdentifier = new Identifier(ExampleMod.MOD_ID, "modded_items");
+        Identifier moddedItemsIdentifier = new Identifier(Constants.MOD_ID, "modded_items");
         RegistryKey<ItemGroup> moddedItemsItemGroupKey = RegistryKey.of(RegistryKeys.ITEM_GROUP, moddedItemsIdentifier);
         ItemGroupEvents.modifyEntriesEvent(moddedItemsItemGroupKey).register((itemGroup) -> {
             itemGroup.add(ModBlocks.DISCORD_BLOCK.asItem());

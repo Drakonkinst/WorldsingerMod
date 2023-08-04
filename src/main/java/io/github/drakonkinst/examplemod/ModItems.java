@@ -50,13 +50,13 @@ public final class ModItems {
 
 
     public static <T extends Item> T register(T item, String id) {
-        Identifier itemId = new Identifier(ExampleMod.MOD_ID, id);
+        Identifier itemId = new Identifier(Constants.MOD_ID, id);
         return Registry.register(Registries.ITEM, itemId, item);
     }
 
     public static void initialize() {
         // Custom item group
-        Identifier moddedItemsIdentifier = new Identifier(ExampleMod.MOD_ID, "modded_items");
+        Identifier moddedItemsIdentifier = new Identifier(Constants.MOD_ID, "modded_items");
         Registry.register(Registries.ITEM_GROUP, moddedItemsIdentifier, MODDED_ITEMS_GROUP);
         RegistryKey<ItemGroup> moddedItemsItemGroupKey = RegistryKey.of(RegistryKeys.ITEM_GROUP, moddedItemsIdentifier);
 
