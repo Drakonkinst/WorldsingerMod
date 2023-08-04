@@ -6,19 +6,17 @@
     "AbstractBlockStateMixin",
     "BlockItemMixin",
     "BlockMixin",
+    "BucketItemMixin",
     "FluidBlockMixin",
     "ShapeCacheMixin",
     "SlabBlockMixin",
-    "StateManagerBuilderMixin",
     "WallBlockMixin",
     "WaterloggableMixin",
     "WaterWalkMixin",
     "accessor.AbstractBlockAccessor",
-    "accessor.AbstractBlockSettingsAccessor",
-    "accessor.BlockAccessor"
+    "accessor.AbstractBlockSettingsAccessor"
   ],
   "notImplementedYet": [
-    "BucketItemMixin",
     "accessor.StateAccessor",
     "worldwarning.LevelInfoMixin",
     "worldwarning.LevelPropertiesMixin"

@@ -91,4 +91,37 @@ public abstract class AbstractBlockStateMixin {
             }
         }
     }
+
+
+    // Tossing these in for now, haven't given them a proper look yet
+    @Redirect(method = "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getCollisionShape(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
+    private VoxelShape injectCustomFluidCollsionShape(Block instance, BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return instance.getCollisionShape(
+                state.contains(Fluidlogged.PROPERTY_FLUID)
+                        ? state.with(Fluidlogged.PROPERTY_FLUID, 0)
+                        : state,
+                world, pos, context
+        );
+    }
+
+    @Redirect(method = "getOutlineShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getOutlineShape(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
+    private VoxelShape injectCustomFluidOutlineShape(Block instance, BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return instance.getOutlineShape(
+                state.contains(Fluidlogged.PROPERTY_FLUID)
+                        ? state.with(Fluidlogged.PROPERTY_FLUID, 0)
+                        : state,
+                world, pos, context
+        );
+    }
+
+    @Redirect(method = "getSidesShape", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getSidesShape(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/shape/VoxelShape;"))
+    private VoxelShape injectCustomFluidSidesShape(Block instance, BlockState state, BlockView world, BlockPos pos) {
+        ShapeContext context = ShapeContext.absent();
+        return instance.getCollisionShape(
+                state.contains(Fluidlogged.PROPERTY_FLUID)
+                        ? state.with(Fluidlogged.PROPERTY_FLUID, 0)
+                        : state,
+                world, pos, context
+        );
+    }
 }

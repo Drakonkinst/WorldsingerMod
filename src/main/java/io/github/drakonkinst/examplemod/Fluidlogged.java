@@ -97,7 +97,7 @@ public class Fluidlogged {
         if (fluid.equals(Fluids.EMPTY)) {
             return 0;
         }
-        return Fluidlogged.WATERLOGGABLE_FLUIDS.indexOf(Registries.FLUID.getId(fluid));
+        return Fluidlogged.WATERLOGGABLE_FLUIDS.indexOf(Registries.FLUID.getId(fluid)) + 1;
     }
 
     public static boolean isVanillaWaterloggable(Object block) {

@@ -19,7 +19,7 @@ public abstract class WaterWalkMixin extends Entity {
 
     @Inject(method = "canWalkOnFluid", at = @At("HEAD"), cancellable = true)
     public void examplemod$allowWalkingOnSporesDuringRain(FluidState state, CallbackInfoReturnable<Boolean> cir) {
-        if (state.isIn(ModFluidTags.AETHER_SPORES) && getWorld().isRaining()) {
+        if (state.isIn(ModFluidTags.STILL_AETHER_SPORES) && getWorld().isRaining()) {
             cir.setReturnValue(true);
         }
     }
