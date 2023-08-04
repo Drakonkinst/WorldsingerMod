@@ -1,4 +1,4 @@
-package io.github.drakonkinst.examplemod;
+package io.github.drakonkinst.examplemod.fluid;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.shape.VoxelShape;

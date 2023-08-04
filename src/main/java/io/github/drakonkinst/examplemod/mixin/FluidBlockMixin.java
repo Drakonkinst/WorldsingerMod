@@ -1,6 +1,6 @@
 package io.github.drakonkinst.examplemod.mixin;
 
-import io.github.drakonkinst.examplemod.Fluidlogged;
+import io.github.drakonkinst.examplemod.fluid.Fluidlogged;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.fluid.FlowableFluid;

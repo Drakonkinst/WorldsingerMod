@@ -1,5 +1,6 @@
-package io.github.drakonkinst.examplemod;
+package io.github.drakonkinst.examplemod.fluid;
 
+import io.github.drakonkinst.examplemod.Constants;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;

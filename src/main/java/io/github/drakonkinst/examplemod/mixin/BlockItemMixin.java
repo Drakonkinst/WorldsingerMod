@@ -1,6 +1,6 @@
 package io.github.drakonkinst.examplemod.mixin;
 
-import io.github.drakonkinst.examplemod.Fluidlogged;
+import io.github.drakonkinst.examplemod.fluid.Fluidlogged;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
@@ -31,7 +31,7 @@ public abstract class BlockItemMixin {
         if (placementState.getBlock() instanceof SlabBlock && placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE) {
             return;
         }
-        
+
         FluidState fluidState = context.getWorld().getFluidState(context.getBlockPos());
         int index = Fluidlogged.getFluidIndex(fluidState.getFluid());
         if (index > -1) {

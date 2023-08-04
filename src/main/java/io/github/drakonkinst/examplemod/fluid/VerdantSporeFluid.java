@@ -1,5 +1,7 @@
-package io.github.drakonkinst.examplemod;
+package io.github.drakonkinst.examplemod.fluid;
 
+import io.github.drakonkinst.examplemod.block.ModBlocks;
+import io.github.drakonkinst.examplemod.item.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -25,7 +27,7 @@ public abstract class VerdantSporeFluid extends AetherSporeFluid {
 
     @Override
     protected BlockState toBlockState(FluidState fluidState) {
-        return ModBlocks.VERDANT_SPORES.getDefaultState().with(Properties.LEVEL_15, getBlockStateLevel(fluidState));
+        return ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState().with(Properties.LEVEL_15, getBlockStateLevel(fluidState));
     }
 
     public static class Flowing extends VerdantSporeFluid {

@@ -1,11 +1,12 @@
-package io.github.drakonkinst.examplemod;
+package io.github.drakonkinst.examplemod.item;
 
+import io.github.drakonkinst.examplemod.Constants;
+import io.github.drakonkinst.examplemod.block.ModBlocks;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.BucketItem;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -15,6 +16,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -38,10 +40,12 @@ public final class ModItems {
                             .build())),
             "balls"
     );
+    // public static final Item VERDANT_SPORES_BUCKET = ModItems.register(
+    //         new BucketItem(ModFluids.VERDANT_SPORES, new FabricItemSettings()
+    //                 .recipeRemainder(Items.BUCKET).maxCount(1)), "verdant_spores_bucket"
+    // );
     public static final Item VERDANT_SPORES_BUCKET = ModItems.register(
-            new BucketItem(ModFluids.VERDANT_SPORES, new FabricItemSettings()
-                    .recipeRemainder(Items.BUCKET).maxCount(1)), "verdant_spores_bucket"
-    );
+            new AetherSporeBucketItem(ModBlocks.VERDANT_SPORE_BLOCK, SoundEvents.BLOCK_POWDER_SNOW_PLACE, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)), "verdant_spores_bucket");
 
     private static final ItemGroup MODDED_ITEMS_GROUP = FabricItemGroup.builder()
             .icon(() -> new ItemStack(DEFAULT_CUBE))
@@ -69,6 +73,7 @@ public final class ModItems {
             itemGroup.add(ModItems.BALLS);
             itemGroup.add(ModBlocks.DISCORD_BLOCK.asItem());
             itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
+            itemGroup.add(ModBlocks.VERDANT_SPORE_BLOCK.asItem());
         });
     }
 

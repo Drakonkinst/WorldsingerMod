@@ -1,5 +1,6 @@
 package io.github.drakonkinst.examplemod;
 
+import io.github.drakonkinst.examplemod.fluid.ModFluids;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;

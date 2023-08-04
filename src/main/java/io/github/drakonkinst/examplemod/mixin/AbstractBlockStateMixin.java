@@ -1,7 +1,7 @@
 package io.github.drakonkinst.examplemod.mixin;
 
-import io.github.drakonkinst.examplemod.FluidShapes;
-import io.github.drakonkinst.examplemod.Fluidlogged;
+import io.github.drakonkinst.examplemod.fluid.FluidShapes;
+import io.github.drakonkinst.examplemod.fluid.Fluidlogged;
 import io.github.drakonkinst.examplemod.mixin.accessor.AbstractBlockAccessor;
 import io.github.drakonkinst.examplemod.mixin.accessor.AbstractBlockSettingsAccessor;
 import net.minecraft.block.AbstractBlock;

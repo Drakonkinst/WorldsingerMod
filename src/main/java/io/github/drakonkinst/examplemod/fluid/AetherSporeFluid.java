@@ -1,4 +1,4 @@
-package io.github.drakonkinst.examplemod;
+package io.github.drakonkinst.examplemod.fluid;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,7 +26,7 @@ public abstract class AetherSporeFluid extends FlowableFluid {
 
     @Override
     protected boolean isInfinite(World world) {
-        return false;
+        return true;
     }
 
     @Override

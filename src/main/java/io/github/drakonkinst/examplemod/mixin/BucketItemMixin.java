@@ -1,6 +1,6 @@
 package io.github.drakonkinst.examplemod.mixin;
 
-import io.github.drakonkinst.examplemod.Fluidlogged;
+import io.github.drakonkinst.examplemod.fluid.Fluidlogged;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(BucketItem.class)
-public class BucketItemMixin {
+public abstract class BucketItemMixin {
     @Redirect(method = "use", at = @At(value = "FIELD", target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;", opcode = Opcodes.GETFIELD, ordinal = 2))
     private Fluid unblock(BucketItem instance) {
         return Fluids.WATER;

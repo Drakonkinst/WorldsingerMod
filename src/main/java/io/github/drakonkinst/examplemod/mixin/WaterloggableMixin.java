@@ -1,7 +1,7 @@
 package io.github.drakonkinst.examplemod.mixin;
 
 import io.github.drakonkinst.examplemod.Constants;
-import io.github.drakonkinst.examplemod.Fluidlogged;
+import io.github.drakonkinst.examplemod.fluid.Fluidlogged;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
