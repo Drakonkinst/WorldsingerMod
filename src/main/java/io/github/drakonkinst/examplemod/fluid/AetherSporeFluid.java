@@ -42,7 +42,7 @@ public abstract class AetherSporeFluid extends FlowableFluid {
 
     @Override
     protected int getFlowSpeed(WorldView worldView) {
-        return 4;
+        return 3;
     }
 
     @Override
