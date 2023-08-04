@@ -14,7 +14,7 @@ public class ExampleModClient implements ClientModInitializer {
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.VERDANT_SPORES, ModFluids.FLOWING_VERDANT_SPORES, new SimpleFluidRenderHandler(
                 new Identifier("minecraft:block/water_still"),
                 new Identifier("minecraft:block/water_flow"),
-                0x4CC248
+                0x00ff00
         ));
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.VERDANT_SPORES, ModFluids.FLOWING_VERDANT_SPORES);

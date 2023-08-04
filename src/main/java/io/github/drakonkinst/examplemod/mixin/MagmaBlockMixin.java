@@ -1,6 +1,5 @@
 package io.github.drakonkinst.examplemod.mixin;
 
-import io.github.drakonkinst.examplemod.Constants;
 import io.github.drakonkinst.examplemod.block.AetherSporeFluidBlock;
 import io.github.drakonkinst.examplemod.block.ModBlockTags;
 import net.minecraft.block.BlockState;
@@ -26,7 +25,6 @@ public class MagmaBlockMixin {
     @Inject(method = "getStateForNeighborUpdate", at = @At("RETURN"))
     private void addSporeFluidizationCheckNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
         if (direction == Direction.UP && neighborState.isIn(ModBlockTags.AETHER_SPORE_BLOCKS)) {
-            Constants.LOGGER.info("SCHEDULING TICK FOR NEIGHBOR OF MAGMA BLOCK");
             world.scheduleBlockTick(pos, (MagmaBlock) (Object) this, 20);
         }
     }
