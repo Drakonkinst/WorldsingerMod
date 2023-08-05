@@ -41,6 +41,7 @@ public abstract class VerdantSporeFluid extends AetherSporeFluid {
     }
 
     public static class Flowing extends VerdantSporeFluid {
+
         @Override
         protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
             super.appendProperties(builder);
@@ -59,6 +60,7 @@ public abstract class VerdantSporeFluid extends AetherSporeFluid {
     }
 
     public static class Still extends VerdantSporeFluid {
+
         @Override
         public int getLevel(FluidState fluidState) {
             return 8;

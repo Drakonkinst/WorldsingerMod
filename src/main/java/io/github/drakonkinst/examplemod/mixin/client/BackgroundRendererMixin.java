@@ -45,6 +45,8 @@ public abstract class BackgroundRendererMixin {
         }
 
         if (fluidState.isIn(ModFluidTags.AETHER_SPORES)) {
+            // This is equivalent to the much easier camera.getFocusedEntity().isSubmergedIn(ModFluidTags.AETHER_SPORES)
+            // But we need to know the fluid state anyways
             if (fluidState.getFluid() instanceof AetherSporeFluid aetherSporeFluid) {
                 red = aetherSporeFluid.getFogRed();
                 green = aetherSporeFluid.getFogGreen();
@@ -76,6 +78,8 @@ public abstract class BackgroundRendererMixin {
                 fogData.fogStart = AetherSporeFluid.FOG_START;
                 fogData.fogEnd = AetherSporeFluid.FOG_END;
             }
+
+            // End of the method
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);

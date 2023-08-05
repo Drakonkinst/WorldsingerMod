@@ -2,6 +2,7 @@ package io.github.drakonkinst.examplemod.block;
 
 import io.github.drakonkinst.examplemod.Constants;
 import io.github.drakonkinst.examplemod.item.ModItems;
+import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -24,12 +25,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldEvents;
 
-import java.util.Optional;
-
 public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
+
     // Cannot fall through liquid
     public static boolean canFallThrough(BlockState state) {
-        return !state.isLiquid() && (state.isAir() || state.isIn(BlockTags.FIRE) || state.isReplaceable());
+        return !state.isLiquid() && (state.isAir() || state.isIn(BlockTags.FIRE)
+                || state.isReplaceable());
     }
 
     private static boolean shouldFluidize(BlockView world, BlockPos pos, BlockState state) {
@@ -69,8 +70,9 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
     // }
 
     @Override
-    public void onLanding(World world, BlockPos pos, BlockState fallingBlockState, BlockState currentStateInPos,
-                          FallingBlockEntity fallingBlockEntity) {
+    public void onLanding(World world, BlockPos pos, BlockState fallingBlockState,
+            BlockState currentStateInPos,
+            FallingBlockEntity fallingBlockEntity) {
         if (AetherSporeBlock.shouldFluidize(world, pos, currentStateInPos)) {
             world.setBlockState(pos, this.fluidizedState, Block.NOTIFY_ALL);
         }
@@ -101,18 +103,21 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
     }
 
     @Override
-    public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos,
+            ShapeContext context) {
         return VoxelShapes.empty();
     }
 
     @Override
-    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos,
+            NavigationType type) {
         return false;
     }
 
     @Override
     public ItemStack tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state) {
-        world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD);
+        world.setBlockState(pos, Blocks.AIR.getDefaultState(),
+                Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD);
         if (!world.isClient()) {
             world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, pos, Block.getRawIdFromState(state));
         }

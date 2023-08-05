@@ -17,16 +17,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MagmaBlock.class)
 public abstract class MagmaBlockMixin {
+
     @Inject(method = "scheduledTick", at = @At("RETURN"))
-    private void addSporeFluidizationCheckScheduledTick(BlockState state, ServerWorld world, BlockPos pos,
-                                                        Random random, CallbackInfo ci) {
+    private void addSporeFluidizationCheckScheduledTick(BlockState state, ServerWorld world,
+            BlockPos pos,
+            Random random, CallbackInfo ci) {
         AetherSporeFluidBlock.update(world, pos.up(), world.getBlockState(pos.up()), state);
     }
 
     @Inject(method = "getStateForNeighborUpdate", at = @At("RETURN"))
     private void addSporeFluidizationCheckNeighborUpdate(BlockState state, Direction direction,
-                                                         BlockState neighborState, WorldAccess world, BlockPos pos,
-                                                         BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
+            BlockState neighborState, WorldAccess world, BlockPos pos,
+            BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
         if (direction == Direction.UP && neighborState.isIn(ModBlockTags.AETHER_SPORE_BLOCKS)) {
             world.scheduleBlockTick(pos, (MagmaBlock) (Object) this, 20);
         }

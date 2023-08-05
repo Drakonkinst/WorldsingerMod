@@ -1,5 +1,6 @@
 package io.github.drakonkinst.examplemod.item;
 
+import java.util.List;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -10,8 +11,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class DefaultCubeItem extends Item {
 
@@ -26,8 +25,10 @@ public class DefaultCubeItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
+    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip,
+            TooltipContext tooltipContext) {
         // formatted red text
-        tooltip.add(Text.translatable("item.examplemod.custom_item.tooltip").formatted(Formatting.RED));
+        tooltip.add(
+                Text.translatable("item.examplemod.custom_item.tooltip").formatted(Formatting.RED));
     }
 }

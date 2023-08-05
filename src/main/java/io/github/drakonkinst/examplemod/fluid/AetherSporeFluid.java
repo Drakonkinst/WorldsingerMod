@@ -18,6 +18,10 @@ public abstract class AetherSporeFluid extends FlowableFluid {
     public static final float FOG_START = 0.25f;
     public static final float FOG_END = 3.0f;
 
+    // How fast this fluid pushes entities.
+    // Water uses the value 0.014, and lava uses 0.007 in the Nether and 0.0023 otherwise
+    public static final double FLUID_SPEED = 0.012;
+
     private final float fogRed;
     private final float fogGreen;
     private final float fogBlue;
