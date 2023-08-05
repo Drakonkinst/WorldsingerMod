@@ -23,7 +23,7 @@ public class ExampleModClient implements ClientModInitializer {
                         0x00ff00
                 ));
 
-        // BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.VERDANT_SPORES, ModFluids
-        // .FLOWING_VERDANT_SPORES);
+        // BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
+        //         ModFluids.VERDANT_SPORES, ModFluids.FLOWING_VERDANT_SPORES);
     }
 }

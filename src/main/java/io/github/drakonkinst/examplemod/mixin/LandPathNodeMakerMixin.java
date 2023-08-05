@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LandPathNodeMaker.class)
-public class LandPathNodeMakerMixin {
+public abstract class LandPathNodeMakerMixin {
 
     @Inject(method = "getCommonNodeType", at = @At("TAIL"), cancellable = true)
     private static void avoidSporeBlocks(BlockView world, BlockPos pos,

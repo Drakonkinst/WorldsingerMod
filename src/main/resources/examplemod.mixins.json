@@ -6,6 +6,7 @@
     "AbstractBlockStateMixin",
     "BlockItemMixin",
     "BlockMixin",
+    "BoatEntityMixin",
     "BucketItemMixin",
     "EntityMixin",
     "FallingBlockEntityMixin",
