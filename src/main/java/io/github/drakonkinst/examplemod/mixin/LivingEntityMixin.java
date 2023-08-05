@@ -1,5 +1,6 @@
 package io.github.drakonkinst.examplemod.mixin;
 
+import io.github.drakonkinst.examplemod.fluid.AetherSporeFluid;
 import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -24,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
 
-
     @Shadow
     protected abstract boolean shouldSwimInFluids();
 
@@ -47,6 +47,9 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow
     public abstract void updateLimbs(boolean flutter);
 
+    @Shadow
+    public abstract boolean isClimbing();
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -65,7 +68,6 @@ public abstract class LivingEntityMixin extends Entity {
         checkSporeSeaDamage();
     }
 
-    // @Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getFluidHeight(Lnet/minecraft/registry/tag/TagKey;)D"))
     @Inject(method = "tickMovement", at = @At("RETURN"))
     private void allowCustomFluidSwimming(CallbackInfo ci) {
         if (this.jumping && this.shouldSwimInFluids()) {
@@ -91,7 +93,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
-    private void injectCustomFluidGravity(Vec3d movementInput, CallbackInfo ci) {
+    private void injectCustomFluidPhysics(Vec3d movementInput, CallbackInfo ci) {
         if (!this.isLogicalSideForUpdatingMovement()) {
             return;
         }
@@ -108,8 +110,8 @@ public abstract class LivingEntityMixin extends Entity {
 
         FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
         if (this.isTouchingSporeSea()) {
-            float horizontalMovementMultiplier = 0.5f;
-            float verticalMovementMultiplier = 0.8f;
+            float horizontalMovementMultiplier = AetherSporeFluid.HORIZONTAL_DRAG_MULTIPLIER;
+            float verticalMovementMultiplier = AetherSporeFluid.VERTICAL_DRAG_MULTIPLIER;
             if (this.canWalkOnFluid(fluidState)) {
                 // Stuck in the spores!
                 gravity = 0.0;
@@ -118,14 +120,19 @@ public abstract class LivingEntityMixin extends Entity {
                 movementInput = new Vec3d(0.0, movementInput.getY(), 0.0);
             }
 
-            Vec3d vec3d = this.getVelocity();
             double currYPos = this.getY();
             this.updateVelocity(0.02f, movementInput);
             this.move(MovementType.SELF, this.getVelocity());
+            Vec3d vec3d = this.getVelocity();
 
-            vec3d = vec3d.multiply(horizontalMovementMultiplier, verticalMovementMultiplier,
-                    horizontalMovementMultiplier);
-            vec3d = this.applyFluidMovingSpeed(gravity, isFalling, vec3d);
+            if (this.horizontalCollision && this.isClimbing()) {
+                vec3d = new Vec3d(vec3d.x, 0.2, vec3d.z);
+            }
+
+            this.setVelocity(
+                    vec3d.multiply(horizontalMovementMultiplier, verticalMovementMultiplier,
+                            horizontalMovementMultiplier));
+            vec3d = this.applyFluidMovingSpeed(gravity, isFalling, this.getVelocity());
             this.setVelocity(vec3d);
 
             // Apply gravity
@@ -153,11 +160,12 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void damageFromSporeSea() {
-        if (this.damage(this.getDamageSources().lightningBolt(), 4.0f)) {
+        if (this.damage(this.getDamageSources().drown(), AetherSporeFluid.DAMAGE)) {
             // this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f, 2.0f + this.random.nextFloat() * 0.4f);
         }
     }
 
+    @Unique
     private boolean isTouchingSporeSea() {
         return !this.firstUpdate && this.fluidHeight.getDouble(ModFluidTags.AETHER_SPORES) > 0.0;
     }

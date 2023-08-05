@@ -25,17 +25,12 @@ public abstract class EntityMixin {
     @Shadow
     public abstract void extinguish();
 
-    @Shadow
-    protected boolean touchingWater;
-
     @Inject(method = "updateWaterState", at = @At("RETURN"), cancellable = true)
     private void allowCustomFluidToPushEntity(CallbackInfoReturnable<Boolean> cir) {
         boolean isTouchingFluid = cir.getReturnValueZ();
         if (this.updateMovementInFluid(ModFluidTags.AETHER_SPORES, AetherSporeFluid.FLUID_SPEED)) {
             this.fallDistance = 0.0f;
             isTouchingFluid = true;
-
-            // this.touchingWater = true;
 
             this.extinguish();
         }
