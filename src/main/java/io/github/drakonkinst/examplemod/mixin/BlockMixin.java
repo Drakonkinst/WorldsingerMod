@@ -32,7 +32,7 @@ public abstract class BlockMixin {
         }
     }
 
-    @Inject(method = "<init>", at = @At("TAIL"))
+    @Inject(method = "<init>", at = @At("RETURN"))
     private void injectDefaultState(AbstractBlock.Settings settings, CallbackInfo ci) {
         if (isWaterloggable()) {
             setDefaultState(getDefaultState().with(Fluidlogged.PROPERTY_FLUID, 0));

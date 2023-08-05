@@ -13,7 +13,6 @@
     "MagmaBlockMixin",
     "ShapeCacheMixin",
     "SlabBlockMixin",
-    "WallBlockMixin",
     "WaterloggableMixin",
     "WaterWalkMixin",
     "accessor.AbstractBlockAccessor",

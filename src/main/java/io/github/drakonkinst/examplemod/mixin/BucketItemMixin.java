@@ -26,45 +26,49 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(BucketItem.class)
 public abstract class BucketItemMixin {
 
-  @Redirect(method = "use", at = @At(value = "FIELD", target = "Lnet/minecraft/item/BucketItem;" +
-      "fluid:Lnet/minecraft/fluid/Fluid;", opcode = Opcodes.GETFIELD, ordinal = 2))
-  private Fluid unblock(BucketItem instance) {
-    return Fluids.WATER;
-  }
-
-  @Redirect(
-      method = "placeFluid",
-      at = @At(value = "FIELD", target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;",
-          opcode = Opcodes.GETFIELD, ordinal = 0),
-      slice = @Slice(
-          from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle" +
-              "(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"),
-          to = @At(value = "INVOKE", target = "Lnet/minecraft/block/FluidFillable;tryFillWithFluid"
-              +
-              "(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;" +
-              "Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z")
-      )
-  )
-  private Fluid unblock2(BucketItem instance) {
-    return Fluids.WATER;
-  }
-
-  // play the right sound when draining a fluidlogged block
-  @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FluidDrainable;"
-      +
-      "getBucketFillSound()Ljava/util/Optional;", shift = At.Shift.BEFORE), locals =
-      LocalCapture.CAPTURE_FAILSOFT)
-  private void playRightSound(World world, PlayerEntity user, Hand hand,
-      CallbackInfoReturnable<TypedActionResult<ItemStack>> cir, ItemStack itemStack,
-      BlockHitResult blockHitResult, BlockPos blockPos, Direction direction,
-      BlockPos blockPos2, BlockState blockState, FluidDrainable fluidDrainable,
-      ItemStack itemStack2) {
-    Fluid fluid = Fluidlogged.getFluid(blockState);
-    if (fluid != null) {
-      fluid.getBucketFillSound().ifPresentOrElse(
-          sound -> user.playSound(sound, 1.0F, 1.0F),
-          () -> user.playSound(Fluids.WATER.getBucketFillSound().orElseThrow(), 1.0F, 1.0F)
-      );
+    @Redirect(method = "use", at = @At(value = "FIELD", target = "Lnet/minecraft/item/BucketItem;" +
+            "fluid:Lnet/minecraft/fluid/Fluid;", opcode = Opcodes.GETFIELD, ordinal = 2))
+    private Fluid unblock(BucketItem instance) {
+        return Fluids.WATER;
     }
-  }
+
+    @Redirect(
+            method = "placeFluid",
+            at = @At(value = "FIELD", target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;",
+                    opcode = Opcodes.GETFIELD, ordinal = 0),
+            slice = @Slice(
+                    from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle" +
+                            "(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"),
+                    to = @At(value = "INVOKE", target =
+                            "Lnet/minecraft/block/FluidFillable;tryFillWithFluid"
+                                    +
+                                    "(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;"
+                                    +
+                                    "Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z")
+            )
+    )
+    private Fluid unblock2(BucketItem instance) {
+        return Fluids.WATER;
+    }
+
+    // play the right sound when draining a fluidlogged block
+    @Inject(method = "use", at = @At(value = "INVOKE", target =
+            "Lnet/minecraft/block/FluidDrainable;"
+                    +
+                    "getBucketFillSound()Ljava/util/Optional;", shift = At.Shift.BEFORE), locals =
+            LocalCapture.CAPTURE_FAILSOFT)
+    private void playRightSound(World world, PlayerEntity user, Hand hand,
+            CallbackInfoReturnable<TypedActionResult<ItemStack>> cir, ItemStack itemStack,
+            BlockHitResult blockHitResult, BlockPos blockPos, Direction direction,
+            BlockPos blockPos2, BlockState blockState, FluidDrainable fluidDrainable,
+            ItemStack itemStack2) {
+        Fluid fluid = Fluidlogged.getFluid(blockState);
+        if (fluid != null) {
+            fluid.getBucketFillSound().ifPresentOrElse(
+                    sound -> user.playSound(sound, 1.0F, 1.0F),
+                    () -> user.playSound(Fluids.WATER.getBucketFillSound().orElseThrow(), 1.0F,
+                            1.0F)
+            );
+        }
+    }
 }

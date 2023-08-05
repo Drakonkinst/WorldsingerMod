@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MagmaBlock.class)
 public class MagmaBlockMixin {
-    @Inject(method = "scheduledTick", at = @At("TAIL"))
+    @Inject(method = "scheduledTick", at = @At("RETURN"))
     private void addSporeFluidizationCheckScheduledTick(BlockState state, ServerWorld world, BlockPos pos,
                                                         Random random, CallbackInfo ci) {
         AetherSporeFluidBlock.update(world, pos.up(), world.getBlockState(pos.up()), state);

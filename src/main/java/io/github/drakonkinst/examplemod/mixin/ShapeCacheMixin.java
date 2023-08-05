@@ -14,19 +14,19 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(targets = "net/minecraft/block/AbstractBlock$AbstractBlockState$ShapeCache")
 public abstract class ShapeCacheMixin {
 
-  @Redirect(method = "<init>", at = @At(value = "INVOKE", target =
-      "Lnet/minecraft/block/Block;getCollisionShape" +
-          "(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;"
-          +
-          "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
-  private VoxelShape injectCustomFluidCollisionShape(Block instance, BlockState state,
-      BlockView world,
-      BlockPos pos, ShapeContext context) {
-    return instance.getCollisionShape(
-        state.contains(Fluidlogged.PROPERTY_FLUID)
-            ? state.with(Fluidlogged.PROPERTY_FLUID, 0)
-            : state,
-        world, pos, context
-    );
-  }
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target =
+            "Lnet/minecraft/block/Block;getCollisionShape" +
+                    "(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;"
+                    +
+                    "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
+    private VoxelShape injectCustomFluidCollisionShape(Block instance, BlockState state,
+            BlockView world,
+            BlockPos pos, ShapeContext context) {
+        return instance.getCollisionShape(
+                state.contains(Fluidlogged.PROPERTY_FLUID)
+                        ? state.with(Fluidlogged.PROPERTY_FLUID, 0)
+                        : state,
+                world, pos, context
+        );
+    }
 }

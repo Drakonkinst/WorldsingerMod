@@ -9,6 +9,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(AbstractBlock.Settings.class)
 public interface AbstractBlockSettingsAccessor {
 
-  @Accessor("luminance")
-  ToIntFunction<BlockState> examplemod$getLuminance();
+    @Accessor("luminance")
+    ToIntFunction<BlockState> examplemod$getLuminance();
 }
