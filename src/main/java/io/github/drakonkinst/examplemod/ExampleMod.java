@@ -1,19 +1,33 @@
 package io.github.drakonkinst.examplemod;
 
+import io.github.drakonkinst.examplemod.block.ModBlocks;
+import io.github.drakonkinst.examplemod.fluid.Fluidlogged;
+import io.github.drakonkinst.examplemod.fluid.ModFluids;
+import io.github.drakonkinst.examplemod.item.ModItems;
 import net.fabricmc.api.ModInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExampleMod implements ModInitializer {
-    public static final String MOD_ID = "examplemod";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     @Override
     public void onInitialize() {
-        LOGGER.info("Hello Fabric world!");
+        Constants.LOGGER.info("Hello Fabric world!");
 
         ModFluids.initialize();
         ModBlocks.initialize();
         ModItems.initialize();
+
+        Fluidlogged.initialize();
+
+        //    FogModifiers.register(FogModifier.InjectionPoint.WATER,
+        //        new FogModifier.Builder()
+        //            .predicate(fogFunction -> fogFunction.biomeEntry() != null &&
+        //                fogFunction.biomeEntry().matchesKey(BiomeKeys.OCEAN))
+        //            .fogStart(fogFunction -> fogFunction.viewDistance() * .5f)
+        //            .fogEnd(fogFunction -> Math.min(fogFunction.viewDistance(), 192f) * .5f)
+        //            .densitySpeedTicks(0.001f)
+        //            .fogShape(FogShape.SPHERE)
+        //            .color(0x00ff00)
+        //            .build()
+        //    );
     }
 }

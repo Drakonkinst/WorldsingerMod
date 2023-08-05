@@ -1,7 +1,14 @@
 package io.github.drakonkinst.examplemod;
 
-public final class Constants {
-    private Constants() {}
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    public static int SECONDS_TO_TICKS = 20;
+public final class Constants {
+
+    private Constants() {
+    }
+
+    public static final String MOD_ID = "examplemod";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final int SECONDS_TO_TICKS = 20;
 }

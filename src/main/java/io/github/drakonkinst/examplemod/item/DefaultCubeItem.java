@@ -1,4 +1,4 @@
-package io.github.drakonkinst.examplemod;
+package io.github.drakonkinst.examplemod.item;
 
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
