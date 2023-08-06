@@ -111,7 +111,7 @@ public abstract class AbstractBlockStateMixin {
                     +
                     "Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
                     "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
-    private VoxelShape injectCustomFluidCollsionShape(Block instance, BlockState state,
+    private VoxelShape injectCustomFluidCollisionShape(Block instance, BlockState state,
             BlockView world, BlockPos pos
             , ShapeContext context) {
         return instance.getCollisionShape(

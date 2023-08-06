@@ -79,10 +79,10 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
 
     @Inject(method = "shouldFall", at = @At("RETURN"), cancellable = true)
     private void doNotFallIfInSolidSpores(CallbackInfoReturnable<Boolean> cir) {
-        boolean isInSolidSpores =
-                this.inBlockState != null && this.inBlockState.isIn(
-                        ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
-                        && !LumarSeetheManager.areSporesFluidized(this.getWorld());
+        boolean isInSolidSpores = this.inBlockState != null
+                && this.inBlockState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
+                && this.inBlockState.getFluidState().isStill()
+                && !LumarSeetheManager.areSporesFluidized(this.getWorld());
         cir.setReturnValue(cir.getReturnValue() && !isInSolidSpores);
     }
 

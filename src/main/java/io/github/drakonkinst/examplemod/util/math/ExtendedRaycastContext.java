@@ -29,7 +29,7 @@ public class ExtendedRaycastContext extends RaycastContext {
     }
 
     public enum ExtendedFluidHandling {
-        SPORE_SEA(state -> state.isIn(ModFluidTags.AETHER_SPORES));
+        SPORE_SEA(state -> state.isIn(ModFluidTags.AETHER_SPORES) && state.isStill());
 
         private final Predicate<FluidState> predicate;
 
