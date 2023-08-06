@@ -2,6 +2,7 @@ package io.github.drakonkinst.examplemod.mixin;
 
 import io.github.drakonkinst.examplemod.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
+import io.github.drakonkinst.examplemod.weather.LumarSeetheManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -54,6 +55,12 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Unique
     private void applySporeSeaBuoyancy() {
+        if (!LumarSeetheManager.areSporesFluidized(this.getWorld())) {
+            // Items should not move in solid spores
+            this.setVelocity(0.0, 0.0, 0.0);
+            return;
+        }
+
         Vec3d vec3d = this.getVelocity();
         double yVelocityOffset = vec3d.y < 0.06 ? 5.0E-4 : 0.0;
         this.setVelocity(vec3d.x * HORIZONTAL_BUOYANCY_DRAG, vec3d.y + yVelocityOffset,

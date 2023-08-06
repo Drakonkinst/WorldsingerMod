@@ -18,6 +18,7 @@
     "MagmaBlockMixin",
     "ShapeCacheMixin",
     "SlabBlockMixin",
+    "SwimGoalMixin",
     "WaterFluidMixin",
     "WaterloggableMixin",
     "accessor.AbstractBlockAccessor",
