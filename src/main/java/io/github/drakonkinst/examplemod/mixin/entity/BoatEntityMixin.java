@@ -26,6 +26,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class BoatEntityMixin extends Entity {
 
     @Unique
+    private static final double MAX_FLUID_HEIGHT_TO_NOT_EMBED = 0.05;
+
+    @Unique
     private boolean inSporeSea;
 
     @Shadow
@@ -45,9 +48,6 @@ public abstract class BoatEntityMixin extends Entity {
 
     @Shadow
     private double fallVelocity;
-
-    @Shadow
-    private float nearbySlipperiness;
 
     @Shadow
     private float yawVelocity;
@@ -86,9 +86,16 @@ public abstract class BoatEntityMixin extends Entity {
             cir.setReturnValue(location);
             return;
         }
+
         if (this.checkBoatInSporeSea()) {
             this.inSporeSea = true;
-            cir.setReturnValue(Location.IN_WATER);
+            double fluidHeight = this.getFluidHeight(ModFluidTags.AETHER_SPORES);
+            if (!LumarSeetheManager.areSporesFluidized(this.getWorld())
+                    && fluidHeight <= MAX_FLUID_HEIGHT_TO_NOT_EMBED) {
+                cir.setReturnValue(Location.ON_LAND);
+            } else {
+                cir.setReturnValue(Location.IN_WATER);
+            }
         }
     }
 
@@ -118,8 +125,7 @@ public abstract class BoatEntityMixin extends Entity {
             ci.cancel();
             return;
         }
-        if (this.location == null || this.location == Location.IN_AIR
-                || this.location == Location.ON_LAND) {
+        if (this.location == null || this.location == Location.IN_AIR) {
             // Let the original method handle it
             return;
         }
@@ -139,6 +145,10 @@ public abstract class BoatEntityMixin extends Entity {
             if (isFluidized) {
                 this.velocityDecay = 0.45f;
             }
+        } else if (this.location == Location.ON_LAND) {
+            Vec3d vec3d = this.getVelocity();
+            gravity = 0.0f;
+            this.setVelocity(vec3d.getX(), Math.max(vec3d.getY(), 0.0), vec3d.getZ());
         }
 
         Vec3d vec3d = this.getVelocity();
@@ -159,7 +169,8 @@ public abstract class BoatEntityMixin extends Entity {
             return;
         }
 
-        if (this.inSporeSea && !LumarSeetheManager.areSporesFluidized(this.getWorld())) {
+        if (this.inSporeSea && this.location != Location.ON_LAND
+                && !LumarSeetheManager.areSporesFluidized(this.getWorld())) {
             // Skip to end of method
             this.setPaddleMovings(this.pressingRight && !this.pressingLeft || this.pressingForward,
                     this.pressingLeft && !this.pressingRight || this.pressingForward);
@@ -169,7 +180,8 @@ public abstract class BoatEntityMixin extends Entity {
 
     @Inject(method = "updatePassengerPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setYaw(F)V"), cancellable = true)
     private void restrictMovementInSporeSeaPassenger(CallbackInfo ci) {
-        if (this.inSporeSea && !LumarSeetheManager.areSporesFluidized(this.getWorld())) {
+        if (this.inSporeSea && this.location != Location.ON_LAND
+                && !LumarSeetheManager.areSporesFluidized(this.getWorld())) {
             ci.cancel();
         }
     }
@@ -184,7 +196,7 @@ public abstract class BoatEntityMixin extends Entity {
         int minZ = MathHelper.floor(box.minZ);
         int maxZ = MathHelper.ceil(box.maxZ);
         boolean bl = false;
-        this.waterLevel = -1.7976931348623157E308;
+        this.waterLevel = -Double.MAX_VALUE;
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         for (int x = minX; x < maxX; ++x) {
             for (int y = minY; y < maxY; ++y) {
