@@ -38,9 +38,11 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
     }
 
     private final BlockState fluidizedState;
+    private final int color;
 
-    public AetherSporeBlock(Block fluidized, Settings settings) {
+    public AetherSporeBlock(Block fluidized, int color, Settings settings) {
         super(settings);
+        this.color = color;
         this.fluidizedState = fluidized.getDefaultState();
         if (fluidized instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
             aetherSporeFluidBlock.setSolidBlockState(this.getDefaultState());
@@ -128,5 +130,10 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
     public Optional<SoundEvent> getBucketFillSound() {
         // TODO: Change to unique sound
         return Optional.of(SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW);
+    }
+
+    @Override
+    public int getColor(BlockState state, BlockView world, BlockPos pos) {
+        return color;
     }
 }

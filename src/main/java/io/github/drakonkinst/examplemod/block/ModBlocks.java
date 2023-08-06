@@ -34,6 +34,7 @@ public final class ModBlocks {
                     ), "verdant_spore_sea_block", false);
     public static final Block VERDANT_SPORE_BLOCK =
             register(new AetherSporeBlock(ModBlocks.VERDANT_SPORE_SEA_BLOCK,
+                    0x00ff00,
                     FabricBlockSettings.create()
                             .strength(0.5f)
                             .mapColor(MapColor.DARK_GREEN)

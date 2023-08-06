@@ -66,8 +66,10 @@ public abstract class AetherSporeFluid extends FlowableFluid {
     }
 
     @Override
+    // This is used when the fluid "pathfinds" to see which way it should flow
+    // Since it only flows as far as lava in the Overworld, match the flow speed
     protected int getFlowSpeed(WorldView worldView) {
-        return 4;
+        return 2;
     }
 
     @Override
