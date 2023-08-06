@@ -1,7 +1,9 @@
 package io.github.drakonkinst.examplemod.mixin;
 
+import io.github.drakonkinst.examplemod.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.examplemod.fluid.AetherSporeFluid;
 import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
+import io.github.drakonkinst.examplemod.weather.LumarSeetheManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Flutterer;
@@ -57,14 +59,15 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "canWalkOnFluid", at = @At("HEAD"), cancellable = true)
     private void allowWalkingOnSporesDuringRain(FluidState state,
             CallbackInfoReturnable<Boolean> cir) {
-        // if (state.isIn(ModFluidTags.STILL_AETHER_SPORES) && getWorld().isRaining()) {
-        if (state.isIn(ModFluidTags.AETHER_SPORES) && getWorld().isRaining()) {
+        // if (state.isIn(ModFluidTags.STILL_AETHER_SPORES) && !LumarSeetheManager.areSporesFluidized(this.getWorld())) {
+        if (state.isIn(ModFluidTags.AETHER_SPORES) && !LumarSeetheManager.areSporesFluidized(
+                this.getWorld())) {
             cir.setReturnValue(true);
         }
     }
 
-    @Inject(method = "tick", at = @At("RETURN"))
-    private void injectSporeSeaDamageLogic(CallbackInfo ci) {
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void onTick(CallbackInfo ci) {
         checkSporeSeaDamage();
     }
 
@@ -75,7 +78,7 @@ public abstract class LivingEntityMixin extends Entity {
                 return;
             }
             // Vanilla fluids are handled in the method already, so just worry about custom ones
-            if (this.isTouchingSporeSea()) {
+            if (((SporeFluidEntityStateAccess) this).examplemod$isTouchingSporeSea()) {
                 FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
                 double maxFluidHeight = this.getFluidHeight(ModFluidTags.AETHER_SPORES);
                 double swimHeight = this.getSwimHeight();
@@ -109,7 +112,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
-        if (this.isTouchingSporeSea()) {
+        if (((SporeFluidEntityStateAccess) this).examplemod$isTouchingSporeSea()) {
             float horizontalMovementMultiplier = AetherSporeFluid.HORIZONTAL_DRAG_MULTIPLIER;
             float verticalMovementMultiplier = AetherSporeFluid.VERTICAL_DRAG_MULTIPLIER;
             if (this.canWalkOnFluid(fluidState)) {
@@ -152,7 +155,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void checkSporeSeaDamage() {
-        if (isInSporeSea()) {
+        if (((SporeFluidEntityStateAccess) this).examplemod$isInSporeSea()) {
             damageFromSporeSea();
         }
     }
@@ -163,16 +166,5 @@ public abstract class LivingEntityMixin extends Entity {
         if (this.damage(this.getDamageSources().drown(), AetherSporeFluid.DAMAGE)) {
             // this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f, 2.0f + this.random.nextFloat() * 0.4f);
         }
-    }
-
-    @Unique
-    private boolean isTouchingSporeSea() {
-        return !this.firstUpdate && this.fluidHeight.getDouble(ModFluidTags.AETHER_SPORES) > 0.0;
-    }
-
-    @Unique
-    private boolean isInSporeSea() {
-        // return !this.firstUpdate && this.fluidHeight.getDouble(ModFluidTags.AETHER_SPORES) > 1.0;
-        return !this.firstUpdate && this.isSubmergedIn(ModFluidTags.AETHER_SPORES);
     }
 }

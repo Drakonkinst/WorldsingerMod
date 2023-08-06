@@ -1,7 +1,7 @@
 package io.github.drakonkinst.examplemod.mixin;
 
+import io.github.drakonkinst.examplemod.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.examplemod.fluid.AetherSporeFluid;
-import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.mob.FlyingEntity;
@@ -10,7 +10,6 @@ import net.minecraft.entity.passive.AllayEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -30,7 +29,7 @@ public abstract class FlyingEntityMixin extends MobEntity {
         }
 
         // Won't get too fancy here since most of these things will be dead anyways.
-        if (isTouchingSporeSea()) {
+        if (((SporeFluidEntityStateAccess) this).examplemod$isTouchingSporeSea()) {
             this.updateVelocity(0.02f, movementInput);
             this.move(MovementType.SELF, this.getVelocity());
             this.setVelocity(this.getVelocity()
@@ -41,11 +40,4 @@ public abstract class FlyingEntityMixin extends MobEntity {
             ci.cancel();
         }
     }
-
-    @Unique
-    private boolean isTouchingSporeSea() {
-        return !this.firstUpdate && this.fluidHeight.getDouble(ModFluidTags.AETHER_SPORES) > 0.0;
-    }
-
-
 }

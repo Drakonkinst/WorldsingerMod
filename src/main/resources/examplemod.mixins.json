@@ -12,6 +12,7 @@
     "FallingBlockEntityMixin",
     "FluidBlockMixin",
     "FlyingEntityMixin",
+    "ItemEntityMixin",
     "LandPathNodeMakerMixin",
     "LivingEntityMixin",
     "MagmaBlockMixin",

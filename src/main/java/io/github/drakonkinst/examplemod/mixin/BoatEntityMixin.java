@@ -1,6 +1,7 @@
 package io.github.drakonkinst.examplemod.mixin;
 
 import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
+import io.github.drakonkinst.examplemod.weather.LumarSeetheManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.BoatEntity;
@@ -100,8 +101,7 @@ public abstract class BoatEntityMixin extends Entity {
         double gravity = this.hasNoGravity() ? 0.0 : -0.04;
         ;
         double f = 0.0;
-        // TODO: This should access the class that manages seething cycles?
-        boolean isFluidized = !this.getWorld().isRaining();
+        boolean isFluidized = LumarSeetheManager.areSporesFluidized(this.getWorld());
 
         if (!isFluidized) {
             // Make turning velocity drop off immediately
@@ -159,8 +159,7 @@ public abstract class BoatEntityMixin extends Entity {
             return;
         }
 
-        boolean isFluidized = !this.getWorld().isRaining();
-        if (this.inSporeSea && !isFluidized) {
+        if (this.inSporeSea && !LumarSeetheManager.areSporesFluidized(this.getWorld())) {
             // Skip to end of method
             this.setPaddleMovings(this.pressingRight && !this.pressingLeft || this.pressingForward,
                     this.pressingLeft && !this.pressingRight || this.pressingForward);
@@ -170,8 +169,7 @@ public abstract class BoatEntityMixin extends Entity {
 
     @Inject(method = "updatePassengerPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setYaw(F)V"), cancellable = true)
     private void restrictMovementInSporeSeaPassenger(CallbackInfo ci) {
-        boolean isFluidized = !this.getWorld().isRaining();
-        if (this.inSporeSea && !isFluidized) {
+        if (this.inSporeSea && !LumarSeetheManager.areSporesFluidized(this.getWorld())) {
             ci.cancel();
         }
     }

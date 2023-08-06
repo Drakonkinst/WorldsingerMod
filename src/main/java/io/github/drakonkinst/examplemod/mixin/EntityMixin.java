@@ -1,7 +1,9 @@
 package io.github.drakonkinst.examplemod.mixin;
 
+import io.github.drakonkinst.examplemod.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.examplemod.fluid.AetherSporeFluid;
 import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -14,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin {
+public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
     @Shadow
     public abstract boolean updateMovementInFluid(TagKey<Fluid> tag, double speed);
@@ -24,6 +26,15 @@ public abstract class EntityMixin {
 
     @Shadow
     public abstract void extinguish();
+
+    @Shadow
+    protected boolean firstUpdate;
+
+    @Shadow
+    protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
+
+    @Shadow
+    public abstract boolean isSubmergedIn(TagKey<Fluid> fluidTag);
 
     @Inject(method = "updateWaterState", at = @At("RETURN"), cancellable = true)
     private void allowCustomFluidToPushEntity(CallbackInfoReturnable<Boolean> cir) {
@@ -43,5 +54,15 @@ public abstract class EntityMixin {
             return true;
         }
         return fluidState.isIn(tagKey);
+    }
+
+    @Override
+    public boolean examplemod$isTouchingSporeSea() {
+        return !this.firstUpdate && this.fluidHeight.getDouble(ModFluidTags.AETHER_SPORES) > 0.0;
+    }
+
+    @Override
+    public boolean examplemod$isInSporeSea() {
+        return !this.firstUpdate && this.isSubmergedIn(ModFluidTags.AETHER_SPORES);
     }
 }
