@@ -1,4 +1,4 @@
-package io.github.drakonkinst.examplemod;
+package io.github.drakonkinst.examplemod.util.math;
 
 import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
 import java.util.function.Predicate;

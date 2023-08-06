@@ -1,9 +1,9 @@
-package io.github.drakonkinst.examplemod.mixin.entity;
+package io.github.drakonkinst.examplemod.mixin.entity.projectile;
 
-import io.github.drakonkinst.examplemod.ExtendedRaycastContext;
-import io.github.drakonkinst.examplemod.ExtendedRaycastContext.ExtendedFluidHandling;
 import io.github.drakonkinst.examplemod.block.ModBlockTags;
 import io.github.drakonkinst.examplemod.entity.SporeFluidEntityStateAccess;
+import io.github.drakonkinst.examplemod.util.math.ExtendedRaycastContext;
+import io.github.drakonkinst.examplemod.util.math.ExtendedRaycastContext.ExtendedFluidHandling;
 import io.github.drakonkinst.examplemod.weather.LumarSeetheManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

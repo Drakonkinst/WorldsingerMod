@@ -53,8 +53,6 @@ public final class ModBlocks {
     }
 
     public static void initialize() {
-        Constants.LOGGER.info(
-                "IS OPAQUE = " + VERDANT_SPORE_SEA_BLOCK.getDefaultState().isOpaque());
     }
 
 }
