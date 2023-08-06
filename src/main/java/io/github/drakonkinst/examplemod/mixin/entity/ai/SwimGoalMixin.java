@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(SwimGoal.class)
-public class SwimGoalMixin {
+public abstract class SwimGoalMixin {
 
     @Shadow
     @Final

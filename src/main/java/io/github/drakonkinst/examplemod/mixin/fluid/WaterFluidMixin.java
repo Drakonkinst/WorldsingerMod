@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WaterFluid.class)
-public class WaterFluidMixin {
+public abstract class WaterFluidMixin {
 
     // Spore fluid should not be able to override water
     @Inject(method = "canBeReplacedWith", at = @At("RETURN"), cancellable = true)
