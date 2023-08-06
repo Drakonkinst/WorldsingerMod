@@ -20,10 +20,13 @@
     "WaterFluidMixin",
     "WaterloggableMixin",
     "accessor.AbstractBlockAccessor",
-    "accessor.AbstractBlockSettingsAccessor",
-    "client.BackgroundRendererMixin"
+    "accessor.AbstractBlockSettingsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "client.BackgroundRendererMixin",
+    "client.RenderLayersMixin"
+  ]
 }
