@@ -1,4 +1,4 @@
-package io.github.drakonkinst.examplemod.mixin;
+package io.github.drakonkinst.examplemod.mixin.entity.ai;
 
 import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
 import net.minecraft.entity.ai.pathing.LandPathNodeMaker;

@@ -1,4 +1,4 @@
-package io.github.drakonkinst.examplemod.mixin;
+package io.github.drakonkinst.examplemod.mixin.block;
 
 import io.github.drakonkinst.examplemod.block.AetherSporeFluidBlock;
 import io.github.drakonkinst.examplemod.block.ModBlockTags;

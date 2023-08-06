@@ -1,4 +1,4 @@
-package io.github.drakonkinst.examplemod.mixin;
+package io.github.drakonkinst.examplemod.mixin.entity;
 
 import io.github.drakonkinst.examplemod.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.examplemod.fluid.AetherSporeFluid;

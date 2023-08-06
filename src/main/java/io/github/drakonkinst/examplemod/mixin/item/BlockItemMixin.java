@@ -1,4 +1,4 @@
-package io.github.drakonkinst.examplemod.mixin;
+package io.github.drakonkinst.examplemod.mixin.item;
 
 import io.github.drakonkinst.examplemod.fluid.Fluidlogged;
 import net.minecraft.block.Block;
@@ -22,13 +22,15 @@ public abstract class BlockItemMixin {
 
     // When placing into a fluid block, allow waterlogged
     @Inject(method = "getPlacementState", at = @At(value = "RETURN"), cancellable = true)
-    private void injectCustomFluidPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> cir) {
+    private void injectCustomFluidPlacementState(ItemPlacementContext context,
+            CallbackInfoReturnable<BlockState> cir) {
         BlockState placementState = getBlock().getPlacementState(context);
         if (placementState == null || !placementState.contains(Fluidlogged.PROPERTY_FLUID)) {
             return;
         }
         // Remove the fluid if double slabbed
-        if (placementState.getBlock() instanceof SlabBlock && placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE) {
+        if (placementState.getBlock() instanceof SlabBlock
+                && placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE) {
             return;
         }
 
