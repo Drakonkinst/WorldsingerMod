@@ -4,7 +4,7 @@ import io.github.drakonkinst.examplemod.block.ModBlockTags;
 import io.github.drakonkinst.examplemod.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.examplemod.util.math.ExtendedRaycastContext;
 import io.github.drakonkinst.examplemod.util.math.ExtendedRaycastContext.ExtendedFluidHandling;
-import io.github.drakonkinst.examplemod.weather.LumarSeetheManager;
+import io.github.drakonkinst.examplemod.world.LumarSeetheManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

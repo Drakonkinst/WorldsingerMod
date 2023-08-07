@@ -2,7 +2,7 @@ package io.github.drakonkinst.examplemod.mixin.entity.ai;
 
 import io.github.drakonkinst.examplemod.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
-import io.github.drakonkinst.examplemod.weather.LumarSeetheManager;
+import io.github.drakonkinst.examplemod.world.LumarSeetheManager;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.mob.MobEntity;
 import org.spongepowered.asm.mixin.Final;

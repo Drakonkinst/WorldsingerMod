@@ -1,7 +1,7 @@
 package io.github.drakonkinst.examplemod.mixin.entity;
 
 import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
-import io.github.drakonkinst.examplemod.weather.LumarSeetheManager;
+import io.github.drakonkinst.examplemod.world.LumarSeetheManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.BoatEntity;

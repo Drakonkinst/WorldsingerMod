@@ -2,7 +2,7 @@ package io.github.drakonkinst.examplemod.mixin.entity.projectile;
 
 import io.github.drakonkinst.examplemod.util.math.ExtendedRaycastContext;
 import io.github.drakonkinst.examplemod.util.math.ExtendedRaycastContext.ExtendedFluidHandling;
-import io.github.drakonkinst.examplemod.weather.LumarSeetheManager;
+import io.github.drakonkinst.examplemod.world.LumarSeetheManager;
 import java.util.function.Predicate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
