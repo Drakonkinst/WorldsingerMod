@@ -1,10 +1,11 @@
 package io.github.drakonkinst.examplemod.block;
 
-import io.github.drakonkinst.examplemod.fluid.ModFluids;
+import io.github.drakonkinst.examplemod.fluid.ModFluidTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
+import net.minecraft.block.Waterloggable;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -14,51 +15,9 @@ import net.minecraft.world.WorldAccess;
 
 public class AetherSporeFluidBlock extends FluidBlock {
 
-    private static boolean isSolidAetherSpores(BlockState state) {
-        return state.isIn(ModBlockTags.AETHER_SPORE_BLOCKS);
-    }
-
-    private static boolean isLiquidAetherSpores(BlockState state) {
-        return state.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
-                && state.getFluidState().getLevel() >= 8
-                &&
-                state.getFluidState().isStill();
-    }
-
-    private static boolean shouldFluidize(BlockState fluidizedSource) {
-        return fluidizedSource.isOf(Blocks.MAGMA_BLOCK) || isLiquidAetherSpores(fluidizedSource);
-    }
-
-    // Returns true if it should keep going
-    private static boolean updateFluidization(WorldAccess world, BlockPos.Mutable pos,
-            BlockState blockState,
-            boolean fluidized) {
-        if (AetherSporeFluidBlock.isSolidAetherSpores(blockState) &&
-                blockState.getBlock() instanceof AetherSporeBlock aetherSporeBlock) {
-            if (fluidized) {
-                if (!world.setBlockState(pos, aetherSporeBlock.getFluidizedState(),
-                        Block.NOTIFY_LISTENERS)) {
-                    return false;
-                }
-            }
-            return true;
-        } else if (AetherSporeFluidBlock.isLiquidAetherSpores(blockState) &&
-                blockState.getBlock() instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
-            if (!fluidized) {
-                if (!world.setBlockState(pos, aetherSporeFluidBlock.getSolidState(),
-                        Block.NOTIFY_LISTENERS)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
     public static void update(WorldAccess world, BlockPos pos, BlockState currentBlockState,
             BlockState fluidizedSource) {
-        if (!AetherSporeFluidBlock.isLiquidAetherSpores(currentBlockState) &&
-                !AetherSporeFluidBlock.isSolidAetherSpores(currentBlockState)) {
+        if (!hasAnyAetherSporesSource(currentBlockState)) {
             return;
         }
 
@@ -72,6 +31,66 @@ public class AetherSporeFluidBlock extends FluidBlock {
                 break;
             }
         }
+    }
+
+    // Returns true if it should keep going
+    public static boolean updateFluidization(WorldAccess world, BlockPos.Mutable pos,
+            BlockState blockState,
+            boolean fluidized) {
+        if (AetherSporeFluidBlock.isAetherSporesSolid(blockState) &&
+                blockState.getBlock() instanceof AetherSporeBlock aetherSporeBlock) {
+            if (fluidized) {
+                if (!world.setBlockState(pos, aetherSporeBlock.getFluidizedState(),
+                        Block.NOTIFY_LISTENERS)) {
+                    return false;
+                }
+            }
+            return true;
+        } else if (AetherSporeFluidBlock.isAetherSporesFluidSource(blockState) &&
+                blockState.getBlock() instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
+            if (!fluidized) {
+                if (!world.setBlockState(pos, aetherSporeFluidBlock.getSolidState(),
+                        Block.NOTIFY_LISTENERS)) {
+                    return false;
+                }
+            }
+            return true;
+        } else if (AetherSporeFluidBlock.isAetherSporesFluidlogged(blockState)
+                && blockState.getBlock() instanceof Waterloggable waterloggable) {
+            if (!fluidized) {
+                // TODO: Add particle event
+                // TODO: Maybe place the block above?
+                waterloggable.tryDrainFluid(world, pos, blockState);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean hasAnyAetherSporesSource(BlockState state) {
+        return isAetherSporesSolid(state) || isAetherSporesFluidSource(state)
+                || isAetherSporesFluidlogged(state);
+    }
+
+    private static boolean isAetherSporesSolid(BlockState state) {
+        return state.isIn(ModBlockTags.AETHER_SPORE_BLOCKS);
+    }
+
+    private static boolean isAetherSporesFluidSource(BlockState state) {
+        return state.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
+                && state.getFluidState().getLevel() >= 8
+                &&
+                state.getFluidState().isStill();
+    }
+
+    private static boolean isAetherSporesFluidlogged(BlockState state) {
+        return state.getBlock() instanceof Waterloggable && state.getFluidState()
+                .isIn(ModFluidTags.AETHER_SPORES);
+    }
+
+    public static boolean shouldFluidize(BlockState fluidizedSource) {
+        return fluidizedSource.isOf(Blocks.MAGMA_BLOCK) || isAetherSporesFluidSource(
+                fluidizedSource) || isAetherSporesFluidlogged(fluidizedSource);
     }
 
     private BlockState solidBlockState = null;
@@ -92,12 +111,11 @@ public class AetherSporeFluidBlock extends FluidBlock {
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
             BlockState neighborState,
             WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        world.scheduleFluidTick(pos, ModFluids.VERDANT_SPORES,
-                ModFluids.VERDANT_SPORES.getTickRate(world));
+        world.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
         if (!state.canPlaceAt(world, pos) || direction == Direction.DOWN ||
                 direction == Direction.UP && !neighborState.isIn(
                         ModBlockTags.AETHER_SPORE_SEA_BLOCKS) &&
-                        AetherSporeFluidBlock.isSolidAetherSpores(neighborState)) {
+                        AetherSporeFluidBlock.isAetherSporesSolid(neighborState)) {
             world.scheduleBlockTick(pos, this, 5);
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,

@@ -13,7 +13,6 @@ import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -26,16 +25,6 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldEvents;
 
 public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
-
-    // Cannot fall through liquid
-    public static boolean canFallThrough(BlockState state) {
-        return !state.isLiquid() && (state.isAir() || state.isIn(BlockTags.FIRE)
-                || state.isReplaceable());
-    }
-
-    private static boolean shouldFluidize(BlockView world, BlockPos pos, BlockState state) {
-        return false;
-    }
 
     private final BlockState fluidizedState;
     private final int color;
@@ -75,7 +64,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
     public void onLanding(World world, BlockPos pos, BlockState fallingBlockState,
             BlockState currentStateInPos,
             FallingBlockEntity fallingBlockEntity) {
-        if (AetherSporeBlock.shouldFluidize(world, pos, currentStateInPos)) {
+        if (AetherSporeFluidBlock.shouldFluidize(world.getBlockState(pos.down()))) {
             world.setBlockState(pos, this.fluidizedState, Block.NOTIFY_ALL);
         }
     }
@@ -84,12 +73,19 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         World blockView = ctx.getWorld();
         BlockPos blockPos = ctx.getBlockPos();
-        BlockState blockState = blockView.getBlockState(blockPos);
-        if (AetherSporeBlock.shouldFluidize(blockView, blockPos, blockState)) {
+        BlockState fluidizedSource = blockView.getBlockState(blockPos.down());
+        if (AetherSporeFluidBlock.shouldFluidize(fluidizedSource)) {
             return this.fluidizedState;
         }
         return super.getPlacementState(ctx);
     }
+
+    // @Override
+    // public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
+    //         ItemStack itemStack) {
+    //     update(world, pos, state, world.getBlockState(pos.down()));
+    //     super.onPlaced(world, pos, state, placer, itemStack);
+    // }
 
     @Override
     public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {

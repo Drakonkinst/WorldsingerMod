@@ -22,10 +22,22 @@ public abstract class ItemEntityMixin extends Entity {
     private static final double GRAVITY = -0.04;
 
     @Unique
-    private static final float HEIGHT_OFFSET = 0.11111111f;
+    private static final float HEIGHT_OFFSET = 1.0f / 9.0f;
 
     @Unique
-    private static final float HORIZONTAL_BUOYANCY_DRAG = 0.95f;
+    private static final double HORIZONTAL_BUOYANCY_DRAG = 0.95;
+
+    @Unique
+    private static final double VERTICAL_BUOYANCY_FORCE_VANILLA = 5.0E-4;
+
+    @Unique
+    private static final double VERTICAL_BUOYANCY_FORCE = VERTICAL_BUOYANCY_FORCE_VANILLA * 4;
+
+    @Unique
+    private static final double MAX_VERTICAL_VELOCITY_VANILLA = 0.06;
+
+    @Unique
+    private static final double MAX_VERTICAL_VELOCITY = MAX_VERTICAL_VELOCITY_VANILLA * 4;
 
     public ItemEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -62,7 +74,7 @@ public abstract class ItemEntityMixin extends Entity {
         }
 
         Vec3d vec3d = this.getVelocity();
-        double yVelocityOffset = vec3d.y < 0.06 ? 5.0E-4 : 0.0;
+        double yVelocityOffset = vec3d.y < MAX_VERTICAL_VELOCITY ? VERTICAL_BUOYANCY_FORCE : 0.0;
         this.setVelocity(vec3d.x * HORIZONTAL_BUOYANCY_DRAG, vec3d.y + yVelocityOffset,
                 vec3d.z * HORIZONTAL_BUOYANCY_DRAG);
     }
