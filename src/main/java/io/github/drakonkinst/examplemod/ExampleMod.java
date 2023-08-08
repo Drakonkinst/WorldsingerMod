@@ -1,6 +1,7 @@
 package io.github.drakonkinst.examplemod;
 
 import io.github.drakonkinst.examplemod.block.ModBlocks;
+import io.github.drakonkinst.examplemod.command.ModCommands;
 import io.github.drakonkinst.examplemod.fluid.Fluidlogged;
 import io.github.drakonkinst.examplemod.fluid.ModFluids;
 import io.github.drakonkinst.examplemod.item.ModItems;
@@ -15,6 +16,7 @@ public class ExampleMod implements ModInitializer {
         ModFluids.initialize();
         ModBlocks.initialize();
         ModItems.initialize();
+        ModCommands.initialize();
 
         Fluidlogged.initialize();
 

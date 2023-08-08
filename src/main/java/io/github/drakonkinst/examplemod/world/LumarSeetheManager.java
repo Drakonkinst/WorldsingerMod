@@ -58,8 +58,22 @@ public final class LumarSeetheManager extends PersistentState {
     }
 
     public void startSeething() {
+        startSeething(LUMAR_SEETHE_DURATION_PROVIDER.get(this.random));
+    }
+
+    public void startStilling() {
+        int stillingTime;
+        if (lumarSeetheData.getCyclesUntilNextLongStilling() <= 0) {
+            stillingTime = LUMAR_STILLING_LONG_DURATION_PROVIDER.get(this.random);
+        } else {
+            stillingTime = LUMAR_STILLING_NORMAL_DURATION_PROVIDER.get(this.random);
+        }
+        startStilling(stillingTime);
+    }
+
+    public void startSeething(int cycleTicks) {
         lumarSeetheData.setSeething(true);
-        lumarSeetheData.setCycleTicks(LUMAR_SEETHE_DURATION_PROVIDER.get(this.random));
+        lumarSeetheData.setCycleTicks(cycleTicks);
         Constants.LOGGER.info("SEETHING STARTED FOR " + lumarSeetheData.getCycleTicks() + " TICKS");
     }
 
@@ -67,19 +81,15 @@ public final class LumarSeetheManager extends PersistentState {
         lumarSeetheData.setCycleTicks(LUMAR_STILLING_LONG_DURATION_PROVIDER.get(this.random));
     }
 
-    public void startStilling() {
+    public void startStilling(int cycleTicks) {
         lumarSeetheData.setSeething(false);
         if (lumarSeetheData.getCyclesUntilNextLongStilling() <= 0) {
-            // Long stilling
             resetCyclesUntilNextLongStilling();
-            lumarSeetheData.setCyclesUntilNextLongStilling(
-                    LUMAR_STILLING_LONG_CYCLE_PROVIDER.get(this.random));
         } else {
-            // Normal stilling
             lumarSeetheData.setCyclesUntilNextLongStilling(
                     lumarSeetheData.getCyclesUntilNextLongStilling() - 1);
-            lumarSeetheData.setCycleTicks(LUMAR_STILLING_NORMAL_DURATION_PROVIDER.get(this.random));
         }
+        lumarSeetheData.setCycleTicks(cycleTicks);
         Constants.LOGGER.info("STILLING STARTED FOR " + lumarSeetheData.getCycleTicks() + " TICKS");
     }
 
