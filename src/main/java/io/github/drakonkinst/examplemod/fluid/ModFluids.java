@@ -7,7 +7,10 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-public class ModFluids {
+public final class ModFluids {
+
+    private ModFluids() {
+    }
 
     public static final FlowableFluid VERDANT_SPORES = register(new VerdantSporeFluid.Still(),
             "verdant_spores");

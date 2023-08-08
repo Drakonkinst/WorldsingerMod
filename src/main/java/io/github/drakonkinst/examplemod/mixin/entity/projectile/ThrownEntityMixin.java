@@ -50,7 +50,7 @@ public abstract class ThrownEntityMixin extends ProjectileEntity {
                 new ExtendedRaycastContext(pos, vec3d, RaycastContext.ShapeType.COLLIDER,
                         ExtendedFluidHandling.SPORE_SEA, entity));
 
-        if (((HitResult) hitResult).getType() != HitResult.Type.MISS) {
+        if (hitResult.getType() != HitResult.Type.MISS) {
             vec3d = hitResult.getPos();
         }
         if ((hitResult2 = ProjectileUtil.getEntityCollision(world, entity, pos, vec3d,

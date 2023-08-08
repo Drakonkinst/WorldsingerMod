@@ -3,7 +3,10 @@ package io.github.drakonkinst.examplemod.fluid;
 import net.minecraft.block.Block;
 import net.minecraft.util.shape.VoxelShape;
 
-public class FluidShapes {
+public final class FluidShapes {
+
+    private FluidShapes() {
+    }
 
     private static final double MAX_VOXEL_WIDTH = 16.0;
     private static final int FLUID_LEVEL_MAX = 9;

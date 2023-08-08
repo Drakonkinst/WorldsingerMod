@@ -2,7 +2,10 @@ package io.github.drakonkinst.examplemod.world;
 
 import net.minecraft.world.World;
 
-public class LumarSeetheManager {
+public final class LumarSeetheManager {
+
+    private LumarSeetheManager() {
+    }
 
     private static long ticksUntilNextStilling;
 

@@ -50,7 +50,10 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 
 // Manages making blocks fluidloggable by fluids other than water.
-public class Fluidlogged {
+public final class Fluidlogged {
+
+    private Fluidlogged() {
+    }
 
     public static final List<Class<? extends Block>> VANILLA_WATERLOGGABLES = getVanillaWaterloggables();
     public static final List<Identifier> WATERLOGGABLE_FLUIDS = List.of(
