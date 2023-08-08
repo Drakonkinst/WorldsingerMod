@@ -78,7 +78,8 @@ public final class LumarSeetheManager extends PersistentState {
     }
 
     private void resetCyclesUntilNextLongStilling() {
-        lumarSeetheData.setCycleTicks(LUMAR_STILLING_LONG_DURATION_PROVIDER.get(this.random));
+        lumarSeetheData.setCyclesUntilNextLongStilling(
+                LUMAR_STILLING_LONG_CYCLE_PROVIDER.get(this.random));
     }
 
     public void startStilling(int cycleTicks) {
