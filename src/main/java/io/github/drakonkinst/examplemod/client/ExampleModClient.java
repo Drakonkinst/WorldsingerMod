@@ -2,10 +2,13 @@ package io.github.drakonkinst.examplemod.client;
 
 import io.github.drakonkinst.examplemod.Constants;
 import io.github.drakonkinst.examplemod.fluid.ModFluids;
+import io.github.drakonkinst.examplemod.world.LumarSeetheAccess;
+import io.github.drakonkinst.examplemod.world.LumarSeetheData;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.client.render.RenderLayer;
@@ -26,5 +29,14 @@ public class ExampleModClient implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
                 ModFluids.VERDANT_SPORES, ModFluids.FLOWING_VERDANT_SPORES);
+
+        ClientPlayNetworking.registerGlobalReceiver(LumarSeetheData.LUMAR_SEETHE_UPDATE_PACKET_ID,
+                (client, handler, buf, responseSender) -> {
+                    LumarSeetheData lumarSeetheData = LumarSeetheData.fromBuf(buf);
+                    client.execute(() -> {
+                        ((LumarSeetheAccess) (client.world)).examplemod$getLumarSeetheData()
+                                .copy(lumarSeetheData);
+                    });
+                });
     }
 }

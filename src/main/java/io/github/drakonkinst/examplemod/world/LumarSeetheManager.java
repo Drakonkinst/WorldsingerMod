@@ -1,19 +1,102 @@
 package io.github.drakonkinst.examplemod.world;
 
+import io.github.drakonkinst.examplemod.Constants;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.intprovider.BiasedToBottomIntProvider;
+import net.minecraft.util.math.intprovider.IntProvider;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
-public final class LumarSeetheManager {
+public final class LumarSeetheManager extends PersistentState {
 
-    private LumarSeetheManager() {
+    private static final int SECONDS_TO_TICKS = 20;
+    private static final int MINUTES_TO_SECONDS = 60;
+    private static final int GAME_DAYS_TO_MINUTES = 20;
+    private static final int MINUTES_TO_TICKS = MINUTES_TO_SECONDS * SECONDS_TO_TICKS;
+    private static final int GAME_DAYS_TO_TICKS = GAME_DAYS_TO_MINUTES * MINUTES_TO_TICKS;
+    private static final IntProvider LUMAR_SEETHE_DURATION_PROVIDER = UniformIntProvider.create(
+            5 * MINUTES_TO_TICKS, 2 * GAME_DAYS_TO_TICKS);
+    private static final IntProvider LUMAR_STILLING_NORMAL_DURATION_PROVIDER = UniformIntProvider.create(
+            2 * MINUTES_TO_TICKS, 5 * MINUTES_TO_TICKS);
+    private static final IntProvider LUMAR_STILLING_LONG_DURATION_PROVIDER = BiasedToBottomIntProvider.create(
+            10 * MINUTES_TO_TICKS, 30 * MINUTES_TO_TICKS);
+    private static final IntProvider LUMAR_STILLING_LONG_CYCLE_PROVIDER = BiasedToBottomIntProvider.create(
+            2, 5);
+
+    public final Random random = Random.create();
+    private final ServerWorld world;
+    private final LumarSeetheData lumarSeetheData;
+
+    public LumarSeetheManager(ServerWorld world, LumarSeetheData lumarSeetheData) {
+        this.world = world;
+        this.lumarSeetheData = lumarSeetheData;
+
+        startSeething();
+        this.resetCyclesUntilNextLongStilling();
     }
 
-    private static long ticksUntilNextStilling;
+    public void tick() {
+        if (lumarSeetheData.getCycleTicks() > 0) {
+            lumarSeetheData.setCycleTicks(lumarSeetheData.getCycleTicks() - 1);
+        } else {
+            if (lumarSeetheData.isSeething()) {
+                startStilling();
+            } else {
+                startSeething();
+            }
+        }
 
-    public static void tick() {
-        // TODO
+        this.sendToClient();
+        this.markDirty();
+    }
+
+    public void sendToClient() {
+        lumarSeetheData.sendToClient(this.world);
+    }
+
+    public void startSeething() {
+        lumarSeetheData.setSeething(true);
+        lumarSeetheData.setCycleTicks(LUMAR_SEETHE_DURATION_PROVIDER.get(this.random));
+        Constants.LOGGER.info("SEETHING STARTED FOR " + lumarSeetheData.getCycleTicks() + " TICKS");
+    }
+
+    private void resetCyclesUntilNextLongStilling() {
+        lumarSeetheData.setCycleTicks(LUMAR_STILLING_LONG_DURATION_PROVIDER.get(this.random));
+    }
+
+    public void startStilling() {
+        lumarSeetheData.setSeething(false);
+        if (lumarSeetheData.getCyclesUntilNextLongStilling() <= 0) {
+            // Long stilling
+            resetCyclesUntilNextLongStilling();
+            lumarSeetheData.setCyclesUntilNextLongStilling(
+                    LUMAR_STILLING_LONG_CYCLE_PROVIDER.get(this.random));
+        } else {
+            // Normal stilling
+            lumarSeetheData.setCyclesUntilNextLongStilling(
+                    lumarSeetheData.getCyclesUntilNextLongStilling() - 1);
+            lumarSeetheData.setCycleTicks(LUMAR_STILLING_NORMAL_DURATION_PROVIDER.get(this.random));
+        }
+        Constants.LOGGER.info("STILLING STARTED FOR " + lumarSeetheData.getCycleTicks() + " TICKS");
+    }
+
+    public LumarSeetheData getLumarSeetheData() {
+        return lumarSeetheData;
     }
 
     public static boolean areSporesFluidized(World world) {
-        return !world.isRaining();
+        return ((LumarSeetheAccess) world).examplemod$getLumarSeetheData().isSeething();
+    }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        return LumarSeetheData.writeNbt(lumarSeetheData, nbt);
+    }
+
+    public static LumarSeetheManager fromNbt(ServerWorld world, NbtCompound nbt) {
+        return new LumarSeetheManager(world, LumarSeetheData.fromNbt(nbt));
     }
 }

@@ -27,7 +27,8 @@
     "fluid.WaterFluidMixin",
     "item.BlockItemMixin",
     "item.BucketItemMixin",
-    "world.ServerWorldMixin"
+    "world.ServerWorldMixin",
+    "world.WorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1
