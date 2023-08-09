@@ -1,14 +1,19 @@
 package io.github.drakonkinst.examplemod.fluid;
 
 import io.github.drakonkinst.examplemod.block.AetherSporeFluidBlock;
+import io.github.drakonkinst.examplemod.world.LumarSeetheManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -56,6 +61,32 @@ public abstract class AetherSporeFluid extends FlowableFluid {
     protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
         final BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
         Block.dropStacks(state, world, pos, blockEntity);
+    }
+
+    @Override
+    protected void randomDisplayTick(World world, BlockPos pos, FluidState state, Random random) {
+        if (!LumarSeetheManager.areSporesFluidized(world)) {
+            return;
+        }
+        BlockPos blockPos = pos.up();
+        if (world.getBlockState(blockPos).isAir() && !world.getBlockState(blockPos)
+                .isOpaqueFullCube(world, blockPos)) {
+            if (random.nextInt(100) == 0) {
+                double spawnX = (double) pos.getX() + random.nextDouble();
+                double spawnY = (double) pos.getY() + 1.0;
+                double spawnZ = (double) pos.getZ() + random.nextDouble();
+                world.addParticle(ParticleTypes.SPLASH, spawnX, spawnY, spawnZ, 0.0, 1.0,
+                        0.0);
+                // world.playSound(spawnX, spawnY, spawnZ, SoundEvents.BLOCK_LAVA_POP,
+                //         SoundCategory.BLOCKS,
+                //         0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+            }
+            if (random.nextInt(200) == 0) {
+                world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_AMBIENT,
+                        SoundCategory.BLOCKS, 0.2f + random.nextFloat() * 0.2f,
+                        0.9f + random.nextFloat() * 0.15f, false);
+            }
+        }
     }
 
     @Override
