@@ -34,7 +34,7 @@ public class AetherSporeFluidBlock extends FluidBlock {
     }
 
     // Returns true if it should keep going
-    public static boolean updateFluidization(WorldAccess world, BlockPos.Mutable pos,
+    public static boolean updateFluidization(WorldAccess world, BlockPos pos,
             BlockState blockState,
             boolean fluidized) {
         if (AetherSporeFluidBlock.isAetherSporesSolid(blockState) &&

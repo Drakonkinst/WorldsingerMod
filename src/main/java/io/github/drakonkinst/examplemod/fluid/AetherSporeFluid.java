@@ -1,5 +1,6 @@
 package io.github.drakonkinst.examplemod.fluid;
 
+import io.github.drakonkinst.examplemod.block.AetherSporeFluidBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -55,6 +56,15 @@ public abstract class AetherSporeFluid extends FlowableFluid {
     protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
         final BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
         Block.dropStacks(state, world, pos, blockEntity);
+    }
+
+    @Override
+    public void onScheduledTick(World world, BlockPos pos, FluidState state) {
+        super.onScheduledTick(world, pos, state);
+        if (this.isStill(state) && !AetherSporeFluidBlock.shouldFluidize(
+                world.getBlockState(pos.down()))) {
+            AetherSporeFluidBlock.updateFluidization(world, pos, state.getBlockState(), false);
+        }
     }
 
     @Override

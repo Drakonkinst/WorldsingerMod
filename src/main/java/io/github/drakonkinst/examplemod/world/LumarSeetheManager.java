@@ -1,6 +1,5 @@
 package io.github.drakonkinst.examplemod.world;
 
-import io.github.drakonkinst.examplemod.Constants;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.intprovider.BiasedToBottomIntProvider;
@@ -74,7 +73,6 @@ public final class LumarSeetheManager extends PersistentState {
     public void startSeething(int cycleTicks) {
         lumarSeetheData.setSeething(true);
         lumarSeetheData.setCycleTicks(cycleTicks);
-        Constants.LOGGER.info("SEETHING STARTED FOR " + lumarSeetheData.getCycleTicks() + " TICKS");
     }
 
     private void resetCyclesUntilNextLongStilling() {
@@ -91,7 +89,6 @@ public final class LumarSeetheManager extends PersistentState {
                     lumarSeetheData.getCyclesUntilNextLongStilling() - 1);
         }
         lumarSeetheData.setCycleTicks(cycleTicks);
-        Constants.LOGGER.info("STILLING STARTED FOR " + lumarSeetheData.getCycleTicks() + " TICKS");
     }
 
     public LumarSeetheData getLumarSeetheData() {
