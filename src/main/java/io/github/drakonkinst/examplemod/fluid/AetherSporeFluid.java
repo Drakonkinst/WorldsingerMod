@@ -1,5 +1,6 @@
 package io.github.drakonkinst.examplemod.fluid;
 
+import io.github.drakonkinst.examplemod.Constants;
 import io.github.drakonkinst.examplemod.block.AetherSporeFluidBlock;
 import io.github.drakonkinst.examplemod.world.LumarSeetheManager;
 import net.minecraft.block.Block;
@@ -21,6 +22,8 @@ import net.minecraft.world.WorldView;
 
 public abstract class AetherSporeFluid extends FlowableFluid {
 
+    private static final float MAX_COLOR_VALUE = 255.0f;
+
     public static final float FOG_START = 0.25f;
     public static final float FOG_END = 3.0f;
     public static final float HORIZONTAL_DRAG_MULTIPLIER = 0.7f;
@@ -31,15 +34,36 @@ public abstract class AetherSporeFluid extends FlowableFluid {
     // Water uses the value 0.014, and lava uses 0.007 in the Nether and 0.0023 otherwise
     public static final double FLUID_SPEED = 0.012;
 
+    public static float getNormalizedRed(int color) {
+        int red = (color >> 16) & 0xFF;
+        return red / MAX_COLOR_VALUE;
+    }
+
+    public static float getNormalizedGreen(int color) {
+        int green = (color >> 8) & 0xFF;
+        return green / MAX_COLOR_VALUE;
+    }
+
+    public static float getNormalizedBlue(int color) {
+        int blue = color & 0xFF;
+        return blue / MAX_COLOR_VALUE;
+    }
+
+    private final int color;
+    private final int particleColor;
     private final float fogRed;
     private final float fogGreen;
     private final float fogBlue;
 
-    public AetherSporeFluid(float fogRed, float fogGreen, float fogBlue) {
+    public AetherSporeFluid(int color, int particleColor) {
         super();
-        this.fogRed = fogRed;
-        this.fogGreen = fogGreen;
-        this.fogBlue = fogBlue;
+        this.color = color;
+        this.particleColor = particleColor;
+        this.fogRed = AetherSporeFluid.getNormalizedRed(color);
+        this.fogGreen = AetherSporeFluid.getNormalizedGreen(color);
+        this.fogBlue = AetherSporeFluid.getNormalizedBlue(color);
+        Constants.LOGGER.info("Registering aether spore fluid with fog colors " + this.fogRed + ", "
+                + this.fogGreen + ", " + this.fogBlue);
     }
 
     @Override
@@ -138,5 +162,9 @@ public abstract class AetherSporeFluid extends FlowableFluid {
 
     public float getFogBlue() {
         return fogBlue;
+    }
+
+    public int getColor() {
+        return color;
     }
 }

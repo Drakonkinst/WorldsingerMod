@@ -2,6 +2,7 @@ package io.github.drakonkinst.examplemod.block;
 
 import io.github.drakonkinst.examplemod.Constants;
 import io.github.drakonkinst.examplemod.fluid.ModFluids;
+import io.github.drakonkinst.examplemod.fluid.VerdantSporeFluid;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -34,7 +35,7 @@ public final class ModBlocks {
                     ), "verdant_spore_sea_block", false);
     public static final Block VERDANT_SPORE_BLOCK =
             register(new AetherSporeBlock(ModBlocks.VERDANT_SPORE_SEA_BLOCK,
-                    0x00ff00,
+                    VerdantSporeFluid.PARTICLE_COLOR,
                     FabricBlockSettings.create()
                             .strength(0.5f)
                             .mapColor(MapColor.DARK_GREEN)

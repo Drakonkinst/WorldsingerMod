@@ -11,12 +11,11 @@ import net.minecraft.state.property.Properties;
 
 public abstract class VerdantSporeFluid extends AetherSporeFluid {
 
-    private static final float FOG_RED = 0.0f;
-    private static final float FOG_GREEN = 1.0f;
-    private static final float FOG_BLUE = 0.0f;
+    public static final int COLOR = 0x2e522e;
+    public static final int PARTICLE_COLOR = 0x64aa4a;
 
     public VerdantSporeFluid() {
-        super(FOG_RED, FOG_GREEN, FOG_BLUE);
+        super(COLOR, PARTICLE_COLOR);
     }
 
     @Override
