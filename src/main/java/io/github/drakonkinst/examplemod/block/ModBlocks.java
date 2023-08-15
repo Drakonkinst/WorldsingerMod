@@ -47,6 +47,9 @@ public final class ModBlocks {
     public static final Block VERDANT_VINE_BRANCH = register(
             new VerdantVineBranch(FabricBlockSettings.create().strength(0.4f).nonOpaque()),
             "verdant_vine_branch", true);
+    public static final Block VERDANT_VINE_SNARE = register(new VerdantVineSnare(
+            FabricBlockSettings.create().solid().noCollision().requiresTool().strength(4.0f)
+                    .pistonBehavior(PistonBehavior.DESTROY)), "verdant_vine_snare", true);
 
     public static <T extends Block> T register(T block, String id, boolean shouldRegisterItem) {
         Identifier blockId = new Identifier(Constants.MOD_ID, id);

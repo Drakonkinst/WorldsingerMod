@@ -1,6 +1,7 @@
 package io.github.drakonkinst.examplemod.client;
 
 import io.github.drakonkinst.examplemod.Constants;
+import io.github.drakonkinst.examplemod.block.ModBlocks;
 import io.github.drakonkinst.examplemod.fluid.ModFluids;
 import io.github.drakonkinst.examplemod.world.LumarSeetheAccess;
 import io.github.drakonkinst.examplemod.world.LumarSeetheData;
@@ -29,6 +30,9 @@ public class ExampleModClient implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
                 ModFluids.VERDANT_SPORES, ModFluids.FLOWING_VERDANT_SPORES);
+
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
+                ModBlocks.VERDANT_VINE_SNARE);
 
         ClientPlayNetworking.registerGlobalReceiver(LumarSeetheData.LUMAR_SEETHE_UPDATE_PACKET_ID,
                 (client, handler, buf, responseSender) -> {
