@@ -41,6 +41,9 @@ public final class ModBlocks {
                             .mapColor(MapColor.DARK_GREEN)
                             .sounds(BlockSoundGroup.SAND)
             ), "verdant_spore_block", true);
+    public static final Block VERDANT_VINE_BLOCK = register(new VerdantVineBlock(
+                    FabricBlockSettings.create().strength(2.0f).sounds(BlockSoundGroup.WOOD)),
+            "verdant_vine_block", true);
 
     public static <T extends Block> T register(T block, String id, boolean shouldRegisterItem) {
         Identifier blockId = new Identifier(Constants.MOD_ID, id);
