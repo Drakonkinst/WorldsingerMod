@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:block/cube_column",
+  "parent": "minecraft:block/cube_column_horizontal",
   "textures": {
     "end": "examplemod:block/verdant_vine_block",
     "side": "examplemod:block/verdant_vine_block"

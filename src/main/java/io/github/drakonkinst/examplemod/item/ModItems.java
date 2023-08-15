@@ -79,6 +79,7 @@ public final class ModItems {
             itemGroup.add(ModBlocks.DISCORD_BLOCK.asItem());
             itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
             itemGroup.add(ModBlocks.VERDANT_SPORE_BLOCK.asItem());
+            itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK.asItem());
         });
     }
 

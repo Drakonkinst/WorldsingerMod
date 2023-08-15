@@ -5,5 +5,7 @@
   "item.examplemod.verdant_spores_bucket": "Bucket of Verdant Spores",
   "itemGroup.tutorial.test_group": "Modded Items",
   "block.examplemod.discord_block": "Discord Block",
-  "block.examplemod.verdant_spore_block": "Verdant Spores Block"
+  "block.examplemod.verdant_spore_block": "Verdant Spores Block",
+  "block.examplemod.verdant_vine_block": "Verdant Vine Block",
+  "block.examplemod.verdant_vine_branch": "Verdant Vine Branch"
 }
