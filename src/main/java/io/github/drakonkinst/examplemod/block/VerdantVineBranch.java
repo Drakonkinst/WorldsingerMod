@@ -37,9 +37,15 @@ public class VerdantVineBranch extends ConnectingBlock implements Waterloggable 
 
     private static boolean canConnect(BlockView world, BlockPos pos, BlockState state,
             Direction direction) {
+        if (state.isOf(ModBlocks.VERDANT_VINE_BRANCH)) {
+            return true;
+        }
+        if (state.isOf(ModBlocks.VERDANT_VINE_SNARE)) {
+            Direction attachDirection = VerdantVineSnare.getDirection(state).getOpposite();
+            return attachDirection.equals(direction);
+        }
         boolean faceFullSquare = state.isSideSolidFullSquare(world, pos, direction.getOpposite());
-        return state.isOf(ModBlocks.VERDANT_VINE_BRANCH) || state.isOf(ModBlocks.VERDANT_VINE_SNARE)
-                || faceFullSquare;
+        return faceFullSquare;
     }
 
     public VerdantVineBranch(Settings settings) {
