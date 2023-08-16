@@ -19,7 +19,7 @@ import net.minecraft.world.WorldAccess;
 
 public class VerdantVineBranch extends ConnectingBlock implements Waterloggable {
 
-    private static final float RADIUS = 0.3125f;
+    private static final float RADIUS = 0.25f;
     private static final BooleanProperty[] DIRECTION_PROPERTIES = {DOWN, UP, NORTH, EAST, SOUTH,
             WEST};
     private static final Direction[] DIRECTIONS = {Direction.DOWN, Direction.UP, Direction.NORTH,
@@ -28,13 +28,9 @@ public class VerdantVineBranch extends ConnectingBlock implements Waterloggable 
     private static List<BlockPos> getNeighbors(BlockPos pos) {
         List<BlockPos> neighbors = new ArrayList<>();
 
-        // Add in same order as ORDERED_DIRECTIONS
-        neighbors.add(pos.down());
-        neighbors.add(pos.up());
-        neighbors.add(pos.north());
-        neighbors.add(pos.east());
-        neighbors.add(pos.south());
-        neighbors.add(pos.west());
+        for (Direction direction : DIRECTIONS) {
+            neighbors.add(pos.offset(direction));
+        }
 
         return neighbors;
     }
