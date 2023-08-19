@@ -10,9 +10,10 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 
-public abstract class AbstractVerticalPlantBlock extends AbstractVerticalPlantPartBlock {
+public abstract class AbstractVerticalGrowthPlantBlock extends
+        AbstractVerticalGrowthComponentBlock {
 
-    public AbstractVerticalPlantBlock(Settings settings,
+    public AbstractVerticalGrowthPlantBlock(Settings settings,
             VoxelShape outlineShape) {
         super(settings, outlineShape);
     }
@@ -20,7 +21,7 @@ public abstract class AbstractVerticalPlantBlock extends AbstractVerticalPlantPa
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
             BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        Direction growthDirection = AbstractVerticalPlantPartBlock.getGrowthDirection(state);
+        Direction growthDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
         if (direction == growthDirection.getOpposite() && !state.canPlaceAt(world, pos)) {
             world.scheduleBlockTick(pos, this, 1);
         }

@@ -15,7 +15,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractVerticalPlantPartBlock extends Block {
+public abstract class AbstractVerticalGrowthComponentBlock extends Block {
 
     public static final DirectionProperty GROWTH_DIRECTION = DirectionProperty.of(
             "growth_direction", Direction.UP, Direction.DOWN);
@@ -26,7 +26,7 @@ public abstract class AbstractVerticalPlantPartBlock extends Block {
 
     protected final VoxelShape outlineShape;
 
-    public AbstractVerticalPlantPartBlock(Settings settings, VoxelShape outlineShape) {
+    public AbstractVerticalGrowthComponentBlock(Settings settings, VoxelShape outlineShape) {
         super(settings);
         this.outlineShape = outlineShape;
         this.setDefaultState(this.getDefaultState().with(GROWTH_DIRECTION, Direction.UP));
@@ -50,7 +50,7 @@ public abstract class AbstractVerticalPlantPartBlock extends Block {
 
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        Direction growthDirection = AbstractVerticalPlantPartBlock.getGrowthDirection(state);
+        Direction growthDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
         BlockPos attachedBlockPos = pos.offset(growthDirection.getOpposite());
         BlockState attachedBlockState = world.getBlockState(attachedBlockPos);
 

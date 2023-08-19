@@ -8,11 +8,13 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class TwistingVerdantVineBlock extends AbstractVerticalPlantStemBlock {
+public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
 
     public static boolean canAttach(BlockState state, BlockState attachCandidate) {
         if (attachCandidate.isOf(ModBlocks.VERDANT_VINE_BRANCH)) {
@@ -68,5 +70,12 @@ public class TwistingVerdantVineBlock extends AbstractVerticalPlantStemBlock {
             Block.dropStacks(state, world, pos);
             world.removeBlock(pos, false);
         }
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
+            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
+                neighborPos).with(Properties.PERSISTENT, state.get(Properties.PERSISTENT));
     }
 }

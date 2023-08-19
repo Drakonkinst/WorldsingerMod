@@ -49,7 +49,8 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
         }
         if (state.isOf(ModBlocks.TWISTING_VERDANT_VINES) || state.isOf(
                 ModBlocks.TWISTING_VERDANT_VINES_PLANT)) {
-            Direction growthDirection = AbstractVerticalPlantPartBlock.getGrowthDirection(state)
+            Direction growthDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(
+                            state)
                     .getOpposite();
             return growthDirection == direction;
         }

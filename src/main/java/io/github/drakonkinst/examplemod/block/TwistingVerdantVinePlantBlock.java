@@ -8,11 +8,13 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class TwistingVerdantVinePlantBlock extends AbstractVerticalPlantBlock {
+public class TwistingVerdantVinePlantBlock extends AbstractVerticalGrowthPlantBlock {
 
     public static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 16.0, 12.0);
 
@@ -58,5 +60,12 @@ public class TwistingVerdantVinePlantBlock extends AbstractVerticalPlantBlock {
             Block.dropStacks(state, world, pos);
             world.removeBlock(pos, false);
         }
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
+            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
+                neighborPos).with(Properties.PERSISTENT, state.get(Properties.PERSISTENT));
     }
 }
