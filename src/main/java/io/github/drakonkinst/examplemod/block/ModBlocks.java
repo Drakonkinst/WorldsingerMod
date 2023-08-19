@@ -55,14 +55,14 @@ public final class ModBlocks {
                     FabricBlockSettings.create().solid().noCollision().requiresTool().strength(4.0f)
                             .pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block TWISTING_VERDANT_VINES = register("twisting_verdant_vines",
-            new TwistingVerdantVineBlockPlant(
+            new TwistingVerdantVineBlock(
                     FabricBlockSettings.create().strength(0.2f).noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
                             .pistonBehavior(PistonBehavior.DESTROY)),
             true);
     public static final Block TWISTING_VERDANT_VINES_PLANT = register(
             "twisting_verdant_vines_plant",
-            new TwistingVerdantVinesPlantBlock(
+            new TwistingVerdantVinePlantBlock(
                     FabricBlockSettings.create().strength(0.2f).noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
                             .pistonBehavior(PistonBehavior.DESTROY)),

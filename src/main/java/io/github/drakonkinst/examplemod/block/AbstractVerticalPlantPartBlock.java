@@ -20,6 +20,10 @@ public abstract class AbstractVerticalPlantPartBlock extends Block {
     public static final DirectionProperty GROWTH_DIRECTION = DirectionProperty.of(
             "growth_direction", Direction.UP, Direction.DOWN);
 
+    public static Direction getGrowthDirection(BlockState state) {
+        return state.get(GROWTH_DIRECTION);
+    }
+
     protected final VoxelShape outlineShape;
 
     public AbstractVerticalPlantPartBlock(Settings settings, VoxelShape outlineShape) {
@@ -46,13 +50,10 @@ public abstract class AbstractVerticalPlantPartBlock extends Block {
 
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        Direction growthDirection = getGrowthDirection(state);
+        Direction growthDirection = AbstractVerticalPlantPartBlock.getGrowthDirection(state);
         BlockPos attachedBlockPos = pos.offset(growthDirection.getOpposite());
         BlockState attachedBlockState = world.getBlockState(attachedBlockPos);
 
-        if (!this.canAttachTo(attachedBlockState)) {
-            return false;
-        }
         if (attachedBlockState.isSideSolidFullSquare(world, attachedBlockPos,
                 growthDirection)) {
             return true;
@@ -60,7 +61,7 @@ public abstract class AbstractVerticalPlantPartBlock extends Block {
         if (attachedBlockState.isOf(this.getStem()) || attachedBlockState.isOf(this.getPlant())) {
             return growthDirection == attachedBlockState.get(GROWTH_DIRECTION);
         }
-        return false;
+        return this.canAttachTo(state, attachedBlockState);
     }
 
     @Override
@@ -76,12 +77,8 @@ public abstract class AbstractVerticalPlantPartBlock extends Block {
         return this.outlineShape;
     }
 
-    protected boolean canAttachTo(BlockState state) {
-        return true;
-    }
-
-    protected Direction getGrowthDirection(BlockState state) {
-        return state.get(GROWTH_DIRECTION);
+    protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
+        return false;
     }
 
     protected abstract Block getStem();

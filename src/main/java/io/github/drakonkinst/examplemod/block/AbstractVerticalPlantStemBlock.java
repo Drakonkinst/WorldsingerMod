@@ -17,7 +17,7 @@ public abstract class AbstractVerticalPlantStemBlock extends AbstractVerticalPla
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
             BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        Direction growthDirection = this.getGrowthDirection(state);
+        Direction growthDirection = AbstractVerticalPlantPartBlock.getGrowthDirection(state);
         if (direction == growthDirection.getOpposite() && !state.canPlaceAt(world, pos)) {
             world.scheduleBlockTick(pos, this, 1);
         }

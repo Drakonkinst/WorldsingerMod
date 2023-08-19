@@ -42,7 +42,13 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
         }
         if (state.isOf(ModBlocks.VERDANT_VINE_SNARE)) {
             Direction attachDirection = VerdantVineSnareBlock.getDirection(state).getOpposite();
-            return attachDirection.equals(direction);
+            return attachDirection == direction;
+        }
+        if (state.isOf(ModBlocks.TWISTING_VERDANT_VINES) || state.isOf(
+                ModBlocks.TWISTING_VERDANT_VINES_PLANT)) {
+            Direction growthDirection = AbstractVerticalPlantPartBlock.getGrowthDirection(state)
+                    .getOpposite();
+            return growthDirection == direction;
         }
         boolean faceFullSquare = state.isSideSolidFullSquare(world, pos, direction.getOpposite());
         return faceFullSquare;
