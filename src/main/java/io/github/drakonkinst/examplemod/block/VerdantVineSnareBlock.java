@@ -72,6 +72,16 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
     }
 
     @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos,
+            ShapeContext context) {
+        return switch(WallMountedBlock.getDirection(state)) {
+            case NORTH, SOUTH -> NORTH_SOUTH_SHAPE;
+            case EAST, WEST -> EAST_WEST_SHAPE;
+            case DOWN, UP -> FLOOR_CEILING_SHAPE;
+        };
+    }
+
+    @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
             ShapeContext context) {
         return switch(WallMountedBlock.getDirection(state)) {
