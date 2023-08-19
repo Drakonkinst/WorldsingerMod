@@ -14,9 +14,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -98,12 +96,9 @@ public abstract class BackgroundRendererMixin {
 
         World cameraWorld = camera.getFocusedEntity().getWorld();
         BlockPos cameraBlockPos = camera.getBlockPos();
-        Chunk currentChunk = cameraWorld.getChunk(cameraBlockPos);
-        FluidState fluidState = currentChunk.getFluidState(cameraBlockPos);
+        FluidState fluidState = cameraWorld.getFluidState(cameraBlockPos);
 
-        BlockView area = cameraWorld.getChunkAsView(currentChunk.getPos().x,
-                currentChunk.getPos().z);
-        float fluidHeight = fluidState.getHeight(area, cameraBlockPos);
+        float fluidHeight = fluidState.getHeight(cameraWorld, cameraBlockPos);
         double yPos = camera.getPos().getY();
         boolean submersedInFluid = yPos < cameraBlockPos.getY() + fluidHeight;
 

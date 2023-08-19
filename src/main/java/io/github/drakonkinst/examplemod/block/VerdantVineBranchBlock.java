@@ -8,14 +8,16 @@ import net.minecraft.block.ConnectingBlock;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
 
 public class VerdantVineBranchBlock extends ConnectingBlock implements Waterloggable {
 
@@ -67,6 +69,33 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     }
 
     @Override
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (!state.canPlaceAt(world, pos)) {
+            world.breakBlock(pos, true);
+        }
+    }
+
+    @Override
+    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        for (Direction direction : Direction.values()) {
+            BlockPos neighborPos = pos.offset(direction);
+            BlockState neighborState = world.getBlockState(neighborPos);
+
+            // Snares and vines cannot support branches
+            if (neighborState.isOf(ModBlocks.VERDANT_VINE_SNARE) || neighborState.isOf(
+                    ModBlocks.TWISTING_VERDANT_VINES) || neighborState.isOf(
+                    ModBlocks.TWISTING_VERDANT_VINES_PLANT)) {
+                continue;
+            }
+
+            if (canConnect(world, neighborPos, neighborState, direction)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, Properties.WATERLOGGED);
     }
@@ -91,9 +120,11 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
             BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        ChunkPos chunkPos = world.getChunk(neighborPos).getPos();
-        BlockView blockView = world.getChunkAsView(chunkPos.x, chunkPos.z);
-        boolean canConnect = canConnect(blockView, neighborPos, neighborState,
+        if (!state.canPlaceAt(world, pos)) {
+            world.scheduleBlockTick(pos, this, 1);
+        }
+
+        boolean canConnect = canConnect(world, neighborPos, neighborState,
                 direction.getOpposite());
         return state.with(FACING_PROPERTIES.get(direction), canConnect);
     }
