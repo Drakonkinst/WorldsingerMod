@@ -1,0 +1,40 @@
+{
+  "required": true,
+  "package": "io.github.drakonkinst.worldsinger.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "accessor.AbstractBlockAccessor",
+    "accessor.AbstractBlockSettingsAccessor",
+    "block.AbstractBlockStateMixin",
+    "block.BlockMixin",
+    "block.FluidBlockMixin",
+    "block.MagmaBlockMixin",
+    "block.ShapeCacheMixin",
+    "block.SlabBlockMixin",
+    "block.WaterloggableMixin",
+    "entity.BoatEntityMixin",
+    "entity.EntityMixin",
+    "entity.FallingBlockEntityMixin",
+    "entity.FlyingEntityMixin",
+    "entity.ItemEntityMixin",
+    "entity.LivingEntityMixin",
+    "entity.ai.LandPathNodeMakerMixin",
+    "entity.ai.SwimGoalMixin",
+    "entity.projectile.FishingBobberEntityMixin",
+    "entity.projectile.PersistentProjectileEntityMixin",
+    "entity.projectile.ProjectileUtilMixin",
+    "entity.projectile.ThrownEntityMixin",
+    "fluid.WaterFluidMixin",
+    "item.BlockItemMixin",
+    "item.BucketItemMixin",
+    "world.ServerWorldMixin",
+    "world.WorldMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "client.BackgroundRendererMixin",
+    "client.RenderLayersMixin"
+  ]
+}

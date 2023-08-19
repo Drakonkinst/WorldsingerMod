@@ -15,12 +15,12 @@ repositories {
 
 loom {
     mods {
-        "examplemod" {
+        "worldsinger" {
             sourceSet sourceSets.main
         }
     }
 
-    accessWidenerPath = file("src/main/resources/examplemod.accesswidener")
+    accessWidenerPath = file("src/main/resources/worldsinger.accesswidener")
 }
 
 dependencies {

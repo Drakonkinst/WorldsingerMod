@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "examplemod:twisting_verdant_vines",
-    "examplemod:twisting_verdant_vines_plant"
+    "worldsinger:twisting_verdant_vines",
+    "worldsinger:twisting_verdant_vines_plant"
   ]
 }

@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "growth_direction=up": {
+      "model": "worldsinger:block/twisting_verdant_vines_plant"
+    },
+    "growth_direction=down": {
+      "model": "worldsinger:block/twisting_verdant_vines_plant",
+      "x": 180
+    }
+  }
+}

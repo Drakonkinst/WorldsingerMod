@@ -1,0 +1,13 @@
+{
+  "item.worldsinger.default_cube": "Default Cube",
+  "item.worldsinger.balls": "Balls",
+  "item.worldsinger.custom_item.tooltip": "Please don't erase me!",
+  "item.worldsinger.verdant_spores_bucket": "Bucket of Verdant Spores",
+  "itemGroup.tutorial.test_group": "Modded Items",
+  "block.worldsinger.discord_block": "Discord Block",
+  "block.worldsinger.verdant_spore_block": "Verdant Spores Block",
+  "block.worldsinger.verdant_vine_block": "Verdant Vine Block",
+  "block.worldsinger.verdant_vine_branch": "Verdant Vine Branch",
+  "block.worldsinger.verdant_vine_snare": "Verdant Vine Snare",
+  "block.worldsinger.twisting_verdant_vines": "Twisting Verdant Vines"
+}

@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "examplemod:block/verdant_vine_block",
-    "side": "examplemod:block/verdant_vine_block"
-  }
-}

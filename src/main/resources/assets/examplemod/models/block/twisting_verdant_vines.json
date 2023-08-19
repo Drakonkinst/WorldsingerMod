@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cross",
-  "textures": {
-    "cross": "examplemod:block/twisting_verdant_vines"
-  }
-}

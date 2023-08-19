@@ -1,25 +1,25 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "worldsinger",
   "version": "${version}",
-  "name": "Example Mod",
+  "name": "Worldsinger",
   "description": "This is an example description! Tell everyone what your mod is about!",
   "authors": [
     "Drakonkinst"
   ],
   "license": "MIT",
-  "icon": "assets/examplemod/icon.png",
+  "icon": "assets/worldsinger/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.drakonkinst.examplemod.ExampleMod"
+      "io.github.drakonkinst.worldsinger.Worldsinger"
     ],
     "client": [
-      "io.github.drakonkinst.examplemod.client.ExampleModClient"
+      "io.github.drakonkinst.worldsinger.client.WorldsingerClient"
     ]
   },
   "mixins": [
-    "examplemod.mixins.json"
+    "worldsinger.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.22",
@@ -27,5 +27,5 @@
     "java": ">=17",
     "fabric-api": "*"
   },
-  "accessWidener": "examplemod.accesswidener"
+  "accessWidener": "worldsinger.accesswidener"
 }
