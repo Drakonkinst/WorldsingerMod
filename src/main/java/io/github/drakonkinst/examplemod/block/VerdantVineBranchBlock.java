@@ -1,5 +1,6 @@
 package io.github.drakonkinst.examplemod.block;
 
+import io.github.drakonkinst.examplemod.world.LumarSeetheManager;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.Block;
@@ -65,7 +66,8 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
                 .with(WEST, false)
                 .with(UP, false)
                 .with(DOWN, false)
-                .with(Properties.WATERLOGGED, false));
+                .with(Properties.WATERLOGGED, false)
+                .with(Properties.PERSISTENT, false));
     }
 
     @Override
@@ -97,12 +99,14 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, Properties.WATERLOGGED);
+        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, Properties.WATERLOGGED,
+                Properties.PERSISTENT);
     }
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.withConnectionProperties(ctx.getWorld(), ctx.getBlockPos());
+        return this.withConnectionProperties(ctx.getWorld(), ctx.getBlockPos())
+                .with(Properties.PERSISTENT, true);
     }
 
     public BlockState withConnectionProperties(BlockView world, BlockPos pos) {
@@ -133,5 +137,18 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos,
             NavigationType type) {
         return false;
+    }
+
+    @Override
+    public boolean hasRandomTicks(BlockState state) {
+        return !state.get(Properties.PERSISTENT);
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
+            Block.dropStacks(state, world, pos);
+            world.removeBlock(pos, false);
+        }
     }
 }

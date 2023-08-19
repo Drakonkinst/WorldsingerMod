@@ -44,20 +44,23 @@ public final class ModBlocks {
             ), true);
     public static final Block VERDANT_VINE_BLOCK = register("verdant_vine_block",
             new VerdantVineBlock(
-                    FabricBlockSettings.create().strength(2.0f).sounds(BlockSoundGroup.WOOD)),
+                    FabricBlockSettings.create().strength(2.0f).sounds(BlockSoundGroup.WOOD)
+                            .ticksRandomly()),
             true);
     public static final Block VERDANT_VINE_BRANCH = register(
             "verdant_vine_branch",
-            new VerdantVineBranchBlock(FabricBlockSettings.create().strength(0.4f).nonOpaque()),
+            new VerdantVineBranchBlock(
+                    FabricBlockSettings.create().strength(0.4f).nonOpaque().ticksRandomly()),
             true);
     public static final Block VERDANT_VINE_SNARE = register("verdant_vine_snare",
             new VerdantVineSnareBlock(
                     FabricBlockSettings.create().solid().noCollision().requiresTool().strength(4.0f)
-                            .pistonBehavior(PistonBehavior.DESTROY)), true);
+                            .ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block TWISTING_VERDANT_VINES = register("twisting_verdant_vines",
             new TwistingVerdantVineBlock(
                     FabricBlockSettings.create().strength(0.2f).noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
+                            .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)),
             true);
     public static final Block TWISTING_VERDANT_VINES_PLANT = register(
@@ -65,6 +68,7 @@ public final class ModBlocks {
             new TwistingVerdantVinePlantBlock(
                     FabricBlockSettings.create().strength(0.2f).noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
+                            .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)),
             false);
 
