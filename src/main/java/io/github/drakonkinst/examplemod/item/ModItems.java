@@ -82,6 +82,7 @@ public final class ModItems {
             itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK.asItem());
             itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH.asItem());
             itemGroup.add(ModBlocks.VERDANT_VINE_SNARE.asItem());
+            itemGroup.add(ModBlocks.TWISTING_VERDANT_VINES.asItem());
         });
     }
 

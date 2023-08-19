@@ -17,7 +17,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 
-public class VerdantVineBranch extends ConnectingBlock implements Waterloggable {
+public class VerdantVineBranchBlock extends ConnectingBlock implements Waterloggable {
 
     private static final float RADIUS = 0.25f;
     private static final BooleanProperty[] DIRECTION_PROPERTIES = {DOWN, UP, NORTH, EAST, SOUTH,
@@ -41,14 +41,14 @@ public class VerdantVineBranch extends ConnectingBlock implements Waterloggable 
             return true;
         }
         if (state.isOf(ModBlocks.VERDANT_VINE_SNARE)) {
-            Direction attachDirection = VerdantVineSnare.getDirection(state).getOpposite();
+            Direction attachDirection = VerdantVineSnareBlock.getDirection(state).getOpposite();
             return attachDirection.equals(direction);
         }
         boolean faceFullSquare = state.isSideSolidFullSquare(world, pos, direction.getOpposite());
         return faceFullSquare;
     }
 
-    public VerdantVineBranch(Settings settings) {
+    public VerdantVineBranchBlock(Settings settings) {
         super(RADIUS, settings);
         this.setDefaultState(this.stateManager.getDefaultState()
                 .with(NORTH, false)

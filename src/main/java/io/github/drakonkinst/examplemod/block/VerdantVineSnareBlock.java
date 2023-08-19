@@ -15,7 +15,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 
-public class VerdantVineSnare extends WallMountedBlock {
+public class VerdantVineSnareBlock extends WallMountedBlock {
 
     private static final double MIN_VERTICAL = 0.0;
     private static final double MAX_VERTICAL = 16.0;
@@ -37,7 +37,7 @@ public class VerdantVineSnare extends WallMountedBlock {
         return WallMountedBlock.getDirection(state);
     }
 
-    public VerdantVineSnare(Settings settings) {
+    public VerdantVineSnareBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH)
                 .with(FACE, WallMountLocation.FLOOR));

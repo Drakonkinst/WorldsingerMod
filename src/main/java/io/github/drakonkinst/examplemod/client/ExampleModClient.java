@@ -32,7 +32,8 @@ public class ExampleModClient implements ClientModInitializer {
                 ModFluids.VERDANT_SPORES, ModFluids.FLOWING_VERDANT_SPORES);
 
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
-                ModBlocks.VERDANT_VINE_SNARE);
+                ModBlocks.VERDANT_VINE_SNARE, ModBlocks.TWISTING_VERDANT_VINES,
+                ModBlocks.TWISTING_VERDANT_VINES_PLANT);
 
         ClientPlayNetworking.registerGlobalReceiver(LumarSeetheData.LUMAR_SEETHE_UPDATE_PACKET_ID,
                 (client, handler, buf, responseSender) -> {
