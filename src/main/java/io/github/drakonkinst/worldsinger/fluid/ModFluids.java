@@ -17,9 +17,7 @@ public final class ModFluids {
     public static final FlowableFluid FLOWING_VERDANT_SPORES =
             register(new VerdantSporeFluid.Flowing(), "flowing_verdant_spores");
 
-    public static void initialize() {
-
-    }
+    public static void initialize() {}
 
     public static <T extends Fluid> T register(T fluid, String id) {
         Identifier fluidId = new Identifier(Constants.MOD_ID, id);

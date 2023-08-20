@@ -8,8 +8,7 @@ import net.minecraft.util.Identifier;
 
 public final class ModBlockTags {
 
-    private ModBlockTags() {
-    }
+    private ModBlockTags() {}
 
     public static final TagKey<Block> AETHER_SPORE_SEA_BLOCKS = ModBlockTags.of(
             "aether_spore_sea_blocks");

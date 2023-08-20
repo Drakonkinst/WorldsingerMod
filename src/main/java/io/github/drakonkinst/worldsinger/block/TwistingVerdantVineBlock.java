@@ -16,6 +16,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
 
+    private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 15.0,
+            12.0);
+
     public static boolean canAttach(BlockState state, BlockState attachCandidate) {
         if (attachCandidate.isOf(ModBlocks.VERDANT_VINE_BRANCH)) {
             return true;
@@ -25,8 +28,6 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
         }
         return false;
     }
-
-    public static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 15.0, 12.0);
 
     public TwistingVerdantVineBlock(Settings settings) {
         super(settings, SHAPE);

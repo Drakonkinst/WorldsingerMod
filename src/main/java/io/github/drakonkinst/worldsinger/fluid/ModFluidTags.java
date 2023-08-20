@@ -8,8 +8,7 @@ import net.minecraft.util.Identifier;
 
 public final class ModFluidTags {
 
-    private ModFluidTags() {
-    }
+    private ModFluidTags() {}
 
     public static final TagKey<Fluid> AETHER_SPORES = ModFluidTags.of("aether_spores");
     public static final TagKey<Fluid> STILL_AETHER_SPORES = ModFluidTags.of("still_aether_spores");

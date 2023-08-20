@@ -8,6 +8,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ConnectingBlock;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
@@ -107,7 +109,15 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.withConnectionProperties(ctx.getWorld(), ctx.getBlockPos())
-                .with(Properties.PERSISTENT, true);
+                .with(Properties.PERSISTENT, true)
+                .with(Properties.WATERLOGGED,
+                        ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false)
+                : super.getFluidState(state);
     }
 
     public BlockState withConnectionProperties(BlockView world, BlockPos pos) {
@@ -127,6 +137,10 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
             BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
         if (!state.canPlaceAt(world, pos)) {
             world.scheduleBlockTick(pos, this, 1);
+        }
+
+        if (state.get(Properties.WATERLOGGED)) {
+            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
         boolean canConnect = canConnect(world, neighborPos, neighborState,

@@ -16,7 +16,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class TwistingVerdantVinePlantBlock extends AbstractVerticalGrowthPlantBlock {
 
-    public static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 16.0, 12.0);
+    private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 16.0,
+            12.0);
 
     public TwistingVerdantVinePlantBlock(Settings settings) {
         super(settings, SHAPE);

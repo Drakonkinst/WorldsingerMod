@@ -16,8 +16,7 @@ import net.minecraft.util.Identifier;
 
 public final class ModBlocks {
 
-    private ModBlocks() {
-    }
+    private ModBlocks() {}
 
     public static final Block DISCORD_BLOCK =
             register("discord_block", new Block(FabricBlockSettings.create().strength(4.0f)), true);
@@ -83,7 +82,5 @@ public final class ModBlocks {
         return Registry.register(Registries.BLOCK, blockId, block);
     }
 
-    public static void initialize() {
-    }
-
+    public static void initialize() {}
 }
