@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "worldsinger:twisting_verdant_vines",
+    "worldsinger:twisting_verdant_vines_plant",
+    "worldsinger:verdant_vine_snare",
+    "worldsinger:verdant_vine_block",
+    "worldsinger:verdant_vine_branch"
+  ]
+}

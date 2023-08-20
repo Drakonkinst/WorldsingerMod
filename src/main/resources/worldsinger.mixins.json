@@ -27,6 +27,7 @@
     "fluid.WaterFluidMixin",
     "item.BlockItemMixin",
     "item.BucketItemMixin",
+    "item.ShearsItemMixin",
     "world.ServerWorldMixin",
     "world.WorldMixin"
   ],

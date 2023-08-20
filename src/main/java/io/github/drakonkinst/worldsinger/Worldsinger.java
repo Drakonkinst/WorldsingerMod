@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.command.ModCommands;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.fabricmc.api.ModInitializer;
 

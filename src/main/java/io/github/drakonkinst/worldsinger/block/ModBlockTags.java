@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.Constants;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import net.minecraft.block.Block;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
@@ -14,7 +14,13 @@ public final class ModBlockTags {
             "aether_spore_sea_blocks");
     public static final TagKey<Block> AETHER_SPORE_BLOCKS = ModBlockTags.of("aether_spore_blocks");
 
+    public static final TagKey<Block> SHEAR_MINEABLE = ModBlockTags.ofCommon("shear_mineable");
+
     private static TagKey<Block> of(String id) {
         return TagKey.of(RegistryKeys.BLOCK, new Identifier(Constants.MOD_ID, id));
+    }
+
+    private static TagKey<Block> ofCommon(String id) {
+        return TagKey.of(RegistryKeys.BLOCK, new Identifier(Constants.COMMON_ID, id));
     }
 }

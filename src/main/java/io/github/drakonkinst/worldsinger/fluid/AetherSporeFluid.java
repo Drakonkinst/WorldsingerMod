@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
-import io.github.drakonkinst.worldsinger.Constants;
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

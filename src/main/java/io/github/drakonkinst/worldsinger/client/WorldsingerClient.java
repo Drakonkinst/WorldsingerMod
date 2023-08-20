@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.client;
 
-import io.github.drakonkinst.worldsinger.Constants;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.world.LumarSeetheAccess;
 import io.github.drakonkinst.worldsinger.world.LumarSeetheData;
 import net.fabricmc.api.ClientModInitializer;

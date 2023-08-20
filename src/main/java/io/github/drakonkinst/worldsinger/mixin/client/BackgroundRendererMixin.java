@@ -1,9 +1,9 @@
 package io.github.drakonkinst.worldsinger.mixin.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.drakonkinst.worldsinger.Constants;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.BackgroundRenderer;

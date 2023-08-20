@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.item;
 
-import io.github.drakonkinst.worldsinger.Constants;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -74,15 +74,13 @@ public final class ModItems {
         // });
 
         ItemGroupEvents.modifyEntriesEvent(moddedItemsItemGroupKey).register((itemGroup) -> {
-            itemGroup.add(ModItems.DEFAULT_CUBE);
-            itemGroup.add(ModItems.BALLS);
-            itemGroup.add(ModBlocks.DISCORD_BLOCK.asItem());
             itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
             itemGroup.add(ModBlocks.VERDANT_SPORE_BLOCK.asItem());
             itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK.asItem());
             itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH.asItem());
             itemGroup.add(ModBlocks.VERDANT_VINE_SNARE.asItem());
             itemGroup.add(ModBlocks.TWISTING_VERDANT_VINES.asItem());
+            itemGroup.add(ModBlocks.SALTSTONE.asItem());
         });
     }
 

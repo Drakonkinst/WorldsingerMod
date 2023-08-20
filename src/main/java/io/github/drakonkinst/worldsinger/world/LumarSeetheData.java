@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.world;
 
-import io.github.drakonkinst.worldsinger.Constants;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

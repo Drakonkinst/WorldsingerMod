@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.Constants;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.fluid.VerdantSporeFluid;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -70,6 +70,8 @@ public final class ModBlocks {
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)),
             false);
+    public static final Block SALTSTONE = register("saltstone",
+            new Block(FabricBlockSettings.create().requiresTool().strength(3.0f, 3.0f)), true);
 
     public static <T extends Block> T register(String id, T block, boolean shouldRegisterItem) {
         Identifier blockId = new Identifier(Constants.MOD_ID, id);

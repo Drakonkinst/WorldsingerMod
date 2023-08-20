@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
-import io.github.drakonkinst.worldsinger.Constants;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.Optional;
 import net.minecraft.block.Block;
