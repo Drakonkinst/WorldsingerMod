@@ -19,7 +19,7 @@ public final class Fluidlogged {
 
     private Fluidlogged() {}
 
-    public static final List<Identifier> WATERLOGGABLE_FLUIDS = WorldsingerConfig.instance()
+    public static final List<Identifier> FLUIDLOGGABLE_FLUIDS = WorldsingerConfig.instance()
             .getFluidloggableFluids();
 
     private static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
@@ -39,10 +39,10 @@ public final class Fluidlogged {
         if (index < 0) {
             return Fluids.EMPTY;
         }
-        if (index >= Fluidlogged.WATERLOGGABLE_FLUIDS.size()) {
+        if (index >= Fluidlogged.FLUIDLOGGABLE_FLUIDS.size()) {
             return null;
         }
-        Identifier id = Fluidlogged.WATERLOGGABLE_FLUIDS.get(index);
+        Identifier id = Fluidlogged.FLUIDLOGGABLE_FLUIDS.get(index);
         if (id == null) {
             return null;
         }
@@ -61,6 +61,6 @@ public final class Fluidlogged {
         if (fluid.equals(Fluids.EMPTY)) {
             return 0;
         }
-        return Fluidlogged.WATERLOGGABLE_FLUIDS.indexOf(Registries.FLUID.getId(fluid)) + 1;
+        return Fluidlogged.FLUIDLOGGABLE_FLUIDS.indexOf(Registries.FLUID.getId(fluid)) + 1;
     }
 }

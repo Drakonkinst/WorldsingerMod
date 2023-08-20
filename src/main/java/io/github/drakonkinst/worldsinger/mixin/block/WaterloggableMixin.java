@@ -36,7 +36,7 @@ public interface WaterloggableMixin {
             return state.get(FLUIDLOGGED) == 0
                     && !state.get(WATERLOGGED)
                     && (fluid.equals(Fluids.WATER) ||
-                    Fluidlogged.WATERLOGGABLE_FLUIDS.contains(Registries.FLUID.getId(fluid)));
+                    Fluidlogged.FLUIDLOGGABLE_FLUIDS.contains(Registries.FLUID.getId(fluid)));
         } else {
             return !state.get(WATERLOGGED) && (fluid.equals(Fluids.WATER));
         }
