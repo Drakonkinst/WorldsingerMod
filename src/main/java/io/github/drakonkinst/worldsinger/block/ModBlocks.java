@@ -71,7 +71,7 @@ public final class ModBlocks {
                             .pistonBehavior(PistonBehavior.DESTROY)),
             false);
     public static final Block SALTSTONE = register("saltstone",
-            new Block(FabricBlockSettings.create().requiresTool().strength(3.0f, 3.0f)), true);
+            new Block(FabricBlockSettings.create().requiresTool().strength(1.5f, 6.0f)), true);
 
     public static <T extends Block> T register(String id, T block, boolean shouldRegisterItem) {
         Identifier blockId = new Identifier(Constants.MOD_ID, id);
