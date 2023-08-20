@@ -18,36 +18,29 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Waterloggable.class)
 public interface WaterloggableMixin {
 
-    // TODO: Might be able to replace these with INJECTS
-
-    /**
-     * @author Drakonkinst
-     * @reason Allow waterloggable blocks to be loggable with any fluid
-     */
-    @Overwrite
-    default boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid) {
+    @Inject(method = "canFillWithFluid", at = @At("HEAD"), cancellable = true)
+    private void canFillWithAnyFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid,
+            CallbackInfoReturnable<Boolean> cir) {
         if (state.contains(ModProperties.FLUIDLOGGABLE)) {
-            return state.get(ModProperties.FLUIDLOGGABLE) == 0
+            cir.setReturnValue(state.get(ModProperties.FLUIDLOGGABLE) == 0
                     && !state.get(Properties.WATERLOGGED)
                     && (fluid.equals(Fluids.WATER) ||
-                    Fluidlogged.WATERLOGGABLE_FLUIDS.contains(Registries.FLUID.getId(fluid)));
+                    Fluidlogged.WATERLOGGABLE_FLUIDS.contains(Registries.FLUID.getId(fluid))));
         } else {
-            return !state.get(Properties.WATERLOGGED) && (fluid.equals(Fluids.WATER));
+            cir.setReturnValue(!state.get(Properties.WATERLOGGED) && (fluid.equals(Fluids.WATER)));
         }
     }
 
-    /**
-     * @author Drakonkinst
-     * @reason Allow waterloggable blocks to be loggable with any fluid
-     */
-    @Overwrite
-    default boolean tryFillWithFluid(WorldAccess world, BlockPos pos, BlockState state,
-            FluidState fluidState) {
+    @Inject(method = "tryFillWithFluid", at = @At("HEAD"), cancellable = true)
+    private void tryFillWithAnyFluid(WorldAccess world, BlockPos pos, BlockState state,
+            FluidState fluidState, CallbackInfoReturnable<Boolean> cir) {
         Fluid fluid = fluidState.getFluid();
         if (state.contains(ModProperties.FLUIDLOGGABLE) && !state.get(Properties.WATERLOGGED) &&
                 state.get(ModProperties.FLUIDLOGGABLE) == 0) {
@@ -59,31 +52,29 @@ public interface WaterloggableMixin {
                 int index = Fluidlogged.getFluidIndex(fluid);
                 if (index == -1) {
                     Constants.LOGGER.warn("Tried to fill a block with a not loggable fluid!");
-                    return false;
+                    cir.setReturnValue(false);
+                    return;
                 }
                 world.setBlockState(pos, newState.with(ModProperties.FLUIDLOGGABLE, index),
                         Block.NOTIFY_ALL);
                 world.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
             }
-            return true;
+            cir.setReturnValue(true);
         } else if (!state.get(Properties.WATERLOGGED)) {
             if (!world.isClient()) {
                 world.setBlockState(pos, state.with(Properties.WATERLOGGED, true),
                         Block.NOTIFY_ALL);
                 world.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
             }
-            return true;
+            cir.setReturnValue(true);
         } else {
-            return false;
+            cir.setReturnValue(false);
         }
     }
 
-    /**
-     * @author Drakonkinst
-     * @reason Allow waterloggable blocks to be loggable with any fluid
-     */
-    @Overwrite
-    default ItemStack tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state) {
+    @Inject(method = "tryDrainFluid", at = @At("HEAD"), cancellable = true)
+    private void tryDrainAnyFluid(WorldAccess world, BlockPos pos, BlockState state,
+            CallbackInfoReturnable<ItemStack> cir) {
         if (state.get(Properties.WATERLOGGED) ||
                 (state.contains(ModProperties.FLUIDLOGGABLE)
                         && state.get(ModProperties.FLUIDLOGGABLE) > 0)) {
@@ -99,19 +90,17 @@ public interface WaterloggableMixin {
                 world.breakBlock(pos, true);
             }
             if (fluid == null) {
-                return ItemStack.EMPTY;
+                cir.setReturnValue(ItemStack.EMPTY);
+                return;
             }
-            return new ItemStack(fluid.getBucketItem());
+            cir.setReturnValue(new ItemStack(fluid.getBucketItem()));
+            return;
         }
-        return ItemStack.EMPTY;
+        cir.setReturnValue(ItemStack.EMPTY);
     }
 
-    /**
-     * @author Drakonkinst
-     * @reason Allow waterloggable blocks to be loggable with any fluid
-     */
-    @Overwrite
-    default Optional<SoundEvent> getBucketFillSound() {
-        return Optional.empty();
+    @Inject(method = "getBucketFillSound", at = @At("HEAD"), cancellable = true)
+    private void removeDefaultBucketFillSound(CallbackInfoReturnable<Optional<SoundEvent>> cir) {
+        cir.setReturnValue(Optional.empty());
     }
 }
