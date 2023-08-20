@@ -1,5 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.item;
 
+import static io.github.drakonkinst.worldsinger.util.ModProperties.FLUIDLOGGED;
+
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,7 +27,7 @@ public abstract class BlockItemMixin {
     private void injectCustomFluidPlacementState(ItemPlacementContext context,
             CallbackInfoReturnable<BlockState> cir) {
         BlockState placementState = getBlock().getPlacementState(context);
-        if (placementState == null || !placementState.contains(Fluidlogged.PROPERTY_FLUID)) {
+        if (placementState == null || !placementState.contains(FLUIDLOGGED)) {
             return;
         }
         // Remove the fluid if double slabbed
@@ -37,7 +39,7 @@ public abstract class BlockItemMixin {
         FluidState fluidState = context.getWorld().getFluidState(context.getBlockPos());
         int index = Fluidlogged.getFluidIndex(fluidState.getFluid());
         if (index > -1) {
-            cir.setReturnValue(placementState.with(Fluidlogged.PROPERTY_FLUID, index));
+            cir.setReturnValue(placementState.with(FLUIDLOGGED, index));
         }
     }
 }

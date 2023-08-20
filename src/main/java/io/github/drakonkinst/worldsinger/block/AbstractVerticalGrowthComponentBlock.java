@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -17,8 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractVerticalGrowthComponentBlock extends Block {
 
-    public static final DirectionProperty GROWTH_DIRECTION = DirectionProperty.of(
-            "growth_direction", Direction.UP, Direction.DOWN);
+    protected static final DirectionProperty GROWTH_DIRECTION = ModProperties.GROWTH_DIRECTION;
 
     public static Direction getGrowthDirection(BlockState state) {
         return state.get(GROWTH_DIRECTION);

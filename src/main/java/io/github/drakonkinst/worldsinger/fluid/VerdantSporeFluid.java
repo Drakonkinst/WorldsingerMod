@@ -7,10 +7,12 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
 
 public abstract class VerdantSporeFluid extends AetherSporeFluid {
 
+    private static final IntProperty LEVEL_15 = Properties.LEVEL_15;
     public static final int COLOR = 0x2e522e;
     public static final int PARTICLE_COLOR = 0x64aa4a;
 
@@ -35,7 +37,7 @@ public abstract class VerdantSporeFluid extends AetherSporeFluid {
 
     @Override
     protected BlockState toBlockState(FluidState fluidState) {
-        return ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState().with(Properties.LEVEL_15,
+        return ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState().with(LEVEL_15,
                 getBlockStateLevel(fluidState));
     }
 
