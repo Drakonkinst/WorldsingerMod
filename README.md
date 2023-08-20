@@ -1,1 +1,3 @@
-# Fabric Example Mod
+# Worldsinger Mod
+
+A Fabric mod for Minecraft

@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
+import io.github.drakonkinst.worldsinger.WorldsingerConfig;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -56,10 +57,8 @@ public final class Fluidlogged {
     }
 
     public static final List<Class<? extends Block>> VANILLA_WATERLOGGABLES = getVanillaWaterloggables();
-    public static final List<Identifier> WATERLOGGABLE_FLUIDS = List.of(
-            new Identifier("minecraft", "water"),
-            new Identifier("minecraft", "lava"),
-            new Identifier("worldsinger", "verdant_spores"));
+    public static final List<Identifier> WATERLOGGABLE_FLUIDS = WorldsingerConfig.instance()
+            .getFluidloggableFluids();
     public static final FluidProperty PROPERTY_FLUID = FluidProperty.of("fluidlogged");
 
     private static final Map<Fluid, FluidBlock> fluidToFluidBlocks = new HashMap<>();
