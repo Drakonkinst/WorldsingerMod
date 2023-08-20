@@ -23,7 +23,7 @@ public abstract class AbstractVerticalGrowthStemBlock extends AbstractVerticalGr
         }
         if (direction == growthDirection && (neighborState.isOf(this) || neighborState.isOf(
                 this.getPlant()))) {
-            return this.getPlant().getDefaultState().with(GROWTH_DIRECTION, growthDirection);
+            return this.getPlant().getDefaultState().with(VERTICAL_DIRECTION, growthDirection);
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
                 neighborPos);

@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -24,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class VerdantVineSnareBlock extends WallMountedBlock {
 
-    private static final BooleanProperty PERSISTENT = Properties.PERSISTENT;
     private static final double MIN_VERTICAL = 0.0;
     private static final double MAX_VERTICAL = 16.0;
     private static final double MIN_HORIZONTAL = 2.0;
@@ -48,7 +46,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
     public VerdantVineSnareBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH)
-                .with(FACE, WallMountLocation.FLOOR).with(PERSISTENT, false));
+                .with(FACE, WallMountLocation.FLOOR).with(Properties.PERSISTENT, false));
     }
 
     @Override
@@ -76,7 +74,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACE, FACING, PERSISTENT);
+        builder.add(FACE, FACING, Properties.PERSISTENT);
         super.appendProperties(builder);
     }
 
@@ -95,19 +93,19 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
-            placementState = placementState.with(PERSISTENT, true);
+            placementState = placementState.with(Properties.PERSISTENT, true);
         }
         return placementState;
     }
 
     @Override
     public boolean hasRandomTicks(BlockState state) {
-        return !state.get(PERSISTENT);
+        return !state.get(Properties.PERSISTENT);
     }
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(PERSISTENT)) {
+        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
             Block.dropStacks(state, world, pos);
             world.removeBlock(pos, false);
         }

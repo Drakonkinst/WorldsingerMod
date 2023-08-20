@@ -10,7 +10,6 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.registry.Registries;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 
@@ -19,30 +18,28 @@ public final class Fluidlogged {
 
     private Fluidlogged() {}
 
-    public static final List<Identifier> FLUIDLOGGABLE_FLUIDS = WorldsingerConfig.instance()
+    public static final List<Identifier> WATERLOGGABLE_FLUIDS = WorldsingerConfig.instance()
             .getFluidloggableFluids();
 
-    private static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-    private static final FluidProperty FLUIDLOGGED = ModProperties.FLUIDLOGGED;
     private static final Map<Fluid, FluidBlock> fluidToFluidBlocks = new HashMap<>();
 
     public static void initialize() {}
 
     public static Fluid getFluid(BlockState state) {
-        if (state.contains(WATERLOGGED) && state.get(WATERLOGGED)) {
+        if (state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED)) {
             return Fluids.WATER;
         }
-        if (!state.contains(FLUIDLOGGED)) {
+        if (!state.contains(ModProperties.FLUIDLOGGABLE)) {
             return null;
         }
-        int index = state.get(FLUIDLOGGED) - 1;
+        int index = state.get(ModProperties.FLUIDLOGGABLE) - 1;
         if (index < 0) {
             return Fluids.EMPTY;
         }
-        if (index >= Fluidlogged.FLUIDLOGGABLE_FLUIDS.size()) {
+        if (index >= Fluidlogged.WATERLOGGABLE_FLUIDS.size()) {
             return null;
         }
-        Identifier id = Fluidlogged.FLUIDLOGGABLE_FLUIDS.get(index);
+        Identifier id = Fluidlogged.WATERLOGGABLE_FLUIDS.get(index);
         if (id == null) {
             return null;
         }
@@ -61,6 +58,6 @@ public final class Fluidlogged {
         if (fluid.equals(Fluids.EMPTY)) {
             return 0;
         }
-        return Fluidlogged.FLUIDLOGGABLE_FLUIDS.indexOf(Registries.FLUID.getId(fluid)) + 1;
+        return Fluidlogged.WATERLOGGABLE_FLUIDS.indexOf(Registries.FLUID.getId(fluid)) + 1;
     }
 }

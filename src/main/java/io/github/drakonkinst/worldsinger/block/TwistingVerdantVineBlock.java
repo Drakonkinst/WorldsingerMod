@@ -6,7 +6,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -17,23 +16,21 @@ import org.jetbrains.annotations.Nullable;
 
 public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
 
-    private static final BooleanProperty PERSISTENT = Properties.PERSISTENT;
-    public static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 15.0, 12.0);
-
     public static boolean canAttach(BlockState state, BlockState attachCandidate) {
         if (attachCandidate.isOf(ModBlocks.VERDANT_VINE_BRANCH)) {
             return true;
         }
         if (attachCandidate.isOf(ModBlocks.VERDANT_VINE_SNARE)) {
-            return VerdantVineSnareBlock.getDirection(attachCandidate)
-                    == AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
+            return VerdantVineSnareBlock.getDirection(attachCandidate) == getGrowthDirection(state);
         }
         return false;
     }
 
+    public static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 15.0, 12.0);
+
     public TwistingVerdantVineBlock(Settings settings) {
         super(settings, SHAPE);
-        this.setDefaultState(this.getDefaultState().with(PERSISTENT, false));
+        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false));
     }
 
     @Override
@@ -48,7 +45,7 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(PERSISTENT);
+        builder.add(Properties.PERSISTENT);
         super.appendProperties(builder);
     }
 
@@ -57,19 +54,19 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
-            placementState = placementState.with(PERSISTENT, true);
+            placementState = placementState.with(Properties.PERSISTENT, true);
         }
         return placementState;
     }
 
     @Override
     public boolean hasRandomTicks(BlockState state) {
-        return !state.get(PERSISTENT);
+        return !state.get(Properties.PERSISTENT);
     }
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(PERSISTENT)) {
+        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
             Block.dropStacks(state, world, pos);
             world.removeBlock(pos, false);
         }
@@ -79,6 +76,6 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
             BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
-                neighborPos).with(PERSISTENT, state.get(PERSISTENT));
+                neighborPos).with(Properties.PERSISTENT, state.get(Properties.PERSISTENT));
     }
 }

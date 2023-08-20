@@ -7,7 +7,6 @@ import net.minecraft.block.PillarBlock;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -15,16 +14,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class VerdantVineBlock extends PillarBlock {
 
-    private static final BooleanProperty PERSISTENT = Properties.PERSISTENT;
-
     public VerdantVineBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(PERSISTENT, false));
+        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(PERSISTENT);
+        builder.add(Properties.PERSISTENT);
         super.appendProperties(builder);
     }
 
@@ -33,19 +30,19 @@ public class VerdantVineBlock extends PillarBlock {
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
-            placementState = placementState.with(PERSISTENT, true);
+            placementState = placementState.with(Properties.PERSISTENT, true);
         }
         return placementState;
     }
 
     @Override
     public boolean hasRandomTicks(BlockState state) {
-        return !state.get(PERSISTENT);
+        return !state.get(Properties.PERSISTENT);
     }
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(PERSISTENT)) {
+        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
             Block.dropStacks(state, world, pos);
             world.removeBlock(pos, false);
         }

@@ -1,12 +1,10 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
-import static io.github.drakonkinst.worldsinger.util.ModProperties.FLUIDLOGGED;
-import static net.minecraft.state.property.Properties.WATERLOGGED;
-
 import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockAccessor;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockSettingsAccessor;
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.function.ToIntFunction;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -16,6 +14,7 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -43,7 +42,7 @@ public abstract class AbstractBlockStateMixin {
                     "(Ljava/lang/Object;)I"))
     private <T> int injectLuminance(ToIntFunction<T> instance, T t) {
         if (t instanceof BlockState state && state.getEntries() != null && state.contains(
-                FLUIDLOGGED)) {
+                ModProperties.FLUIDLOGGABLE)) {
             Fluid fluid = Fluidlogged.getFluid(state);
             FluidBlock fluidBlock = Fluidlogged.getFluidBlockForFluid(fluid);
             if (fluidBlock != null) {
@@ -96,8 +95,8 @@ public abstract class AbstractBlockStateMixin {
     private void worldsinger$supportMultipleFluidsInState(CallbackInfoReturnable<FluidState> cir) {
         BlockState state = this.asBlockState();
         boolean isVanillaWaterlogged =
-                state.contains(WATERLOGGED) && state.get(WATERLOGGED);
-        if (!isVanillaWaterlogged && state.contains(FLUIDLOGGED)) {
+                state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED);
+        if (!isVanillaWaterlogged && state.contains(ModProperties.FLUIDLOGGABLE)) {
             Fluid fluid = Fluidlogged.getFluid(state);
             if (fluid != null) {
                 cir.setReturnValue(fluid.getDefaultState());
@@ -117,7 +116,8 @@ public abstract class AbstractBlockStateMixin {
             BlockView world, BlockPos pos
             , ShapeContext context) {
         return instance.getCollisionShape(
-                state.contains(FLUIDLOGGED) ? state.with(FLUIDLOGGED, 0)
+                state.contains(ModProperties.FLUIDLOGGABLE)
+                        ? state.with(ModProperties.FLUIDLOGGABLE, 0)
                         : state,
                 world, pos, context
         );
@@ -133,8 +133,8 @@ public abstract class AbstractBlockStateMixin {
             BlockView world, BlockPos pos,
             ShapeContext context) {
         return instance.getOutlineShape(
-                state.contains(FLUIDLOGGED)
-                        ? state.with(FLUIDLOGGED, 0)
+                state.contains(ModProperties.FLUIDLOGGABLE)
+                        ? state.with(ModProperties.FLUIDLOGGABLE, 0)
                         : state,
                 world, pos, context
         );
@@ -150,8 +150,8 @@ public abstract class AbstractBlockStateMixin {
             BlockPos pos) {
         ShapeContext context = ShapeContext.absent();
         return instance.getCollisionShape(
-                state.contains(FLUIDLOGGED)
-                        ? state.with(FLUIDLOGGED, 0)
+                state.contains(ModProperties.FLUIDLOGGABLE)
+                        ? state.with(ModProperties.FLUIDLOGGABLE, 0)
                         : state,
                 world, pos, context
         );

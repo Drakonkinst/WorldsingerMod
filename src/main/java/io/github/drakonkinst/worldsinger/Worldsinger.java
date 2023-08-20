@@ -15,6 +15,7 @@ public class Worldsinger implements ModInitializer {
         Constants.LOGGER.info("Initializing Worldsinger...");
 
         ModProperties.initialize();
+
         ModFluids.initialize();
         ModBlocks.initialize();
         ModItems.initialize();

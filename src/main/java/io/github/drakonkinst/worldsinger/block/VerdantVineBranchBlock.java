@@ -22,8 +22,6 @@ import net.minecraft.world.WorldView;
 
 public class VerdantVineBranchBlock extends ConnectingBlock implements Waterloggable {
 
-    private static final BooleanProperty PERSISTENT = Properties.PERSISTENT;
-    private static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     private static final float RADIUS = 0.25f;
     private static final BooleanProperty[] DIRECTION_PROPERTIES = {DOWN, UP, NORTH, EAST, SOUTH,
             WEST};
@@ -69,8 +67,8 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
                 .with(WEST, false)
                 .with(UP, false)
                 .with(DOWN, false)
-                .with(WATERLOGGED, false)
-                .with(PERSISTENT, false));
+                .with(Properties.WATERLOGGED, false)
+                .with(Properties.PERSISTENT, false));
     }
 
     @Override
@@ -102,13 +100,14 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, WATERLOGGED, PERSISTENT);
+        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, Properties.WATERLOGGED,
+                Properties.PERSISTENT);
     }
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.withConnectionProperties(ctx.getWorld(), ctx.getBlockPos())
-                .with(PERSISTENT, true);
+                .with(Properties.PERSISTENT, true);
     }
 
     public BlockState withConnectionProperties(BlockView world, BlockPos pos) {
@@ -143,12 +142,12 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
     @Override
     public boolean hasRandomTicks(BlockState state) {
-        return !state.get(PERSISTENT);
+        return !state.get(Properties.PERSISTENT);
     }
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(PERSISTENT)) {
+        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
             Block.dropStacks(state, world, pos);
             world.removeBlock(pos, false);
         }

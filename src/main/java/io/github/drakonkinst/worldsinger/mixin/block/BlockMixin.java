@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
-import static io.github.drakonkinst.worldsinger.util.ModProperties.FLUIDLOGGED;
-
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -32,14 +31,14 @@ public abstract class BlockMixin {
             StateManager.Builder<Block,
                     BlockState> builder) {
         if (isWaterloggable()) {
-            builder.add(FLUIDLOGGED);
+            builder.add(ModProperties.FLUIDLOGGABLE);
         }
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void injectDefaultState(AbstractBlock.Settings settings, CallbackInfo ci) {
         if (isWaterloggable()) {
-            setDefaultState(getDefaultState().with(FLUIDLOGGED, 0));
+            setDefaultState(getDefaultState().with(ModProperties.FLUIDLOGGABLE, 0));
         }
     }
 

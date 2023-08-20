@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
-import static io.github.drakonkinst.worldsinger.util.ModProperties.FLUIDLOGGED;
-
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
@@ -19,7 +18,7 @@ public abstract class SlabBlockMixin {
             CallbackInfoReturnable<BlockState> cir) {
         BlockState blockState = ctx.getWorld().getBlockState(ctx.getBlockPos());
         if (blockState.isOf((Block) (Object) this)) {
-            cir.setReturnValue(cir.getReturnValue().with(FLUIDLOGGED, 0));
+            cir.setReturnValue(cir.getReturnValue().with(ModProperties.FLUIDLOGGABLE, 0));
         }
     }
 }

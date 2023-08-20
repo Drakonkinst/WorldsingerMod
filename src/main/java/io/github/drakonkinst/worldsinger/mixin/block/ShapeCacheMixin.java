@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
-import static io.github.drakonkinst.worldsinger.util.ModProperties.FLUIDLOGGED;
-
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -24,8 +23,8 @@ public abstract class ShapeCacheMixin {
             BlockView world,
             BlockPos pos, ShapeContext context) {
         return instance.getCollisionShape(
-                state.contains(FLUIDLOGGED)
-                        ? state.with(FLUIDLOGGED, 0)
+                state.contains(ModProperties.FLUIDLOGGABLE)
+                        ? state.with(ModProperties.FLUIDLOGGABLE, 0)
                         : state,
                 world, pos, context
         );

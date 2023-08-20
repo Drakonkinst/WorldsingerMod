@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -8,6 +7,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -18,10 +18,10 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractVerticalGrowthComponentBlock extends Block {
 
-    protected static final DirectionProperty GROWTH_DIRECTION = ModProperties.GROWTH_DIRECTION;
+    public static final DirectionProperty VERTICAL_DIRECTION = Properties.VERTICAL_DIRECTION;
 
     public static Direction getGrowthDirection(BlockState state) {
-        return state.get(GROWTH_DIRECTION);
+        return state.get(VERTICAL_DIRECTION);
     }
 
     protected final VoxelShape outlineShape;
@@ -29,7 +29,7 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
     public AbstractVerticalGrowthComponentBlock(Settings settings, VoxelShape outlineShape) {
         super(settings);
         this.outlineShape = outlineShape;
-        this.setDefaultState(this.getDefaultState().with(GROWTH_DIRECTION, Direction.UP));
+        this.setDefaultState(this.getDefaultState().with(VERTICAL_DIRECTION, Direction.UP));
     }
 
     @Override
@@ -43,9 +43,9 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
         BlockState blockState = ctx.getWorld()
                 .getBlockState(ctx.getBlockPos().offset(growthDirection));
         if (blockState.isOf(this.getStem()) || blockState.isOf(this.getPlant())) {
-            return this.getPlant().getDefaultState().with(GROWTH_DIRECTION, growthDirection);
+            return this.getPlant().getDefaultState().with(VERTICAL_DIRECTION, growthDirection);
         }
-        return this.getDefaultState().with(GROWTH_DIRECTION, growthDirection);
+        return this.getDefaultState().with(VERTICAL_DIRECTION, growthDirection);
     }
 
     @Override
@@ -59,7 +59,7 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
             return true;
         }
         if (attachedBlockState.isOf(this.getStem()) || attachedBlockState.isOf(this.getPlant())) {
-            return growthDirection == attachedBlockState.get(GROWTH_DIRECTION);
+            return growthDirection == attachedBlockState.get(VERTICAL_DIRECTION);
         }
         return this.canAttachTo(state, attachedBlockState);
     }
@@ -87,6 +87,6 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(GROWTH_DIRECTION);
+        builder.add(VERTICAL_DIRECTION);
     }
 }
