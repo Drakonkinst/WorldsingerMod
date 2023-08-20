@@ -6,14 +6,17 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import io.github.drakonkinst.worldsinger.registry.DataTables;
 import io.github.drakonkinst.worldsinger.world.LumarSeetheAccess;
 import io.github.drakonkinst.worldsinger.world.LumarSeetheData;
 import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.LumarSeetheManagerAccess;
+import java.util.Set;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.TimeArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 public final class ModCommands {
 
@@ -39,6 +42,21 @@ public final class ModCommands {
                         .then(argument("duration", TimeArgumentType.time(0))
                                 .executes(ModCommands::runCommandSeetheOffWithArgs)))
                 .executes(ModCommands::runCommandSeetheGet));
+        dispatcher.register(literal("table")
+                .requires(source -> source.hasPermissionLevel(PERMISSION_LEVEL_GAMEMASTER))
+                .then(literal("list")
+                        .executes(ModCommands::runCommandTableList)));
+    }
+
+    private static int runCommandTableList(CommandContext<ServerCommandSource> context) {
+        Set<Identifier> dataTableIds = DataTables.getDataTableIds(context.getSource().getWorld());
+        StringBuilder str = new StringBuilder(
+                "There are " + dataTableIds.size() + " data tables currently loaded:");
+        for (Identifier id : dataTableIds) {
+            str.append("\n- ").append(id.toString());
+        }
+        context.getSource().sendMessage(Text.literal(str.toString()));
+        return 1;
     }
 
     private static int runCommandSeetheGet(CommandContext<ServerCommandSource> context) {

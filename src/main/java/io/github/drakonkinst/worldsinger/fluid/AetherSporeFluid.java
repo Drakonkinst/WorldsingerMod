@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
-import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -62,8 +61,6 @@ public abstract class AetherSporeFluid extends FlowableFluid {
         this.fogRed = AetherSporeFluid.getNormalizedRed(color);
         this.fogGreen = AetherSporeFluid.getNormalizedGreen(color);
         this.fogBlue = AetherSporeFluid.getNormalizedBlue(color);
-        Constants.LOGGER.info("Registering aether spore fluid with fog colors " + this.fogRed + ", "
-                + this.fogGreen + ", " + this.fogBlue);
     }
 
     @Override

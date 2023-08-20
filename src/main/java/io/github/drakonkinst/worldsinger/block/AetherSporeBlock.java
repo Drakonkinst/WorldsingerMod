@@ -75,7 +75,6 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
         BlockPos blockPos = ctx.getBlockPos();
         BlockState fluidizedSource = blockView.getBlockState(blockPos.down());
         if (AetherSporeFluidBlock.shouldFluidize(fluidizedSource)) {
-            Constants.LOGGER.info("FLUIDIZING " + ctx.getBlockPos());
             return this.fluidizedState;
         }
         return super.getPlacementState(ctx);
