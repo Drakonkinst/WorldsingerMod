@@ -18,8 +18,6 @@ public final class ModBlocks {
 
     private ModBlocks() {}
 
-    public static final Block DISCORD_BLOCK =
-            register("discord_block", new Block(FabricBlockSettings.create().strength(4.0f)), true);
     public static final Block VERDANT_SPORE_SEA_BLOCK =
             register(
                     "verdant_spore_sea_block",

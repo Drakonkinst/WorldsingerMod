@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.util;
+package io.github.drakonkinst.worldsinger.registry;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;

@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.registry;
 
 import io.github.drakonkinst.worldsinger.util.Constants;
-import io.github.drakonkinst.worldsinger.util.DataTable;
+import java.util.Optional;
 import java.util.Set;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.minecraft.registry.RegistryKey;
@@ -27,6 +27,15 @@ public final class DataTables {
             return null;
         }
         return world.getRegistryManager().get(ModRegistries.DATA_TABLES).get(key);
+    }
+
+    public static Optional<DataTable> getOptional(World world, Identifier id) {
+        if (world.isClient()) {
+            // Data tables are not synced on client
+            return Optional.empty();
+        }
+        return Optional.ofNullable(
+                world.getRegistryManager().get(ModRegistries.DATA_TABLES).get(id));
     }
 
     public static Set<Identifier> getDataTableIds(World world) {
