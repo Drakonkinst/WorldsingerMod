@@ -13,6 +13,7 @@ public interface SporeKillable {
 
     static int killNearbySpores(World world, BlockPos pos, int radius) {
         int numKilled = 0;
+        radius = Math.min(radius, SporeKillable.MAX_RADIUS);
         // Not sure if this is the right iteration method, but it works
         // TODO: Add directional flags so that other blocks (aluminum) can block this effect)
         for (BlockPos currentPos : BlockPos.iterateOutwards(pos, radius, radius, radius)) {
@@ -39,13 +40,21 @@ public interface SporeKillable {
         for (BlockPos currentPos : BlockPos.iterateOutwards(pos, SporeKillable.MAX_RADIUS,
                 SporeKillable.MAX_RADIUS, SporeKillable.MAX_RADIUS)) {
             BlockState blockState = world.getBlockState(currentPos);
-            int distance = currentPos.getManhattanDistance(pos);
+            // Use square radius instead of Manhattan distance
+            int distance = SporeKillable.getLongestDistanceAxis(pos, currentPos);
             if (blockState.isIn(ModBlockTags.KILLS_SPORES)
                     && dataTable.getIntForBlock(blockState) >= distance) {
                 return true;
             }
         }
         return false;
+    }
+
+    static int getLongestDistanceAxis(BlockPos pos1, BlockPos pos2) {
+        int deltaX = Math.abs(pos1.getX() - pos2.getX());
+        int deltaY = Math.abs(pos1.getY() - pos2.getY());
+        int deltaZ = Math.abs(pos1.getZ() - pos2.getZ());
+        return Math.max(deltaX, Math.max(deltaY, deltaZ));
     }
 
     static BlockState convertToDeadVariant(SporeKillable sporeKillable, BlockState blockState) {

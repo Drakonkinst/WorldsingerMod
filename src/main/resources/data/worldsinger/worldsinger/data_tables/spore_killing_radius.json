@@ -1,6 +1,7 @@
 {
   "default": 0,
   "entries": {
-    "worldsinger:saltstone": 2
+    "worldsinger:saltstone": 2,
+    "minecraft:iron_block": 5
   }
 }

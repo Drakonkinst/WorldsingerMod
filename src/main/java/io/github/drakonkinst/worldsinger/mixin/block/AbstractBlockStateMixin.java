@@ -180,7 +180,7 @@ public abstract class AbstractBlockStateMixin {
         if (dataTable == null) {
             return;
         }
-        int radius = Math.min(dataTable.getIntForBlock(state), SporeKillable.MAX_RADIUS);
+        int radius = dataTable.getIntForBlock(state);
         if (radius <= 0) {
             return;
         }
