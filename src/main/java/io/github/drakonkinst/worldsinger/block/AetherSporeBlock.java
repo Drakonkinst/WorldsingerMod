@@ -80,13 +80,6 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
         return super.getPlacementState(ctx);
     }
 
-    // @Override
-    // public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
-    //         ItemStack itemStack) {
-    //     update(world, pos, state, world.getBlockState(pos.down()));
-    //     super.onPlaced(world, pos, state, placer, itemStack);
-    // }
-
     @Override
     public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
         if (stateFrom.isOf(this)) {

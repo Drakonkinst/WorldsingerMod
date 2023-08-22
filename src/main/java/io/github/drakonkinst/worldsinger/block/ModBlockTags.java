@@ -17,6 +17,7 @@ public final class ModBlockTags {
     public static final TagKey<Block> VERDANT_VINE_SNARE = ModBlockTags.of("verdant_vine_snare");
     public static final TagKey<Block> TWISTING_VERDANT_VINES = ModBlockTags.of(
             "twisting_verdant_vines");
+    public static final TagKey<Block> KILLS_SPORES = ModBlockTags.of("kills_spores");
 
     public static final TagKey<Block> SHEAR_MINEABLE = ModBlockTags.ofCommon("shear_mineable");
 

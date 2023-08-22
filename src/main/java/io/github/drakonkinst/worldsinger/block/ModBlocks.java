@@ -39,7 +39,7 @@ public final class ModBlocks {
                             .sounds(BlockSoundGroup.SAND)), true);
     public static final Block DEAD_VERDANT_VINE_BLOCK = register("dead_verdant_vine_block",
             new VerdantVineBlock(
-                    FabricBlockSettings.create().strength(2.0f).sounds(BlockSoundGroup.WOOD)
+                    FabricBlockSettings.create().strength(1.0f).sounds(BlockSoundGroup.WOOD)
                             .ticksRandomly()),
             true);
     public static final Block DEAD_VERDANT_VINE_BRANCH = register(
@@ -49,7 +49,7 @@ public final class ModBlocks {
             true);
     public static final Block DEAD_VERDANT_VINE_SNARE = register("dead_verdant_vine_snare",
             new VerdantVineSnareBlock(
-                    FabricBlockSettings.create().solid().noCollision().requiresTool().strength(4.0f)
+                    FabricBlockSettings.create().solid().noCollision().requiresTool().strength(0.4f)
                             .ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block DEAD_TWISTING_VERDANT_VINES = register("dead_twisting_verdant_vines",
             new TwistingVerdantVineBlock(
@@ -100,15 +100,15 @@ public final class ModBlocks {
     public static final Block VERDANT_VINE_BRANCH = register(
             "verdant_vine_branch",
             new LivingVerdantVineBranchBlock(ModBlocks.DEAD_VERDANT_VINE_BRANCH,
-                    FabricBlockSettings.create().strength(0.4f).nonOpaque().ticksRandomly()),
+                    FabricBlockSettings.create().strength(0.8f).nonOpaque().ticksRandomly()),
             true);
     public static final Block VERDANT_VINE_SNARE = register("verdant_vine_snare",
             new LivingVerdantVineSnareBlock(ModBlocks.DEAD_VERDANT_VINE_SNARE,
-                    FabricBlockSettings.create().solid().noCollision().requiresTool().strength(4.0f)
+                    FabricBlockSettings.create().solid().noCollision().requiresTool().strength(0.8f)
                             .ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block TWISTING_VERDANT_VINES = register("twisting_verdant_vines",
             new LivingTwistingVerdantVineBlock(ModBlocks.DEAD_TWISTING_VERDANT_VINES,
-                    FabricBlockSettings.create().strength(0.2f).noCollision()
+                    FabricBlockSettings.create().strength(0.4f).noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)),
@@ -116,7 +116,7 @@ public final class ModBlocks {
     public static final Block TWISTING_VERDANT_VINES_PLANT = register(
             "twisting_verdant_vines_plant",
             new LivingTwistingVerdantVinePlantBlock(ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
-                    FabricBlockSettings.create().strength(0.2f).noCollision()
+                    FabricBlockSettings.create().strength(0.4f).noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)),

@@ -1,9 +1,13 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
+import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockAccessor;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockSettingsAccessor;
+import io.github.drakonkinst.worldsinger.registry.DataTable;
+import io.github.drakonkinst.worldsinger.registry.DataTables;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.function.ToIntFunction;
 import net.minecraft.block.AbstractBlock;
@@ -20,16 +24,22 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractBlock.AbstractBlockState.class)
 public abstract class AbstractBlockStateMixin {
+
+    @Unique
+    private static final Direction[] ALL_DIRECTIONS = Direction.values();
 
     @Shadow
     protected abstract BlockState asBlockState();
@@ -155,5 +165,42 @@ public abstract class AbstractBlockStateMixin {
                         : state,
                 world, pos, context
         );
+    }
+
+    @Inject(method = "onStateReplaced", at = @At("HEAD"))
+    private void addBlockPlaceBehaviors(World world, BlockPos pos, BlockState state, boolean moved,
+            CallbackInfo ci) {
+        checkSporeKillingBehavior(world, pos, state);
+        checkSporeKilledOnPlace(world, pos, state);
+    }
+
+    @Unique
+    private void checkSporeKillingBehavior(World world, BlockPos pos, BlockState state) {
+        if (!state.isIn(ModBlockTags.KILLS_SPORES)) {
+            return;
+        }
+        DataTable dataTable = DataTables.get(world, DataTables.SPORE_KILLING_RADIUS);
+        if (dataTable == null) {
+            return;
+        }
+        int radius = Math.min(dataTable.getIntForBlock(state), SporeKillable.MAX_RADIUS);
+        if (radius <= 0) {
+            return;
+        }
+        if (SporeKillable.killNearbySpores(world, pos, radius) > 0) {
+            // TODO: Play some kind of effect
+        }
+    }
+
+    @Unique
+    private void checkSporeKilledOnPlace(World world, BlockPos pos, BlockState state) {
+        if (!(state.getBlock() instanceof SporeKillable sporeKillable)) {
+            return;
+        }
+        if (SporeKillable.isSporeKillingBlockNearby(world, pos)) {
+            BlockState newBlockState = sporeKillable.getDeadSporeBlock()
+                    .getStateWithProperties(state);
+            world.setBlockState(pos, newBlockState, Block.NOTIFY_ALL);
+        }
     }
 }
