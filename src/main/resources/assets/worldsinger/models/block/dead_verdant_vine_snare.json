@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "worldsinger:block/dead_verdant_vine_snare"
+  }
+}

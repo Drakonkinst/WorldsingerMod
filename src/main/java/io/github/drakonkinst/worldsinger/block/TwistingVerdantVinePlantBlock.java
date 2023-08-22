@@ -31,7 +31,7 @@ public class TwistingVerdantVinePlantBlock extends AbstractVerticalGrowthPlantBl
 
     @Override
     protected Block getStem() {
-        return ModBlocks.TWISTING_VERDANT_VINES;
+        return ModBlocks.DEAD_TWISTING_VERDANT_VINES;
     }
 
     @Override

@@ -20,10 +20,10 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
             12.0);
 
     public static boolean canAttach(BlockState state, BlockState attachCandidate) {
-        if (attachCandidate.isOf(ModBlocks.VERDANT_VINE_BRANCH)) {
+        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
             return true;
         }
-        if (attachCandidate.isOf(ModBlocks.VERDANT_VINE_SNARE)) {
+        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
             return VerdantVineSnareBlock.getDirection(attachCandidate) == getGrowthDirection(state);
         }
         return false;
@@ -41,7 +41,7 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
 
     @Override
     protected Block getPlant() {
-        return ModBlocks.TWISTING_VERDANT_VINES_PLANT;
+        return ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT;
     }
 
     @Override

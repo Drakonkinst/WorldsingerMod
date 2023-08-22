@@ -57,10 +57,10 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
         }
         BlockState attachedBlockState = world.getBlockState(
                 pos.offset(WallMountedBlock.getDirection(state).getOpposite()));
-        if (attachedBlockState.isOf(ModBlocks.VERDANT_VINE_BRANCH)) {
+        if (attachedBlockState.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
             return true;
         }
-        if (attachedBlockState.isOf(ModBlocks.VERDANT_VINE_SNARE)) {
+        if (attachedBlockState.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
             return WallMountedBlock.getDirection(attachedBlockState)
                     == WallMountedBlock.getDirection(state);
         }

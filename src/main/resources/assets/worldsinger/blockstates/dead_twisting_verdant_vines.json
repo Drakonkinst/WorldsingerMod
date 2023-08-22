@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "vertical_direction=up": {
+      "model": "worldsinger:block/dead_twisting_verdant_vines"
+    },
+    "vertical_direction=down": {
+      "model": "worldsinger:block/dead_twisting_verdant_vines",
+      "x": 180
+    }
+  }
+}

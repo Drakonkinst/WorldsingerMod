@@ -1,37 +1,20 @@
 {
   "ambientocclusion": false,
   "textures": {
-    "texture": "worldsinger:block/verdant_vine_branch",
-    "inside": "worldsinger:block/verdant_vine_branch",
-    "particle": "worldsinger:block/verdant_vine_branch"
+    "texture": "worldsinger:block/dead_verdant_vine_branch",
+    "inside": "worldsinger:block/dead_verdant_vine_branch",
+    "particle": "worldsinger:block/dead_verdant_vine_branch"
   },
   "elements": [
     {
       "from": [
         4,
         4,
-        4
+        0
       ],
       "to": [
         12,
         12,
-        12
-      ],
-      "faces": {
-        "north": {
-          "texture": "#inside"
-        }
-      }
-    },
-    {
-      "from": [
-        5,
-        5,
-        2
-      ],
-      "to": [
-        11,
-        11,
         4
       ],
       "faces": {
@@ -42,7 +25,8 @@
           "texture": "#texture"
         },
         "north": {
-          "texture": "#texture"
+          "texture": "#texture",
+          "cullface": "north"
         },
         "west": {
           "texture": "#texture"

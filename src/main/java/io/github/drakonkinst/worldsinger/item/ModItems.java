@@ -22,6 +22,10 @@ public final class ModItems {
     private ModItems() {
     }
 
+    public static final Item DEAD_SPORES_BUCKET = ModItems.register("dead_spores_bucket",
+            new AetherSporeBucketItem(ModBlocks.DEAD_SPORE_BLOCK,
+                    SoundEvents.BLOCK_POWDER_SNOW_PLACE,
+                    new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
     public static final Item VERDANT_SPORES_BUCKET = ModItems.register(
             "verdant_spores_bucket", new AetherSporeBucketItem(ModBlocks.VERDANT_SPORE_BLOCK,
                     SoundEvents.BLOCK_POWDER_SNOW_PLACE,
@@ -55,6 +59,12 @@ public final class ModItems {
             itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH.asItem());
             itemGroup.add(ModBlocks.VERDANT_VINE_SNARE.asItem());
             itemGroup.add(ModBlocks.TWISTING_VERDANT_VINES.asItem());
+            itemGroup.add(ModItems.DEAD_SPORES_BUCKET);
+            itemGroup.add(ModBlocks.DEAD_SPORE_BLOCK.asItem());
+            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_BLOCK.asItem());
+            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_BRANCH.asItem());
+            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_SNARE.asItem());
+            itemGroup.add(ModBlocks.DEAD_TWISTING_VERDANT_VINES.asItem());
             itemGroup.add(ModBlocks.SALTSTONE.asItem());
             itemGroup.add(ModItems.SALT);
         });

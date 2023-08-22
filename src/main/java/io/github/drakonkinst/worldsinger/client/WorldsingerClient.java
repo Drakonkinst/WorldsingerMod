@@ -27,13 +27,27 @@ public class WorldsingerClient implements ClientModInitializer {
                         new Identifier(Constants.MOD_ID, "block/verdant_spore_sea_block_still"),
                         new Identifier(Constants.MOD_ID, "block/verdant_spore_sea_block_flow")
                 ));
+        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.DEAD_SPORES,
+                ModFluids.FLOWING_DEAD_SPORES,
+                new SimpleFluidRenderHandler(
+                        new Identifier(Constants.MOD_ID, "block/dead_spore_sea_block_still"),
+                        new Identifier(Constants.MOD_ID, "block/dead_spore_sea_block_flow")
+                ));
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
-                ModFluids.VERDANT_SPORES, ModFluids.FLOWING_VERDANT_SPORES);
+                ModFluids.VERDANT_SPORES,
+                ModFluids.FLOWING_VERDANT_SPORES,
+                ModFluids.DEAD_SPORES,
+                ModFluids.FLOWING_DEAD_SPORES);
 
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
-                ModBlocks.VERDANT_VINE_SNARE, ModBlocks.TWISTING_VERDANT_VINES,
-                ModBlocks.TWISTING_VERDANT_VINES_PLANT);
+                ModBlocks.VERDANT_VINE_SNARE,
+                ModBlocks.TWISTING_VERDANT_VINES,
+                ModBlocks.TWISTING_VERDANT_VINES_PLANT,
+                ModBlocks.DEAD_VERDANT_VINE_SNARE,
+                ModBlocks.DEAD_TWISTING_VERDANT_VINES,
+                ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT
+        );
 
         ClientPlayNetworking.registerGlobalReceiver(LumarSeetheData.LUMAR_SEETHE_UPDATE_PACKET_ID,
                 (client, handler, buf, responseSender) -> {

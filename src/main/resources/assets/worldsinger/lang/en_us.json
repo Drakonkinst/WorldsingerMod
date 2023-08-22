@@ -1,11 +1,17 @@
 {
   "itemGroup.worldsinger.worldsinger": "Worldsinger",
   "item.worldsinger.verdant_spores_bucket": "Bucket of Verdant Spores",
+  "item.worldsinger.dead_spores_bucket": "Bucket of Dead Spores",
   "item.worldsinger.salt": "Salt",
   "block.worldsinger.verdant_spore_block": "Verdant Spores Block",
   "block.worldsinger.verdant_vine_block": "Verdant Vine Block",
   "block.worldsinger.verdant_vine_branch": "Verdant Vine Branch",
   "block.worldsinger.verdant_vine_snare": "Verdant Vine Snare",
   "block.worldsinger.twisting_verdant_vines": "Twisting Verdant Vines",
+  "block.worldsinger.dead_spore_block": "Dead Spores Block",
+  "block.worldsinger.dead_verdant_vine_block": "Dead Verdant Vine Block",
+  "block.worldsinger.dead_verdant_vine_branch": "Dead Verdant Vine Branch",
+  "block.worldsinger.dead_verdant_vine_snare": "Dead Verdant Vine Snare",
+  "block.worldsinger.dead_twisting_verdant_vines": "Dead Twisting Verdant Vines",
   "block.worldsinger.saltstone": "Saltstone"
 }

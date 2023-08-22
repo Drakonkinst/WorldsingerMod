@@ -42,15 +42,14 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
     private static boolean canConnect(BlockView world, BlockPos pos, BlockState state,
             Direction direction) {
-        if (state.isOf(ModBlocks.VERDANT_VINE_BRANCH)) {
+        if (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
             return true;
         }
-        if (state.isOf(ModBlocks.VERDANT_VINE_SNARE)) {
+        if (state.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
             Direction attachDirection = VerdantVineSnareBlock.getDirection(state).getOpposite();
             return attachDirection == direction;
         }
-        if (state.isOf(ModBlocks.TWISTING_VERDANT_VINES) || state.isOf(
-                ModBlocks.TWISTING_VERDANT_VINES_PLANT)) {
+        if (state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
             Direction growthDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(
                             state)
                     .getOpposite();
@@ -87,9 +86,8 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
             BlockState neighborState = world.getBlockState(neighborPos);
 
             // Snares and vines cannot support branches
-            if (neighborState.isOf(ModBlocks.VERDANT_VINE_SNARE) || neighborState.isOf(
-                    ModBlocks.TWISTING_VERDANT_VINES) || neighborState.isOf(
-                    ModBlocks.TWISTING_VERDANT_VINES_PLANT)) {
+            if (neighborState.isIn(ModBlockTags.VERDANT_VINE_SNARE) || neighborState.isIn(
+                    ModBlockTags.TWISTING_VERDANT_VINES)) {
                 continue;
             }
 
