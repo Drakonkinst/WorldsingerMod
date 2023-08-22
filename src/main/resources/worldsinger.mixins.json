@@ -35,6 +35,7 @@
     "defaultRequire": 1
   },
   "client": [
-    "client.BackgroundRendererMixin"
+    "client.BackgroundRendererMixin",
+    "client.FluidRendererMixin"
   ]
 }

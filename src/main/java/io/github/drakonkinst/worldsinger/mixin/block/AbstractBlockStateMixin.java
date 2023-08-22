@@ -38,9 +38,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractBlock.AbstractBlockState.class)
 public abstract class AbstractBlockStateMixin {
 
-    @Unique
-    private static final Direction[] ALL_DIRECTIONS = Direction.values();
-
     @Shadow
     protected abstract BlockState asBlockState();
 

@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 
-public abstract class VerdantSporeFluid extends AetherSporeFluid {
+public abstract class VerdantSporeFluid extends LivingAetherSporeFluid {
 
     public static final int COLOR = 0x2e522e;
     public static final int PARTICLE_COLOR = 0x64aa4a;
