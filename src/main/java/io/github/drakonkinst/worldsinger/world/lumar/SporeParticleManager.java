@@ -1,12 +1,13 @@
 package io.github.drakonkinst.worldsinger.world.lumar;
 
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
+import io.github.drakonkinst.worldsinger.particle.SporeDustParticleEffect;
 import io.github.drakonkinst.worldsinger.util.Constants;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 
 // Represents a mote of spore particles, which can
@@ -16,7 +17,7 @@ public final class SporeParticleManager {
     private SporeParticleManager() {}
 
     private static final float CACHED_SIZE_PRECISION = 10.0f;
-    private static final Int2ObjectMap<DustParticleEffect> cachedDustParticleEffects = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectMap<SporeDustParticleEffect> cachedDustParticleEffects = new Int2ObjectOpenHashMap<>();
 
     public static boolean spawnSporeParticle(ServerWorld world, AetherSporeType aetherSporeType,
             float centerX, float bottomY,
@@ -52,8 +53,8 @@ public final class SporeParticleManager {
                 maxZ);
     }
 
-    private static DustParticleEffect getCachedDustParticleEffect(AetherSporeType aetherSporeType,
-            float size) {
+    private static SporeDustParticleEffect getCachedDustParticleEffect(
+            AetherSporeType aetherSporeType, float size) {
         int key = hashTwoInts(aetherSporeType.ordinal(),
                 (int) Math.floor(size * CACHED_SIZE_PRECISION));
         return cachedDustParticleEffects.computeIfAbsent(key,
@@ -65,7 +66,8 @@ public final class SporeParticleManager {
         return (a + b) * (a + b + 1) / 2 + a;
     }
 
-    private static DustParticleEffect createDustParticleEffect(AetherSporeType aetherSporeType,
+    private static SporeDustParticleEffect createDustParticleEffect(
+            AetherSporeType aetherSporeType,
             float size) {
         Constants.LOGGER.info(
                 "Caching new dust particle effect (" + aetherSporeType.asString() + ", " + size
@@ -74,10 +76,7 @@ public final class SporeParticleManager {
         // Make size follow the cached size precision to prevent unintentional imprecision
         size = ((int) (size * CACHED_SIZE_PRECISION)) / CACHED_SIZE_PRECISION;
 
-        int particleColor = aetherSporeType.getParticleColor();
-        float red = AetherSporeType.getNormalizedRed(particleColor);
-        float green = AetherSporeType.getNormalizedGreen(particleColor);
-        float blue = AetherSporeType.getNormalizedBlue(particleColor);
-        return new DustParticleEffect(new Vector3f(red, green, blue), size);
+        Vector3f particleColor = Vec3d.unpackRgb(aetherSporeType.getParticleColor()).toVector3f();
+        return new SporeDustParticleEffect(particleColor, size);
     }
 }
