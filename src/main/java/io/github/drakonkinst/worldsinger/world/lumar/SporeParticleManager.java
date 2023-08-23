@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
 import org.joml.Vector3f;
 
 // Represents a mote of spore particles, which can
@@ -49,12 +48,8 @@ public final class SporeParticleManager {
         int minZ = (int) (centerZ - horizontalRadius);
         int maxZ = (int) (centerZ + horizontalRadius);
 
-        for (BlockPos pos : BlockPos.iterate(minX, minY, minZ, maxX, maxY, maxZ)) {
-            if (SporeKillable.isSporeKillingBlockNearby(world, pos)) {
-                return true;
-            }
-        }
-        return false;
+        return SporeKillable.isSporeKillingBlockNearbyForRange(world, minX, minY, minZ, maxX, maxY,
+                maxZ);
     }
 
     private static DustParticleEffect getCachedDustParticleEffect(AetherSporeType aetherSporeType,
