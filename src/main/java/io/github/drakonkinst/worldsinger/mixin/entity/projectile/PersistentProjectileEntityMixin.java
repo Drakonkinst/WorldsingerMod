@@ -4,7 +4,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.util.math.ExtendedRaycastContext;
 import io.github.drakonkinst.worldsinger.util.math.ExtendedRaycastContext.ExtendedFluidHandling;
-import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

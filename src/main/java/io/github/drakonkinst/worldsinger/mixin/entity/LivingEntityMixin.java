@@ -3,7 +3,7 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Flutterer;

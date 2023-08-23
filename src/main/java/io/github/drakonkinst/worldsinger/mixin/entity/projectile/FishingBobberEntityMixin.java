@@ -2,7 +2,7 @@ package io.github.drakonkinst.worldsinger.mixin.entity.projectile;
 
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.projectile.FishingBobberEntity;

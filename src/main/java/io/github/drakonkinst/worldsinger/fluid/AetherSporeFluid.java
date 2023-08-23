@@ -1,7 +1,8 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
-import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -21,8 +22,6 @@ import net.minecraft.world.WorldView;
 
 public abstract class AetherSporeFluid extends FlowableFluid {
 
-    private static final float MAX_COLOR_VALUE = 255.0f;
-
     public static final float FOG_START = 0.25f;
     public static final float FOG_END = 3.0f;
     public static final float HORIZONTAL_DRAG_MULTIPLIER = 0.7f;
@@ -33,34 +32,19 @@ public abstract class AetherSporeFluid extends FlowableFluid {
     // Water uses the value 0.014, and lava uses 0.007 in the Nether and 0.0023 otherwise
     public static final double FLUID_SPEED = 0.012;
 
-    public static float getNormalizedRed(int color) {
-        int red = (color >> 16) & 0xFF;
-        return red / MAX_COLOR_VALUE;
-    }
-
-    public static float getNormalizedGreen(int color) {
-        int green = (color >> 8) & 0xFF;
-        return green / MAX_COLOR_VALUE;
-    }
-
-    public static float getNormalizedBlue(int color) {
-        int blue = color & 0xFF;
-        return blue / MAX_COLOR_VALUE;
-    }
-
-    private final int color;
-    private final int particleColor;
+    private final AetherSporeType aetherSporeType;
     private final float fogRed;
     private final float fogGreen;
     private final float fogBlue;
 
-    public AetherSporeFluid(int color, int particleColor) {
+    public AetherSporeFluid(AetherSporeType aetherSporeType) {
         super();
-        this.color = color;
-        this.particleColor = particleColor;
-        this.fogRed = AetherSporeFluid.getNormalizedRed(color);
-        this.fogGreen = AetherSporeFluid.getNormalizedGreen(color);
-        this.fogBlue = AetherSporeFluid.getNormalizedBlue(color);
+        this.aetherSporeType = aetherSporeType;
+
+        int color = aetherSporeType.getColor();
+        this.fogRed = AetherSporeType.getNormalizedRed(color);
+        this.fogGreen = AetherSporeType.getNormalizedGreen(color);
+        this.fogBlue = AetherSporeType.getNormalizedBlue(color);
     }
 
     @Override
@@ -161,7 +145,7 @@ public abstract class AetherSporeFluid extends FlowableFluid {
         return fogBlue;
     }
 
-    public int getColor() {
-        return color;
+    public AetherSporeType getAetherSpore() {
+        return aetherSporeType;
     }
 }

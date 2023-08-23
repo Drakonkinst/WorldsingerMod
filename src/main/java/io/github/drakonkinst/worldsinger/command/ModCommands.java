@@ -18,6 +18,6 @@ public final class ModCommands {
     private static void createCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         SeetheCommand.register(dispatcher);
         TableCommand.register(dispatcher);
-
+        SporeCommand.register(dispatcher);
     }
 }

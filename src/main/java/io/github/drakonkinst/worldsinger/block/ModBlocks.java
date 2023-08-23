@@ -1,9 +1,8 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.fluid.DeadSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
-import io.github.drakonkinst.worldsinger.fluid.VerdantSporeFluid;
 import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -33,8 +32,7 @@ public final class ModBlocks {
                     .sounds(BlockSoundGroup.INTENTIONALLY_EMPTY)
             ), false);
     public static final Block DEAD_SPORE_BLOCK = register("dead_spore_block",
-            new AetherSporeBlock(ModBlocks.DEAD_SPORE_SEA_BLOCK,
-                    DeadSporeFluid.PARTICLE_COLOR,
+            new AetherSporeBlock(AetherSporeType.DEAD, ModBlocks.DEAD_SPORE_SEA_BLOCK,
                     FabricBlockSettings.create().strength(0.5f).mapColor(MapColor.GRAY)
                             .sounds(BlockSoundGroup.SAND)), true);
     public static final Block DEAD_VERDANT_VINE_BLOCK = register("dead_verdant_vine_block",
@@ -84,9 +82,9 @@ public final class ModBlocks {
             ), false);
     public static final Block VERDANT_SPORE_BLOCK =
             register("verdant_spore_block",
-                    new LivingAetherSporeBlock(ModBlocks.VERDANT_SPORE_SEA_BLOCK,
+                    new LivingAetherSporeBlock(AetherSporeType.VERDANT,
+                            ModBlocks.VERDANT_SPORE_SEA_BLOCK,
                             ModBlocks.DEAD_SPORE_BLOCK,
-                            VerdantSporeFluid.PARTICLE_COLOR,
                             FabricBlockSettings.create()
                                     .strength(0.5f)
                                     .mapColor(MapColor.DARK_GREEN)

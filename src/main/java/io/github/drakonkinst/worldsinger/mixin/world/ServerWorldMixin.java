@@ -1,9 +1,9 @@
 package io.github.drakonkinst.worldsinger.mixin.world;
 
-import io.github.drakonkinst.worldsinger.world.LumarSeetheAccess;
-import io.github.drakonkinst.worldsinger.world.LumarSeetheData;
-import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
-import io.github.drakonkinst.worldsinger.world.LumarSeetheManagerAccess;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheAccess;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheData;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManagerAccess;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;

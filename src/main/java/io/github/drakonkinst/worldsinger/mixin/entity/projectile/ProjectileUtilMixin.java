@@ -2,7 +2,7 @@ package io.github.drakonkinst.worldsinger.mixin.entity.projectile;
 
 import io.github.drakonkinst.worldsinger.util.math.ExtendedRaycastContext;
 import io.github.drakonkinst.worldsinger.util.math.ExtendedRaycastContext.ExtendedFluidHandling;
-import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.util.math.Vec3d;

@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world;
+package io.github.drakonkinst.worldsinger.world.lumar;
 
 import io.github.drakonkinst.worldsinger.util.Constants;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;

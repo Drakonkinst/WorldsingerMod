@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.world.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.Block;

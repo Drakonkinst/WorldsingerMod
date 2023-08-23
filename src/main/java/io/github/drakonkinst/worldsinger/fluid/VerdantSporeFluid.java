@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.item.ModItems;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -11,11 +12,8 @@ import net.minecraft.state.property.Properties;
 
 public abstract class VerdantSporeFluid extends LivingAetherSporeFluid {
 
-    public static final int COLOR = 0x2e522e;
-    public static final int PARTICLE_COLOR = 0x64aa4a;
-
     public VerdantSporeFluid() {
-        super(COLOR, PARTICLE_COLOR);
+        super(AetherSporeType.VERDANT);
     }
 
     @Override

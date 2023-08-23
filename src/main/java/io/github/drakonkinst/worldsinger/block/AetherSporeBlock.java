@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,9 +30,9 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
     private final BlockState fluidizedState;
     private final int color;
 
-    public AetherSporeBlock(Block fluidized, int color, Settings settings) {
+    public AetherSporeBlock(AetherSporeType aetherSporeType, Block fluidized, Settings settings) {
         super(settings);
-        this.color = color;
+        this.color = aetherSporeType.getParticleColor();
         this.fluidizedState = fluidized.getDefaultState();
         if (fluidized instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
             aetherSporeFluidBlock.setSolidBlockState(this.getDefaultState());

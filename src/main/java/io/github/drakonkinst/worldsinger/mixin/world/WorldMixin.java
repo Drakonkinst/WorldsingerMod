@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.world;
 
-import io.github.drakonkinst.worldsinger.world.LumarSeetheAccess;
-import io.github.drakonkinst.worldsinger.world.LumarSeetheData;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheAccess;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheData;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

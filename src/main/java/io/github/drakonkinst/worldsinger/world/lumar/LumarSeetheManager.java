@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world;
+package io.github.drakonkinst.worldsinger.world.lumar;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;

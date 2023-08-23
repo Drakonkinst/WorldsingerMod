@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world;
+package io.github.drakonkinst.worldsinger.world.lumar;
 
 public interface LumarSeetheAccess {
 
