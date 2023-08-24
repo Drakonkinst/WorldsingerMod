@@ -11,6 +11,10 @@ base {
 }
 
 repositories {
+    maven {
+        name = "Jitpack"
+        url = "https://jitpack.io/"
+    }
 }
 
 loom {
@@ -28,6 +32,7 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    include(implementation('com.github.Chocohead:Fabric-ASM:v2.3'))
 }
 
 processResources {

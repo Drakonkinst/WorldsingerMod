@@ -16,6 +16,9 @@
     ],
     "client": [
       "io.github.drakonkinst.worldsinger.client.WorldsingerClient"
+    ],
+    "mm:early_risers": [
+      "io.github.drakonkinst.worldsinger.EarlyRiser"
     ]
   },
   "mixins": [
