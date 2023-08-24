@@ -12,8 +12,8 @@ public class EarlyRiser implements Runnable {
     public void run() {
         MappingResolver remapper = FabricLoader.getInstance().getMappingResolver();
 
-        String nodePathTypeEnum = remapper.mapClassName(INTERMEDIARY, "net.minecraft.class_7");
-        ClassTinkerers.enumBuilder(nodePathTypeEnum, float.class).addEnum("AETHER_SPORE_SEA", -1.0f)
+        String pathNodeTypeEnum = remapper.mapClassName(INTERMEDIARY, "net.minecraft.class_7");
+        ClassTinkerers.enumBuilder(pathNodeTypeEnum, float.class).addEnum("AETHER_SPORE_SEA", -1.0f)
                 .build();
     }
 }

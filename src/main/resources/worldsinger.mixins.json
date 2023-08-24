@@ -5,6 +5,7 @@
   "mixins": [
     "accessor.AbstractBlockAccessor",
     "accessor.AbstractBlockSettingsAccessor",
+    "accessor.LandPathNodeMakerInvoker",
     "block.AbstractBlockStateMixin",
     "block.BlockMixin",
     "block.FluidBlockMixin",
@@ -18,6 +19,7 @@
     "entity.FlyingEntityMixin",
     "entity.ItemEntityMixin",
     "entity.LivingEntityMixin",
+    "entity.ai.BirdPathNodeMakerMixin",
     "entity.ai.LandPathNodeMakerMixin",
     "entity.ai.SwimGoalMixin",
     "entity.projectile.FishingBobberEntityMixin",
