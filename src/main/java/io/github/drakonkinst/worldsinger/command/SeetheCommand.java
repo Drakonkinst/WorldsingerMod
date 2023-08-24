@@ -14,6 +14,7 @@ import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManagerAccess;
 import net.minecraft.command.argument.TimeArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 
 public class SeetheCommand {
 
@@ -40,7 +41,7 @@ public class SeetheCommand {
         int cyclesUntilNextLongStilling = lumarSeetheData.getCyclesUntilNextLongStilling();
         context.getSource().sendMessage(Text.literal(
                 "Seethe is " + (isSeething ? "ACTIVE" : "INACTIVE") + " for the next " + cycleTicks
-                        + " ticks, or " + ((int) Math.floor(
+                        + " ticks, or " + (MathHelper.floor(
                         cycleTicks * Constants.TICKS_TO_SECONDS))
                         + " seconds\nThere are " + cyclesUntilNextLongStilling
                         + " cycles until the next long stilling"));

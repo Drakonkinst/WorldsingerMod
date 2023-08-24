@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.effect;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
+import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.minecraft.block.BlockState;
@@ -11,7 +12,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -20,10 +21,42 @@ public class SporeStatusEffect extends StatusEffect {
     public static final float DEFAULT_DAMAGE = 15.0f;
 
     private static BlockPos toRoundedBlockPos(Vec3d pos) {
-        int x = (int) Math.round(pos.getX());
+        int x = MathHelper.floor(pos.getX());
         int y = (int) Math.round(pos.getY());
-        int z = (int) Math.round(pos.getZ());
+        int z = MathHelper.floor(pos.getZ());
         return new BlockPos(x, y, z);
+    }
+
+    private static Iterable<BlockPos> iterateBoundingBoxForEntity(LivingEntity entity) {
+        BlockPos blockPos = toRoundedBlockPos(entity.getPos());
+        int width = MathHelper.ceil(entity.getWidth());
+        int height = MathHelper.ceil(entity.getHeight());
+        Constants.LOGGER.info(
+                entity.getType().getUntranslatedName() + " has dimensions " + width + " x "
+                        + height);
+
+        // Grow from bottom to top
+        int maxY = blockPos.getY() + height - 1;
+        int minX = blockPos.getX() - (width / 2);
+        int maxX = blockPos.getX() + ((width - 1) / 2);
+        int minZ = blockPos.getZ() - (width / 2);
+        int maxZ = blockPos.getZ() + ((width - 1) / 2);
+        return BlockPos.iterate(minX, blockPos.getY(), minZ, maxX, maxY, maxZ);
+    }
+
+    private static void growVerdantSpores(World world, LivingEntity entity) {
+        for (BlockPos pos : SporeStatusEffect.iterateBoundingBoxForEntity(entity)) {
+            BlockState blockState = world.getBlockState(pos);
+            BlockState newBlockState = ModBlocks.VERDANT_VINE_SNARE.getDefaultState()
+                    .with(ModProperties.FLUIDLOGGED, Fluidlogged.getFluidIndex(
+                            blockState.getFluidState().getFluid()))
+                    .with(Properties.PERSISTENT, false);
+            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW) || blockState.isOf(
+                    ModBlocks.VERDANT_SPORE_SEA_BLOCK) && newBlockState.canPlaceAt(world,
+                    pos)) {
+                world.setBlockState(pos, newBlockState);
+            }
+        }
     }
 
     private final AetherSporeType aetherSporeType;
@@ -56,27 +89,7 @@ public class SporeStatusEffect extends StatusEffect {
     private void onDeathEffect(LivingEntity entity) {
         World world = entity.getWorld();
         if (aetherSporeType == AetherSporeType.VERDANT) {
-            // TODO: Replace with a small spore growth entity
-            growVerdantSpores(world, entity);
-        }
-    }
-
-    private void growVerdantSpores(World world, LivingEntity entity) {
-        BlockPos blockPos = toRoundedBlockPos(entity.getPos());
-        BlockPos.Mutable currentBlockPos = new BlockPos.Mutable(blockPos.getX(), blockPos.getY(),
-                blockPos.getZ());
-        for (int i = 0; i < 2; ++i) {
-            BlockState blockState = world.getBlockState(currentBlockPos);
-            BlockState newBlockState = ModBlocks.VERDANT_VINE_SNARE.getDefaultState()
-                    .with(ModProperties.FLUIDLOGGED, Fluidlogged.getFluidIndex(
-                            blockState.getFluidState().getFluid()))
-                    .with(Properties.PERSISTENT, false);
-            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW) || blockState.isOf(
-                    ModBlocks.VERDANT_SPORE_SEA_BLOCK) && newBlockState.canPlaceAt(world,
-                    currentBlockPos)) {
-                world.setBlockState(currentBlockPos, newBlockState);
-            }
-            currentBlockPos.move(Direction.UP);
+            SporeStatusEffect.growVerdantSpores(world, entity);
         }
     }
 

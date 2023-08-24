@@ -18,6 +18,7 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
@@ -70,12 +71,12 @@ public final class SporeParticleManager {
         double maxY = bottomY + height;
         double maxZ = centerZ + horizontalRadius;
 
-        int searchMinX = (int) Math.floor(minX);
-        int searchMinY = (int) Math.floor(minY);
-        int searchMinZ = (int) Math.floor(minZ);
-        int searchMaxX = (int) Math.ceil(maxX);
-        int searchMaxY = (int) Math.ceil(maxY);
-        int searchMaxZ = (int) Math.ceil(maxZ);
+        int searchMinX = MathHelper.floor(minX);
+        int searchMinY = MathHelper.floor(minY);
+        int searchMinZ = MathHelper.floor(minZ);
+        int searchMaxX = MathHelper.ceil(maxX);
+        int searchMaxY = MathHelper.ceil(maxY);
+        int searchMaxZ = MathHelper.ceil(maxZ);
 
         if (SporeKillable.isSporeKillingBlockNearbyForRange(world, searchMinX, searchMinY,
                 searchMinZ, searchMaxX, searchMaxY,
@@ -106,7 +107,7 @@ public final class SporeParticleManager {
         double height = SPLASH_MIN_HEIGHT + fallDistance * SPLASH_HEIGHT_GAIN_PER_BLOCK + (
                 random.nextFloat() * multiplier);
         height = Math.min(height, SPLASH_MAX_HEIGHT);
-        int count = SPLASH_PARTICLES_PER_BLOCK_HEIGHT * (int) Math.ceil(height);
+        int count = SPLASH_PARTICLES_PER_BLOCK_HEIGHT * MathHelper.ceil(height);
 
         SporeParticleManager.createSporeParticles(world, aetherSporeType, entityPos.getX(),
                 entityPos.getY(), entityPos.getZ(), radius, height, particleSize,
