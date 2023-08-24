@@ -49,7 +49,7 @@ public abstract class AbstractBlockStateMixin {
                     "(Ljava/lang/Object;)I"))
     private <T> int injectLuminance(ToIntFunction<T> instance, T t) {
         if (t instanceof BlockState state && state.getEntries() != null && state.contains(
-                ModProperties.FLUIDLOGGABLE)) {
+                ModProperties.FLUIDLOGGED)) {
             Fluid fluid = Fluidlogged.getFluid(state);
             FluidBlock fluidBlock = Fluidlogged.getFluidBlockForFluid(fluid);
             if (fluidBlock != null) {
@@ -103,7 +103,7 @@ public abstract class AbstractBlockStateMixin {
         BlockState state = this.asBlockState();
         boolean isVanillaWaterlogged =
                 state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED);
-        if (!isVanillaWaterlogged && state.contains(ModProperties.FLUIDLOGGABLE)) {
+        if (!isVanillaWaterlogged && state.contains(ModProperties.FLUIDLOGGED)) {
             Fluid fluid = Fluidlogged.getFluid(state);
             if (fluid != null) {
                 cir.setReturnValue(fluid.getDefaultState());
@@ -123,8 +123,8 @@ public abstract class AbstractBlockStateMixin {
             BlockView world, BlockPos pos
             , ShapeContext context) {
         return instance.getCollisionShape(
-                state.contains(ModProperties.FLUIDLOGGABLE)
-                        ? state.with(ModProperties.FLUIDLOGGABLE, 0)
+                state.contains(ModProperties.FLUIDLOGGED)
+                        ? state.with(ModProperties.FLUIDLOGGED, 0)
                         : state,
                 world, pos, context
         );
@@ -140,8 +140,8 @@ public abstract class AbstractBlockStateMixin {
             BlockView world, BlockPos pos,
             ShapeContext context) {
         return instance.getOutlineShape(
-                state.contains(ModProperties.FLUIDLOGGABLE)
-                        ? state.with(ModProperties.FLUIDLOGGABLE, 0)
+                state.contains(ModProperties.FLUIDLOGGED)
+                        ? state.with(ModProperties.FLUIDLOGGED, 0)
                         : state,
                 world, pos, context
         );
@@ -157,8 +157,8 @@ public abstract class AbstractBlockStateMixin {
             BlockPos pos) {
         ShapeContext context = ShapeContext.absent();
         return instance.getCollisionShape(
-                state.contains(ModProperties.FLUIDLOGGABLE)
-                        ? state.with(ModProperties.FLUIDLOGGABLE, 0)
+                state.contains(ModProperties.FLUIDLOGGED)
+                        ? state.with(ModProperties.FLUIDLOGGED, 0)
                         : state,
                 world, pos, context
         );

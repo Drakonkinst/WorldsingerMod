@@ -29,10 +29,10 @@ public final class Fluidlogged {
         if (state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED)) {
             return Fluids.WATER;
         }
-        if (!state.contains(ModProperties.FLUIDLOGGABLE)) {
+        if (!state.contains(ModProperties.FLUIDLOGGED)) {
             return null;
         }
-        int index = state.get(ModProperties.FLUIDLOGGABLE) - 1;
+        int index = state.get(ModProperties.FLUIDLOGGED) - 1;
         if (index < 0) {
             return Fluids.EMPTY;
         }

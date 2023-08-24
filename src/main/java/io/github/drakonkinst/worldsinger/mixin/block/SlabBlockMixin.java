@@ -18,7 +18,7 @@ public abstract class SlabBlockMixin {
             CallbackInfoReturnable<BlockState> cir) {
         BlockState blockState = ctx.getWorld().getBlockState(ctx.getBlockPos());
         if (blockState.isOf((Block) (Object) this)) {
-            cir.setReturnValue(cir.getReturnValue().with(ModProperties.FLUIDLOGGABLE, 0));
+            cir.setReturnValue(cir.getReturnValue().with(ModProperties.FLUIDLOGGED, 0));
         }
     }
 }

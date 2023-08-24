@@ -31,14 +31,14 @@ public abstract class BlockMixin {
             StateManager.Builder<Block,
                     BlockState> builder) {
         if (isWaterloggable()) {
-            builder.add(ModProperties.FLUIDLOGGABLE);
+            builder.add(ModProperties.FLUIDLOGGED);
         }
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void injectDefaultState(AbstractBlock.Settings settings, CallbackInfo ci) {
         if (isWaterloggable()) {
-            setDefaultState(getDefaultState().with(ModProperties.FLUIDLOGGABLE, 0));
+            setDefaultState(getDefaultState().with(ModProperties.FLUIDLOGGED, 0));
         }
     }
 

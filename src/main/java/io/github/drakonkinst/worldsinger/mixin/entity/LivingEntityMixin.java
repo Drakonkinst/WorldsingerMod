@@ -1,16 +1,22 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import com.google.common.collect.ImmutableMap;
+import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
+import java.util.Map;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Flutterer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.registry.tag.TagKey;
@@ -28,29 +34,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LivingEntityMixin extends Entity {
 
     @Shadow
-    protected abstract boolean shouldSwimInFluids();
+    public abstract boolean damage(DamageSource source, float amount);
 
-    @Shadow
-    protected boolean jumping;
+    @Unique
+    private static final Map<TagKey<Fluid>, StatusEffect> FLUID_TO_STATUS_EFFECT = ImmutableMap.of(
+            ModFluidTags.VERDANT_SPORES, ModStatusEffects.VERDANT_SPORES
+    );
 
-    @Shadow
-    protected abstract void swimUpward(TagKey<Fluid> fluid);
-
-    @Shadow
-    public abstract boolean canWalkOnFluid(FluidState state);
-
-    @Shadow
-    public abstract Vec3d applyFluidMovingSpeed(double gravity, boolean falling,
-            Vec3d motion);
-
-    @Shadow
-    public abstract boolean hasStatusEffect(StatusEffect effect);
-
-    @Shadow
-    public abstract void updateLimbs(boolean flutter);
-
-    @Shadow
-    public abstract boolean isClimbing();
+    @Unique
+    private static final int SPORE_EFFECT_DURATION_TICKS = 40;
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -59,17 +51,16 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "canWalkOnFluid", at = @At("HEAD"), cancellable = true)
     private void allowWalkingOnSporesDuringRain(FluidState state,
             CallbackInfoReturnable<Boolean> cir) {
+        // TODO: Not sure if this should be only still blocks or all blocks
         if (state.isIn(ModFluidTags.STILL_AETHER_SPORES) && !LumarSeetheManager.areSporesFluidized(
                 this.getWorld())) {
-            // if (state.isIn(ModFluidTags.AETHER_SPORES) && !LumarSeetheManager.areSporesFluidized(
-            //         this.getWorld())) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void onTick(CallbackInfo ci) {
-        checkSporeSeaDamage();
+        checkSporeSeaEffects();
     }
 
     @Inject(method = "tickMovement", at = @At("RETURN"))
@@ -155,17 +146,60 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Unique
-    private void checkSporeSeaDamage() {
+    private void checkSporeSeaEffects() {
         if (((SporeFluidEntityStateAccess) this).worldsinger$isInSporeSea()) {
-            damageFromSporeSea();
+            if ((LivingEntity) (Object) this instanceof PlayerEntity playerEntity
+                    && (playerEntity.isCreative() || playerEntity.isSpectator())) {
+                return;
+            }
+            applySporeSeaEffects();
+
+            // Also take suffocation damage, mainly for dead spores
+            this.damage(this.getDamageSources().drown(), 1.0f);
         }
     }
-
 
     @Unique
-    private void damageFromSporeSea() {
-        if (this.damage(this.getDamageSources().drown(), AetherSporeFluid.DAMAGE)) {
-            // this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f, 2.0f + this.random.nextFloat() * 0.4f);
+    private void applySporeSeaEffects() {
+        for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
+            if (this.isSubmergedIn(entry.getKey())) {
+                applySporeSeaEffect(entry.getValue());
+            }
         }
     }
+
+    @Unique
+    private void applySporeSeaEffect(StatusEffect statusEffect) {
+        this.addStatusEffect(
+                new StatusEffectInstance(statusEffect, SPORE_EFFECT_DURATION_TICKS, 0, true,
+                        false));
+    }
+
+    @Shadow
+    protected abstract boolean shouldSwimInFluids();
+
+    @Shadow
+    protected boolean jumping;
+
+    @Shadow
+    protected abstract void swimUpward(TagKey<Fluid> fluid);
+
+    @Shadow
+    public abstract boolean canWalkOnFluid(FluidState state);
+
+    @Shadow
+    public abstract Vec3d applyFluidMovingSpeed(double gravity, boolean falling,
+            Vec3d motion);
+
+    @Shadow
+    public abstract boolean hasStatusEffect(StatusEffect effect);
+
+    @Shadow
+    public abstract void updateLimbs(boolean flutter);
+
+    @Shadow
+    public abstract boolean isClimbing();
+
+    @Shadow
+    public abstract boolean addStatusEffect(StatusEffectInstance effect);
 }

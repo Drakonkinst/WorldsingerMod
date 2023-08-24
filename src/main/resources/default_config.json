@@ -2,6 +2,7 @@
   "fluidloggable_fluids": [
     "minecraft:water",
     "minecraft:lava",
-    "worldsinger:verdant_spores"
+    "worldsinger:verdant_spores",
+    "worldsinger:dead_spores"
   ]
 }

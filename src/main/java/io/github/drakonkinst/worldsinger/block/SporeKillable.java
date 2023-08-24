@@ -1,9 +1,15 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
+import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.registry.DataTable;
 import io.github.drakonkinst.worldsinger.registry.DataTables;
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Waterloggable;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -14,18 +20,35 @@ public interface SporeKillable {
     static int killNearbySpores(World world, BlockPos pos, int radius) {
         int numKilled = 0;
         radius = Math.min(radius, SporeKillable.MAX_RADIUS);
+        int deadSporeFluidIndex = Fluidlogged.getFluidIndex(ModFluids.DEAD_SPORES);
+
         // Not sure if this is the right iteration method, but it works
         // TODO: Add directional flags so that other blocks (aluminum) can block this effect)
         for (BlockPos currentPos : BlockPos.iterateOutwards(pos, radius, radius, radius)) {
             if (currentPos.equals(pos)) {
                 continue;
             }
+
             BlockState blockState = world.getBlockState(currentPos);
+            boolean wasChanged = false;
+
             if (blockState.getBlock() instanceof SporeKillable sporeKillable) {
-                world.setBlockState(currentPos,
-                        SporeKillable.convertToDeadVariant(sporeKillable, blockState),
-                        Block.NOTIFY_ALL);
+                blockState = SporeKillable.convertToDeadVariant(sporeKillable, blockState);
+                wasChanged = true;
+            }
+
+            if (blockState.getBlock() instanceof Waterloggable) {
+                FluidState fluidState = blockState.getFluidState();
+                if (fluidState.isIn(ModFluidTags.AETHER_SPORES) && !fluidState.isIn(
+                        ModFluidTags.DEAD_SPORES)) {
+                    blockState = blockState.with(ModProperties.FLUIDLOGGED, deadSporeFluidIndex);
+                    wasChanged = true;
+                }
+            }
+
+            if (wasChanged) {
                 numKilled += 1;
+                world.setBlockState(currentPos, blockState, Block.NOTIFY_ALL);
             }
         }
         return numKilled;

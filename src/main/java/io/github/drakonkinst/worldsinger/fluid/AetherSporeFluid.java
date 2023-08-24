@@ -23,10 +23,9 @@ import net.minecraft.world.WorldView;
 public abstract class AetherSporeFluid extends FlowableFluid {
 
     public static final float FOG_START = 0.25f;
-    public static final float FOG_END = 3.0f;
+    public static final float FOG_END = 2.0f;
     public static final float HORIZONTAL_DRAG_MULTIPLIER = 0.7f;
     public static final float VERTICAL_DRAG_MULTIPLIER = 0.8f;
-    public static final float DAMAGE = 10.0f;
 
     // How fast this fluid pushes entities.
     // Water uses the value 0.014, and lava uses 0.007 in the Nether and 0.0023 otherwise

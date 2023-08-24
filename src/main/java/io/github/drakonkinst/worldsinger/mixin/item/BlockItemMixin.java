@@ -26,7 +26,7 @@ public abstract class BlockItemMixin {
     private void injectCustomFluidPlacementState(ItemPlacementContext context,
             CallbackInfoReturnable<BlockState> cir) {
         BlockState placementState = getBlock().getPlacementState(context);
-        if (placementState == null || !placementState.contains(ModProperties.FLUIDLOGGABLE)) {
+        if (placementState == null || !placementState.contains(ModProperties.FLUIDLOGGED)) {
             return;
         }
         // Remove the fluid if double slabbed
@@ -38,7 +38,7 @@ public abstract class BlockItemMixin {
         FluidState fluidState = context.getWorld().getFluidState(context.getBlockPos());
         int index = Fluidlogged.getFluidIndex(fluidState.getFluid());
         if (index > -1) {
-            cir.setReturnValue(placementState.with(ModProperties.FLUIDLOGGABLE, index));
+            cir.setReturnValue(placementState.with(ModProperties.FLUIDLOGGED, index));
         }
     }
 }

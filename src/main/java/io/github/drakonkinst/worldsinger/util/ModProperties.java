@@ -8,5 +8,5 @@ public final class ModProperties {
 
     public static void initialize() {}
 
-    public static final FluidProperty FLUIDLOGGABLE = FluidProperty.of("fluidlogged");
+    public static final FluidProperty FLUIDLOGGED = FluidProperty.of("fluidlogged");
 }
