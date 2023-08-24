@@ -63,7 +63,7 @@ public class SporeCommand {
         float height = getFloat(context, "height");
         float size = getFloat(context, "size");
         int count = getInteger(context, "count");
-        SporeParticleManager.spawnSporeParticle(context.getSource().getWorld(),
+        SporeParticleManager.createSporeParticles(context.getSource().getWorld(),
                 aetherSporeType.get(), pos.x, pos.y, pos.z, horizontalRadius, height, size, count);
         return 1;
     }

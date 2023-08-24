@@ -144,7 +144,7 @@ public abstract class AetherSporeFluid extends FlowableFluid {
         return fogBlue;
     }
 
-    public AetherSporeType getAetherSpore() {
+    public AetherSporeType getSporeType() {
         return aetherSporeType;
     }
 }

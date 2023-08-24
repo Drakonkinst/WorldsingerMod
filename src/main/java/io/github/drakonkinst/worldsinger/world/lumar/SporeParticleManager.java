@@ -1,12 +1,20 @@
 package io.github.drakonkinst.worldsinger.world.lumar;
 
+import com.google.common.collect.ImmutableMap;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
+import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.particle.SporeDustParticleEffect;
 import io.github.drakonkinst.worldsinger.util.Constants;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.List;
+import java.util.Map;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 
@@ -16,32 +24,20 @@ public final class SporeParticleManager {
 
     private SporeParticleManager() {}
 
+
     private static final float CACHED_SIZE_PRECISION = 10.0f;
     private static final Int2ObjectMap<SporeDustParticleEffect> cachedDustParticleEffects = new Int2ObjectOpenHashMap<>();
+    private static final int SPORE_EFFECT_DURATION_TICKS = 40;
+    private static final Map<AetherSporeType, StatusEffect> SPORE_TO_STATUS_EFFECT = ImmutableMap.of(
+            AetherSporeType.VERDANT, ModStatusEffects.VERDANT_SPORES);
 
-    public static boolean spawnSporeParticle(ServerWorld world, AetherSporeType aetherSporeType,
+    public static boolean createSporeParticles(ServerWorld world, AetherSporeType aetherSporeType,
             float centerX, float bottomY,
             float centerZ, float horizontalRadius, float height, float particleSize, int count) {
 
         float centerY = bottomY + (height / 2.0f);
         float deltaY = height / 2.0f;
 
-        if (SporeParticleManager.isSporeKilled(world, centerX, bottomY, centerZ, horizontalRadius,
-                height)) {
-            aetherSporeType = AetherSporeType.DEAD;
-        }
-
-        ParticleEffect particleEffect = getCachedDustParticleEffect(aetherSporeType, particleSize);
-        world.spawnParticles(particleEffect, centerX,
-                centerY, centerZ,
-                count, horizontalRadius,
-                deltaY, horizontalRadius, 0.0);
-        return aetherSporeType == AetherSporeType.DEAD;
-    }
-
-    // This is thorough for now, but might be easier to do with a single block check
-    private static boolean isSporeKilled(ServerWorld world, float centerX, float bottomY,
-            float centerZ, float horizontalRadius, float height) {
         int minX = (int) (centerX - horizontalRadius);
         int maxX = (int) (centerX + horizontalRadius);
         int minY = (int) bottomY;
@@ -49,8 +45,53 @@ public final class SporeParticleManager {
         int minZ = (int) (centerZ - horizontalRadius);
         int maxZ = (int) (centerZ + horizontalRadius);
 
-        return SporeKillable.isSporeKillingBlockNearbyForRange(world, minX, minY, minZ, maxX, maxY,
-                maxZ);
+        if (SporeKillable.isSporeKillingBlockNearbyForRange(world, minX, minY, minZ, maxX, maxY,
+                maxZ)) {
+            aetherSporeType = AetherSporeType.DEAD;
+        }
+
+        spawnSporeParticles(world, aetherSporeType, centerX, centerY, centerZ, horizontalRadius,
+                deltaY, particleSize, count);
+        damageEntities(world, aetherSporeType, minX, minY, minZ, maxX, maxY, maxZ);
+        return aetherSporeType == AetherSporeType.DEAD;
+    }
+
+    public static void applySporeEffect(LivingEntity entity, StatusEffect statusEffect) {
+        entity.addStatusEffect(new StatusEffectInstance(statusEffect,
+                SporeParticleManager.SPORE_EFFECT_DURATION_TICKS, 0, true, false));
+    }
+
+    private static void spawnSporeParticles(ServerWorld world, AetherSporeType aetherSporeType,
+            float centerX, float centerY, float centerZ, float horizontalRadius, float deltaY,
+            float particleSize, int count) {
+        // Spawn particle
+        ParticleEffect particleEffect = getCachedDustParticleEffect(aetherSporeType, particleSize);
+        world.spawnParticles(particleEffect, centerX,
+                centerY, centerZ,
+                count, horizontalRadius,
+                deltaY, horizontalRadius, 0.0);
+    }
+
+    private static void damageEntities(ServerWorld world, AetherSporeType aetherSporeType,
+            float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+        if (aetherSporeType == AetherSporeType.DEAD) {
+            return;
+        }
+
+        StatusEffect statusEffect = SPORE_TO_STATUS_EFFECT.get(aetherSporeType);
+        if (statusEffect == null) {
+            Constants.LOGGER.error("AetherSporeType does not have associated status effect: "
+                    + aetherSporeType.asString());
+            return;
+        }
+
+        // Deal damage
+        Box box = new Box(minX, minY, minZ, maxX, maxY, maxZ);
+        List<LivingEntity> entitiesInRange = world.getEntitiesByClass(LivingEntity.class, box,
+                entity -> true);
+        for (LivingEntity entity : entitiesInRange) {
+            applySporeEffect(entity, statusEffect);
+        }
     }
 
     private static SporeDustParticleEffect getCachedDustParticleEffect(

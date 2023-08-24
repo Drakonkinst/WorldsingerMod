@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.Map;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -40,9 +41,6 @@ public abstract class LivingEntityMixin extends Entity {
     private static final Map<TagKey<Fluid>, StatusEffect> FLUID_TO_STATUS_EFFECT = ImmutableMap.of(
             ModFluidTags.VERDANT_SPORES, ModStatusEffects.VERDANT_SPORES
     );
-
-    @Unique
-    private static final int SPORE_EFFECT_DURATION_TICKS = 40;
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -163,16 +161,10 @@ public abstract class LivingEntityMixin extends Entity {
     private void applySporeSeaEffects() {
         for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
             if (this.isSubmergedIn(entry.getKey())) {
-                applySporeSeaEffect(entry.getValue());
+                SporeParticleManager.applySporeEffect((LivingEntity) (Object) this,
+                        entry.getValue());
             }
         }
-    }
-
-    @Unique
-    private void applySporeSeaEffect(StatusEffect statusEffect) {
-        this.addStatusEffect(
-                new StatusEffectInstance(statusEffect, SPORE_EFFECT_DURATION_TICKS, 0, true,
-                        false));
     }
 
     @Shadow
