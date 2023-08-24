@@ -3,13 +3,13 @@ package io.github.drakonkinst.worldsinger.fluid;
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -72,18 +72,16 @@ public abstract class AetherSporeFluid extends FlowableFluid {
         if (!LumarSeetheManager.areSporesFluidized(world)) {
             return;
         }
+
         BlockPos blockPos = pos.up();
         if (world.getBlockState(blockPos).isAir() && !world.getBlockState(blockPos)
                 .isOpaqueFullCube(world, blockPos)) {
             if (random.nextInt(100) == 0) {
                 double spawnX = (double) pos.getX() + random.nextDouble();
-                double spawnY = (double) pos.getY() + 1.0;
+                double spawnY = (double) pos.getY() + 1.0 + random.nextDouble();
                 double spawnZ = (double) pos.getZ() + random.nextDouble();
-                world.addParticle(ParticleTypes.SPLASH, spawnX, spawnY, spawnZ, 0.0, 1.0,
-                        0.0);
-                // world.playSound(spawnX, spawnY, spawnZ, SoundEvents.BLOCK_LAVA_POP,
-                //         SoundCategory.BLOCKS,
-                //         0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
+                SporeParticleManager.spawnSporeDisplayParticles(world, aetherSporeType, spawnX,
+                        spawnY, spawnZ, 1f);
             }
             if (random.nextInt(200) == 0) {
                 world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_AMBIENT,

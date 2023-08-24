@@ -14,8 +14,10 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.joml.Vector3f;
 
 // Represents a mote of spore particles, which can
@@ -24,7 +26,6 @@ public final class SporeParticleManager {
 
     private SporeParticleManager() {}
 
-
     private static final float CACHED_SIZE_PRECISION = 10.0f;
     private static final Int2ObjectMap<SporeDustParticleEffect> cachedDustParticleEffects = new Int2ObjectOpenHashMap<>();
     private static final int SPORE_EFFECT_DURATION_TICKS = 40;
@@ -32,11 +33,11 @@ public final class SporeParticleManager {
             AetherSporeType.VERDANT, ModStatusEffects.VERDANT_SPORES);
 
     public static boolean createSporeParticles(ServerWorld world, AetherSporeType aetherSporeType,
-            float centerX, float bottomY,
-            float centerZ, float horizontalRadius, float height, float particleSize, int count) {
+            double centerX, double bottomY,
+            double centerZ, double horizontalRadius, double height, float particleSize, int count) {
 
-        float centerY = bottomY + (height / 2.0f);
-        float deltaY = height / 2.0f;
+        double centerY = bottomY + (height / 2.0f);
+        double deltaY = height / 2.0f;
 
         int minX = (int) (centerX - horizontalRadius);
         int maxX = (int) (centerX + horizontalRadius);
@@ -56,16 +57,27 @@ public final class SporeParticleManager {
         return aetherSporeType == AetherSporeType.DEAD;
     }
 
+    // These are client-side and have no effect
+    public static void spawnSporeDisplayParticles(World world, AetherSporeType aetherSporeType,
+            double x, double y, double z, float particleSize) {
+        if (SporeKillable.isSporeKillingBlockNearby(world, BlockPos.ofFloored(x, y, z))) {
+            aetherSporeType = AetherSporeType.DEAD;
+        }
+
+        ParticleEffect particleEffect = getCachedSporeParticleEffect(aetherSporeType, particleSize);
+        world.addParticle(particleEffect, x, y, z, 0.0, 0.0, 0.0);
+    }
+
     public static void applySporeEffect(LivingEntity entity, StatusEffect statusEffect) {
         entity.addStatusEffect(new StatusEffectInstance(statusEffect,
                 SporeParticleManager.SPORE_EFFECT_DURATION_TICKS, 0, true, false));
     }
 
     private static void spawnSporeParticles(ServerWorld world, AetherSporeType aetherSporeType,
-            float centerX, float centerY, float centerZ, float horizontalRadius, float deltaY,
+            double centerX, double centerY, double centerZ, double horizontalRadius, double deltaY,
             float particleSize, int count) {
         // Spawn particle
-        ParticleEffect particleEffect = getCachedDustParticleEffect(aetherSporeType, particleSize);
+        ParticleEffect particleEffect = getCachedSporeParticleEffect(aetherSporeType, particleSize);
         world.spawnParticles(particleEffect, centerX,
                 centerY, centerZ,
                 count, horizontalRadius,
@@ -73,7 +85,7 @@ public final class SporeParticleManager {
     }
 
     private static void damageEntities(ServerWorld world, AetherSporeType aetherSporeType,
-            float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         if (aetherSporeType == AetherSporeType.DEAD) {
             return;
         }
@@ -90,11 +102,13 @@ public final class SporeParticleManager {
         List<LivingEntity> entitiesInRange = world.getEntitiesByClass(LivingEntity.class, box,
                 entity -> true);
         for (LivingEntity entity : entitiesInRange) {
-            applySporeEffect(entity, statusEffect);
+            if (box.contains(entity.getEyePos())) {
+                applySporeEffect(entity, statusEffect);
+            }
         }
     }
 
-    private static SporeDustParticleEffect getCachedDustParticleEffect(
+    private static SporeDustParticleEffect getCachedSporeParticleEffect(
             AetherSporeType aetherSporeType, float size) {
         int key = hashTwoInts(aetherSporeType.ordinal(),
                 (int) Math.floor(size * CACHED_SIZE_PRECISION));

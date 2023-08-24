@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.command;
 
+import static com.mojang.brigadier.arguments.DoubleArgumentType.getDouble;
 import static com.mojang.brigadier.arguments.FloatArgumentType.getFloat;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
@@ -8,6 +9,7 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -21,7 +23,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import org.joml.Vector3f;
+import net.minecraft.util.math.Vec3d;
 
 public class SporeCommand {
 
@@ -39,8 +41,8 @@ public class SporeCommand {
                         .suggests(SUGGESTION_PROVIDER)
                         .then(argument("pos", Vec3ArgumentType.vec3())
                                 .then(argument("horizontal_radius",
-                                        FloatArgumentType.floatArg(0.0f))
-                                        .then(argument("height", FloatArgumentType.floatArg(0.0f))
+                                        DoubleArgumentType.doubleArg(0.0))
+                                        .then(argument("height", DoubleArgumentType.doubleArg(0.0))
                                                 .then(argument("size",
                                                         FloatArgumentType.floatArg(0.0f))
                                                         .then(argument("count",
@@ -58,9 +60,9 @@ public class SporeCommand {
                     Text.literal("Unknown aether spore type \"" + aetherSporeTypeStr + "\""));
             return 0;
         }
-        Vector3f pos = getVec3(context, "pos").toVector3f();
-        float horizontalRadius = getFloat(context, "horizontal_radius");
-        float height = getFloat(context, "height");
+        Vec3d pos = getVec3(context, "pos");
+        double horizontalRadius = getDouble(context, "horizontal_radius");
+        double height = getDouble(context, "height");
         float size = getFloat(context, "size");
         int count = getInteger(context, "count");
         SporeParticleManager.createSporeParticles(context.getSource().getWorld(),

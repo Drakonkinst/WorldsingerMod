@@ -70,7 +70,7 @@ public class SporeStatusEffect extends StatusEffect {
         }
     }
 
-    public AetherSporeType getAetherSporeType() {
+    public AetherSporeType getSporeType() {
         return aetherSporeType;
     }
 }

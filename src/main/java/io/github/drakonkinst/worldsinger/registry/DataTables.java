@@ -14,7 +14,7 @@ public final class DataTables {
             "spore_killing_radius");
 
     public static void register() {
-        DynamicRegistries.register(ModRegistries.DATA_TABLES, DataTable.CODEC);
+        DynamicRegistries.registerSynced(ModRegistries.DATA_TABLES, DataTable.CODEC);
     }
 
     private static RegistryKey<DataTable> of(String id) {
@@ -22,10 +22,10 @@ public final class DataTables {
     }
 
     public static DataTable get(World world, RegistryKey<DataTable> key) {
-        if (world.isClient()) {
-            // Data tables are not synced on client
-            return null;
-        }
+        // Data tables are synced with client now
+        // if (world.isClient()) {
+        //     return null;
+        // }
         return world.getRegistryManager().get(ModRegistries.DATA_TABLES).get(key);
     }
 
