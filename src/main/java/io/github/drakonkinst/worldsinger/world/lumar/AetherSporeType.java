@@ -1,5 +1,9 @@
 package io.github.drakonkinst.worldsinger.world.lumar;
 
+import io.github.drakonkinst.worldsinger.block.SporeEmitting;
+import java.util.Optional;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.StringIdentifiable;
 
 public enum AetherSporeType implements StringIdentifiable {
@@ -21,6 +25,14 @@ public enum AetherSporeType implements StringIdentifiable {
     public static float getNormalizedBlue(int color) {
         int blue = color & 0xFF;
         return blue / MAX_COLOR_VALUE;
+    }
+
+    public static Optional<AetherSporeType> getAetherSporeTypeFromBlock(BlockState state) {
+        Block block = state.getBlock();
+        if (block instanceof SporeEmitting sporeEmittingBlock) {
+            return Optional.of(sporeEmittingBlock.getSporeType());
+        }
+        return Optional.empty();
     }
 
     private final String name;

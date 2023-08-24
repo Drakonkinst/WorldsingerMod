@@ -12,6 +12,8 @@ public final class DataTables {
 
     public static final RegistryKey<DataTable> SPORE_KILLING_RADIUS = DataTables.of(
             "spore_killing_radius");
+    public static final RegistryKey<DataTable> ENTITY_WEIGHT = DataTables.of(
+            "entity_weight");
 
     public static void register() {
         DynamicRegistries.registerSynced(ModRegistries.DATA_TABLES, DataTable.CODEC);

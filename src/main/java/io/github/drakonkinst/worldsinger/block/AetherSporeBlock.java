@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.block;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -10,10 +11,12 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -25,14 +28,14 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldEvents;
 
-public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
+public class AetherSporeBlock extends FallingBlock implements FluidDrainable, SporeEmitting {
 
+    private final AetherSporeType aetherSporeType;
     private final BlockState fluidizedState;
-    private final int color;
 
     public AetherSporeBlock(AetherSporeType aetherSporeType, Block fluidized, Settings settings) {
         super(settings);
-        this.color = aetherSporeType.getParticleColor();
+        this.aetherSporeType = aetherSporeType;
         this.fluidizedState = fluidized.getDefaultState();
         if (fluidized instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
             aetherSporeFluidBlock.setSolidBlockState(this.getDefaultState());
@@ -117,6 +120,16 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
     }
 
     @Override
+    public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
+            float fallDistance) {
+        if (fallDistance > 0.25f && !world.isClient() && world instanceof ServerWorld serverWorld) {
+            SporeParticleManager.spawnLandingParticles(serverWorld, aetherSporeType, entity,
+                    fallDistance);
+        }
+        super.onLandedUpon(world, state, pos, entity, fallDistance);
+    }
+
+    @Override
     public Optional<SoundEvent> getBucketFillSound() {
         // TODO: Change to unique sound
         return Optional.of(SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW);
@@ -124,6 +137,11 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable {
 
     @Override
     public int getColor(BlockState state, BlockView world, BlockPos pos) {
-        return color;
+        return aetherSporeType.getParticleColor();
+    }
+
+    @Override
+    public AetherSporeType getSporeType() {
+        return aetherSporeType;
     }
 }

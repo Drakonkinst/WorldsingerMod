@@ -21,15 +21,16 @@ public final class ModBlocks {
     // Dead Spores
     public static final Block DEAD_SPORE_SEA_BLOCK = register(
             "dead_spore_sea_block",
-            new AetherSporeFluidBlock(ModFluids.DEAD_SPORES, FabricBlockSettings.create()
-                    .strength(100.0f)
-                    .mapColor(MapColor.GRAY)
-                    .replaceable()
-                    .noCollision()
-                    .pistonBehavior(PistonBehavior.DESTROY)
-                    .dropsNothing()
-                    .liquid()
-                    .sounds(BlockSoundGroup.INTENTIONALLY_EMPTY)
+            new AetherSporeFluidBlock(ModFluids.DEAD_SPORES, AetherSporeType.DEAD,
+                    FabricBlockSettings.create()
+                            .strength(100.0f)
+                            .mapColor(MapColor.GRAY)
+                            .replaceable()
+                            .noCollision()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .dropsNothing()
+                            .liquid()
+                            .sounds(BlockSoundGroup.SAND)
             ), false);
     public static final Block DEAD_SPORE_BLOCK = register("dead_spore_block",
             new AetherSporeBlock(AetherSporeType.DEAD, ModBlocks.DEAD_SPORE_SEA_BLOCK,
@@ -68,7 +69,7 @@ public final class ModBlocks {
     // Verdant Spores
     public static final Block VERDANT_SPORE_SEA_BLOCK = register(
             "verdant_spore_sea_block",
-            new LivingAetherSporeFluidBlock(ModFluids.VERDANT_SPORES,
+            new LivingAetherSporeFluidBlock(ModFluids.VERDANT_SPORES, AetherSporeType.VERDANT,
                     ModBlocks.DEAD_SPORE_SEA_BLOCK, FabricBlockSettings.create()
                     .strength(100.0f)
                     .mapColor(MapColor.DARK_GREEN)
@@ -78,7 +79,7 @@ public final class ModBlocks {
                     .pistonBehavior(PistonBehavior.DESTROY)
                     .dropsNothing()
                     .liquid()
-                    .sounds(BlockSoundGroup.INTENTIONALLY_EMPTY)
+                    .sounds(BlockSoundGroup.SAND)
             ), false);
     public static final Block VERDANT_SPORE_BLOCK =
             register("verdant_spore_block",

@@ -80,7 +80,7 @@ public abstract class AetherSporeFluid extends FlowableFluid {
                 double spawnX = (double) pos.getX() + random.nextDouble();
                 double spawnY = (double) pos.getY() + 1.0 + random.nextDouble();
                 double spawnZ = (double) pos.getZ() + random.nextDouble();
-                SporeParticleManager.spawnSporeDisplayParticles(world, aetherSporeType, spawnX,
+                SporeParticleManager.spawnDisplayParticles(world, aetherSporeType, spawnX,
                         spawnY, spawnZ, 1f);
             }
             if (random.nextInt(200) == 0) {

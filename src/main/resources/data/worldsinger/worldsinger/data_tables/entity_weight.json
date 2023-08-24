@@ -1,0 +1,7 @@
+{
+  "default": 10,
+  "entries": {
+    "minecraft:player": 10,
+    "minecraft:item": 1
+  }
+}

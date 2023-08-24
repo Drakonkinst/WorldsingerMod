@@ -15,7 +15,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -191,7 +190,4 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow
     public abstract boolean isClimbing();
-
-    @Shadow
-    public abstract boolean addStatusEffect(StatusEffectInstance effect);
 }

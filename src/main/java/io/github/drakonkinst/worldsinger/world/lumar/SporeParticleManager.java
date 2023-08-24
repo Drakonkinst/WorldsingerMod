@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -17,6 +18,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.Vector3f;
 
@@ -32,6 +34,25 @@ public final class SporeParticleManager {
     private static final Map<AetherSporeType, StatusEffect> SPORE_TO_STATUS_EFFECT = ImmutableMap.of(
             AetherSporeType.VERDANT, ModStatusEffects.VERDANT_SPORES);
 
+    // Splashing when landing on block
+    private static final double SPLASH_MIN_HEIGHT = 0.6;
+    private static final double SPLASH_HEIGHT_GAIN_PER_BLOCK = 0.05;
+    private static final double SPLASH_MAX_HEIGHT = 4.0;
+    private static final double SPLASH_SPRINTING_MULTIPLIER = 4.0 / 3.0;
+    private static final double SPLASH_SNEAKING_MULTIPLIER = 0.5;
+    private static final double SPLASH_RADIUS_MULTIPLIER = 0.75;
+    private static final int SPLASH_PARTICLES_PER_BLOCK_HEIGHT = 10;
+
+    // Footsteps when walking or sprinting on block
+    private static final double FOOTSTEP_MIN_HEIGHT = 0.25;
+    private static final double FOOTSTEP_RADIUS_MULTIPLIER = 0.5;
+    private static final double FOOTSTEP_SPRINTING_MULTIPLIER = 1.5;
+    private static final double FOOTSTEP_HEIGHT_MULTIPLIER = 0.5;
+    private static final float FOOTSTEP_PARTICLE_SIZE = 0.75f;
+    private static final int FOOTSTEP_PARTICLES = 5;
+
+    private static final Random random = Random.create();
+
     public static boolean createSporeParticles(ServerWorld world, AetherSporeType aetherSporeType,
             double centerX, double bottomY,
             double centerZ, double horizontalRadius, double height, float particleSize, int count) {
@@ -39,15 +60,25 @@ public final class SporeParticleManager {
         double centerY = bottomY + (height / 2.0f);
         double deltaY = height / 2.0f;
 
-        int minX = (int) (centerX - horizontalRadius);
-        int maxX = (int) (centerX + horizontalRadius);
-        int minY = (int) bottomY;
-        int maxY = (int) (bottomY + height);
-        int minZ = (int) (centerZ - horizontalRadius);
-        int maxZ = (int) (centerZ + horizontalRadius);
+        Constants.LOGGER.info("HEIGHT: " + height);
 
-        if (SporeKillable.isSporeKillingBlockNearbyForRange(world, minX, minY, minZ, maxX, maxY,
-                maxZ)) {
+        double minX = centerX - horizontalRadius;
+        double minY = bottomY;
+        double minZ = centerZ - horizontalRadius;
+        double maxX = centerX + horizontalRadius;
+        double maxY = bottomY + height;
+        double maxZ = centerZ + horizontalRadius;
+
+        int searchMinX = (int) Math.floor(minX);
+        int searchMinY = (int) Math.floor(minY);
+        int searchMinZ = (int) Math.floor(minZ);
+        int searchMaxX = (int) Math.ceil(maxX);
+        int searchMaxY = (int) Math.ceil(maxY);
+        int searchMaxZ = (int) Math.ceil(maxZ);
+
+        if (SporeKillable.isSporeKillingBlockNearbyForRange(world, searchMinX, searchMinY,
+                searchMinZ, searchMaxX, searchMaxY,
+                searchMaxZ)) {
             aetherSporeType = AetherSporeType.DEAD;
         }
 
@@ -57,8 +88,45 @@ public final class SporeParticleManager {
         return aetherSporeType == AetherSporeType.DEAD;
     }
 
+    public static void spawnLandingParticles(ServerWorld world,
+            AetherSporeType aetherSporeType, Entity entity, float fallDistance) {
+        // TODO: Make this based on entity weight later
+        float particleSize = entity.getWidth();
+        Vec3d entityPos = entity.getPos();
+
+        double radius = entity.getWidth() * SPLASH_RADIUS_MULTIPLIER;
+        double multiplier = 1.0;
+        if (entity.isSneaking()) {
+            multiplier = SPLASH_SNEAKING_MULTIPLIER;
+        } else if (entity.isSprinting()) {
+            multiplier = SPLASH_SPRINTING_MULTIPLIER;
+        }
+
+        double height = SPLASH_MIN_HEIGHT + fallDistance * SPLASH_HEIGHT_GAIN_PER_BLOCK + (
+                random.nextFloat() * multiplier);
+        height = Math.min(height, SPLASH_MAX_HEIGHT);
+        int count = SPLASH_PARTICLES_PER_BLOCK_HEIGHT * (int) Math.ceil(height);
+
+        SporeParticleManager.createSporeParticles(world, aetherSporeType, entityPos.getX(),
+                entityPos.getY(), entityPos.getZ(), radius, height, particleSize,
+                count);
+    }
+
+    public static void spawnFootstepParticles(ServerWorld world, AetherSporeType aetherSporeType,
+            Entity entity) {
+        Vec3d entityPos = entity.getPos();
+        double radius = entity.getWidth() * FOOTSTEP_RADIUS_MULTIPLIER;
+        double multiplier =
+                entity.isSprinting() ? FOOTSTEP_SPRINTING_MULTIPLIER : FOOTSTEP_HEIGHT_MULTIPLIER;
+        double height =
+                FOOTSTEP_MIN_HEIGHT + random.nextFloat() * multiplier;
+        SporeParticleManager.createSporeParticles(world, aetherSporeType, entityPos.getX(),
+                entityPos.getY(), entityPos.getZ(), radius, height, FOOTSTEP_PARTICLE_SIZE,
+                FOOTSTEP_PARTICLES);
+    }
+
     // These are client-side and have no effect
-    public static void spawnSporeDisplayParticles(World world, AetherSporeType aetherSporeType,
+    public static void spawnDisplayParticles(World world, AetherSporeType aetherSporeType,
             double x, double y, double z, float particleSize) {
         if (SporeKillable.isSporeKillingBlockNearby(world, BlockPos.ofFloored(x, y, z))) {
             aetherSporeType = AetherSporeType.DEAD;

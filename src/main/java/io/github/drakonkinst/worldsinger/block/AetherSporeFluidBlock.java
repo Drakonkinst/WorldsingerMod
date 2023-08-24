@@ -1,19 +1,23 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.Waterloggable;
+import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class AetherSporeFluidBlock extends FluidBlock {
+public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
 
     public static void update(WorldAccess world, BlockPos pos, BlockState currentBlockState,
             BlockState fluidizedSource) {
@@ -94,9 +98,12 @@ public class AetherSporeFluidBlock extends FluidBlock {
     }
 
     private BlockState solidBlockState = null;
+    private final AetherSporeType aetherSporeType;
 
-    public AetherSporeFluidBlock(FlowableFluid fluid, Settings settings) {
+    public AetherSporeFluidBlock(FlowableFluid fluid, AetherSporeType aetherSporeType,
+            Settings settings) {
         super(fluid, settings);
+        this.aetherSporeType = aetherSporeType;
     }
 
     public void setSolidBlockState(BlockState blockState) {
@@ -125,5 +132,19 @@ public class AetherSporeFluidBlock extends FluidBlock {
     @Override
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         AetherSporeFluidBlock.update(world, pos, state, world.getBlockState(pos.down()));
+    }
+
+    @Override
+    public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
+            float fallDistance) {
+        if (fallDistance > 0.25f && !world.isClient() && world instanceof ServerWorld serverWorld) {
+            SporeParticleManager.spawnLandingParticles(serverWorld, aetherSporeType, entity,
+                    fallDistance);
+        }
+        super.onLandedUpon(world, state, pos, entity, fallDistance);
+    }
+
+    public AetherSporeType getSporeType() {
+        return aetherSporeType;
     }
 }
