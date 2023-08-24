@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.world.lumar;
 import com.google.common.collect.ImmutableMap;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
+import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.particle.SporeDustParticleEffect;
 import io.github.drakonkinst.worldsinger.util.Constants;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -170,7 +171,8 @@ public final class SporeParticleManager {
         List<LivingEntity> entitiesInRange = world.getEntitiesByClass(LivingEntity.class, box,
                 entity -> true);
         for (LivingEntity entity : entitiesInRange) {
-            if (box.contains(entity.getEyePos())) {
+            if (entity.getType().isIn(ModEntityTypeTags.SPORES_ALWAYS_AFFECT) || box.contains(
+                    entity.getEyePos())) {
                 applySporeEffect(entity, statusEffect);
             }
         }
