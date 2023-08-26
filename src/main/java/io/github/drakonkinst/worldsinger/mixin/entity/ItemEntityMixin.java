@@ -28,7 +28,13 @@ public abstract class ItemEntityMixin extends Entity {
     private static final double HORIZONTAL_BUOYANCY_DRAG = 0.95;
 
     @Unique
+    private static final double HORIZONTAL_LAND_DRAG = 0.7;
+
+    @Unique
     private static final double VERTICAL_BUOYANCY_FORCE_VANILLA = 5.0E-4;
+
+    @Unique
+    private static final double LAND_BUOYANCY = VERTICAL_BUOYANCY_FORCE_VANILLA;
 
     @Unique
     private static final double VERTICAL_BUOYANCY_FORCE = VERTICAL_BUOYANCY_FORCE_VANILLA * 4;
@@ -69,7 +75,8 @@ public abstract class ItemEntityMixin extends Entity {
     private void applySporeSeaBuoyancy() {
         if (!LumarSeetheManager.areSporesFluidized(this.getWorld())) {
             // Items should not move in solid spores
-            this.setVelocity(0.0, 0.0, 0.0);
+            this.setVelocity(this.getVelocity().getX() * HORIZONTAL_LAND_DRAG, LAND_BUOYANCY,
+                    this.getVelocity().getZ() * HORIZONTAL_LAND_DRAG);
             return;
         }
 

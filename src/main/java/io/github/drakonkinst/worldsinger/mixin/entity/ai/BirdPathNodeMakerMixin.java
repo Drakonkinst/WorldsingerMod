@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BirdPathNodeMaker.class)
-public class BirdPathNodeMakerMixin {
+public abstract class BirdPathNodeMakerMixin {
 
     @Inject(method = "getDefaultNodeType", at = @At("HEAD"), cancellable = true)
     private void avoidSporeBlocks(BlockView world, int x, int y, int z,

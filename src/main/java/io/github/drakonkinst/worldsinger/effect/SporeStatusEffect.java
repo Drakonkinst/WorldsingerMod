@@ -35,7 +35,6 @@ public class SporeStatusEffect extends StatusEffect {
                 entity.getType().getUntranslatedName() + " has dimensions " + width + " x "
                         + height);
 
-        // Grow from bottom to top
         int maxY = blockPos.getY() + height - 1;
         int minX = blockPos.getX() - (width / 2);
         int maxX = blockPos.getX() + ((width - 1) / 2);

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ShearsItem.class)
-public class ShearsItemMixin {
+public abstract class ShearsItemMixin {
 
     @Unique
     private static final float EFFICIENT_MULTIPLIER = 5.0f;

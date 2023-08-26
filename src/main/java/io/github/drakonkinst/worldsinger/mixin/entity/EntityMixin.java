@@ -31,21 +31,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
-    @Shadow
-    public abstract boolean isSneaking();
-
-    @Shadow
-    public abstract boolean isPlayer();
-
-    @Shadow
-    public abstract BlockState getSteppingBlockState();
-
-    @Shadow
-    public abstract int getId();
-
-    @Shadow
-    public abstract EntityType<?> getType();
-
     @Inject(method = "updateWaterState", at = @At("RETURN"), cancellable = true)
     private void allowCustomFluidToPushEntity(CallbackInfoReturnable<Boolean> cir) {
         boolean isTouchingFluid = cir.getReturnValueZ();
@@ -132,4 +117,16 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
     @Shadow
     public abstract World getWorld();
+
+    @Shadow
+    public abstract boolean isSneaking();
+
+    @Shadow
+    public abstract BlockState getSteppingBlockState();
+
+    @Shadow
+    public abstract int getId();
+
+    @Shadow
+    public abstract EntityType<?> getType();
 }
