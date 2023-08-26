@@ -146,8 +146,8 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
         if (fallDistance > 0.25f && !world.isClient() && world instanceof ServerWorld serverWorld) {
-            SporeParticleManager.spawnLandingParticles(serverWorld, aetherSporeType, entity,
-                    fallDistance);
+            SporeParticleManager.spawnSplashParticles(serverWorld, aetherSporeType, entity,
+                    fallDistance, false);
         }
         super.onLandedUpon(world, state, pos, entity, fallDistance);
     }

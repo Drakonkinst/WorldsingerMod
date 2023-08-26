@@ -9,20 +9,25 @@ import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -31,24 +36,58 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
+    @Shadow
+    public abstract Text getName();
+
+    @Shadow
+    public abstract Box getBoundingBox();
+
+    @Unique
+    private boolean isTouchingSporeSea = false;
+
     @Inject(method = "updateWaterState", at = @At("RETURN"), cancellable = true)
     private void allowCustomFluidToPushEntity(CallbackInfoReturnable<Boolean> cir) {
-        boolean isTouchingFluid = cir.getReturnValueZ();
+        boolean isTouchingAnyFluid = cir.getReturnValueZ();
         if (this.updateMovementInFluid(ModFluidTags.AETHER_SPORES, AetherSporeFluid.FLUID_SPEED)) {
+            if (!this.isTouchingSporeSea) {
+                if (this.getWorld() instanceof ServerWorld serverWorld) {
+                    Optional<AetherSporeType> sporeType = getSporeTypeFromFluids(
+                            getAllTouchingFluids());
+                    sporeType.ifPresent(
+                            aetherSporeType -> SporeParticleManager.spawnSplashParticles(
+                                    serverWorld, aetherSporeType, (Entity) (Object) this,
+                                    this.fallDistance, true));
+                }
+            }
             this.fallDistance = 0.0f;
-            isTouchingFluid = true;
-
+            isTouchingAnyFluid = true;
+            this.isTouchingSporeSea = true;
             this.extinguish();
+        } else {
+            this.isTouchingSporeSea = false;
         }
-        cir.setReturnValue(isTouchingFluid);
+        cir.setReturnValue(isTouchingAnyFluid);
     }
 
-    @Redirect(method = "updateSwimming", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/registry/tag/TagKey;)Z"))
-    private boolean allowCustomFluidToBeSwimmable(FluidState fluidState, TagKey<Fluid> tagKey) {
-        if (fluidState.isIn(ModFluidTags.AETHER_SPORES)) {
-            return true;
+    @Unique
+    private static Optional<AetherSporeType> getSporeTypeFromFluids(Collection<Fluid> fluids) {
+        for (Fluid fluid : fluids) {
+            if (fluid instanceof AetherSporeFluid aetherSporeFluid) {
+                return Optional.of(aetherSporeFluid.getSporeType());
+            }
         }
-        return fluidState.isIn(tagKey);
+        return Optional.empty();
+    }
+
+    @Unique
+    private Set<Fluid> getAllTouchingFluids() {
+        return BlockPos.stream(this.getBoundingBox())
+                .map(pos -> this.getWorld().getFluidState(pos).getFluid()).collect(
+                        Collectors.toUnmodifiableSet());
+    }
+
+    private void onEnterSporeFluid() {
+
     }
 
     @Redirect(method = "spawnSprintingParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getRenderType()Lnet/minecraft/block/BlockRenderType;"))

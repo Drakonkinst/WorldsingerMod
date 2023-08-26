@@ -37,15 +37,17 @@ public final class SporeParticleManager {
             AetherSporeType.VERDANT, ModStatusEffects.VERDANT_SPORES);
     private static final float MIN_SPORE_PARTICLE_SIZE = 0.3f;
 
-    // Splashing when landing on block
+    // TODO: Should tune these values later
+    // Splashing when landing on block or in a fluid
     private static final double SPLASH_MIN_HEIGHT = 0.6;
     private static final double SPLASH_HEIGHT_GAIN_PER_BLOCK = 0.05;
     private static final double SPLASH_MAX_HEIGHT = 4.0;
     private static final double SPLASH_SPRINTING_MULTIPLIER = 4.0 / 3.0;
     private static final double SPLASH_SNEAKING_MULTIPLIER = 0.5;
     private static final double SPLASH_RADIUS_MULTIPLIER = 0.75;
-    private static final float SPLASH_PARTICLE_SIZE_MULTIPLIER = 1.25f;
-    private static final int SPLASH_PARTICLE_COUNT_PER_HEIGHT = 10;
+    private static final float SPLASH_PARTICLE_SIZE_MULTIPLIER = 1.5f;
+    private static final int SPLASH_PARTICLE_COUNT_PER_HEIGHT_FLUID = 5;
+    private static final int SPLASH_PARTICLE_COUNT_PER_HEIGHT_BLOCK = 10;
 
     // Footsteps when walking or sprinting on block
     private static final double FOOTSTEP_MIN_HEIGHT = 0.25;
@@ -107,8 +109,8 @@ public final class SporeParticleManager {
         return aetherSporeType == AetherSporeType.DEAD;
     }
 
-    public static void spawnLandingParticles(ServerWorld world,
-            AetherSporeType aetherSporeType, Entity entity, float fallDistance) {
+    public static void spawnSplashParticles(ServerWorld world,
+            AetherSporeType aetherSporeType, Entity entity, float fallDistance, boolean fluid) {
         // TODO: Make this based on entity weight later
         float particleSize = entity.getWidth() * SPLASH_PARTICLE_SIZE_MULTIPLIER;
         Vec3d entityPos = entity.getPos();
@@ -124,7 +126,9 @@ public final class SporeParticleManager {
         double height = SPLASH_MIN_HEIGHT + fallDistance * SPLASH_HEIGHT_GAIN_PER_BLOCK + (
                 random.nextFloat() * multiplier);
         height = Math.min(height, SPLASH_MAX_HEIGHT);
-        int count = SPLASH_PARTICLE_COUNT_PER_HEIGHT * MathHelper.ceil(height);
+        int particleCountPerHeight = fluid ? SPLASH_PARTICLE_COUNT_PER_HEIGHT_FLUID
+                : SPLASH_PARTICLE_COUNT_PER_HEIGHT_BLOCK;
+        int count = particleCountPerHeight * MathHelper.ceil(height);
 
         SporeParticleManager.createSporeParticles(world, aetherSporeType, entityPos.getX(),
                 entityPos.getY(), entityPos.getZ(), radius, height, particleSize,
