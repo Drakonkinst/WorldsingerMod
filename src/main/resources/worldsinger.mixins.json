@@ -8,6 +8,7 @@
     "accessor.LandPathNodeMakerInvoker",
     "block.AbstractBlockStateMixin",
     "block.BlockMixin",
+    "block.EntityShapeContextMixin",
     "block.FluidBlockMixin",
     "block.MagmaBlockMixin",
     "block.ShapeCacheMixin",

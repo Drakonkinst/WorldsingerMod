@@ -8,7 +8,6 @@ import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.EntityShapeContext;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
@@ -171,10 +170,10 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos,
             ShapeContext context) {
         FluidState fluidState = state.getFluidState();
-        if (fluidState.isStill() && context instanceof EntityShapeContext shapeContext) {
-            Entity entity = shapeContext.getEntity();
-            if (entity != null && !LumarSeetheManager.areSporesFluidized(
-                    shapeContext.getEntity().getWorld())) {
+        if (fluidState.isStill() && context instanceof WorldShapeContext shapeContext) {
+            World realWorld = shapeContext.worldsinger$getWorld();
+            if (realWorld != null && !LumarSeetheManager.areSporesFluidized(
+                    realWorld)) {
                 return FluidShapes.VOXEL_SHAPES[fluidState.getLevel()];
             }
         }
