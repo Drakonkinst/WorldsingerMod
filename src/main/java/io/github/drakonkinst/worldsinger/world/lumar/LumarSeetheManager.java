@@ -32,9 +32,6 @@ public final class LumarSeetheManager extends PersistentState {
     public LumarSeetheManager(ServerWorld world, LumarSeetheData lumarSeetheData) {
         this.world = world;
         this.lumarSeetheData = lumarSeetheData;
-
-        startSeething();
-        this.resetCyclesUntilNextLongStilling();
     }
 
     public void tick() {

@@ -28,10 +28,10 @@ public class LumarSeetheData {
     }
 
     public static NbtCompound writeNbt(LumarSeetheData lumarSeetheData, NbtCompound nbt) {
+        nbt.putBoolean(IS_SEETHING_NBT, lumarSeetheData.isSeething);
+        nbt.putInt(CYCLE_TICKS_NBT, lumarSeetheData.cycleTicks);
         nbt.putInt(CYCLES_UNTIL_NEXT_LONG_STILLING_NBT,
                 lumarSeetheData.cyclesUntilNextLongStilling);
-        nbt.putInt(CYCLE_TICKS_NBT, lumarSeetheData.cycleTicks);
-        nbt.putBoolean(IS_SEETHING_NBT, lumarSeetheData.isSeething);
         return nbt;
     }
 
