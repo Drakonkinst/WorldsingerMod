@@ -2,9 +2,7 @@ package io.github.drakonkinst.worldsinger.effect;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
-import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.util.Constants;
-import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -47,8 +45,6 @@ public class SporeStatusEffect extends StatusEffect {
         for (BlockPos pos : SporeStatusEffect.iterateBoundingBoxForEntity(entity)) {
             BlockState blockState = world.getBlockState(pos);
             BlockState newBlockState = ModBlocks.VERDANT_VINE_SNARE.getDefaultState()
-                    .with(ModProperties.FLUIDLOGGED, Fluidlogged.getFluidIndex(
-                            blockState.getFluidState().getFluid()))
                     .with(Properties.PERSISTENT, false);
             if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW) || blockState.isOf(
                     ModBlocks.VERDANT_SPORE_SEA_BLOCK) && newBlockState.canPlaceAt(world,

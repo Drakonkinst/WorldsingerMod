@@ -1,16 +1,12 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.WallMountedBlock;
-import net.minecraft.block.Waterloggable;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.Entity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
@@ -22,11 +18,10 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class VerdantVineSnareBlock extends WallMountedBlock implements Waterloggable {
+public class VerdantVineSnareBlock extends WallMountedBlock {
 
     private static final double MIN_VERTICAL = 0.0;
     private static final double MAX_VERTICAL = 16.0;
@@ -51,23 +46,20 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
     public VerdantVineSnareBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH)
-                .with(FACE, WallMountLocation.FLOOR).with(Properties.PERSISTENT, false)
-                .with(Properties.WATERLOGGED, false));
+                .with(FACE, WallMountLocation.FLOOR).with(Properties.PERSISTENT, false));
     }
 
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        if (world.getFluidState(pos).isIn(ModFluidTags.AETHER_SPORES) && !world.getFluidState(
-                pos.up()).isIn(ModFluidTags.AETHER_SPORES)) {
-            return true;
-        }
-
         if (WallMountedBlock.canPlaceAt(world, pos,
                 WallMountedBlock.getDirection(state).getOpposite())) {
             return true;
         }
         BlockState attachedBlockState = world.getBlockState(
                 pos.offset(WallMountedBlock.getDirection(state).getOpposite()));
+        if (attachedBlockState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)) {
+            return true;
+        }
         if (attachedBlockState.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
             return true;
         }
@@ -85,7 +77,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACE, FACING, Properties.PERSISTENT, Properties.WATERLOGGED);
+        builder.add(FACE, FACING, Properties.PERSISTENT);
         super.appendProperties(builder);
     }
 
@@ -105,30 +97,9 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
             placementState = placementState
-                    .with(Properties.PERSISTENT, true)
-                    .with(Properties.WATERLOGGED,
-                            ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid()
-                                    == Fluids.WATER);
-            ;
+                    .with(Properties.PERSISTENT, true);
         }
         return placementState;
-    }
-
-    @Override
-    public FluidState getFluidState(BlockState state) {
-        return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false)
-                : super.getFluidState(state);
-    }
-
-    @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
-            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (state.get(Properties.WATERLOGGED)) {
-            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-        }
-
-        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
-                neighborPos);
     }
 
     @Override
