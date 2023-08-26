@@ -46,8 +46,7 @@ public class SporeStatusEffect extends StatusEffect {
             BlockState blockState = world.getBlockState(pos);
             BlockState newBlockState = ModBlocks.VERDANT_VINE_SNARE.getDefaultState()
                     .with(Properties.PERSISTENT, false);
-            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW) || blockState.isOf(
-                    ModBlocks.VERDANT_SPORE_SEA_BLOCK) && newBlockState.canPlaceAt(world,
+            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW) && newBlockState.canPlaceAt(world,
                     pos)) {
                 world.setBlockState(pos, newBlockState);
             }

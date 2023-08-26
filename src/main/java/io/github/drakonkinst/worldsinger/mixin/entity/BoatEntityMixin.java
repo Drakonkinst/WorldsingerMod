@@ -1,24 +1,35 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.BoatEntity.Location;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.item.Item;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -30,6 +41,9 @@ public abstract class BoatEntityMixin extends Entity {
 
     @Unique
     private boolean inSporeSea;
+
+    @Unique
+    private AetherSporeFluid lastAetherSporeFluid = null;
 
     @Shadow
     private double waterLevel;
@@ -64,8 +78,47 @@ public abstract class BoatEntityMixin extends Entity {
     @Shadow
     private boolean pressingForward;
 
+    @Shadow
+    public abstract boolean isPaddleMoving(int paddle);
+
+    @Shadow
+    @Final
+    private float[] paddlePhases;
+
+    @Shadow
+    public abstract Item asItem();
+
     public BoatEntityMixin(EntityType<?> type, World world) {
         super(type, world);
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void addParticlesToRowing(CallbackInfo ci) {
+        if (!(this.getWorld() instanceof ServerWorld serverWorld) || lastAetherSporeFluid == null) {
+            return;
+        }
+
+        for (int paddleIndex = 0; paddleIndex <= 1; ++paddleIndex) {
+            if (this.isPaddleMoving(paddleIndex)) {
+                if (this.inSporeSea && isAtRowingApex(paddleIndex)) {
+                    Vec3d vec3d = this.getRotationVec(1.0f);
+                    double xOffset = paddleIndex == 1 ? -vec3d.z : vec3d.z;
+                    double zOffset = paddleIndex == 1 ? vec3d.x : -vec3d.x;
+                    Vec3d pos = new Vec3d(this.getX() + xOffset, this.getY(),
+                            this.getZ() + zOffset);
+                    SporeParticleManager.spawnRowingParticles(serverWorld,
+                            lastAetherSporeFluid.getSporeType(), pos);
+                }
+            }
+        }
+    }
+
+    // Did someone say magic numbers?
+    @Unique
+    private boolean isAtRowingApex(int paddleIndex) {
+        float paddlePhase = this.paddlePhases[paddleIndex];
+        return paddlePhase % (Math.PI * 2) <= Math.PI / 4
+                && (paddlePhase + (Math.PI / 8)) % (Math.PI * 2) >= Math.PI / 4;
     }
 
     @Inject(method = "getPaddleSoundEvent", at = @At("HEAD"), cancellable = true)
@@ -79,6 +132,7 @@ public abstract class BoatEntityMixin extends Entity {
     @Inject(method = "checkLocation", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;getNearbySlipperiness()F"), cancellable = true)
     private void checkSporeSeaLocation(CallbackInfoReturnable<Location> cir) {
         this.inSporeSea = false;
+        this.lastAetherSporeFluid = null;
         Location location = this.getUnderSporeSeaLocation();
         if (location != null) {
             this.waterLevel = this.getBoundingBox().maxY;
@@ -195,7 +249,7 @@ public abstract class BoatEntityMixin extends Entity {
         int maxY = MathHelper.ceil(box.minY + 0.001);
         int minZ = MathHelper.floor(box.minZ);
         int maxZ = MathHelper.ceil(box.maxZ);
-        boolean bl = false;
+        boolean inSporeSea = false;
         this.waterLevel = -Double.MAX_VALUE;
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         for (int x = minX; x < maxX; ++x) {
@@ -206,13 +260,22 @@ public abstract class BoatEntityMixin extends Entity {
                     if (!fluidState.isIn(ModFluidTags.AETHER_SPORES)) {
                         continue;
                     }
+                    if (fluidState.getFluid() instanceof AetherSporeFluid aetherSporeFluid) {
+                        if (this.lastAetherSporeFluid != null
+                                && this.lastAetherSporeFluid.getSporeType() != AetherSporeType.DEAD
+                                && aetherSporeFluid.getSporeType() == AetherSporeType.DEAD) {
+                            // Do not allow dead spores to override living spores
+                        } else {
+                            this.lastAetherSporeFluid = aetherSporeFluid;
+                        }
+                    }
                     float f = (float) y + fluidState.getHeight(this.getWorld(), mutable);
                     this.waterLevel = Math.max(f, this.waterLevel);
-                    bl |= box.minY < (double) f;
+                    inSporeSea |= box.minY < (double) f;
                 }
             }
         }
-        return bl;
+        return inSporeSea;
     }
 
     @Unique
@@ -246,5 +309,13 @@ public abstract class BoatEntityMixin extends Entity {
             }
         }
         return bl ? Location.UNDER_WATER : null;
+    }
+
+    // Switches to the entity-based collision shape, which can use the entity world object
+    // to check fluidization and see the spore sea block as solid
+    @Redirect(method = "getNearbySlipperiness", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/shape/VoxelShape;"))
+    private VoxelShape checkFluidizedBlock(BlockState instance, BlockView blockView,
+            BlockPos blockPos) {
+        return instance.getCollisionShape(blockView, blockPos, ShapeContext.of(this));
     }
 }

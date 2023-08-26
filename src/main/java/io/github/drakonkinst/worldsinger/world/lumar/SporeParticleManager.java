@@ -44,6 +44,7 @@ public final class SporeParticleManager {
     private static final double SPLASH_SPRINTING_MULTIPLIER = 4.0 / 3.0;
     private static final double SPLASH_SNEAKING_MULTIPLIER = 0.5;
     private static final double SPLASH_RADIUS_MULTIPLIER = 0.75;
+    private static final float SPLASH_PARTICLE_SIZE_MULTIPLIER = 1.25f;
     private static final int SPLASH_PARTICLE_COUNT_PER_HEIGHT = 10;
 
     // Footsteps when walking or sprinting on block
@@ -51,7 +52,7 @@ public final class SporeParticleManager {
     private static final double FOOTSTEP_RADIUS_MULTIPLIER = 0.5;
     private static final double FOOTSTEP_SPRINTING_MULTIPLIER = 1.5;
     private static final double FOOTSTEP_HEIGHT_MULTIPLIER = 0.5;
-    private static final float FOOTSTEP_PARTICLE_SIZE = 0.75f;
+    private static final float FOOTSTEP_PARTICLE_SIZE = 1.0f;
     private static final int FOOTSTEP_PARTICLE_COUNT = 5;
 
     // Projectiles hitting a block
@@ -59,7 +60,14 @@ public final class SporeParticleManager {
     private static final double PROJECTILE_PARTICLE_RADIUS = 0.125;
     private static final double PROJECTILE_MIN_HEIGHT = 0.25;
     private static final double PROJECTILE_HEIGHT_MULTIPLIER = 0.5;
-    private static final int PROJECTILE_PARTICLE_COUNT = 1;
+    private static final int PROJECTILE_PARTICLE_COUNT = 3;
+
+    // Oars rowing
+    private static final float ROWING_PARTICLE_SIZE = 1.0f;
+    private static final double ROWING_MIN_RADIUS = 0.55;
+    private static final double ROWING_MIN_HEIGHT = 0.65;
+    private static final double ROWING_MULTIPLIER = 1.0;
+    private static final int ROWING_PARTICLE_COUNT = 10;
 
     private static final Random random = Random.create();
 
@@ -102,7 +110,7 @@ public final class SporeParticleManager {
     public static void spawnLandingParticles(ServerWorld world,
             AetherSporeType aetherSporeType, Entity entity, float fallDistance) {
         // TODO: Make this based on entity weight later
-        float particleSize = entity.getWidth();
+        float particleSize = entity.getWidth() * SPLASH_PARTICLE_SIZE_MULTIPLIER;
         Vec3d entityPos = entity.getPos();
 
         double radius = entity.getWidth() * SPLASH_RADIUS_MULTIPLIER;
@@ -143,6 +151,15 @@ public final class SporeParticleManager {
         SporeParticleManager.createSporeParticles(world, aetherSporeType, pos.getX(),
                 pos.getY(), pos.getZ(), radius, height, PROJECTILE_PARTICLE_SIZE,
                 PROJECTILE_PARTICLE_COUNT);
+    }
+
+    public static void spawnRowingParticles(ServerWorld world, AetherSporeType aetherSporeType,
+            Vec3d pos) {
+        double radius = ROWING_MIN_RADIUS + random.nextFloat() * ROWING_MULTIPLIER;
+        double height = ROWING_MIN_HEIGHT + random.nextFloat() * ROWING_MULTIPLIER;
+        SporeParticleManager.createSporeParticles(world, aetherSporeType, pos.getX(),
+                pos.getY(), pos.getZ(), radius, height, ROWING_PARTICLE_SIZE,
+                ROWING_PARTICLE_COUNT);
     }
 
     // These are client-side and have no effect
