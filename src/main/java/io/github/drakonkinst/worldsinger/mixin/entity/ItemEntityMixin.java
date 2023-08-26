@@ -73,10 +73,12 @@ public abstract class ItemEntityMixin extends Entity {
 
     @Unique
     private void applySporeSeaBuoyancy() {
-        if (!LumarSeetheManager.areSporesFluidized(this.getWorld())) {
+        World world = this.getWorld();
+        if (!LumarSeetheManager.areSporesFluidized(world)) {
             // Items should not move in solid spores
             this.setVelocity(this.getVelocity().getX() * HORIZONTAL_LAND_DRAG, LAND_BUOYANCY,
                     this.getVelocity().getZ() * HORIZONTAL_LAND_DRAG);
+            this.setOnGround(true);
             return;
         }
 

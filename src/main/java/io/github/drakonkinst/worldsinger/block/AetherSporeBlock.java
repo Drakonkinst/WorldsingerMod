@@ -14,11 +14,13 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -143,5 +145,15 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     @Override
     public AetherSporeType getSporeType() {
         return aetherSporeType;
+    }
+
+    @Override
+    public void onProjectileHit(World world, BlockState state, BlockHitResult hit,
+            ProjectileEntity projectile) {
+        if (world instanceof ServerWorld serverWorld) {
+            SporeParticleManager.spawnProjectileParticles(serverWorld, aetherSporeType,
+                    projectile.getPos());
+        }
+        super.onProjectileHit(world, state, hit, projectile);
     }
 }

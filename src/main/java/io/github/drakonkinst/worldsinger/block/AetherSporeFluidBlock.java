@@ -9,8 +9,10 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -146,5 +148,15 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
 
     public AetherSporeType getSporeType() {
         return aetherSporeType;
+    }
+
+    @Override
+    public void onProjectileHit(World world, BlockState state, BlockHitResult hit,
+            ProjectileEntity projectile) {
+        if (world instanceof ServerWorld serverWorld) {
+            SporeParticleManager.spawnProjectileParticles(serverWorld, aetherSporeType,
+                    projectile.getPos());
+        }
+        super.onProjectileHit(world, state, hit, projectile);
     }
 }

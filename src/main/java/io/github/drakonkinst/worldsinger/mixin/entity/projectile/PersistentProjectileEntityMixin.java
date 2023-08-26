@@ -85,6 +85,4 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
                 && !LumarSeetheManager.areSporesFluidized(this.getWorld());
         cir.setReturnValue(cir.getReturnValue() && !isInSolidSpores);
     }
-
-
 }

@@ -24,6 +24,7 @@
     "entity.ai.SwimGoalMixin",
     "entity.projectile.FishingBobberEntityMixin",
     "entity.projectile.PersistentProjectileEntityMixin",
+    "entity.projectile.ProjectileEntityMixin",
     "entity.projectile.ProjectileUtilMixin",
     "entity.projectile.ThrownEntityMixin",
     "fluid.WaterFluidMixin",

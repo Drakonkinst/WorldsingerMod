@@ -30,11 +30,12 @@ public final class SporeParticleManager {
 
     private SporeParticleManager() {}
 
-    private static final float CACHED_SIZE_PRECISION = 10.0f;
+    private static final float CACHED_SIZE_PRECISION = 20.0f;
     private static final Int2ObjectMap<SporeDustParticleEffect> cachedDustParticleEffects = new Int2ObjectOpenHashMap<>();
     private static final int SPORE_EFFECT_DURATION_TICKS = 40;
     private static final Map<AetherSporeType, StatusEffect> SPORE_TO_STATUS_EFFECT = ImmutableMap.of(
             AetherSporeType.VERDANT, ModStatusEffects.VERDANT_SPORES);
+    private static final float MIN_SPORE_PARTICLE_SIZE = 0.3f;
 
     // Splashing when landing on block
     private static final double SPLASH_MIN_HEIGHT = 0.6;
@@ -43,7 +44,7 @@ public final class SporeParticleManager {
     private static final double SPLASH_SPRINTING_MULTIPLIER = 4.0 / 3.0;
     private static final double SPLASH_SNEAKING_MULTIPLIER = 0.5;
     private static final double SPLASH_RADIUS_MULTIPLIER = 0.75;
-    private static final int SPLASH_PARTICLES_PER_BLOCK_HEIGHT = 10;
+    private static final int SPLASH_PARTICLE_COUNT_PER_HEIGHT = 10;
 
     // Footsteps when walking or sprinting on block
     private static final double FOOTSTEP_MIN_HEIGHT = 0.25;
@@ -51,7 +52,14 @@ public final class SporeParticleManager {
     private static final double FOOTSTEP_SPRINTING_MULTIPLIER = 1.5;
     private static final double FOOTSTEP_HEIGHT_MULTIPLIER = 0.5;
     private static final float FOOTSTEP_PARTICLE_SIZE = 0.75f;
-    private static final int FOOTSTEP_PARTICLES = 5;
+    private static final int FOOTSTEP_PARTICLE_COUNT = 5;
+
+    // Projectiles hitting a block
+    private static final float PROJECTILE_PARTICLE_SIZE = 0.75f;
+    private static final double PROJECTILE_PARTICLE_RADIUS = 0.125;
+    private static final double PROJECTILE_MIN_HEIGHT = 0.25;
+    private static final double PROJECTILE_HEIGHT_MULTIPLIER = 0.5;
+    private static final int PROJECTILE_PARTICLE_COUNT = 1;
 
     private static final Random random = Random.create();
 
@@ -61,6 +69,7 @@ public final class SporeParticleManager {
 
         double centerY = bottomY + (height / 2.0f);
         double deltaY = height / 2.0f;
+        particleSize = Math.max(particleSize, MIN_SPORE_PARTICLE_SIZE);
 
         Constants.LOGGER.info("HEIGHT: " + height);
 
@@ -107,7 +116,7 @@ public final class SporeParticleManager {
         double height = SPLASH_MIN_HEIGHT + fallDistance * SPLASH_HEIGHT_GAIN_PER_BLOCK + (
                 random.nextFloat() * multiplier);
         height = Math.min(height, SPLASH_MAX_HEIGHT);
-        int count = SPLASH_PARTICLES_PER_BLOCK_HEIGHT * MathHelper.ceil(height);
+        int count = SPLASH_PARTICLE_COUNT_PER_HEIGHT * MathHelper.ceil(height);
 
         SporeParticleManager.createSporeParticles(world, aetherSporeType, entityPos.getX(),
                 entityPos.getY(), entityPos.getZ(), radius, height, particleSize,
@@ -124,7 +133,16 @@ public final class SporeParticleManager {
                 FOOTSTEP_MIN_HEIGHT + random.nextFloat() * multiplier;
         SporeParticleManager.createSporeParticles(world, aetherSporeType, entityPos.getX(),
                 entityPos.getY(), entityPos.getZ(), radius, height, FOOTSTEP_PARTICLE_SIZE,
-                FOOTSTEP_PARTICLES);
+                FOOTSTEP_PARTICLE_COUNT);
+    }
+
+    public static void spawnProjectileParticles(ServerWorld world, AetherSporeType aetherSporeType,
+            Vec3d pos) {
+        double radius = PROJECTILE_PARTICLE_RADIUS;
+        double height = PROJECTILE_MIN_HEIGHT + random.nextFloat() * PROJECTILE_HEIGHT_MULTIPLIER;
+        SporeParticleManager.createSporeParticles(world, aetherSporeType, pos.getX(),
+                pos.getY(), pos.getZ(), radius, height, PROJECTILE_PARTICLE_SIZE,
+                PROJECTILE_PARTICLE_COUNT);
     }
 
     // These are client-side and have no effect
