@@ -1,21 +1,28 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.EntityShapeContext;
 import net.minecraft.block.FluidBlock;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
@@ -158,5 +165,20 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
                     projectile.getPos());
         }
         super.onProjectileHit(world, state, hit, projectile);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos,
+            ShapeContext context) {
+        FluidState fluidState = state.getFluidState();
+        if (fluidState.isStill() && context instanceof EntityShapeContext shapeContext) {
+            Entity entity = shapeContext.getEntity();
+            if (entity != null && !LumarSeetheManager.areSporesFluidized(
+                    shapeContext.getEntity().getWorld())) {
+                return FluidShapes.VOXEL_SHAPES[fluidState.getLevel()];
+            }
+        }
+
+        return super.getCollisionShape(state, world, pos, context);
     }
 }
