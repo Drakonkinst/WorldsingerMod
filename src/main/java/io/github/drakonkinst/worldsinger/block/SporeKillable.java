@@ -11,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public interface SporeKillable {
@@ -75,8 +76,15 @@ public interface SporeKillable {
         return false;
     }
 
-    static boolean isSporeKillingBlockNearbyForRange(World world, int minX, int minY, int minZ,
-            int maxX, int maxY, int maxZ) {
+    static boolean isSporeKillingBlockNearbyForRange(World world, double minX, double minY,
+            double minZ, double maxX, double maxY, double maxZ) {
+        return isSporeKillingBlockNearbyForRange(world, MathHelper.floor(minX),
+                MathHelper.floor(minY), MathHelper.floor(minZ), MathHelper.ceil(maxX),
+                MathHelper.ceil(maxY), MathHelper.ceil(maxZ));
+    }
+
+    static boolean isSporeKillingBlockNearbyForRange(World world, int minX, int minY,
+            int minZ, int maxX, int maxY, int maxZ) {
         DataTable dataTable = DataTables.get(world, DataTables.SPORE_KILLING_RADIUS);
         if (dataTable == null) {
             return false;

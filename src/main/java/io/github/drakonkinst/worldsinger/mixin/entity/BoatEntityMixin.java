@@ -4,7 +4,7 @@ import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.BoatEntity.Location;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.item.Item;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -45,48 +44,8 @@ public abstract class BoatEntityMixin extends Entity {
     @Unique
     private AetherSporeFluid lastAetherSporeFluid = null;
 
-    @Shadow
-    private double waterLevel;
-
-    @Shadow
-    private float velocityDecay;
-
-    @Shadow
-    private Location lastLocation;
-
-    @Shadow
-    private Location location;
-
-    @Shadow
-    public abstract float getWaterHeightBelow();
-
-    @Shadow
-    private double fallVelocity;
-
-    @Shadow
-    private float yawVelocity;
-
-    @Shadow
-    public abstract void setPaddleMovings(boolean leftMoving, boolean rightMoving);
-
-    @Shadow
-    private boolean pressingRight;
-
-    @Shadow
-    private boolean pressingLeft;
-
-    @Shadow
-    private boolean pressingForward;
-
-    @Shadow
-    public abstract boolean isPaddleMoving(int paddle);
-
-    @Shadow
-    @Final
-    private float[] paddlePhases;
-
-    @Shadow
-    public abstract Item asItem();
+    @Unique
+    private boolean[] firstPaddle = {true, true};
 
     public BoatEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -98,17 +57,26 @@ public abstract class BoatEntityMixin extends Entity {
             return;
         }
 
+        // Do not spawn particles on the first paddle of either oar
         for (int paddleIndex = 0; paddleIndex <= 1; ++paddleIndex) {
             if (this.isPaddleMoving(paddleIndex)) {
-                if (this.inSporeSea && isAtRowingApex(paddleIndex)) {
-                    Vec3d vec3d = this.getRotationVec(1.0f);
-                    double xOffset = paddleIndex == 1 ? -vec3d.z : vec3d.z;
-                    double zOffset = paddleIndex == 1 ? vec3d.x : -vec3d.x;
-                    Vec3d pos = new Vec3d(this.getX() + xOffset, this.getY(),
-                            this.getZ() + zOffset);
-                    SporeParticleManager.spawnRowingParticles(serverWorld,
-                            lastAetherSporeFluid.getSporeType(), pos);
+                if (isAtRowingApex(paddleIndex)) {
+                    if (firstPaddle[paddleIndex]) {
+                        firstPaddle[paddleIndex] = false;
+                        continue;
+                    }
+                    if (this.inSporeSea) {
+                        Vec3d vec3d = this.getRotationVec(1.0f);
+                        double xOffset = paddleIndex == 1 ? -vec3d.z : vec3d.z;
+                        double zOffset = paddleIndex == 1 ? vec3d.x : -vec3d.x;
+                        Vec3d pos = new Vec3d(this.getX() + xOffset, this.getY(),
+                                this.getZ() + zOffset);
+                        SporeParticles.spawnRowingParticles(serverWorld,
+                                lastAetherSporeFluid.getSporeType(), pos);
+                    }
                 }
+            } else {
+                firstPaddle[paddleIndex] = true;
             }
         }
     }
@@ -318,4 +286,44 @@ public abstract class BoatEntityMixin extends Entity {
             BlockPos blockPos) {
         return instance.getCollisionShape(blockView, blockPos, ShapeContext.of(this));
     }
+
+    @Shadow
+    private double waterLevel;
+
+    @Shadow
+    private float velocityDecay;
+
+    @Shadow
+    private Location lastLocation;
+
+    @Shadow
+    private Location location;
+
+    @Shadow
+    public abstract float getWaterHeightBelow();
+
+    @Shadow
+    private double fallVelocity;
+
+    @Shadow
+    private float yawVelocity;
+
+    @Shadow
+    public abstract void setPaddleMovings(boolean leftMoving, boolean rightMoving);
+
+    @Shadow
+    private boolean pressingRight;
+
+    @Shadow
+    private boolean pressingLeft;
+
+    @Shadow
+    private boolean pressingForward;
+
+    @Shadow
+    public abstract boolean isPaddleMoving(int paddle);
+
+    @Shadow
+    @Final
+    private float[] paddlePhases;
 }

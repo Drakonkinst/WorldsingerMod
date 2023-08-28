@@ -3,7 +3,7 @@ package io.github.drakonkinst.worldsinger.block;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
 import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -125,7 +125,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
         if (fallDistance > 0.25f && !world.isClient() && world instanceof ServerWorld serverWorld) {
-            SporeParticleManager.spawnSplashParticles(serverWorld, aetherSporeType, entity,
+            SporeParticles.spawnSplashParticles(serverWorld, aetherSporeType, entity,
                     fallDistance, false);
         }
         super.onLandedUpon(world, state, pos, entity, fallDistance);
@@ -151,7 +151,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     public void onProjectileHit(World world, BlockState state, BlockHitResult hit,
             ProjectileEntity projectile) {
         if (world instanceof ServerWorld serverWorld) {
-            SporeParticleManager.spawnProjectileParticles(serverWorld, aetherSporeType,
+            SporeParticles.spawnProjectileParticles(serverWorld, aetherSporeType,
                     projectile.getPos());
         }
         super.onProjectileHit(world, state, hit, projectile);

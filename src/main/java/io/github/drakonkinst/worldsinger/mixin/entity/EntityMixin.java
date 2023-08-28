@@ -7,7 +7,7 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import java.util.Collection;
 import java.util.Optional;
@@ -20,7 +20,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -36,12 +35,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
-    @Shadow
-    public abstract Text getName();
-
-    @Shadow
-    public abstract Box getBoundingBox();
-
     @Unique
     private boolean isTouchingSporeSea = false;
 
@@ -54,7 +47,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
                     Optional<AetherSporeType> sporeType = getSporeTypeFromFluids(
                             getAllTouchingFluids());
                     sporeType.ifPresent(
-                            aetherSporeType -> SporeParticleManager.spawnSplashParticles(
+                            aetherSporeType -> SporeParticles.spawnSplashParticles(
                                     serverWorld, aetherSporeType, (Entity) (Object) this,
                                     this.fallDistance, true));
                 }
@@ -86,10 +79,6 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
                         Collectors.toUnmodifiableSet());
     }
 
-    private void onEnterSporeFluid() {
-
-    }
-
     @Redirect(method = "spawnSprintingParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getRenderType()Lnet/minecraft/block/BlockRenderType;"))
     private BlockRenderType showSprintingParticlesForCustomFluid(BlockState instance) {
         if (!instance.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
@@ -116,7 +105,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
                     Constants.LOGGER.error("Aether spore block should have a spore type defined");
                     return;
                 }
-                SporeParticleManager.spawnFootstepParticles(serverWorld, aetherSporeType.get(),
+                SporeParticles.spawnFootstepParticles(serverWorld, aetherSporeType.get(),
                         (Entity) (Object) this);
             }
         }
@@ -168,4 +157,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
     @Shadow
     public abstract EntityType<?> getType();
+
+    @Shadow
+    public abstract Box getBoundingBox();
 }
