@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import com.google.common.collect.ImmutableMap;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
+import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
@@ -158,6 +159,9 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void applySporeSeaEffects() {
+        if (this.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
+            return;
+        }
         for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
             if (this.isSubmergedIn(entry.getKey())) {
                 SporeParticleManager.applySporeEffect((LivingEntity) (Object) this,

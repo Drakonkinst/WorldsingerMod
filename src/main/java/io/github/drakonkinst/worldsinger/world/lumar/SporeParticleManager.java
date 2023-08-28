@@ -160,17 +160,22 @@ public final class SporeParticleManager {
         // Deal damage
         Box box = new Box(minX, minY, minZ, maxX, maxY, maxZ);
         List<LivingEntity> entitiesInRange = world.getEntitiesByClass(LivingEntity.class, box,
-                entity -> true);
+                entity -> isValidEntity(entity, box));
         for (LivingEntity entity : entitiesInRange) {
-            if (entity instanceof PlayerEntity playerEntity && (playerEntity.isCreative()
-                    || playerEntity.isSpectator())) {
-                continue;
-            }
-            if (entity.getType().isIn(ModEntityTypeTags.SPORES_ALWAYS_AFFECT) || box.contains(
-                    entity.getEyePos())) {
-                applySporeEffect(entity, statusEffect);
-            }
+            applySporeEffect(entity, statusEffect);
         }
+    }
+
+    private static boolean isValidEntity(Entity entity, Box box) {
+        if (entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
+            return false;
+        }
+        if (entity instanceof PlayerEntity playerEntity && (playerEntity.isCreative()
+                || playerEntity.isSpectator())) {
+            return false;
+        }
+        return entity.getType().isIn(ModEntityTypeTags.SPORES_ALWAYS_AFFECT) || box.contains(
+                entity.getEyePos());
     }
 
     private static SporeDustParticleEffect getCachedSporeParticleEffect(

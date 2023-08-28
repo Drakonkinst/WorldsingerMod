@@ -47,24 +47,11 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         }
     }
 
-    public BlockState getFluidizedState() {
-        return fluidizedState;
-    }
-
     @Override
     protected void configureFallingBlockEntity(FallingBlockEntity entity) {
         // TODO: May want to tag or make a new entity so that it produces a spore explosion upon landing in this manner
         entity.dropItem = false;
     }
-
-    // @Override
-    // public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-    //     if (!AetherSporeBlock.canFallThrough(world.getBlockState(pos.down())) || pos.getY() < world.getBottomY()) {
-    //         return;
-    //     }
-    //     FallingBlockEntity fallingBlockEntity = FallingBlockEntity.spawnFromBlock(world, pos, state);
-    //     this.configureFallingBlockEntity(fallingBlockEntity);
-    // }
 
     @Override
     public void onLanding(World world, BlockPos pos, BlockState fallingBlockState,
@@ -84,6 +71,40 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
             return this.fluidizedState;
         }
         return super.getPlacementState(ctx);
+    }
+
+    @Override
+    public ItemStack tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state) {
+        world.setBlockState(pos, Blocks.AIR.getDefaultState(),
+                Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD);
+        if (!world.isClient()) {
+            world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, pos, Block.getRawIdFromState(state));
+        }
+        return new ItemStack(ModItems.VERDANT_SPORES_BUCKET);
+    }
+
+    @Override
+    public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
+            float fallDistance) {
+        if (fallDistance > 0.25f && !world.isClient() && world instanceof ServerWorld serverWorld) {
+            SporeParticles.spawnSplashParticles(serverWorld, aetherSporeType, entity,
+                    fallDistance, false);
+        }
+        super.onLandedUpon(world, state, pos, entity, fallDistance);
+    }
+
+    @Override
+    public void onProjectileHit(World world, BlockState state, BlockHitResult hit,
+            ProjectileEntity projectile) {
+        if (world instanceof ServerWorld serverWorld) {
+            SporeParticles.spawnProjectileParticles(serverWorld, aetherSporeType,
+                    projectile.getPos());
+        }
+        super.onProjectileHit(world, state, hit, projectile);
+    }
+
+    public BlockState getFluidizedState() {
+        return fluidizedState;
     }
 
     @Override
@@ -112,26 +133,6 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     }
 
     @Override
-    public ItemStack tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state) {
-        world.setBlockState(pos, Blocks.AIR.getDefaultState(),
-                Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD);
-        if (!world.isClient()) {
-            world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, pos, Block.getRawIdFromState(state));
-        }
-        return new ItemStack(ModItems.VERDANT_SPORES_BUCKET);
-    }
-
-    @Override
-    public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
-            float fallDistance) {
-        if (fallDistance > 0.25f && !world.isClient() && world instanceof ServerWorld serverWorld) {
-            SporeParticles.spawnSplashParticles(serverWorld, aetherSporeType, entity,
-                    fallDistance, false);
-        }
-        super.onLandedUpon(world, state, pos, entity, fallDistance);
-    }
-
-    @Override
     public Optional<SoundEvent> getBucketFillSound() {
         // TODO: Change to unique sound
         return Optional.of(SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW);
@@ -145,15 +146,5 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     @Override
     public AetherSporeType getSporeType() {
         return aetherSporeType;
-    }
-
-    @Override
-    public void onProjectileHit(World world, BlockState state, BlockHitResult hit,
-            ProjectileEntity projectile) {
-        if (world instanceof ServerWorld serverWorld) {
-            SporeParticles.spawnProjectileParticles(serverWorld, aetherSporeType,
-                    projectile.getPos());
-        }
-        super.onProjectileHit(world, state, hit, projectile);
     }
 }
