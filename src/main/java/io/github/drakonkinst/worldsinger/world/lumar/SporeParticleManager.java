@@ -46,6 +46,8 @@ public final class SporeParticleManager {
 
     private static final Random random = Random.create();
 
+    // Create a cloud of spore particles at the given location
+    // minY is the bottom of the particle cloud, not the center, for better ease of use.
     public static void createSporeParticles(ServerWorld world, AetherSporeType sporeType, double x,
             double minY, double z, double radius, double height, float particleSize,
             int particleCountPerBlock) {
@@ -53,8 +55,11 @@ public final class SporeParticleManager {
         particleSize = Math.min(Math.max(particleSize, MIN_PARTICLE_SIZE), MAX_PARTICLE_SIZE);
         height = Math.min(Math.max(height, MIN_HEIGHT), MAX_HEIGHT);
         radius = Math.min(Math.max(radius, MIN_RADIUS), MAX_RADIUS);
+
+        // Keep particle count consistent per block
         double volume = 4.0 * radius * radius * height;
-        int particleCount = particleCountPerBlock * MathHelper.ceil(volume);
+        int particleCount = Math.max(particleCountPerBlock,
+                MathHelper.ceil(particleCountPerBlock * volume));
 
         Constants.LOGGER.info(
                 "Creating spore particle with radius=" + radius + ", height=" + height + ", size="
@@ -79,8 +84,15 @@ public final class SporeParticleManager {
     public static void createRandomSporeParticles(ServerWorld world, AetherSporeType sporeType,
             Vec3d pos, double baseRadius, double radiusDev, double baseHeight,
             double heightDev, float particleSize, int particleCountPerBlock) {
-        double radius = baseRadius - radiusDev + random.nextDouble() * (2.0 * radiusDev);
-        double height = baseHeight - heightDev + random.nextDouble() * (2.0 * heightDev);
+        double radius = baseRadius;
+        double height = baseHeight;
+
+        if (radiusDev > 0.0) {
+            radius = baseRadius - radiusDev + random.nextDouble() * (2.0 * radiusDev);
+        }
+        if (heightDev > 0.0) {
+            height = baseHeight - heightDev + random.nextDouble() * (2.0 * heightDev);
+        }
 
         SporeParticleManager.createSporeParticles(world, sporeType, pos.getX(), pos.getY(),
                 pos.getZ(), radius, height,
@@ -176,12 +188,11 @@ public final class SporeParticleManager {
 
     private static SporeDustParticleEffect createDustParticleEffect(AetherSporeType sporeType,
             float size) {
-        Constants.LOGGER.info(
-                "Caching new dust particle effect (" + sporeType.asString() + ", " + size
-                        + ")");
-
         // Make size follow the cached size precision to prevent unintentional imprecision
         size = ((int) (size * CACHED_SIZE_PRECISION)) / CACHED_SIZE_PRECISION;
+
+        Constants.LOGGER.info(
+                "Caching new dust particle effect (" + sporeType.asString() + ", " + size + ")");
 
         Vector3f particleColor = Vec3d.unpackRgb(sporeType.getParticleColor()).toVector3f();
         return new SporeDustParticleEffect(particleColor, size);
