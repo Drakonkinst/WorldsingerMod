@@ -55,10 +55,24 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
 
     @Override
     public void onLanding(World world, BlockPos pos, BlockState fallingBlockState,
-            BlockState currentStateInPos,
-            FallingBlockEntity fallingBlockEntity) {
+            BlockState currentStateInPos, FallingBlockEntity fallingBlockEntity) {
         if (AetherSporeFluidBlock.shouldFluidize(world.getBlockState(pos.down()))) {
             world.setBlockState(pos, this.fluidizedState, Block.NOTIFY_ALL);
+        } else if (world instanceof ServerWorld serverWorld) {
+            int fallDistance = fallingBlockEntity.getFallingBlockPos().getY() - pos.getY();
+            if (fallDistance >= 4) {
+                SporeParticles.spawnBlockParticles(serverWorld, aetherSporeType, pos, 1.5, 0.45);
+            } else {
+                SporeParticles.spawnBlockParticles(serverWorld, aetherSporeType, pos, 0.75, 0.5);
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyedOnLanding(World world, BlockPos pos,
+            FallingBlockEntity fallingBlockEntity) {
+        if (world instanceof ServerWorld serverWorld) {
+            SporeParticles.spawnBlockParticles(serverWorld, aetherSporeType, pos, 2.5, 0.45);
         }
     }
 
@@ -86,7 +100,8 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     @Override
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
-        if (fallDistance > 0.25f && world instanceof ServerWorld serverWorld) {
+        if (fallDistance > 0.25f && world instanceof ServerWorld serverWorld
+                && !(entity instanceof FallingBlockEntity)) {
             SporeParticles.spawnSplashParticles(serverWorld, aetherSporeType, entity,
                     fallDistance, false);
         }
@@ -104,10 +119,11 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState,
-            boolean moved) {
-
-        super.onStateReplaced(state, world, pos, newState, moved);
+    public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
+        if (world instanceof ServerWorld serverWorld) {
+            SporeParticles.spawnBlockParticles(serverWorld, aetherSporeType, pos, 0.6, 1.0);
+        }
+        super.onBroken(world, pos, state);
     }
 
     public BlockState getFluidizedState() {

@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
@@ -70,8 +71,12 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
         } else if (AetherSporeFluidBlock.isAetherSporesFluidlogged(blockState)
                 && blockState.getBlock() instanceof Waterloggable waterloggable) {
             if (!fluidized) {
-                // TODO: Add particle event
-                // TODO: Maybe place the block above?
+                if (blockState.getFluidState()
+                        .getFluid() instanceof AetherSporeFluid aetherSporeFluid
+                        && world instanceof ServerWorld serverWorld) {
+                    SporeParticles.spawnBlockParticles(serverWorld, aetherSporeFluid.getSporeType(),
+                            pos, 0.6, 1.0);
+                }
                 waterloggable.tryDrainFluid(world, pos, blockState);
             }
             return true;

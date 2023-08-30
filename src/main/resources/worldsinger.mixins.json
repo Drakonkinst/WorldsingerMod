@@ -17,6 +17,7 @@
     "block.WaterloggableMixin",
     "entity.BoatEntityMixin",
     "entity.EntityMixin",
+    "entity.FallingBlockEntityMixin",
     "entity.FlyingEntityMixin",
     "entity.ItemEntityMixin",
     "entity.LivingEntityMixin",

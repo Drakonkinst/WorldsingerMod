@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.world.lumar;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class SporeParticles {
@@ -44,6 +45,10 @@ public class SporeParticles {
     private static final float ROWING_PARTICLE_SIZE = 1.0f;
     private static final int ROWING_PARTICLE_COUNT = 3;
 
+    private static final double BLOCK_HALF_WIDTH = 0.5;
+    private static final float BLOCK_PARTICLE_SIZE = 1.0f;
+    private static final int BLOCK_PARTICLE_COUNT = 5;
+
     public static void spawnSplashParticles(ServerWorld world,
             AetherSporeType aetherSporeType, Entity entity, float fallDistance, boolean fluid) {
         double multiplier = entity.isSneaking() ? SPLASH_HEIGHT_PER_BLOCK_SNEAKING
@@ -85,5 +90,15 @@ public class SporeParticles {
         SporeParticleManager.createRandomSporeParticles(world, sporeType, pos, ROWING_RADIUS,
                 ROWING_RADIUS_DEV, ROWING_HEIGHT, ROWING_HEIGHT_DEV, ROWING_PARTICLE_SIZE,
                 ROWING_PARTICLE_COUNT);
+    }
+
+    public static void spawnBlockParticles(ServerWorld world, AetherSporeType sporeType,
+            BlockPos blockPos, double blockRadius, double heightMultiplier) {
+        double x = blockPos.getX() + BLOCK_HALF_WIDTH;
+        double y = blockPos.getY();
+        double z = blockPos.getZ() + BLOCK_HALF_WIDTH;
+        SporeParticleManager.createRandomSporeParticles(world, sporeType, new Vec3d(x, y, z),
+                blockRadius, 0.0, blockRadius * 2.0 * heightMultiplier, 0.0, BLOCK_PARTICLE_SIZE,
+                BLOCK_PARTICLE_COUNT);
     }
 }
