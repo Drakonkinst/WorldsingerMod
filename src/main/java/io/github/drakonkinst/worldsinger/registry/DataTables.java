@@ -24,18 +24,10 @@ public final class DataTables {
     }
 
     public static DataTable get(World world, RegistryKey<DataTable> key) {
-        // Data tables are synced with client now
-        // if (world.isClient()) {
-        //     return null;
-        // }
         return world.getRegistryManager().get(ModRegistries.DATA_TABLES).get(key);
     }
 
     public static Optional<DataTable> getOptional(World world, Identifier id) {
-        if (world.isClient()) {
-            // Data tables are not synced on client
-            return Optional.empty();
-        }
         return Optional.ofNullable(
                 world.getRegistryManager().get(ModRegistries.DATA_TABLES).get(id));
     }

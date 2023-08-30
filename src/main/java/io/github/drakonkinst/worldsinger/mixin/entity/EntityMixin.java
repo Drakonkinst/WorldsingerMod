@@ -95,7 +95,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
         if (this.isSneaking()) {
             return;
         }
-        if (!this.getWorld().isClient() && this.getWorld() instanceof ServerWorld serverWorld) {
+        if (this.getWorld() instanceof ServerWorld serverWorld) {
             BlockState steppingBlock = this.getSteppingBlockState();
             if (steppingBlock.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS) || steppingBlock.isIn(
                     ModBlockTags.AETHER_SPORE_BLOCKS)) {

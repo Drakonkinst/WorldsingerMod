@@ -86,7 +86,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     @Override
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
-        if (fallDistance > 0.25f && !world.isClient() && world instanceof ServerWorld serverWorld) {
+        if (fallDistance > 0.25f && world instanceof ServerWorld serverWorld) {
             SporeParticles.spawnSplashParticles(serverWorld, aetherSporeType, entity,
                     fallDistance, false);
         }
