@@ -29,9 +29,11 @@ public abstract class LandPathNodeMakerMixin {
     private static void avoidSporeBlocks(BlockView world, BlockPos.Mutable pos,
             CallbackInfoReturnable<PathNodeType> cir) {
         int y = pos.getY();
-        PathNodeType pathNodeType = LandPathNodeMakerInvoker.invokeGetCommonNodeType(world, pos);
+        PathNodeType pathNodeType = LandPathNodeMakerInvoker.worldsinger$getCommonNodeType(world,
+                pos);
         if (pathNodeType == PathNodeType.OPEN && y >= world.getBottomY() + 1) {
-            PathNodeType pathNodeTypeBelow = LandPathNodeMakerInvoker.invokeGetCommonNodeType(world,
+            PathNodeType pathNodeTypeBelow = LandPathNodeMakerInvoker.worldsinger$getCommonNodeType(
+                    world,
                     pos.down());
             if (pathNodeTypeBelow == ModEnums.PathNodeType.AETHER_SPORE_SEA) {
                 cir.setReturnValue(ModEnums.PathNodeType.AETHER_SPORE_SEA);

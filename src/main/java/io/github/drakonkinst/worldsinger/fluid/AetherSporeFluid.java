@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
+import io.github.drakonkinst.worldsinger.mixin.accessor.FlowableFluidInvoker;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
@@ -10,6 +11,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -73,9 +75,9 @@ public abstract class AetherSporeFluid extends FlowableFluid {
             return;
         }
 
-        BlockPos blockPos = pos.up();
-        if (world.getBlockState(blockPos).isAir() && !world.getBlockState(blockPos)
-                .isOpaqueFullCube(world, blockPos)) {
+        BlockPos posAbove = pos.up();
+        if (world.getBlockState(posAbove).isAir() && !world.getBlockState(posAbove)
+                .isOpaqueFullCube(world, posAbove)) {
             if (random.nextInt(100) == 0) {
                 double spawnX = (double) pos.getX() + random.nextDouble();
                 double spawnY = (double) pos.getY() + 1.0 + random.nextDouble();
@@ -102,10 +104,53 @@ public abstract class AetherSporeFluid extends FlowableFluid {
 
     @Override
     protected boolean canBeReplacedWith(FluidState fluidState, BlockView blockView,
-            BlockPos blockPos,
-            Fluid fluid,
-            Direction direction) {
-        return false;
+            BlockPos blockPos, Fluid fluid, Direction direction) {
+        return fluidState.isIn(ModFluidTags.AETHER_SPORES) && !fluidState.isStill();
+    }
+
+    @Override
+    protected FluidState getUpdatedState(World world, BlockPos pos, BlockState state) {
+        int maxNeighboringFluidLevel = 0;
+        int neighboringSourceBlocks = 0;
+        for (Direction direction : Direction.Type.HORIZONTAL) {
+            BlockPos currPos = pos.offset(direction);
+            BlockState currBlockState = world.getBlockState(currPos);
+            FluidState currFluidState = currBlockState.getFluidState();
+            if (!(currFluidState.getFluid() instanceof AetherSporeFluid)
+                    || !((FlowableFluidInvoker) this).worldsinger$receivesFlow(direction, world,
+                    pos, state, currPos, currBlockState)) {
+                continue;
+            }
+            if (currFluidState.isStill()) {
+                ++neighboringSourceBlocks;
+            }
+            maxNeighboringFluidLevel = Math.max(maxNeighboringFluidLevel,
+                    currFluidState.getLevel());
+        }
+
+        if (this.isInfinite(world) && neighboringSourceBlocks >= 2) {
+            BlockState belowBlockState = world.getBlockState(pos.down());
+            FluidState belowFluidState = belowBlockState.getFluidState();
+            if (belowBlockState.isSolid()
+                    || ((FlowableFluidInvoker) this).worldsinger$isMatchingAndStill(
+                    belowFluidState)) {
+                return this.getStill(false);
+            }
+        }
+
+        BlockPos abovePos = pos.up();
+        BlockState aboveBlockState = world.getBlockState(abovePos);
+        FluidState aboveFluidState = aboveBlockState.getFluidState();
+        if (!aboveFluidState.isEmpty() && aboveFluidState.getFluid() instanceof AetherSporeFluid
+                && ((FlowableFluidInvoker) this).worldsinger$receivesFlow(Direction.UP, world, pos,
+                state, abovePos, aboveBlockState)) {
+            return this.getFlowing(8, true);
+        }
+        int updatedFluidLevel = maxNeighboringFluidLevel - this.getLevelDecreasePerBlock(world);
+        if (updatedFluidLevel <= 0) {
+            return Fluids.EMPTY.getDefaultState();
+        }
+        return this.getFlowing(updatedFluidLevel, false);
     }
 
     @Override

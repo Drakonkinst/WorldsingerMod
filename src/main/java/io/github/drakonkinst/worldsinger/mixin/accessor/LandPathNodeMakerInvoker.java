@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface LandPathNodeMakerInvoker {
 
     @Invoker("getCommonNodeType")
-    static PathNodeType invokeGetCommonNodeType(BlockView world, BlockPos pos) {
+    static PathNodeType worldsinger$getCommonNodeType(BlockView world, BlockPos pos) {
         throw new AssertionError();
     }
 }

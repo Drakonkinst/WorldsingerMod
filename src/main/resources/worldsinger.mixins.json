@@ -5,6 +5,7 @@
   "mixins": [
     "accessor.AbstractBlockAccessor",
     "accessor.AbstractBlockSettingsAccessor",
+    "accessor.FlowableFluidInvoker",
     "accessor.LandPathNodeMakerInvoker",
     "block.AbstractBlockStateMixin",
     "block.BlockMixin",

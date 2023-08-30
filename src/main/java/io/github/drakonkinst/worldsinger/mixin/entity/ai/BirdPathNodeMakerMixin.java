@@ -18,9 +18,11 @@ public abstract class BirdPathNodeMakerMixin {
     private void avoidSporeBlocks(BlockView world, int x, int y, int z,
             CallbackInfoReturnable<PathNodeType> cir) {
         BlockPos pos = new BlockPos(x, y, z);
-        PathNodeType pathNodeType = LandPathNodeMakerInvoker.invokeGetCommonNodeType(world, pos);
+        PathNodeType pathNodeType = LandPathNodeMakerInvoker.worldsinger$getCommonNodeType(world,
+                pos);
         if (pathNodeType == PathNodeType.OPEN && y >= world.getBottomY() + 1) {
-            PathNodeType pathNodeTypeBelow = LandPathNodeMakerInvoker.invokeGetCommonNodeType(world,
+            PathNodeType pathNodeTypeBelow = LandPathNodeMakerInvoker.worldsinger$getCommonNodeType(
+                    world,
                     pos.down());
             if (pathNodeTypeBelow == ModEnums.PathNodeType.AETHER_SPORE_SEA) {
                 cir.setReturnValue(ModEnums.PathNodeType.AETHER_SPORE_SEA);

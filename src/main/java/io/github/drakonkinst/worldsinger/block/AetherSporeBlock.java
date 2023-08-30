@@ -103,6 +103,13 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         super.onProjectileHit(world, state, hit, projectile);
     }
 
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState,
+            boolean moved) {
+
+        super.onStateReplaced(state, world, pos, newState, moved);
+    }
+
     public BlockState getFluidizedState() {
         return fluidizedState;
     }
