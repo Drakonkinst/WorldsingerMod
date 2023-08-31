@@ -9,8 +9,7 @@ public class LivingAetherSporeFluidBlock extends AetherSporeFluidBlock implement
     private final Block deadSporeBlock;
 
     public LivingAetherSporeFluidBlock(FlowableFluid fluid, AetherSporeType aetherSporeType,
-            Block deadSporeBlock,
-            Settings settings) {
+            Block deadSporeBlock, Settings settings) {
         super(fluid, aetherSporeType, settings);
         this.deadSporeBlock = deadSporeBlock;
     }

@@ -23,6 +23,7 @@ public class WorldsingerClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
+        // Register fluids
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.VERDANT_SPORES,
                 ModFluids.FLOWING_VERDANT_SPORES,
                 new SimpleFluidRenderHandler(
@@ -36,12 +37,14 @@ public class WorldsingerClient implements ClientModInitializer {
                         new Identifier(Constants.MOD_ID, "block/dead_spore_sea_block_flow")
                 ));
 
+        // Register fluid render layer as translucent (needed to make boats cull properly)
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
                 ModFluids.VERDANT_SPORES,
                 ModFluids.FLOWING_VERDANT_SPORES,
                 ModFluids.DEAD_SPORES,
                 ModFluids.FLOWING_DEAD_SPORES);
 
+        // Register block render layer
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
                 ModBlocks.VERDANT_VINE_SNARE,
                 ModBlocks.TWISTING_VERDANT_VINES,
@@ -51,9 +54,11 @@ public class WorldsingerClient implements ClientModInitializer {
                 ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT
         );
 
+        // Register particles
         ParticleFactoryRegistry.getInstance()
                 .register(ModParticleTypes.SPORE_DUST, SporeDustParticle.Factory::new);
 
+        // Register packets
         ClientPlayNetworking.registerGlobalReceiver(LumarSeetheData.LUMAR_SEETHE_UPDATE_PACKET_ID,
                 (client, handler, buf, responseSender) -> {
                     LumarSeetheData lumarSeetheData = LumarSeetheData.fromBuf(buf);

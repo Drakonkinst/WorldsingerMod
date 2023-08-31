@@ -30,6 +30,19 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     private static final Direction[] DIRECTIONS = {Direction.DOWN, Direction.UP, Direction.NORTH,
             Direction.EAST, Direction.SOUTH, Direction.WEST};
 
+    public VerdantVineBranchBlock(Settings settings) {
+        super(RADIUS, settings);
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(NORTH, false)
+                .with(SOUTH, false)
+                .with(EAST, false)
+                .with(WEST, false)
+                .with(UP, false)
+                .with(DOWN, false)
+                .with(Properties.WATERLOGGED, false)
+                .with(Properties.PERSISTENT, false));
+    }
+
     private static List<BlockPos> getNeighbors(BlockPos pos) {
         List<BlockPos> neighbors = new ArrayList<>();
 
@@ -42,34 +55,28 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
     private static boolean canConnect(BlockView world, BlockPos pos, BlockState state,
             Direction direction) {
+        // Can connect to any other branch block
         if (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
             return true;
         }
+
+        // Can connect to snare only if supporting it
         if (state.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
             Direction attachDirection = VerdantVineSnareBlock.getDirection(state).getOpposite();
             return attachDirection == direction;
         }
+
+        // Can connect to twisting vines only if supporting them
         if (state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
             Direction growthDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(
                             state)
                     .getOpposite();
             return growthDirection == direction;
         }
+
+        // Can connect to any solid face
         boolean faceFullSquare = state.isSideSolidFullSquare(world, pos, direction.getOpposite());
         return faceFullSquare;
-    }
-
-    public VerdantVineBranchBlock(Settings settings) {
-        super(RADIUS, settings);
-        this.setDefaultState(this.stateManager.getDefaultState()
-                .with(NORTH, false)
-                .with(SOUTH, false)
-                .with(EAST, false)
-                .with(WEST, false)
-                .with(UP, false)
-                .with(DOWN, false)
-                .with(Properties.WATERLOGGED, false)
-                .with(Properties.PERSISTENT, false));
     }
 
     @Override
@@ -159,9 +166,9 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        // Decay over time
         if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
-            Block.dropStacks(state, world, pos);
-            world.removeBlock(pos, false);
+            world.breakBlock(pos, true);
         }
     }
 }

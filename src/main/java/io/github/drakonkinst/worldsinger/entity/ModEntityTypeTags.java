@@ -13,9 +13,9 @@ public final class ModEntityTypeTags {
     public static TagKey<EntityType<?>> SPORES_NEVER_AFFECT = ModEntityTypeTags.of(
             "spores_never_affect");
 
+    private ModEntityTypeTags() {}
+
     private static TagKey<EntityType<?>> of(String id) {
         return TagKey.of(RegistryKeys.ENTITY_TYPE, new Identifier(Constants.MOD_ID, id));
     }
-
-    private ModEntityTypeTags() {}
 }

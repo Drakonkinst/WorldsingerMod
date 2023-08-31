@@ -9,9 +9,6 @@ import net.minecraft.util.Identifier;
 
 public final class ModFluids {
 
-    private ModFluids() {
-    }
-
     public static final FlowableFluid DEAD_SPORES = register("dead_spores",
             new DeadSporeFluid.Still()
     );
@@ -25,10 +22,12 @@ public final class ModFluids {
             new VerdantSporeFluid.Flowing()
     );
 
-    public static void initialize() {}
-
     public static <T extends Fluid> T register(String id, T fluid) {
         Identifier fluidId = new Identifier(Constants.MOD_ID, id);
         return Registry.register(Registries.FLUID, fluidId, fluid);
     }
+
+    public static void initialize() {}
+
+    private ModFluids() {}
 }

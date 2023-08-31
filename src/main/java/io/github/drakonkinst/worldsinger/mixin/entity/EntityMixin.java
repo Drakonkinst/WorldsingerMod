@@ -9,7 +9,6 @@ import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,22 +33,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements SporeFluidEntityStateAccess {
-
-    @Unique
-    private boolean isTouchingSporeSea = false;
-
+    
     @Inject(method = "updateWaterState", at = @At("RETURN"), cancellable = true)
     private void allowCustomFluidToPushEntity(CallbackInfoReturnable<Boolean> cir) {
         boolean isTouchingAnyFluid = cir.getReturnValueZ();
         if (this.updateMovementInFluid(ModFluidTags.AETHER_SPORES, AetherSporeFluid.FLUID_SPEED)) {
             if (!this.isTouchingSporeSea) {
                 if (this.getWorld() instanceof ServerWorld serverWorld) {
-                    Optional<AetherSporeType> sporeType = getSporeTypeFromFluids(
+                    Optional<AetherSporeType> optionalSporeType = AetherSporeType.getFirstSporeTypeFromFluid(
                             getAllTouchingFluids());
-                    sporeType.ifPresent(
-                            aetherSporeType -> SporeParticles.spawnSplashParticles(
-                                    serverWorld, aetherSporeType, (Entity) (Object) this,
-                                    this.fallDistance, true));
+                    optionalSporeType.ifPresent(
+                            sporeType -> SporeParticles.spawnSplashParticles(serverWorld, sporeType,
+                                    (Entity) (Object) this, this.fallDistance, true));
                 }
             }
             this.fallDistance = 0.0f;
@@ -60,16 +55,6 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
             this.isTouchingSporeSea = false;
         }
         cir.setReturnValue(isTouchingAnyFluid);
-    }
-
-    @Unique
-    private static Optional<AetherSporeType> getSporeTypeFromFluids(Collection<Fluid> fluids) {
-        for (Fluid fluid : fluids) {
-            if (fluid instanceof AetherSporeFluid aetherSporeFluid) {
-                return Optional.of(aetherSporeFluid.getSporeType());
-            }
-        }
-        return Optional.empty();
     }
 
     @Unique
@@ -95,11 +80,12 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
         if (this.isSneaking()) {
             return;
         }
+
         if (this.getWorld() instanceof ServerWorld serverWorld) {
             BlockState steppingBlock = this.getSteppingBlockState();
             if (steppingBlock.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS) || steppingBlock.isIn(
                     ModBlockTags.AETHER_SPORE_BLOCKS)) {
-                Optional<AetherSporeType> aetherSporeType = AetherSporeType.getAetherSporeTypeFromBlock(
+                Optional<AetherSporeType> aetherSporeType = AetherSporeType.getSporeTypeFromBlock(
                         steppingBlock);
                 if (aetherSporeType.isEmpty()) {
                     Constants.LOGGER.error("Aether spore block should have a spore type defined");
@@ -125,16 +111,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
     public abstract boolean updateMovementInFluid(TagKey<Fluid> tag, double speed);
 
     @Shadow
-    public float fallDistance;
-
-    @Shadow
     public abstract void extinguish();
-
-    @Shadow
-    protected boolean firstUpdate;
-
-    @Shadow
-    protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
 
     @Shadow
     public abstract boolean isSubmergedIn(TagKey<Fluid> fluidTag);
@@ -160,4 +137,14 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
     @Shadow
     public abstract Box getBoundingBox();
+
+    @Shadow
+    public float fallDistance;
+    @Shadow
+    protected boolean firstUpdate;
+    @Shadow
+    protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
+    @Unique
+    private boolean isTouchingSporeSea = false;
+
 }

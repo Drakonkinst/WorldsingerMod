@@ -18,18 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class BlockMixin {
 
     @Shadow
-    protected abstract void setDefaultState(BlockState state);
+    public abstract BlockState getDefaultState();
 
     @Shadow
-    public abstract BlockState getDefaultState();
+    protected abstract void setDefaultState(BlockState state);
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target =
             "Lnet/minecraft/state/StateManager$Builder;build" +
                     "(Ljava/util/function/Function;Lnet/minecraft/state/StateManager$Factory;)" +
                     "Lnet/minecraft/state/StateManager;", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
     private void injectFluidProperty(AbstractBlock.Settings settings, CallbackInfo ci,
-            StateManager.Builder<Block,
-                    BlockState> builder) {
+            StateManager.Builder<Block, BlockState> builder) {
         if (isWaterloggable()) {
             builder.add(ModProperties.FLUIDLOGGED);
         }

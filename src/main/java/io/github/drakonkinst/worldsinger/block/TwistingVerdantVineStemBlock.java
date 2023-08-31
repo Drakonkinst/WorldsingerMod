@@ -14,12 +14,12 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class TwistingVerdantVinePlantBlock extends AbstractVerticalGrowthPlantBlock {
+public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBlock {
 
     private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 16.0,
             12.0);
 
-    public TwistingVerdantVinePlantBlock(Settings settings) {
+    public TwistingVerdantVineStemBlock(Settings settings) {
         super(settings, SHAPE);
         this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false));
     }
@@ -30,7 +30,7 @@ public class TwistingVerdantVinePlantBlock extends AbstractVerticalGrowthPlantBl
     }
 
     @Override
-    protected Block getStem() {
+    protected Block getBud() {
         return ModBlocks.DEAD_TWISTING_VERDANT_VINES;
     }
 
@@ -57,9 +57,9 @@ public class TwistingVerdantVinePlantBlock extends AbstractVerticalGrowthPlantBl
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        // Decay over time
         if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
-            Block.dropStacks(state, world, pos);
-            world.removeBlock(pos, false);
+            world.breakBlock(pos, true);
         }
     }
 

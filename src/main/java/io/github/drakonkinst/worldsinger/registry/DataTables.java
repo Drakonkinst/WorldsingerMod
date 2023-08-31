@@ -15,6 +15,8 @@ public final class DataTables {
     public static final RegistryKey<DataTable> ENTITY_WEIGHT = DataTables.of(
             "entity_weight");
 
+    private DataTables() {}
+
     public static void register() {
         DynamicRegistries.registerSynced(ModRegistries.DATA_TABLES, DataTable.CODEC);
     }
@@ -35,6 +37,4 @@ public final class DataTables {
     public static Set<Identifier> getDataTableIds(World world) {
         return world.getRegistryManager().get(ModRegistries.DATA_TABLES).getIds();
     }
-
-    private DataTables() {}
 }

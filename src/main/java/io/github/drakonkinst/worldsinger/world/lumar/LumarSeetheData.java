@@ -18,6 +18,9 @@ public class LumarSeetheData {
     private static final String CYCLE_TICKS_NBT = "cycleTick";
     private static final String CYCLES_UNTIL_NEXT_LONG_STILLING_NBT = "cyclesUntilNextLongStilling";
     private static final String IS_SEETHING_NBT = "isSeething";
+    private int cyclesUntilNextLongStilling;
+    private int cycleTicks;
+    private boolean isSeething;
 
     public static LumarSeetheData fromNbt(NbtCompound tag) {
         LumarSeetheData data = new LumarSeetheData();
@@ -35,32 +38,38 @@ public class LumarSeetheData {
         return nbt;
     }
 
-    private int cyclesUntilNextLongStilling;
-    private int cycleTicks;
-    private boolean isSeething;
+    public static LumarSeetheData fromBuf(PacketByteBuf buf) {
+        LumarSeetheData data = new LumarSeetheData();
 
-    public void setCyclesUntilNextLongStilling(int cyclesUntilNextLongStilling) {
-        this.cyclesUntilNextLongStilling = cyclesUntilNextLongStilling;
-    }
+        data.setSeething(buf.readBoolean());
+        data.setCycleTicks(buf.readInt());
+        data.setCyclesUntilNextLongStilling(buf.readInt());
 
-    public void setCycleTicks(int cycleTicks) {
-        this.cycleTicks = cycleTicks;
-    }
-
-    public void setSeething(boolean seething) {
-        isSeething = seething;
+        return data;
     }
 
     public int getCyclesUntilNextLongStilling() {
         return cyclesUntilNextLongStilling;
     }
 
+    public void setCyclesUntilNextLongStilling(int cyclesUntilNextLongStilling) {
+        this.cyclesUntilNextLongStilling = cyclesUntilNextLongStilling;
+    }
+
     public int getCycleTicks() {
         return cycleTicks;
     }
 
+    public void setCycleTicks(int cycleTicks) {
+        this.cycleTicks = cycleTicks;
+    }
+
     public boolean isSeething() {
         return isSeething;
+    }
+
+    public void setSeething(boolean seething) {
+        isSeething = seething;
     }
 
     public void sendToClient(World world) {
@@ -82,15 +91,5 @@ public class LumarSeetheData {
         this.setSeething(data.isSeething());
         this.setCycleTicks(data.getCycleTicks());
         this.setCyclesUntilNextLongStilling(data.getCyclesUntilNextLongStilling());
-    }
-
-    public static LumarSeetheData fromBuf(PacketByteBuf buf) {
-        LumarSeetheData data = new LumarSeetheData();
-
-        data.setSeething(buf.readBoolean());
-        data.setCycleTicks(buf.readInt());
-        data.setCyclesUntilNextLongStilling(buf.readInt());
-
-        return data;
     }
 }

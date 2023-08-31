@@ -13,9 +13,8 @@ import org.jetbrains.annotations.Nullable;
 @Environment(value = EnvType.CLIENT)
 public class SporeDustParticle extends AbstractDustParticle<SporeDustParticleEffect> {
 
-    protected SporeDustParticle(ClientWorld world, double x, double y,
-            double z, double velocityX, double velocityY, double velocityZ,
-            SporeDustParticleEffect parameters,
+    protected SporeDustParticle(ClientWorld world, double x, double y, double z, double velocityX,
+            double velocityY, double velocityZ, SporeDustParticleEffect parameters,
             SpriteProvider spriteProvider) {
         super(world, x, y, z, velocityX, velocityY, velocityZ, parameters, spriteProvider);
     }

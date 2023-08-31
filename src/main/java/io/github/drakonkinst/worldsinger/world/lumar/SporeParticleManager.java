@@ -29,8 +29,6 @@ import org.joml.Vector3f;
 // actively damage entities it comes into contact with.
 public final class SporeParticleManager {
 
-    private SporeParticleManager() {}
-
     private static final float CACHED_SIZE_PRECISION = 20.0f;
     private static final Int2ObjectMap<SporeDustParticleEffect> cachedDustParticleEffects = new Int2ObjectOpenHashMap<>();
     private static final int SPORE_EFFECT_DURATION_TICKS = 40;
@@ -43,8 +41,9 @@ public final class SporeParticleManager {
     private static final double MIN_HEIGHT = 0.1;
     private static final double MAX_HEIGHT = 5.0;
     private static final double PARTICLE_VISUAL_HEIGHT_PENALTY = 0.1;
-
     private static final Random random = Random.create();
+
+    private SporeParticleManager() {}
 
     // Create a cloud of spore particles at the given location
     // minY is the bottom of the particle cloud, not the center, for better ease of use.

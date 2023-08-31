@@ -2,7 +2,6 @@ package io.github.drakonkinst.worldsinger.mixin.block;
 
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MagmaBlock;
@@ -27,15 +26,16 @@ public abstract class MagmaBlockMixin extends Block {
 
     @Inject(method = "scheduledTick", at = @At("RETURN"))
     private void addSporeFluidizationCheckScheduledTick(BlockState state, ServerWorld world,
-            BlockPos pos,
-            Random random, CallbackInfo ci) {
-        AetherSporeFluidBlock.update(world, pos.up(), world.getBlockState(pos.up()), state);
+            BlockPos pos, Random random, CallbackInfo ci) {
+        BlockPos posAbove = pos.up();
+        BlockState blockStateAbove = world.getBlockState(posAbove);
+        AetherSporeFluidBlock.update(world, posAbove, blockStateAbove, state);
     }
 
     @Inject(method = "getStateForNeighborUpdate", at = @At("RETURN"))
     private void addSporeFluidizationCheckNeighborUpdate(BlockState state, Direction direction,
-            BlockState neighborState, WorldAccess world, BlockPos pos,
-            BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
+            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos,
+            CallbackInfoReturnable<BlockState> cir) {
         if (direction == Direction.UP && neighborState.isIn(ModBlockTags.AETHER_SPORE_BLOCKS)) {
             world.scheduleBlockTick(pos, (MagmaBlock) (Object) this, 20);
         }
@@ -44,10 +44,9 @@ public abstract class MagmaBlockMixin extends Block {
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState,
             boolean moved) {
-        BlockState blockStateAbove = world.getBlockState(pos.up());
-        if (blockStateAbove.getFluidState().isIn(ModFluidTags.AETHER_SPORES)) {
-            AetherSporeFluidBlock.update(world, pos.up(), blockStateAbove, newState);
-        }
+        BlockPos posAbove = pos.up();
+        BlockState blockStateAbove = world.getBlockState(posAbove);
+        AetherSporeFluidBlock.update(world, posAbove, blockStateAbove, newState);
         super.onStateReplaced(state, world, pos, newState, moved);
     }
 }

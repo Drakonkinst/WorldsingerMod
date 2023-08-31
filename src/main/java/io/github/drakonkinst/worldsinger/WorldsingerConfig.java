@@ -20,15 +20,19 @@ import net.minecraft.util.Identifier;
 
 public final class WorldsingerConfig {
 
-    private static WorldsingerConfig INSTANCE;
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(WorldsingerConfig.class, new Serializer())
             .setPrettyPrinting()
             .create();
-
     private static final String CONFIG_FILE_NAME = "worldsinger_config.json";
     private static final String DEFAULT_CONFIG_FILE_PATH = "/default_config.json";
     private static final String KEY_FLUIDLOGGABLE_FLUIDS = "fluidloggable_fluids";
+    private static WorldsingerConfig INSTANCE;
+    private final List<Identifier> fluidloggableFluids;
+
+    private WorldsingerConfig(List<Identifier> fluidloggableFluids) {
+        this.fluidloggableFluids = fluidloggableFluids;
+    }
 
     public static WorldsingerConfig instance() {
         if (INSTANCE == null) {
@@ -49,12 +53,6 @@ public final class WorldsingerConfig {
             }
         }
         return INSTANCE;
-    }
-
-    private final List<Identifier> fluidloggableFluids;
-
-    private WorldsingerConfig(List<Identifier> fluidloggableFluids) {
-        this.fluidloggableFluids = fluidloggableFluids;
     }
 
     public List<Identifier> getFluidloggableFluids() {
@@ -78,9 +76,8 @@ public final class WorldsingerConfig {
         }
 
         @Override
-        public WorldsingerConfig deserialize(
-                JsonElement root, Type type, JsonDeserializationContext context)
-                throws JsonParseException {
+        public WorldsingerConfig deserialize(JsonElement root, Type type,
+                JsonDeserializationContext context) throws JsonParseException {
             JsonStack jsonStack = new JsonStack(GSON, root);
             jsonStack.allow(KEY_FLUIDLOGGABLE_FLUIDS);
 

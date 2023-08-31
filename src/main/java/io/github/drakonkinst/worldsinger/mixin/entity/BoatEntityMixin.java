@@ -45,7 +45,7 @@ public abstract class BoatEntityMixin extends Entity {
     private AetherSporeFluid lastAetherSporeFluid = null;
 
     @Unique
-    private boolean[] firstPaddle = {true, true};
+    private final boolean[] firstPaddle = {true, true};
 
     public BoatEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -128,7 +128,6 @@ public abstract class BoatEntityMixin extends Entity {
         }
 
         double gravity = this.hasNoGravity() ? 0.0 : -0.04;
-        ;
         double f = 0.0;
         boolean isFluidized = LumarSeetheManager.areSporesFluidized(this.getWorld());
 
@@ -288,42 +287,35 @@ public abstract class BoatEntityMixin extends Entity {
     }
 
     @Shadow
-    private double waterLevel;
-
-    @Shadow
-    private float velocityDecay;
-
-    @Shadow
-    private Location lastLocation;
-
-    @Shadow
-    private Location location;
-
-    @Shadow
     public abstract float getWaterHeightBelow();
-
-    @Shadow
-    private double fallVelocity;
-
-    @Shadow
-    private float yawVelocity;
 
     @Shadow
     public abstract void setPaddleMovings(boolean leftMoving, boolean rightMoving);
 
     @Shadow
-    private boolean pressingRight;
-
-    @Shadow
-    private boolean pressingLeft;
-
-    @Shadow
-    private boolean pressingForward;
-
-    @Shadow
     public abstract boolean isPaddleMoving(int paddle);
 
+
+    @Shadow
+    private double waterLevel;
+    @Shadow
+    private float velocityDecay;
+    @Shadow
+    private Location lastLocation;
+    @Shadow
+    private Location location;
+    @Shadow
+    private double fallVelocity;
+    @Shadow
+    private float yawVelocity;
+    @Shadow
+    private boolean pressingRight;
+    @Shadow
+    private boolean pressingLeft;
+    @Shadow
+    private boolean pressingForward;
     @Shadow
     @Final
     private float[] paddlePhases;
+
 }

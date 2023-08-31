@@ -12,11 +12,11 @@ public final class ModStatusEffects {
     public static final StatusEffect VERDANT_SPORES = register("verdant_spores",
             new SporeStatusEffect(AetherSporeType.VERDANT));
 
+    private ModStatusEffects() {}
+
     private static <T extends StatusEffect> T register(String id, T statusEffect) {
         Registry.register(Registries.STATUS_EFFECT, new Identifier(Constants.MOD_ID, id),
                 statusEffect);
         return statusEffect;
     }
-
-    private ModStatusEffects() {}
 }

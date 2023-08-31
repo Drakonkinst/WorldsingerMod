@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
+import io.github.drakonkinst.worldsinger.block.SporeEmitting;
 import io.github.drakonkinst.worldsinger.mixin.accessor.FlowableFluidInvoker;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
@@ -22,7 +23,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
-public abstract class AetherSporeFluid extends FlowableFluid {
+public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmitting {
 
     public static final float FOG_START = 0.25f;
     public static final float FOG_END = 2.0f;
@@ -65,6 +66,7 @@ public abstract class AetherSporeFluid extends FlowableFluid {
 
     @Override
     protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
+        // Drop stacks of blocks when breaking them with fluid
         final BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
         Block.dropStacks(state, world, pos, blockEntity);
     }
@@ -75,6 +77,7 @@ public abstract class AetherSporeFluid extends FlowableFluid {
             return;
         }
 
+        // Play particles and sounds during seething only
         BlockPos posAbove = pos.up();
         if (world.getBlockState(posAbove).isAir() && !world.getBlockState(posAbove)
                 .isOpaqueFullCube(world, posAbove)) {
@@ -95,11 +98,12 @@ public abstract class AetherSporeFluid extends FlowableFluid {
 
     @Override
     public void onScheduledTick(World world, BlockPos pos, FluidState state) {
-        super.onScheduledTick(world, pos, state);
         if (this.isStill(state) && !AetherSporeFluidBlock.shouldFluidize(
                 world.getBlockState(pos.down()))) {
-            AetherSporeFluidBlock.updateFluidization(world, pos, state.getBlockState(), false);
+            AetherSporeFluidBlock.updateFluidizationForBlock(world, pos, state.getBlockState(),
+                    false);
         }
+        super.onScheduledTick(world, pos, state);
     }
 
     @Override

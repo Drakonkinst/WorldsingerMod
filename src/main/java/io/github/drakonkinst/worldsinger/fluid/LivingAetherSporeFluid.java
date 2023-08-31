@@ -29,6 +29,7 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid {
             return;
         }
 
+        // Spread to nearby dead spore sea blocks, regenerating them
         BlockState blockState = this.toBlockState(state);
         for (int i = 0; i < NUM_RANDOM_SPREAD_PER_RANDOM_TICK; ++i) {
             int offsetX = random.nextInt(3) - 1;

@@ -18,27 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PersistentProjectileEntity.class)
 public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
 
-    @Shadow
-    protected boolean inGround;
-
-    @Shadow
-    public abstract boolean isNoClip();
-
-    @Shadow
-    private @Nullable BlockState inBlockState;
-
-    @Shadow
-    protected abstract boolean shouldFall();
-
-    @Shadow
-    protected abstract void fall();
-
-    public PersistentProjectileEntityMixin(
-            EntityType<? extends ProjectileEntity> entityType,
-            World world) {
-        super(entityType, world);
-    }
-
     @Inject(method = "tick", at = @At("HEAD"))
     private void collideWithSolidSpores(CallbackInfo ci) {
         // Spore sea blocks can change solidity without warning, so check if it should fall even if there is no block update
@@ -57,4 +36,24 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
                 && !LumarSeetheManager.areSporesFluidized(this.getWorld());
         cir.setReturnValue(cir.getReturnValue() && !isInSolidSpores);
     }
+
+    @Shadow
+    protected boolean inGround;
+    @Shadow
+    private @Nullable BlockState inBlockState;
+
+    public PersistentProjectileEntityMixin(
+            EntityType<? extends ProjectileEntity> entityType,
+            World world) {
+        super(entityType, world);
+    }
+
+    @Shadow
+    public abstract boolean isNoClip();
+
+    @Shadow
+    protected abstract boolean shouldFall();
+
+    @Shadow
+    protected abstract void fall();
 }

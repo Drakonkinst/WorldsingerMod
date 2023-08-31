@@ -16,8 +16,6 @@ import net.minecraft.util.Identifier;
 
 public final class ModBlocks {
 
-    private ModBlocks() {}
-
     // Dead Spores
     public static final Block DEAD_SPORE_SEA_BLOCK = register(
             "dead_spore_sea_block",
@@ -34,41 +32,57 @@ public final class ModBlocks {
             ), false);
     public static final Block DEAD_SPORE_BLOCK = register("dead_spore_block",
             new AetherSporeBlock(AetherSporeType.DEAD, ModBlocks.DEAD_SPORE_SEA_BLOCK,
-                    FabricBlockSettings.create().strength(0.5f).mapColor(MapColor.GRAY)
-                            .sounds(BlockSoundGroup.SAND)), true);
+                    FabricBlockSettings.create()
+                            .strength(0.5f)
+                            .mapColor(MapColor.GRAY)
+                            .sounds(BlockSoundGroup.SAND)
+            ), true);
     public static final Block DEAD_VERDANT_VINE_BLOCK = register("dead_verdant_vine_block",
             new VerdantVineBlock(
-                    FabricBlockSettings.create().strength(1.0f).sounds(BlockSoundGroup.WOOD)
-                            .ticksRandomly()),
-            true);
-    public static final Block DEAD_VERDANT_VINE_BRANCH = register(
-            "dead_verdant_vine_branch",
+                    FabricBlockSettings.create()
+                            .strength(1.0f)
+                            .sounds(BlockSoundGroup.WOOD)
+                            .ticksRandomly()
+            ), true);
+    public static final Block DEAD_VERDANT_VINE_BRANCH = register("dead_verdant_vine_branch",
             new VerdantVineBranchBlock(
-                    FabricBlockSettings.create().strength(0.4f).nonOpaque().ticksRandomly()),
-            true);
+                    FabricBlockSettings.create()
+                            .strength(0.4f)
+                            .nonOpaque()
+                            .ticksRandomly()
+            ), true);
     public static final Block DEAD_VERDANT_VINE_SNARE = register("dead_verdant_vine_snare",
             new VerdantVineSnareBlock(
-                    FabricBlockSettings.create().solid().noCollision().requiresTool().strength(0.4f)
-                            .ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)), true);
+                    FabricBlockSettings.create()
+                            .solid()
+                            .noCollision()
+                            .requiresTool()
+                            .strength(0.4f)
+                            .ticksRandomly()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+            ), true);
     public static final Block DEAD_TWISTING_VERDANT_VINES = register("dead_twisting_verdant_vines",
             new TwistingVerdantVineBlock(
-                    FabricBlockSettings.create().strength(0.2f).noCollision()
+                    FabricBlockSettings.create()
+                            .strength(0.2f)
+                            .noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
                             .ticksRandomly()
-                            .pistonBehavior(PistonBehavior.DESTROY)),
-            true);
+                            .pistonBehavior(PistonBehavior.DESTROY)
+            ), true);
     public static final Block DEAD_TWISTING_VERDANT_VINES_PLANT = register(
             "dead_twisting_verdant_vines_plant",
-            new TwistingVerdantVinePlantBlock(
-                    FabricBlockSettings.create().strength(0.2f).noCollision()
+            new TwistingVerdantVineStemBlock(
+                    FabricBlockSettings.create()
+                            .strength(0.2f)
+                            .noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
                             .ticksRandomly()
-                            .pistonBehavior(PistonBehavior.DESTROY)),
-            false);
+                            .pistonBehavior(PistonBehavior.DESTROY)
+            ), false);
 
     // Verdant Spores
-    public static final Block VERDANT_SPORE_SEA_BLOCK = register(
-            "verdant_spore_sea_block",
+    public static final Block VERDANT_SPORE_SEA_BLOCK = register("verdant_spore_sea_block",
             new LivingAetherSporeFluidBlock(ModFluids.VERDANT_SPORES, AetherSporeType.VERDANT,
                     ModBlocks.DEAD_SPORE_SEA_BLOCK, FabricBlockSettings.create()
                     .strength(100.0f)
@@ -94,36 +108,52 @@ public final class ModBlocks {
     public static final Block VERDANT_VINE_BLOCK = register("verdant_vine_block",
             new LivingVerdantVineBlock(ModBlocks.DEAD_VERDANT_VINE_BLOCK,
                     FabricBlockSettings.create().strength(2.0f).sounds(BlockSoundGroup.WOOD)
-                            .ticksRandomly()),
-            true);
+                            .ticksRandomly()
+            ), true);
     public static final Block VERDANT_VINE_BRANCH = register(
             "verdant_vine_branch",
             new LivingVerdantVineBranchBlock(ModBlocks.DEAD_VERDANT_VINE_BRANCH,
-                    FabricBlockSettings.create().strength(0.8f).nonOpaque().ticksRandomly()),
-            true);
+                    FabricBlockSettings.create()
+                            .strength(0.8f)
+                            .nonOpaque()
+                            .ticksRandomly()
+            ), true);
     public static final Block VERDANT_VINE_SNARE = register("verdant_vine_snare",
             new LivingVerdantVineSnareBlock(ModBlocks.DEAD_VERDANT_VINE_SNARE,
-                    FabricBlockSettings.create().solid().noCollision().requiresTool().strength(0.8f)
-                            .ticksRandomly().pistonBehavior(PistonBehavior.DESTROY)), true);
+                    FabricBlockSettings.create()
+                            .solid()
+                            .noCollision()
+                            .requiresTool()
+                            .strength(0.8f)
+                            .ticksRandomly()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+            ), true);
     public static final Block TWISTING_VERDANT_VINES = register("twisting_verdant_vines",
             new LivingTwistingVerdantVineBlock(ModBlocks.DEAD_TWISTING_VERDANT_VINES,
-                    FabricBlockSettings.create().strength(0.4f).noCollision()
+                    FabricBlockSettings.create()
+                            .strength(0.4f)
+                            .noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)),
             true);
     public static final Block TWISTING_VERDANT_VINES_PLANT = register(
             "twisting_verdant_vines_plant",
-            new LivingTwistingVerdantVinePlantBlock(ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
-                    FabricBlockSettings.create().strength(0.4f).noCollision()
+            new LivingTwistingVerdantVineStemBlock(ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
+                    FabricBlockSettings.create()
+                            .strength(0.4f)
+                            .noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
                             .ticksRandomly()
-                            .pistonBehavior(PistonBehavior.DESTROY)),
-            false);
+                            .pistonBehavior(PistonBehavior.DESTROY)
+            ), false);
 
     // Other
     public static final Block SALTSTONE = register("saltstone",
-            new Block(FabricBlockSettings.create().requiresTool().strength(1.5f, 6.0f)), true);
+            new Block(FabricBlockSettings.create()
+                    .requiresTool()
+                    .strength(1.5f, 6.0f)
+            ), true);
 
     public static <T extends Block> T register(String id, T block, boolean shouldRegisterItem) {
         Identifier blockId = new Identifier(Constants.MOD_ID, id);
@@ -137,4 +167,6 @@ public final class ModBlocks {
     }
 
     public static void initialize() {}
+
+    private ModBlocks() {}
 }

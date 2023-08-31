@@ -54,7 +54,6 @@ public abstract class AbstractBlockStateMixin {
             FluidBlock fluidBlock = Fluidlogged.getFluidBlockForFluid(fluid);
             if (fluidBlock != null) {
                 // Apply luminance from the fluid block to the block itself
-                // TODO: What happens if the original block has luminance too?
                 AbstractBlock.Settings settings = ((AbstractBlockAccessor) fluidBlock).worldsinger$getSettings();
                 return ((AbstractBlockSettingsAccessor) settings).worldsinger$getLuminance()
                         .applyAsInt(state);
@@ -111,7 +110,6 @@ public abstract class AbstractBlockStateMixin {
         }
     }
 
-    // Tossing these in for now, haven't given them a proper look yet
     @Redirect(method =
             "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
                     "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At(value = "INVOKE",
@@ -120,8 +118,7 @@ public abstract class AbstractBlockStateMixin {
                     "Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
                     "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
     private VoxelShape injectCustomFluidCollisionShape(Block instance, BlockState state,
-            BlockView world, BlockPos pos
-            , ShapeContext context) {
+            BlockView world, BlockPos pos, ShapeContext context) {
         return instance.getCollisionShape(
                 state.contains(ModProperties.FLUIDLOGGED)
                         ? state.with(ModProperties.FLUIDLOGGED, 0)
@@ -153,8 +150,7 @@ public abstract class AbstractBlockStateMixin {
                     +
                     "Lnet/minecraft/util/shape/VoxelShape;"))
     private VoxelShape injectCustomFluidSidesShape(Block instance, BlockState state,
-            BlockView world,
-            BlockPos pos) {
+            BlockView world, BlockPos pos) {
         ShapeContext context = ShapeContext.absent();
         return instance.getCollisionShape(
                 state.contains(ModProperties.FLUIDLOGGED)

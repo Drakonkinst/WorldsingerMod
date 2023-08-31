@@ -2,18 +2,18 @@ package io.github.drakonkinst.worldsinger.block;
 
 import net.minecraft.block.Block;
 
-public class LivingTwistingVerdantVinePlantBlock extends TwistingVerdantVinePlantBlock implements
+public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemBlock implements
         SporeKillable {
 
     private final Block deadSporeBlock;
 
-    public LivingTwistingVerdantVinePlantBlock(Block deadSporeBlock, Settings settings) {
+    public LivingTwistingVerdantVineStemBlock(Block deadSporeBlock, Settings settings) {
         super(settings);
         this.deadSporeBlock = deadSporeBlock;
     }
 
     @Override
-    protected Block getStem() {
+    protected Block getBud() {
         return ModBlocks.TWISTING_VERDANT_VINES;
     }
 

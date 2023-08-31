@@ -2,18 +2,15 @@ package io.github.drakonkinst.worldsinger.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 
-// Represents middle blocks of a vertical growth.
-public abstract class AbstractVerticalGrowthStemBlock extends
-        AbstractVerticalGrowthComponentBlock {
+// Represents the outermost block of a vertical growth.
+public abstract class AbstractVerticalGrowthBudBlock extends AbstractVerticalGrowthComponentBlock {
 
-    public AbstractVerticalGrowthStemBlock(Settings settings,
+    public AbstractVerticalGrowthBudBlock(Settings settings,
             VoxelShape outlineShape) {
         super(settings, outlineShape);
     }
@@ -28,9 +25,9 @@ public abstract class AbstractVerticalGrowthStemBlock extends
             world.scheduleBlockTick(pos, this, 1);
         }
 
-        // If now topmost, turn into bud
-        if (direction == growthDirection && !this.isSamePlant(neighborState)) {
-            return this.getBud().getStateWithProperties(state);
+        // If the same plant, no longer outermost block so turn into a stem
+        if (direction == growthDirection && (this.isSamePlant(neighborState))) {
+            return this.getStem().getStateWithProperties(state);
         }
 
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
@@ -38,12 +35,7 @@ public abstract class AbstractVerticalGrowthStemBlock extends
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        return new ItemStack(this.getBud());
-    }
-
-    @Override
-    protected Block getStem() {
+    protected Block getBud() {
         return this;
     }
 }

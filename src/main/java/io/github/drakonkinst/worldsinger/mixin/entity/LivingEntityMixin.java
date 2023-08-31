@@ -34,9 +34,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
 
-    @Shadow
-    public abstract boolean damage(DamageSource source, float amount);
-
     @Unique
     private static final Map<TagKey<Fluid>, StatusEffect> FLUID_TO_STATUS_EFFECT = ImmutableMap.of(
             ModFluidTags.VERDANT_SPORES, ModStatusEffects.VERDANT_SPORES
@@ -174,9 +171,6 @@ public abstract class LivingEntityMixin extends Entity {
     protected abstract boolean shouldSwimInFluids();
 
     @Shadow
-    protected boolean jumping;
-
-    @Shadow
     protected abstract void swimUpward(TagKey<Fluid> fluid);
 
     @Shadow
@@ -194,4 +188,10 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow
     public abstract boolean isClimbing();
+
+    @Shadow
+    protected boolean jumping;
+
+    @Shadow
+    public abstract boolean damage(DamageSource source, float amount);
 }

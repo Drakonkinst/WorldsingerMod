@@ -14,15 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(FallingBlockEntity.class)
 public class FallingBlockEntityMixin {
 
-    @Shadow
-    private boolean destroyedOnLanding;
-
-    @Shadow
-    private BlockState block;
-
     @Unique
     private static final float BREAKING_FALL_DISTANCE = 16.0f;
-
+    
     @Inject(method = "handleFallDamage", at = @At("HEAD"))
     private void destroyAetherSporeBlockOnLanding(float fallDistance, float damageMultiplier,
             DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
@@ -31,4 +25,9 @@ public class FallingBlockEntityMixin {
             this.destroyedOnLanding = true;
         }
     }
+
+    @Shadow
+    private boolean destroyedOnLanding;
+    @Shadow
+    private BlockState block;
 }

@@ -19,22 +19,23 @@ import net.minecraft.util.Identifier;
 
 public final class ModItems {
 
-    private ModItems() {
-    }
-
+    // Items
     public static final Item DEAD_SPORES_BUCKET = ModItems.register("dead_spores_bucket",
             new AetherSporeBucketItem(ModBlocks.DEAD_SPORE_BLOCK,
                     SoundEvents.BLOCK_POWDER_SNOW_PLACE,
-                    new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
+                    new FabricItemSettings()
+                            .recipeRemainder(Items.BUCKET)
+                            .maxCount(1)));
     public static final Item VERDANT_SPORES_BUCKET = ModItems.register(
             "verdant_spores_bucket", new AetherSporeBucketItem(ModBlocks.VERDANT_SPORE_BLOCK,
                     SoundEvents.BLOCK_POWDER_SNOW_PLACE,
-                    new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1))
-    );
+                    new FabricItemSettings()
+                            .recipeRemainder(Items.BUCKET)
+                            .maxCount(1)));
     public static final Item SALT = ModItems.register("salt",
-            new SaltItem(new FabricItemSettings())
-    );
+            new SaltItem(new FabricItemSettings()));
 
+    // Item Groups
     private static final ItemGroup WORLDSINGER_ITEM_GROUP = FabricItemGroup.builder()
             .icon(() -> new ItemStack(ModBlocks.VERDANT_VINE_SNARE.asItem()))
             .displayName(Text.translatable("itemGroup.worldsinger.worldsinger"))
@@ -70,4 +71,5 @@ public final class ModItems {
         });
     }
 
+    private ModItems() {}
 }

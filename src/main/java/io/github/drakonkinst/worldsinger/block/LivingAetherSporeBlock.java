@@ -8,8 +8,7 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     private final Block deadSporeBlock;
 
     public LivingAetherSporeBlock(AetherSporeType aetherSporeType, Block fluidized,
-            Block deadSporeBlock,
-            Settings settings) {
+            Block deadSporeBlock, Settings settings) {
         super(aetherSporeType, fluidized, settings);
         this.deadSporeBlock = deadSporeBlock;
     }

@@ -20,8 +20,6 @@ import java.util.stream.StreamSupport;
 
 public class JsonStack {
 
-    private record Member(JsonObject json, String name) {}
-
     private final Gson gson;
     private final Deque<Member> elementPath = new ArrayDeque<>();
     private final List<String> errors = new ArrayList<>();
@@ -108,4 +106,6 @@ public class JsonStack {
                 .map(Member::name)
                 .collect(joining("/"));
     }
+
+    private record Member(JsonObject json, String name) {}
 }

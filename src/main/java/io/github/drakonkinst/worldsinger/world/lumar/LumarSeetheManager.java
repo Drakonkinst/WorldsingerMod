@@ -34,6 +34,14 @@ public final class LumarSeetheManager extends PersistentState {
         this.lumarSeetheData = lumarSeetheData;
     }
 
+    public static boolean areSporesFluidized(World world) {
+        return ((LumarSeetheAccess) world).worldsinger$getLumarSeetheData().isSeething();
+    }
+
+    public static LumarSeetheManager fromNbt(ServerWorld world, NbtCompound nbt) {
+        return new LumarSeetheManager(world, LumarSeetheData.fromNbt(nbt));
+    }
+
     public void tick() {
         if (lumarSeetheData.getCycleTicks() > 0) {
             lumarSeetheData.setCycleTicks(lumarSeetheData.getCycleTicks() - 1);
@@ -92,16 +100,8 @@ public final class LumarSeetheManager extends PersistentState {
         return lumarSeetheData;
     }
 
-    public static boolean areSporesFluidized(World world) {
-        return ((LumarSeetheAccess) world).worldsinger$getLumarSeetheData().isSeething();
-    }
-
     @Override
     public NbtCompound writeNbt(NbtCompound nbt) {
         return LumarSeetheData.writeNbt(lumarSeetheData, nbt);
-    }
-
-    public static LumarSeetheManager fromNbt(ServerWorld world, NbtCompound nbt) {
-        return new LumarSeetheManager(world, LumarSeetheData.fromNbt(nbt));
     }
 }

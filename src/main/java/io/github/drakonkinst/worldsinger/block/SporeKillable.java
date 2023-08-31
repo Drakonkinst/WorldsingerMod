@@ -33,11 +33,13 @@ public interface SporeKillable {
             BlockState blockState = world.getBlockState(currentPos);
             boolean wasChanged = false;
 
+            // Kill SporeKillable block
             if (blockState.getBlock() instanceof SporeKillable sporeKillable) {
                 blockState = SporeKillable.convertToDeadVariant(sporeKillable, blockState);
                 wasChanged = true;
             }
 
+            // Turn living spore fluids into dead spore fluid
             if (blockState.getBlock() instanceof Waterloggable) {
                 FluidState fluidState = blockState.getFluidState();
                 if (fluidState.isIn(ModFluidTags.AETHER_SPORES) && !fluidState.isIn(
@@ -113,9 +115,8 @@ public interface SporeKillable {
         return false;
     }
 
-    private static int getDistanceBetweenPointAndCube(int x, int y, int z, int minX,
-            int minY, int minZ,
-            int maxX, int maxY, int maxZ) {
+    private static int getDistanceBetweenPointAndCube(int x, int y, int z, int minX, int minY,
+            int minZ, int maxX, int maxY, int maxZ) {
         int closestX = clamp(x, minX, maxX);
         int closestY = clamp(y, minY, maxY);
         int closestZ = clamp(z, minZ, maxZ);

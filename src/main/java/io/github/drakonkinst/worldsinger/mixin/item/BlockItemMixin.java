@@ -18,14 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin {
 
-    @Shadow
-    public abstract Block getBlock();
-
     // When placing into a fluid block, allow waterlogged
     @Inject(method = "getPlacementState", at = @At(value = "RETURN"), cancellable = true)
     private void injectCustomFluidPlacementState(ItemPlacementContext context,
             CallbackInfoReturnable<BlockState> cir) {
-        BlockState placementState = getBlock().getPlacementState(context);
+        BlockState placementState = this.getBlock().getPlacementState(context);
         if (placementState == null || !placementState.contains(ModProperties.FLUIDLOGGED)) {
             return;
         }
@@ -41,4 +38,7 @@ public abstract class BlockItemMixin {
             cir.setReturnValue(placementState.with(ModProperties.FLUIDLOGGED, index));
         }
     }
+
+    @Shadow
+    public abstract Block getBlock();
 }

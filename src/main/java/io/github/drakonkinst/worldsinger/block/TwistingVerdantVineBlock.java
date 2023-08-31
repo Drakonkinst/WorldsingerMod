@@ -14,33 +14,36 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
+public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock {
 
     private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 15.0,
             12.0);
-
-    public static boolean canAttach(BlockState state, BlockState attachCandidate) {
-        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
-            return true;
-        }
-        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
-            return VerdantVineSnareBlock.getDirection(attachCandidate) == getGrowthDirection(state);
-        }
-        return false;
-    }
 
     public TwistingVerdantVineBlock(Settings settings) {
         super(settings, SHAPE);
         this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false));
     }
 
-    @Override
-    protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
-        return canAttach(state, attachCandidate);
+    public static boolean canAttach(BlockState state, BlockState attachCandidate) {
+        // Can attach to other branches
+        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
+            return true;
+        }
+        // Can attach to a snare block if direction matches
+        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
+            return VerdantVineSnareBlock.getDirection(attachCandidate)
+                    == AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
+        }
+        return false;
     }
 
     @Override
-    protected Block getPlant() {
+    protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
+        return TwistingVerdantVineBlock.canAttach(state, attachCandidate);
+    }
+
+    @Override
+    protected Block getStem() {
         return ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT;
     }
 
@@ -67,9 +70,9 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthStemBlock {
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        // Decay over time
         if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
-            Block.dropStacks(state, world, pos);
-            world.removeBlock(pos, false);
+            world.breakBlock(pos, true);
         }
     }
 

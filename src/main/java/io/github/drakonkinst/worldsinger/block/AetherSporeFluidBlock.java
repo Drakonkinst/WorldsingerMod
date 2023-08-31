@@ -15,6 +15,7 @@ import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
@@ -28,114 +29,126 @@ import net.minecraft.world.WorldAccess;
 
 public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
 
-    public static void update(WorldAccess world, BlockPos pos, BlockState currentBlockState,
-            BlockState fluidizedSource) {
-        if (!hasAnyAetherSporesSource(currentBlockState)) {
+    private final AetherSporeType aetherSporeType;
+    private Block solidBlock = null;
+
+    public AetherSporeFluidBlock(FlowableFluid fluid, AetherSporeType sporeType,
+            Settings settings) {
+        super(fluid, settings);
+        this.aetherSporeType = sporeType;
+    }
+
+    // Returns whether a block should fluidize based on fluidizeSource, which is
+    // generally the block underneath it
+    public static boolean shouldFluidize(BlockState fluidizeSource) {
+        return fluidizeSource.isOf(Blocks.MAGMA_BLOCK)
+                || AetherSporeFluidBlock.isFluidSourceSpores(fluidizeSource)
+                || AetherSporeFluidBlock.isFluidloggedInSpores(fluidizeSource);
+    }
+
+    // Update fluidization from a source of spores
+    public static void update(WorldAccess world, BlockPos pos, BlockState blockState,
+            BlockState fluidizeSource) {
+        if (!AetherSporeFluidBlock.isAnySporeSource(blockState)) {
             return;
         }
 
         BlockPos.Mutable mutable = pos.mutableCopy();
-        boolean fluidized = AetherSporeFluidBlock.shouldFluidize(fluidizedSource);
-        AetherSporeFluidBlock.updateFluidization(world, mutable, currentBlockState, fluidized);
-        while (true) {
+        boolean fluidized = AetherSporeFluidBlock.shouldFluidize(fluidizeSource);
+
+        // Iterate upwards and update fluidization
+        while (AetherSporeFluidBlock.updateFluidizationForBlock(world, mutable,
+                world.getBlockState(mutable), fluidized)) {
             mutable.move(Direction.UP);
-            BlockState blockStateAtPos = world.getBlockState(mutable);
-            if (!updateFluidization(world, mutable, blockStateAtPos, fluidized)) {
-                break;
-            }
         }
     }
 
-    // Returns true if it should keep going
-    public static boolean updateFluidization(WorldAccess world, BlockPos pos,
+    // Update fluidization for a single block. Returns false if obstructed
+    public static boolean updateFluidizationForBlock(WorldAccess world, BlockPos pos,
             BlockState blockState,
             boolean fluidized) {
-        if (AetherSporeFluidBlock.isAetherSporesSolid(blockState) &&
-                blockState.getBlock() instanceof AetherSporeBlock aetherSporeBlock) {
-            if (fluidized) {
-                if (!world.setBlockState(pos, aetherSporeBlock.getFluidizedState(),
-                        Block.NOTIFY_LISTENERS)) {
-                    return false;
-                }
-            }
-            return true;
-        } else if (AetherSporeFluidBlock.isAetherSporesFluidSource(blockState) &&
-                blockState.getBlock() instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
-            if (!fluidized) {
-                if (!world.setBlockState(pos, aetherSporeFluidBlock.getSolidState(),
-                        Block.NOTIFY_LISTENERS)) {
-                    return false;
-                }
-            }
-            return true;
-        } else if (AetherSporeFluidBlock.isAetherSporesFluidlogged(blockState)
-                && blockState.getBlock() instanceof Waterloggable waterloggable) {
-            if (!fluidized) {
-                if (blockState.getFluidState()
-                        .getFluid() instanceof AetherSporeFluid aetherSporeFluid
-                        && world instanceof ServerWorld serverWorld) {
-                    SporeParticles.spawnBlockParticles(serverWorld, aetherSporeFluid.getSporeType(),
-                            pos, 0.6, 1.0);
-                }
-                waterloggable.tryDrainFluid(world, pos, blockState);
-            }
+        if (fluidized) {
+            return fluidizeBlock(world, pos, blockState);
+        } else {
+            return solidifyBlock(world, pos, blockState);
+        }
+    }
+
+    // Ensure block is fluidized. Returns false if obstructed
+    private static boolean fluidizeBlock(WorldAccess world, BlockPos pos, BlockState blockState) {
+        Block block = blockState.getBlock();
+
+        // No need to modify fluid blocks
+        if (block instanceof AetherSporeFluidBlock || AetherSporeFluidBlock.isFluidloggedInSpores(
+                blockState)) {
             return true;
         }
+
+        // Turn solid into fluid
+        if (block instanceof AetherSporeBlock aetherSporeBlock) {
+            BlockState newBlockState = aetherSporeBlock.getFluidizedBlock().getDefaultState();
+            return world.setBlockState(pos, newBlockState, Block.NOTIFY_LISTENERS);
+        }
+
         return false;
     }
 
-    private static boolean hasAnyAetherSporesSource(BlockState state) {
-        return isAetherSporesSolid(state) || isAetherSporesFluidSource(state)
-                || isAetherSporesFluidlogged(state);
+    private static boolean solidifyBlock(WorldAccess world, BlockPos pos, BlockState blockState) {
+        Block block = blockState.getBlock();
+
+        // No need to modify solid blocks
+        if (block instanceof AetherSporeBlock) {
+            return true;
+        }
+
+        // Turn fluid into solid
+        if (block instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
+            BlockState newBlockState = aetherSporeFluidBlock.getSolidBlock().getDefaultState();
+            return world.setBlockState(pos, newBlockState, Block.NOTIFY_ALL);
+        }
+
+        // Dissolve fluidlogged fluid into particles
+        if (blockState.getBlock() instanceof Waterloggable waterloggable
+                && AetherSporeFluidBlock.isFluidloggedInSpores(blockState)) {
+            Fluid fluid = blockState.getFluidState().getFluid();
+            // Spawn dissolving particles
+            if (fluid instanceof AetherSporeFluid sporeFluid
+                    && world instanceof ServerWorld serverWorld) {
+                SporeParticles.spawnBlockParticles(serverWorld, sporeFluid.getSporeType(),
+                        pos, 0.6, 1.0);
+            }
+            waterloggable.tryDrainFluid(world, pos, blockState);
+            return true;
+        }
+
+        return false;
     }
 
-    private static boolean isAetherSporesSolid(BlockState state) {
+    private static boolean isAnySporeSource(BlockState state) {
+        return AetherSporeFluidBlock.isSolidSpores(state)
+                || AetherSporeFluidBlock.isFluidSourceSpores(state)
+                || AetherSporeFluidBlock.isFluidloggedInSpores(state);
+    }
+
+    private static boolean isSolidSpores(BlockState state) {
         return state.isIn(ModBlockTags.AETHER_SPORE_BLOCKS);
     }
 
-    private static boolean isAetherSporesFluidSource(BlockState state) {
+    private static boolean isFluidSourceSpores(BlockState state) {
         return state.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
-                && state.getFluidState().getLevel() >= 8
-                &&
-                state.getFluidState().isStill();
+                && state.getFluidState().getLevel() >= 8 && state.getFluidState().isStill();
     }
 
-    private static boolean isAetherSporesFluidlogged(BlockState state) {
+    private static boolean isFluidloggedInSpores(BlockState state) {
         return state.getBlock() instanceof Waterloggable && state.getFluidState()
                 .isIn(ModFluidTags.AETHER_SPORES);
     }
 
-    public static boolean shouldFluidize(BlockState fluidizedSource) {
-        return fluidizedSource.isOf(Blocks.MAGMA_BLOCK) || isAetherSporesFluidSource(
-                fluidizedSource) || isAetherSporesFluidlogged(fluidizedSource);
-    }
-
-    private BlockState solidBlockState = null;
-    private final AetherSporeType aetherSporeType;
-
-    public AetherSporeFluidBlock(FlowableFluid fluid, AetherSporeType aetherSporeType,
-            Settings settings) {
-        super(fluid, settings);
-        this.aetherSporeType = aetherSporeType;
-    }
-
-    public void setSolidBlockState(BlockState blockState) {
-        this.solidBlockState = blockState;
-    }
-
-    public BlockState getSolidState() {
-        return solidBlockState;
-    }
-
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
-            BlockState neighborState,
-            WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        world.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
-        if (!state.canPlaceAt(world, pos) || direction == Direction.DOWN ||
-                direction == Direction.UP && !neighborState.isIn(
-                        ModBlockTags.AETHER_SPORE_SEA_BLOCKS) &&
-                        AetherSporeFluidBlock.isAetherSporesSolid(neighborState)) {
+            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (direction == Direction.DOWN) {
+            // If the block beneath is changed, update fluidization
             world.scheduleBlockTick(pos, this, 5);
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
@@ -150,6 +163,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
     @Override
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
+        // Spawn splash particles upon landing (during stilling)
         if (fallDistance > 0.25f && world instanceof ServerWorld serverWorld) {
             SporeParticles.spawnSplashParticles(serverWorld, aetherSporeType, entity,
                     fallDistance, false);
@@ -157,13 +171,10 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
         super.onLandedUpon(world, state, pos, entity, fallDistance);
     }
 
-    public AetherSporeType getSporeType() {
-        return aetherSporeType;
-    }
-
     @Override
     public void onProjectileHit(World world, BlockState state, BlockHitResult hit,
             ProjectileEntity projectile) {
+        // Spawn projectile particles upon landing (during stilling)
         if (world instanceof ServerWorld serverWorld) {
             SporeParticles.spawnProjectileParticles(serverWorld, aetherSporeType,
                     projectile.getPos());
@@ -175,14 +186,28 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos,
             ShapeContext context) {
         FluidState fluidState = state.getFluidState();
+
+        // If ShapeContext implements WorldShapeContext, use it to make the block solid
+        // during stillings (mainly for entities). Otherwise, assume it is transparent.
         if (fluidState.isStill() && context instanceof WorldShapeContext shapeContext) {
             World realWorld = shapeContext.worldsinger$getWorld();
-            if (realWorld != null && !LumarSeetheManager.areSporesFluidized(
-                    realWorld)) {
+            if (realWorld != null && !LumarSeetheManager.areSporesFluidized(realWorld)) {
                 return FluidShapes.VOXEL_SHAPES[fluidState.getLevel()];
             }
         }
 
         return super.getCollisionShape(state, world, pos, context);
+    }
+
+    public AetherSporeType getSporeType() {
+        return aetherSporeType;
+    }
+
+    public Block getSolidBlock() {
+        return solidBlock;
+    }
+
+    public void setSolidBlock(Block block) {
+        this.solidBlock = block;
     }
 }

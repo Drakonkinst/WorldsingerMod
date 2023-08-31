@@ -13,7 +13,7 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
     }
 
     @Override
-    protected Block getPlant() {
+    protected Block getStem() {
         return ModBlocks.TWISTING_VERDANT_VINES_PLANT;
     }
 

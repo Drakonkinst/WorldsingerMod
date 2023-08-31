@@ -34,9 +34,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ServerWorldMixin extends World implements LumarSeetheAccess,
         LumarSeetheManagerAccess {
 
-    @Shadow
-    public abstract PersistentStateManager getPersistentStateManager();
-
     @Unique
     private LumarSeetheManager lumarSeetheManager;
 
@@ -80,4 +77,7 @@ public abstract class ServerWorldMixin extends World implements LumarSeetheAcces
     public LumarSeetheData worldsinger$getLumarSeetheData() {
         return lumarSeetheManager.getLumarSeetheData();
     }
+
+    @Shadow
+    public abstract PersistentStateManager getPersistentStateManager();
 }

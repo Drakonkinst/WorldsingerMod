@@ -42,9 +42,9 @@ public class VerdantVineBlock extends PillarBlock {
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        // Decay over time
         if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
-            Block.dropStacks(state, world, pos);
-            world.removeBlock(pos, false);
+            world.breakBlock(pos, true);
         }
     }
 }

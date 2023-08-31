@@ -20,8 +20,7 @@ public abstract class ShapeCacheMixin {
                     +
                     "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
     private VoxelShape injectCustomFluidCollisionShape(Block instance, BlockState state,
-            BlockView world,
-            BlockPos pos, ShapeContext context) {
+            BlockView world, BlockPos pos, ShapeContext context) {
         return instance.getCollisionShape(
                 state.contains(ModProperties.FLUIDLOGGED)
                         ? state.with(ModProperties.FLUIDLOGGED, 0)

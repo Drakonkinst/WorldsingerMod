@@ -29,9 +29,16 @@ public class DataTable {
     public static final Codec<DataTable> CODEC = FILE_CODEC.flatComapMap(DataTable::fromFile,
             dataTable -> DataResult.error(
                     () -> "Cannot convert from data table to data table file"));
+    private final int defaultValue;
+    private final Object2IntMap<Identifier> idTable;
+    private final Object2IntMap<Identifier> tagTable;
 
-    public record DataTableFile(Map<TagEntryId, Integer> table, int defaultValue,
-                                boolean replace) {}
+    private DataTable(int defaultValue, Object2IntMap<Identifier> idTable,
+            Object2IntMap<Identifier> tagTable) {
+        this.defaultValue = defaultValue;
+        this.idTable = idTable;
+        this.tagTable = tagTable;
+    }
 
     public static DataTable fromFile(DataTableFile dataTableFile) {
         Object2IntMap<Identifier> idTable = new Object2IntArrayMap<>();
@@ -46,17 +53,6 @@ public class DataTable {
             }
         }
         return new DataTable(dataTableFile.defaultValue, idTable, tagTable);
-    }
-
-    private final int defaultValue;
-    private final Object2IntMap<Identifier> idTable;
-    private final Object2IntMap<Identifier> tagTable;
-
-    private DataTable(int defaultValue, Object2IntMap<Identifier> idTable,
-            Object2IntMap<Identifier> tagTable) {
-        this.defaultValue = defaultValue;
-        this.idTable = idTable;
-        this.tagTable = tagTable;
     }
 
     public int getIntForBlock(BlockState blockState) {
@@ -75,4 +71,7 @@ public class DataTable {
 
         return defaultValue;
     }
+
+    public record DataTableFile(Map<TagEntryId, Integer> table, int defaultValue,
+                                boolean replace) {}
 }

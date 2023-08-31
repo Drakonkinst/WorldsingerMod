@@ -5,12 +5,8 @@ import net.minecraft.util.shape.VoxelShape;
 
 public final class FluidShapes {
 
-    private FluidShapes() {
-    }
-
     private static final double MAX_VOXEL_WIDTH = 16.0;
     private static final int FLUID_LEVEL_MAX = 9;
-
     public static final VoxelShape[] VOXEL_SHAPES = initVoxelShapes();
 
     private static VoxelShape[] initVoxelShapes() {
@@ -22,4 +18,6 @@ public final class FluidShapes {
         }
         return voxelShapes;
     }
+
+    private FluidShapes() {}
 }

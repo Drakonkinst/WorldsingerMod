@@ -16,14 +16,9 @@ import net.minecraft.util.Identifier;
 // Manages making blocks fluidloggable by fluids other than water.
 public final class Fluidlogged {
 
-    private Fluidlogged() {}
-
     public static final List<Identifier> WATERLOGGABLE_FLUIDS = WorldsingerConfig.instance()
             .getFluidloggableFluids();
-
     private static final Map<Fluid, FluidBlock> fluidToFluidBlocks = new HashMap<>();
-
-    public static void initialize() {}
 
     public static Fluid getFluid(BlockState state) {
         if (state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED)) {
@@ -60,4 +55,8 @@ public final class Fluidlogged {
         }
         return Fluidlogged.WATERLOGGABLE_FLUIDS.indexOf(Registries.FLUID.getId(fluid)) + 1;
     }
+
+    public static void initialize() {}
+
+    private Fluidlogged() {}
 }

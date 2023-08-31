@@ -39,14 +39,14 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
             MAX_VERTICAL,
             MAX_HORIZONTAL);
 
-    public static Direction getDirection(BlockState state) {
-        return WallMountedBlock.getDirection(state);
-    }
-
     public VerdantVineSnareBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH)
                 .with(FACE, WallMountLocation.FLOOR).with(Properties.PERSISTENT, false));
+    }
+
+    public static Direction getDirection(BlockState state) {
+        return WallMountedBlock.getDirection(state);
     }
 
     @Override
@@ -109,9 +109,9 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        // Decay over time
         if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
-            Block.dropStacks(state, world, pos);
-            world.removeBlock(pos, false);
+            world.breakBlock(pos, true);
         }
     }
 }
