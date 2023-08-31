@@ -34,10 +34,12 @@ public final class ModItems {
                             .maxCount(1)));
     public static final Item SALT = ModItems.register("salt",
             new SaltItem(new FabricItemSettings()));
+    public static final Item SILVER_INGOT = ModItems.register("silver_ingot",
+            new Item(new FabricItemSettings()));
 
     // Item Groups
     private static final ItemGroup WORLDSINGER_ITEM_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(ModBlocks.VERDANT_VINE_SNARE.asItem()))
+            .icon(() -> new ItemStack(ModBlocks.VERDANT_VINE_SNARE))
             .displayName(Text.translatable("itemGroup.worldsinger.worldsinger"))
             .build();
 
@@ -55,19 +57,20 @@ public final class ModItems {
 
         ItemGroupEvents.modifyEntriesEvent(moddedItemsItemGroupKey).register((itemGroup) -> {
             itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
-            itemGroup.add(ModBlocks.VERDANT_SPORE_BLOCK.asItem());
-            itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK.asItem());
-            itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH.asItem());
-            itemGroup.add(ModBlocks.VERDANT_VINE_SNARE.asItem());
-            itemGroup.add(ModBlocks.TWISTING_VERDANT_VINES.asItem());
+            itemGroup.add(ModBlocks.VERDANT_SPORE_BLOCK);
+            itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK);
+            itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH);
+            itemGroup.add(ModBlocks.VERDANT_VINE_SNARE);
+            itemGroup.add(ModBlocks.TWISTING_VERDANT_VINES);
             itemGroup.add(ModItems.DEAD_SPORES_BUCKET);
-            itemGroup.add(ModBlocks.DEAD_SPORE_BLOCK.asItem());
-            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_BLOCK.asItem());
-            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_BRANCH.asItem());
-            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_SNARE.asItem());
-            itemGroup.add(ModBlocks.DEAD_TWISTING_VERDANT_VINES.asItem());
-            itemGroup.add(ModBlocks.SALTSTONE.asItem());
+            itemGroup.add(ModBlocks.DEAD_SPORE_BLOCK);
+            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_BLOCK);
+            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_BRANCH);
+            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_SNARE);
+            itemGroup.add(ModBlocks.DEAD_TWISTING_VERDANT_VINES);
+            itemGroup.add(ModBlocks.SALTSTONE);
             itemGroup.add(ModItems.SALT);
+            itemGroup.add(ModItems.SILVER_INGOT);
         });
     }
 
