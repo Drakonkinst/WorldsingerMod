@@ -1,12 +1,12 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import com.google.common.collect.ImmutableMap;
+import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.Map;
 import net.minecraft.entity.Entity;
@@ -47,9 +47,11 @@ public abstract class LivingEntityMixin extends Entity {
     private void allowWalkingOnSporesDuringRain(FluidState state,
             CallbackInfoReturnable<Boolean> cir) {
         // TODO: Not sure if this should be only still blocks or all blocks
-        if (state.isIn(ModFluidTags.STILL_AETHER_SPORES) && !LumarSeetheManager.areSporesFluidized(
-                this.getWorld())) {
-            cir.setReturnValue(true);
+        if (state.isIn(ModFluidTags.STILL_AETHER_SPORES)) {
+            World world = this.getWorld();
+            if (!LumarSeetheComponent.areSporesFluidized(world)) {
+                cir.setReturnValue(true);
+            }
         }
     }
 

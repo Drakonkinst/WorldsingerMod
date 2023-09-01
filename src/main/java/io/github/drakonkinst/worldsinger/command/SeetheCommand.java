@@ -6,11 +6,9 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import io.github.drakonkinst.worldsinger.component.ModComponents;
+import io.github.drakonkinst.worldsinger.component.SeetheComponent;
 import io.github.drakonkinst.worldsinger.util.Constants;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheAccess;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheData;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManagerAccess;
 import net.minecraft.command.argument.TimeArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -33,50 +31,51 @@ public class SeetheCommand {
                 .executes(SeetheCommand::getStatus));
     }
 
+    private static SeetheComponent getSeethe(CommandContext<ServerCommandSource> context) {
+        return ModComponents.LUMAR_SEETHE.get(context.getSource().getServer().getScoreboard());
+    }
+
     private static int getStatus(CommandContext<ServerCommandSource> context) {
-        LumarSeetheData lumarSeetheData = ((LumarSeetheAccess) context.getSource()
-                .getWorld()).worldsinger$getLumarSeetheData();
-        boolean isSeething = lumarSeetheData.isSeething();
-        int cycleTicks = lumarSeetheData.getCycleTicks();
-        int cyclesUntilNextLongStilling = lumarSeetheData.getCyclesUntilNextLongStilling();
+        SeetheComponent seethe = SeetheCommand.getSeethe(context);
+        boolean isSeething = seethe.isSeething();
+        int cycleTicks = seethe.getTicksUntilNextCycle();
         context.getSource().sendMessage(Text.literal(
                 "Seethe is " + (isSeething ? "ACTIVE" : "INACTIVE") + " for the next " + cycleTicks
                         + " ticks, or " + (MathHelper.floor(
-                        cycleTicks * Constants.TICKS_TO_SECONDS))
-                        + " seconds\nThere are " + cyclesUntilNextLongStilling
-                        + " cycles until the next long stilling"));
+                        cycleTicks * Constants.TICKS_TO_SECONDS)) + " seconds"));
+        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
         return 1;
     }
 
     private static int activateNoArgs(CommandContext<ServerCommandSource> context) {
-        LumarSeetheManager lumarSeetheManager = ((LumarSeetheManagerAccess) context.getSource()
-                .getWorld()).worldsinger$getLumarSeetheManager();
-        lumarSeetheManager.startSeething();
+        SeetheComponent seethe = SeetheCommand.getSeethe(context);
+        seethe.startSeethe();
         context.getSource().sendMessage(Text.literal("Set seethe to ACTIVE"));
+        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
         return 1;
     }
 
     private static int deactivateNoArgs(CommandContext<ServerCommandSource> context) {
-        LumarSeetheManager lumarSeetheManager = ((LumarSeetheManagerAccess) context.getSource()
-                .getWorld()).worldsinger$getLumarSeetheManager();
-        lumarSeetheManager.startStilling();
+        SeetheComponent seethe = SeetheCommand.getSeethe(context);
+        seethe.stopSeethe();
         context.getSource().sendMessage(Text.literal("Set seethe to INACTIVE"));
+        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
         return 1;
     }
 
     private static int activateWithArgs(CommandContext<ServerCommandSource> context) {
-        LumarSeetheManager lumarSeetheManager = ((LumarSeetheManagerAccess) context.getSource()
-                .getWorld()).worldsinger$getLumarSeetheManager();
-        lumarSeetheManager.startSeething(getInteger(context, "duration"));
+        SeetheComponent seethe = SeetheCommand.getSeethe(context);
+        seethe.startSeethe(getInteger(context, "duration"));
         context.getSource().sendMessage(Text.literal("Set seethe to ACTIVE"));
+        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
         return 1;
     }
 
     private static int deactivateWithArgs(CommandContext<ServerCommandSource> context) {
-        LumarSeetheManager lumarSeetheManager = ((LumarSeetheManagerAccess) context.getSource()
-                .getWorld()).worldsinger$getLumarSeetheManager();
-        lumarSeetheManager.startStilling(getInteger(context, "duration"));
+        SeetheComponent seethe = SeetheCommand.getSeethe(context);
+        seethe.stopSeethe(getInteger(context, "duration"));
         context.getSource().sendMessage(Text.literal("Set seethe to INACTIVE"));
+        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
         return 1;
     }
 }

@@ -1,12 +1,12 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import java.util.Optional;
@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements SporeFluidEntityStateAccess {
-    
+
     @Inject(method = "updateWaterState", at = @At("RETURN"), cancellable = true)
     private void allowCustomFluidToPushEntity(CallbackInfoReturnable<Boolean> cir) {
         boolean isTouchingAnyFluid = cir.getReturnValueZ();
@@ -66,8 +66,9 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
     @Redirect(method = "spawnSprintingParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getRenderType()Lnet/minecraft/block/BlockRenderType;"))
     private BlockRenderType showSprintingParticlesForCustomFluid(BlockState instance) {
+        World world = this.getWorld();
         if (!instance.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
-                || LumarSeetheManager.areSporesFluidized(this.getWorld())) {
+                || LumarSeetheComponent.areSporesFluidized(world)) {
             return instance.getRenderType();
         }
         return BlockRenderType.MODEL;

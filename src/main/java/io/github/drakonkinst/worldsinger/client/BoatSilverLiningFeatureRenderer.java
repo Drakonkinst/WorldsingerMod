@@ -28,7 +28,7 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
 
     private final Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels;
 
-    private static final Map<Level, Identifier> LEVEL_TO_TEXTURE = ImmutableMap.of(
+    private static final Map<Level, Identifier> BOAT_LEVEL_TO_TEXTURE = ImmutableMap.of(
             Level.LOW,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_low.png"),
             Level.MEDIUM,
@@ -37,6 +37,17 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_high.png"),
             Level.PERFECT,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_perfect.png")
+    );
+
+    private static final Map<Level, Identifier> RAFT_LEVEL_TO_TEXTURE = ImmutableMap.of(
+            Level.LOW,
+            new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_low.png"),
+            Level.MEDIUM,
+            new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_medium.png"),
+            Level.HIGH,
+            new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_high.png"),
+            Level.PERFECT,
+            new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_perfect.png")
     );
 
     protected static <T extends Entity> void renderModel(EntityModel<T> model, Identifier texture,
@@ -63,7 +74,13 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
         if (level == Level.NONE) {
             return;
         }
-        Identifier identifier = LEVEL_TO_TEXTURE.get(level);
+        Identifier identifier;
+        boolean isRaft = entity.getVariant() == Type.BAMBOO;
+        if (isRaft) {
+            identifier = RAFT_LEVEL_TO_TEXTURE.get(level);
+        } else {
+            identifier = BOAT_LEVEL_TO_TEXTURE.get(level);
+        }
         BoatSilverLiningFeatureRenderer.renderModel(this.getModelForBoat(entity), identifier,
                 matrices,
                 vertexConsumers, light);

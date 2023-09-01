@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
@@ -74,7 +74,7 @@ public abstract class ItemEntityMixin extends Entity {
     @Unique
     private void applySporeSeaBuoyancy() {
         World world = this.getWorld();
-        if (!LumarSeetheManager.areSporesFluidized(world)) {
+        if (!LumarSeetheComponent.areSporesFluidized(world)) {
             // Items should not move in solid spores
             this.setVelocity(this.getVelocity().getX() * HORIZONTAL_LAND_DRAG, LAND_BUOYANCY,
                     this.getVelocity().getZ() * HORIZONTAL_LAND_DRAG);

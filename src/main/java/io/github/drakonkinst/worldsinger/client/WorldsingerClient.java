@@ -4,13 +4,10 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.util.Constants;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheAccess;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheData;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
@@ -61,15 +58,5 @@ public class WorldsingerClient implements ClientModInitializer {
         // Register entity renderers
         // EntityRendererRegistry.register(ModEntityTypes.SILVER_LINED_BOAT,
         //         (context) -> new SilverLinedBoatEntityRenderer(context, false));
-
-        // Register packets
-        ClientPlayNetworking.registerGlobalReceiver(LumarSeetheData.LUMAR_SEETHE_UPDATE_PACKET_ID,
-                (client, handler, buf, responseSender) -> {
-                    LumarSeetheData lumarSeetheData = LumarSeetheData.fromBuf(buf);
-                    client.execute(() -> {
-                        ((LumarSeetheAccess) (client.world)).worldsinger$getLumarSeetheData()
-                                .copy(lumarSeetheData);
-                    });
-                });
     }
 }

@@ -1,10 +1,10 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -191,7 +191,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
         // during stillings (mainly for entities). Otherwise, assume it is transparent.
         if (fluidState.isStill() && context instanceof WorldShapeContext shapeContext) {
             World realWorld = shapeContext.worldsinger$getWorld();
-            if (realWorld != null && !LumarSeetheManager.areSporesFluidized(realWorld)) {
+            if (realWorld != null && !LumarSeetheComponent.areSporesFluidized(realWorld)) {
                 return FluidShapes.VOXEL_SHAPES[fluidState.getLevel()];
             }
         }

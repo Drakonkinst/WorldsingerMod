@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
+import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -110,7 +110,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         // Decay over time
-        if (LumarSeetheManager.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
+        if (LumarSeetheComponent.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
             world.breakBlock(pos, true);
         }
     }

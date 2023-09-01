@@ -1,11 +1,11 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import io.github.drakonkinst.worldsinger.entity.SilverLineable;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.item.ModItemTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -155,7 +155,8 @@ public abstract class BoatEntityMixin extends Entity implements SilverLineable {
         if (this.checkBoatInSporeSea()) {
             this.inSporeSea = true;
             double fluidHeight = this.getFluidHeight(ModFluidTags.AETHER_SPORES);
-            if (!LumarSeetheManager.areSporesFluidized(this.getWorld())
+            World world = this.getWorld();
+            if (!LumarSeetheComponent.areSporesFluidized(world)
                     && fluidHeight <= MAX_FLUID_HEIGHT_TO_NOT_EMBED) {
                 cir.setReturnValue(Location.ON_LAND);
             } else {
@@ -172,7 +173,8 @@ public abstract class BoatEntityMixin extends Entity implements SilverLineable {
 
         double gravity = this.hasNoGravity() ? 0.0 : -0.04;
         double f = 0.0;
-        boolean isFluidized = LumarSeetheManager.areSporesFluidized(this.getWorld());
+        World world = this.getWorld();
+        boolean isFluidized = LumarSeetheComponent.areSporesFluidized(world);
 
         if (!isFluidized) {
             // Make turning velocity drop off immediately
@@ -233,20 +235,25 @@ public abstract class BoatEntityMixin extends Entity implements SilverLineable {
             return;
         }
 
-        if (this.inSporeSea && this.location != Location.ON_LAND
-                && !LumarSeetheManager.areSporesFluidized(this.getWorld())) {
-            // Skip to end of method
-            this.setPaddleMovings(this.pressingRight && !this.pressingLeft || this.pressingForward,
-                    this.pressingLeft && !this.pressingRight || this.pressingForward);
-            ci.cancel();
+        if (this.inSporeSea && this.location != Location.ON_LAND) {
+            World world = this.getWorld();
+            if (!LumarSeetheComponent.areSporesFluidized(world)) {
+                // Skip to end of method
+                this.setPaddleMovings(
+                        this.pressingRight && !this.pressingLeft || this.pressingForward,
+                        this.pressingLeft && !this.pressingRight || this.pressingForward);
+                ci.cancel();
+            }
         }
     }
 
     @Inject(method = "updatePassengerPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setYaw(F)V"), cancellable = true)
     private void restrictMovementInSporeSeaPassenger(CallbackInfo ci) {
-        if (this.inSporeSea && this.location != Location.ON_LAND
-                && !LumarSeetheManager.areSporesFluidized(this.getWorld())) {
-            ci.cancel();
+        if (this.inSporeSea && this.location != Location.ON_LAND) {
+            World world = this.getWorld();
+            if (!LumarSeetheComponent.areSporesFluidized(world)) {
+                ci.cancel();
+            }
         }
     }
 

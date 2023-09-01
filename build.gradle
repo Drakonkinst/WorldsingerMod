@@ -15,6 +15,10 @@ repositories {
         name = "Jitpack"
         url = "https://jitpack.io/"
     }
+    maven {
+        name = "Ladysnake Mods"
+        url = 'https://maven.ladysnake.org/releases'
+    }
 }
 
 loom {
@@ -33,6 +37,12 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     include(implementation('com.github.Chocohead:Fabric-ASM:v2.3'))
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:$cardinalComponentsVersion"
+    include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:$cardinalComponentsVersion"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:$cardinalComponentsVersion"
+    include "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:$cardinalComponentsVersion"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-scoreboard:$cardinalComponentsVersion"
+    include "dev.onyxstudios.cardinal-components-api:cardinal-components-scoreboard:$cardinalComponentsVersion"
 }
 
 processResources {

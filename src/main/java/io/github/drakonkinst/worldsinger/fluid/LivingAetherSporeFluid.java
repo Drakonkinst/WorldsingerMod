@@ -2,8 +2,8 @@ package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
+import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
@@ -25,7 +25,7 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid {
 
     @Override
     protected void onRandomTick(World world, BlockPos pos, FluidState state, Random random) {
-        if (!LumarSeetheManager.areSporesFluidized(world)) {
+        if (!LumarSeetheComponent.areSporesFluidized(world)) {
             return;
         }
 

@@ -19,6 +19,9 @@
     ],
     "mm:early_risers": [
       "io.github.drakonkinst.worldsinger.EarlyRiser"
+    ],
+    "cardinal-components": [
+      "io.github.drakonkinst.worldsinger.component.ModComponents"
     ]
   },
   "mixins": [
@@ -29,6 +32,11 @@
     "minecraft": ">=1.20",
     "java": ">=17",
     "fabric-api": "*"
+  },
+  "custom": {
+    "cardinal-components": [
+      "worldsinger:lumar_seethe"
+    ]
   },
   "accessWidener": "worldsinger.accesswidener"
 }

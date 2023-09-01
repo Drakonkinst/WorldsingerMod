@@ -29,9 +29,7 @@
     "item.BlockItemMixin",
     "item.BoatItemMixin",
     "item.BucketItemMixin",
-    "item.ShearsItemMixin",
-    "world.ServerWorldMixin",
-    "world.WorldMixin"
+    "item.ShearsItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
