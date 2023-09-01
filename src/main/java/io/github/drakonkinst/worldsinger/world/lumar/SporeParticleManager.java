@@ -70,8 +70,10 @@ public final class SporeParticleManager {
         double maxY = minY + height;
         double maxZ = z + radius;
 
-        if (SporeKillable.isSporeKillingBlockNearbyForRange(world, minX, minY,
-                minZ, maxX, maxY, maxZ)) {
+        if (SporeKillable.isSporeKillingBlockNearbyForRange(world, minX, minY, minZ, maxX, maxY,
+                maxZ)
+                || SporeKillable.checkNearbyEntitiesForRange(world, minX, minY, minZ, maxX, maxY,
+                maxZ)) {
             sporeType = AetherSporeType.DEAD;
         }
 
@@ -112,7 +114,8 @@ public final class SporeParticleManager {
     // These are client-side and have no effect
     public static void spawnDisplayParticles(World world, AetherSporeType sporeType, double x,
             double y, double z, float particleSize) {
-        if (SporeKillable.isSporeKillingBlockNearby(world, BlockPos.ofFloored(x, y, z))) {
+        if (SporeKillable.isSporeKillingBlockNearby(world, BlockPos.ofFloored(x, y, z))
+                || SporeKillable.checkNearbyEntities(world, new Vec3d(x, y, z))) {
             sporeType = AetherSporeType.DEAD;
         }
 

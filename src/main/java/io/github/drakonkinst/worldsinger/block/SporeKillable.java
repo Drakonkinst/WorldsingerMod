@@ -1,26 +1,33 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.component.ModComponents;
+import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.registry.DataTable;
 import io.github.drakonkinst.worldsinger.registry.DataTables;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
+import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public interface SporeKillable {
 
-    int MAX_RADIUS = 5;
+    int MAX_BLOCK_RADIUS = 5;
+    double BOAT_RADIUS = 2.0;
 
     static int killNearbySpores(World world, BlockPos pos, int radius) {
         int numKilled = 0;
-        radius = Math.min(radius, SporeKillable.MAX_RADIUS);
+        radius = Math.min(radius, SporeKillable.MAX_BLOCK_RADIUS);
         int deadSporeFluidIndex = Fluidlogged.getFluidIndex(ModFluids.DEAD_SPORES);
 
         // Not sure if this is the right iteration method, but it works
@@ -59,8 +66,8 @@ public interface SporeKillable {
 
     static boolean isSporeKillingBlockNearby(World world, BlockPos pos) {
         DataTable dataTable = DataTables.getOrElse(world, DataTables.SPORE_KILLING_RADIUS, 0);
-        for (BlockPos currentPos : BlockPos.iterateOutwards(pos, SporeKillable.MAX_RADIUS,
-                SporeKillable.MAX_RADIUS, SporeKillable.MAX_RADIUS)) {
+        for (BlockPos currentPos : BlockPos.iterateOutwards(pos, SporeKillable.MAX_BLOCK_RADIUS,
+                SporeKillable.MAX_BLOCK_RADIUS, SporeKillable.MAX_BLOCK_RADIUS)) {
             BlockState blockState = world.getBlockState(currentPos);
             if (!blockState.isIn(ModBlockTags.KILLS_SPORES)) {
                 continue;
@@ -74,6 +81,33 @@ public interface SporeKillable {
         return false;
     }
 
+    static boolean checkNearbyEntities(World world, Vec3d pos) {
+        Box box = Box.of(pos, BOAT_RADIUS, BOAT_RADIUS, BOAT_RADIUS);
+        return SporeKillable.checkNearbyEntitiesInBox(world, box);
+    }
+
+    static boolean checkNearbyEntitiesForRange(World world, double minX, double minY,
+            double minZ, double maxX, double maxY, double maxZ) {
+        Box box = new Box(minX, minY, minZ, maxX, maxY, maxZ);
+        box = box.expand(BOAT_RADIUS);
+        return checkNearbyEntitiesInBox(world, box);
+    }
+
+    private static boolean checkNearbyEntitiesInBox(World world, Box box) {
+        List<BoatEntity> entitiesInRange = world.getEntitiesByClass(BoatEntity.class, box,
+                boatEntity -> {
+                    SilverLinedComponent silverData = ModComponents.SILVER_LINED_ENTITY.get(
+                            boatEntity);
+                    boolean hasSilver = silverData.getSilverDurability() > 0;
+                    if (hasSilver) {
+                        silverData.setSilverDurability(silverData.getSilverDurability() - 1);
+                        ModComponents.SILVER_LINED_ENTITY.sync(boatEntity);
+                    }
+                    return hasSilver;
+                });
+        return !entitiesInRange.isEmpty();
+    }
+
     static boolean isSporeKillingBlockNearbyForRange(World world, double minX, double minY,
             double minZ, double maxX, double maxY, double maxZ) {
         return isSporeKillingBlockNearbyForRange(world, MathHelper.floor(minX),
@@ -84,13 +118,13 @@ public interface SporeKillable {
     static boolean isSporeKillingBlockNearbyForRange(World world, int minX, int minY,
             int minZ, int maxX, int maxY, int maxZ) {
         DataTable dataTable = DataTables.getOrElse(world, DataTables.SPORE_KILLING_RADIUS, 0);
-        
-        int searchMinX = minX - SporeKillable.MAX_RADIUS;
-        int searchMinY = minY - SporeKillable.MAX_RADIUS;
-        int searchMinZ = minZ - SporeKillable.MAX_RADIUS;
-        int searchMaxX = maxX + SporeKillable.MAX_RADIUS;
-        int searchMaxY = maxY + SporeKillable.MAX_RADIUS;
-        int searchMaxZ = maxZ + SporeKillable.MAX_RADIUS;
+
+        int searchMinX = minX - SporeKillable.MAX_BLOCK_RADIUS;
+        int searchMinY = minY - SporeKillable.MAX_BLOCK_RADIUS;
+        int searchMinZ = minZ - SporeKillable.MAX_BLOCK_RADIUS;
+        int searchMaxX = maxX + SporeKillable.MAX_BLOCK_RADIUS;
+        int searchMaxY = maxY + SporeKillable.MAX_BLOCK_RADIUS;
+        int searchMaxZ = maxZ + SporeKillable.MAX_BLOCK_RADIUS;
 
         for (BlockPos searchPos : BlockPos.iterate(searchMinX, searchMinY, searchMinZ, searchMaxX,
                 searchMaxY, searchMaxZ)) {
