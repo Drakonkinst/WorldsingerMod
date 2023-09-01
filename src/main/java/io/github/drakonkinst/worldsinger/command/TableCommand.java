@@ -61,7 +61,7 @@ public class TableCommand {
             context.getSource().sendError(Text.literal("Coordinates must be in a loaded position"));
         }
         Identifier id = IdentifierArgumentType.getIdentifier(context, "data_table_id");
-        Optional<DataTable> table = DataTables.getOptional(context.getSource().getWorld(), id);
+        Optional<DataTable> table = DataTables.getOrEmpty(context.getSource().getWorld(), id);
         if (table.isEmpty()) {
             context.getSource()
                     .sendError(Text.literal("Table " + id.toString() + " does not exist"));

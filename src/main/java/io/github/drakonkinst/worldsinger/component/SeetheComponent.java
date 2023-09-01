@@ -1,10 +1,9 @@
 package io.github.drakonkinst.worldsinger.component;
 
-import dev.onyxstudios.cca.api.v3.component.Component;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 
-public interface SeetheComponent extends Component, ServerTickingComponent, AutoSyncedComponent {
+public interface SeetheComponent extends ServerTickingComponent, AutoSyncedComponent {
 
     void startSeethe();
 

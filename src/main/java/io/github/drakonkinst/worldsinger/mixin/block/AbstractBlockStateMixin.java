@@ -172,10 +172,7 @@ public abstract class AbstractBlockStateMixin {
         if (!state.isIn(ModBlockTags.KILLS_SPORES)) {
             return;
         }
-        DataTable dataTable = DataTables.get(world, DataTables.SPORE_KILLING_RADIUS);
-        if (dataTable == null) {
-            return;
-        }
+        DataTable dataTable = DataTables.getOrElse(world, DataTables.SPORE_KILLING_RADIUS, 0);
         int radius = dataTable.getIntForBlock(state);
         if (radius <= 0) {
             return;

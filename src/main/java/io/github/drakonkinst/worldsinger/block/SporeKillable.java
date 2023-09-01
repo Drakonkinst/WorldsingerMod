@@ -58,11 +58,7 @@ public interface SporeKillable {
     }
 
     static boolean isSporeKillingBlockNearby(World world, BlockPos pos) {
-        DataTable dataTable = DataTables.get(world, DataTables.SPORE_KILLING_RADIUS);
-        if (dataTable == null) {
-            return false;
-        }
-
+        DataTable dataTable = DataTables.getOrElse(world, DataTables.SPORE_KILLING_RADIUS, 0);
         for (BlockPos currentPos : BlockPos.iterateOutwards(pos, SporeKillable.MAX_RADIUS,
                 SporeKillable.MAX_RADIUS, SporeKillable.MAX_RADIUS)) {
             BlockState blockState = world.getBlockState(currentPos);
@@ -87,11 +83,8 @@ public interface SporeKillable {
 
     static boolean isSporeKillingBlockNearbyForRange(World world, int minX, int minY,
             int minZ, int maxX, int maxY, int maxZ) {
-        DataTable dataTable = DataTables.get(world, DataTables.SPORE_KILLING_RADIUS);
-        if (dataTable == null) {
-            return false;
-        }
-
+        DataTable dataTable = DataTables.getOrElse(world, DataTables.SPORE_KILLING_RADIUS, 0);
+        
         int searchMinX = minX - SporeKillable.MAX_RADIUS;
         int searchMinY = minY - SporeKillable.MAX_RADIUS;
         int searchMinZ = minZ - SporeKillable.MAX_RADIUS;

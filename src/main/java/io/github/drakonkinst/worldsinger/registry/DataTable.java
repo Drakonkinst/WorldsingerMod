@@ -33,6 +33,13 @@ public class DataTable {
     private final Object2IntMap<Identifier> idTable;
     private final Object2IntMap<Identifier> tagTable;
 
+    // Create a dummy data table that only returns a single value
+    public DataTable(int defaultValue) {
+        this.defaultValue = 0;
+        this.idTable = new Object2IntArrayMap<>();
+        this.tagTable = new Object2IntArrayMap<>();
+    }
+
     private DataTable(int defaultValue, Object2IntMap<Identifier> idTable,
             Object2IntMap<Identifier> tagTable) {
         this.defaultValue = defaultValue;
