@@ -2,9 +2,9 @@ package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
-import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import io.github.drakonkinst.worldsinger.mixin.accessor.FlowableFluidInvoker;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -73,7 +73,7 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
 
     @Override
     protected void randomDisplayTick(World world, BlockPos pos, FluidState state, Random random) {
-        if (!LumarSeetheComponent.areSporesFluidized(world)) {
+        if (!LumarSeethe.areSporesFluidized(world)) {
             return;
         }
 

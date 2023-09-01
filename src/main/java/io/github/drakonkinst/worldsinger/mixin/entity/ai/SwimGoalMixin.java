@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.mixin.entity.ai;
 
-import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.world.World;
@@ -23,7 +23,7 @@ public abstract class SwimGoalMixin {
     @Inject(method = "canStart", at = @At("RETURN"), cancellable = true)
     private void checkForSporeFluid(CallbackInfoReturnable<Boolean> cir) {
         World world = this.mob.getWorld();
-        if (!LumarSeetheComponent.areSporesFluidized(world)) {
+        if (!LumarSeethe.areSporesFluidized(world)) {
             return;
         }
         if (((SporeFluidEntityStateAccess) this.mob).worldsinger$isTouchingSporeSea()

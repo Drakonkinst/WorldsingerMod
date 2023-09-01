@@ -35,7 +35,8 @@
   },
   "custom": {
     "cardinal-components": [
-      "worldsinger:lumar_seethe"
+      "worldsinger:lumar_seethe",
+      "worldsinger:silver_lined"
     ]
   },
   "accessWidener": "worldsinger.accesswidener"

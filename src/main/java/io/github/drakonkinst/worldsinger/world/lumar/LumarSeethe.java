@@ -1,5 +1,7 @@
-package io.github.drakonkinst.worldsinger.component;
+package io.github.drakonkinst.worldsinger.world.lumar;
 
+import io.github.drakonkinst.worldsinger.component.ModComponents;
+import io.github.drakonkinst.worldsinger.component.SeetheComponent;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.MinecraftServer;
@@ -10,7 +12,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class LumarSeetheComponent implements SeetheComponent {
+public class LumarSeethe implements SeetheComponent {
 
     private static final String NBT_TICKS_REMAINING = "ticksRemaining";
     private static final String NBT_CYCLES_UNTIL_NEXT_LONG_STILLING = "cyclesUntilNextLongStilling";
@@ -37,14 +39,14 @@ public class LumarSeetheComponent implements SeetheComponent {
     private int cyclesUntilLongStilling;
 
     public static boolean areSporesFluidized(World world) {
-        return LumarSeetheComponent.areSporesFluidized(world.getScoreboard());
+        return LumarSeethe.areSporesFluidized(world.getScoreboard());
     }
 
     public static boolean areSporesFluidized(Scoreboard scoreboard) {
         return ModComponents.LUMAR_SEETHE.get(scoreboard).isSeething();
     }
 
-    public LumarSeetheComponent(Scoreboard scoreboard, @Nullable MinecraftServer server) {
+    public LumarSeethe(Scoreboard scoreboard, @Nullable MinecraftServer server) {
         this.provider = scoreboard;
 
         // Default values

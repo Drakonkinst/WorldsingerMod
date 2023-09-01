@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -71,7 +71,7 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock {
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         // Decay over time
-        if (LumarSeetheComponent.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
+        if (LumarSeethe.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
             world.breakBlock(pos, true);
         }
     }

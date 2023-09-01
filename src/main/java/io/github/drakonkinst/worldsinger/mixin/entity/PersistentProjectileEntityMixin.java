@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -34,7 +34,7 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
         boolean isInSolidSpores = this.inBlockState != null
                 && this.inBlockState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
                 && this.inBlockState.getFluidState().isStill()
-                && !LumarSeetheComponent.areSporesFluidized(world);
+                && !LumarSeethe.areSporesFluidized(world);
         cir.setReturnValue(cir.getReturnValue() && !isInSolidSpores);
     }
 

@@ -1,12 +1,12 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.component.LumarSeetheComponent;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.util.Constants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import java.util.Optional;
@@ -68,7 +68,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
     private BlockRenderType showSprintingParticlesForCustomFluid(BlockState instance) {
         World world = this.getWorld();
         if (!instance.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
-                || LumarSeetheComponent.areSporesFluidized(world)) {
+                || LumarSeethe.areSporesFluidized(world)) {
             return instance.getRenderType();
         }
         return BlockRenderType.MODEL;

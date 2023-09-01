@@ -2,9 +2,10 @@ package io.github.drakonkinst.worldsinger.client;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
-import io.github.drakonkinst.worldsinger.entity.SilverLineable;
-import io.github.drakonkinst.worldsinger.entity.SilverLineable.Level;
+import io.github.drakonkinst.worldsinger.component.ModComponents;
+import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.world.lumar.SilverLiningLevel;
 import java.util.Map;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -28,25 +29,25 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
 
     private final Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels;
 
-    private static final Map<Level, Identifier> BOAT_LEVEL_TO_TEXTURE = ImmutableMap.of(
-            Level.LOW,
+    private static final Map<SilverLiningLevel, Identifier> BOAT_LEVEL_TO_TEXTURE = ImmutableMap.of(
+            SilverLiningLevel.LOW,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_low.png"),
-            Level.MEDIUM,
+            SilverLiningLevel.MEDIUM,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_medium.png"),
-            Level.HIGH,
+            SilverLiningLevel.HIGH,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_high.png"),
-            Level.PERFECT,
+            SilverLiningLevel.PERFECT,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_perfect.png")
     );
 
-    private static final Map<Level, Identifier> RAFT_LEVEL_TO_TEXTURE = ImmutableMap.of(
-            Level.LOW,
+    private static final Map<SilverLiningLevel, Identifier> RAFT_LEVEL_TO_TEXTURE = ImmutableMap.of(
+            SilverLiningLevel.LOW,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_low.png"),
-            Level.MEDIUM,
+            SilverLiningLevel.MEDIUM,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_medium.png"),
-            Level.HIGH,
+            SilverLiningLevel.HIGH,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_high.png"),
-            Level.PERFECT,
+            SilverLiningLevel.PERFECT,
             new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_perfect.png")
     );
 
@@ -69,9 +70,11 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             BoatEntity entity, float limbAngle, float limbDistance, float tickDelta,
             float animationProgress, float headYaw, float headPitch) {
-        Level level = SilverLineable.Level.fromDurability(
-                ((SilverLineable) entity).worldsinger$getSilverDurability());
-        if (level == Level.NONE) {
+        SilverLinedComponent silverData = ModComponents.SILVER_LINED_ENTITY.get(entity);
+        float durabilityFraction =
+                (float) silverData.getSilverDurability() / silverData.getMaxSilverDurability();
+        SilverLiningLevel level = SilverLiningLevel.fromDurability(durabilityFraction);
+        if (level == SilverLiningLevel.NONE) {
             return;
         }
         Identifier identifier;
