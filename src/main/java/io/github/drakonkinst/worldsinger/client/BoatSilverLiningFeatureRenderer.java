@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
-import io.github.drakonkinst.worldsinger.util.Constants;
-import io.github.drakonkinst.worldsinger.world.lumar.SilverLiningLevel;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
+import io.github.drakonkinst.worldsinger.util.SilverLiningLevel;
 import java.util.Map;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -31,24 +31,28 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
 
     private static final Map<SilverLiningLevel, Identifier> BOAT_LEVEL_TO_TEXTURE = ImmutableMap.of(
             SilverLiningLevel.LOW,
-            new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_low.png"),
+            new Identifier(ModConstants.MOD_ID, "textures/entity/boat/boat_silver_lining_low.png"),
             SilverLiningLevel.MEDIUM,
-            new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_medium.png"),
+            new Identifier(ModConstants.MOD_ID,
+                    "textures/entity/boat/boat_silver_lining_medium.png"),
             SilverLiningLevel.HIGH,
-            new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_high.png"),
+            new Identifier(ModConstants.MOD_ID, "textures/entity/boat/boat_silver_lining_high.png"),
             SilverLiningLevel.PERFECT,
-            new Identifier(Constants.MOD_ID, "textures/entity/boat/boat_silver_lining_perfect.png")
+            new Identifier(ModConstants.MOD_ID,
+                    "textures/entity/boat/boat_silver_lining_perfect.png")
     );
 
     private static final Map<SilverLiningLevel, Identifier> RAFT_LEVEL_TO_TEXTURE = ImmutableMap.of(
             SilverLiningLevel.LOW,
-            new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_low.png"),
+            new Identifier(ModConstants.MOD_ID, "textures/entity/boat/raft_silver_lining_low.png"),
             SilverLiningLevel.MEDIUM,
-            new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_medium.png"),
+            new Identifier(ModConstants.MOD_ID,
+                    "textures/entity/boat/raft_silver_lining_medium.png"),
             SilverLiningLevel.HIGH,
-            new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_high.png"),
+            new Identifier(ModConstants.MOD_ID, "textures/entity/boat/raft_silver_lining_high.png"),
             SilverLiningLevel.PERFECT,
-            new Identifier(Constants.MOD_ID, "textures/entity/boat/raft_silver_lining_perfect.png")
+            new Identifier(ModConstants.MOD_ID,
+                    "textures/entity/boat/raft_silver_lining_perfect.png")
     );
 
     protected static <T extends Entity> void renderModel(EntityModel<T> model, Identifier texture,

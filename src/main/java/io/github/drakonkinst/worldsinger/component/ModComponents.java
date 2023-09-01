@@ -8,7 +8,7 @@ import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import dev.onyxstudios.cca.api.v3.scoreboard.ScoreboardComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.scoreboard.ScoreboardComponentInitializer;
 import io.github.drakonkinst.worldsinger.entity.SilverLinedEntityData;
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.util.Identifier;
@@ -23,7 +23,7 @@ public final class ModComponents implements ScoreboardComponentInitializer,
             SilverLinedComponent.class);
 
     private static <T extends Component> ComponentKey<T> register(String id, Class<T> clazz) {
-        return ComponentRegistry.getOrCreate(new Identifier(Constants.MOD_ID, id), clazz);
+        return ComponentRegistry.getOrCreate(new Identifier(ModConstants.MOD_ID, id), clazz);
     }
 
     @Override

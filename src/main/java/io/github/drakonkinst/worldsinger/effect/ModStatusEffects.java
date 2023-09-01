@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.effect;
 
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.registry.Registries;
@@ -15,7 +15,7 @@ public final class ModStatusEffects {
     private ModStatusEffects() {}
 
     private static <T extends StatusEffect> T register(String id, T statusEffect) {
-        Registry.register(Registries.STATUS_EFFECT, new Identifier(Constants.MOD_ID, id),
+        Registry.register(Registries.STATUS_EFFECT, new Identifier(ModConstants.MOD_ID, id),
                 statusEffect);
         return statusEffect;
     }

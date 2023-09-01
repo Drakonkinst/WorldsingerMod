@@ -110,9 +110,9 @@ public interface SporeKillable {
 
     static boolean isSporeKillingBlockNearbyForRange(World world, double minX, double minY,
             double minZ, double maxX, double maxY, double maxZ) {
-        return isSporeKillingBlockNearbyForRange(world, MathHelper.floor(minX),
-                MathHelper.floor(minY), MathHelper.floor(minZ), MathHelper.ceil(maxX),
-                MathHelper.ceil(maxY), MathHelper.ceil(maxZ));
+        return isSporeKillingBlockNearbyForRange(world,
+                MathHelper.floor(minX), MathHelper.floor(minY), MathHelper.floor(minZ),
+                MathHelper.ceil(maxX), MathHelper.ceil(maxY), MathHelper.ceil(maxZ));
     }
 
     static boolean isSporeKillingBlockNearbyForRange(World world, int minX, int minY,
@@ -169,8 +169,7 @@ public interface SporeKillable {
     }
 
     static BlockState convertToDeadVariant(SporeKillable sporeKillable, BlockState blockState) {
-        return sporeKillable.getDeadSporeBlock()
-                .getStateWithProperties(blockState);
+        return sporeKillable.getDeadSporeBlock().getStateWithProperties(blockState);
     }
 
     Block getDeadSporeBlock();

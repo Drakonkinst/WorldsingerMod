@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.Optional;
 import net.minecraft.block.Block;
@@ -51,7 +51,7 @@ public interface WaterloggableMixin {
                 }
                 int index = Fluidlogged.getFluidIndex(fluid);
                 if (index == -1) {
-                    Constants.LOGGER.warn("Tried to fill a block with a not loggable fluid!");
+                    ModConstants.LOGGER.warn("Tried to fill a block with a not loggable fluid!");
                     cir.setReturnValue(false);
                     return;
                 }

@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.entity;
 
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.minecraft.entity.EntityType;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
@@ -16,6 +16,6 @@ public final class ModEntityTypeTags {
     private ModEntityTypeTags() {}
 
     private static TagKey<EntityType<?>> of(String id) {
-        return TagKey.of(RegistryKeys.ENTITY_TYPE, new Identifier(Constants.MOD_ID, id));
+        return TagKey.of(RegistryKeys.ENTITY_TYPE, new Identifier(ModConstants.MOD_ID, id));
     }
 }

@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.item.ModItems;
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
 import java.util.Optional;
@@ -39,7 +39,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         if (this.fluidizedBlock instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
             aetherSporeFluidBlock.setSolidBlock(this);
         } else {
-            Constants.LOGGER.error("Expected fluidized block for " + this.getClass().getName() +
+            ModConstants.LOGGER.error("Expected fluidized block for " + this.getClass().getName() +
                     " to be an instance of AetherSporeFluidBlock");
         }
     }

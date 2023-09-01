@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world.lumar;
+package io.github.drakonkinst.worldsinger.util;
 
 public enum SilverLiningLevel {
     NONE(0.0f),

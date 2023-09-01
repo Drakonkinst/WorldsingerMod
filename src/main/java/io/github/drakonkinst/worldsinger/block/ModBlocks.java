@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -156,7 +156,7 @@ public final class ModBlocks {
             ), true);
 
     public static <T extends Block> T register(String id, T block, boolean shouldRegisterItem) {
-        Identifier blockId = new Identifier(Constants.MOD_ID, id);
+        Identifier blockId = new Identifier(ModConstants.MOD_ID, id);
 
         if (shouldRegisterItem) {
             BlockItem blockItem = new BlockItem(block, new FabricItemSettings());

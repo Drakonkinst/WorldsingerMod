@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.registry;
 
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Optional;
@@ -28,7 +28,7 @@ public final class DataTables {
     }
 
     private static RegistryKey<DataTable> of(String id) {
-        return RegistryKey.of(ModRegistries.DATA_TABLES, new Identifier(Constants.MOD_ID, id));
+        return RegistryKey.of(ModRegistries.DATA_TABLES, new Identifier(ModConstants.MOD_ID, id));
     }
 
     private static DataTable createOrGetDummyDataTable(int defaultValue) {

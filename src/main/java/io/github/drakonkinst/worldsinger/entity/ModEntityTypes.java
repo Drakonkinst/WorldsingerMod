@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.entity;
 
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;
@@ -20,7 +20,7 @@ public final class ModEntityTypes {
     }
 
     private static <T extends Entity> EntityType<T> register(String id, EntityType<T> entityType) {
-        return Registry.register(Registries.ENTITY_TYPE, new Identifier(Constants.MOD_ID, id),
+        return Registry.register(Registries.ENTITY_TYPE, new Identifier(ModConstants.MOD_ID, id),
                 entityType);
     }
 

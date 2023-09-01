@@ -3,7 +3,7 @@ package io.github.drakonkinst.worldsinger.effect;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -44,7 +44,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         BlockPos blockPos = toRoundedBlockPos(entity.getPos());
         int width = MathHelper.ceil(entity.getWidth());
         int height = MathHelper.ceil(entity.getHeight());
-        Constants.LOGGER.info(
+        ModConstants.LOGGER.info(
                 entity.getType().getUntranslatedName() + " has dimensions " + width + " x "
                         + height);
 

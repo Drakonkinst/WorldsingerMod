@@ -3,7 +3,7 @@ package io.github.drakonkinst.worldsinger.mixin.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.BackgroundRenderer;
@@ -50,7 +50,7 @@ public abstract class BackgroundRendererMixin {
                 green = aetherSporeFluid.getFogGreen();
                 blue = aetherSporeFluid.getFogBlue();
             } else {
-                Constants.LOGGER.error(
+                ModConstants.LOGGER.error(
                         "Expected fluid to be an instance of AetherSporeFluid since it is in the tag "
                                 + ModFluidTags.AETHER_SPORES.id().toString());
             }

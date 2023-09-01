@@ -5,7 +5,7 @@ import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.particle.SporeDustParticleEffect;
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.List;
@@ -60,7 +60,7 @@ public final class SporeParticleManager {
         int particleCount = Math.max(particleCountPerBlock,
                 MathHelper.ceil(particleCountPerBlock * volume));
 
-        Constants.LOGGER.info(
+        ModConstants.LOGGER.info(
                 "Creating spore particle with radius=" + radius + ", height=" + height + ", size="
                         + particleSize + ", count=" + particleCount);
 
@@ -154,7 +154,7 @@ public final class SporeParticleManager {
 
         StatusEffect statusEffect = SPORE_TO_STATUS_EFFECT.get(sporeType);
         if (statusEffect == null) {
-            Constants.LOGGER.error("AetherSporeType does not have associated status effect: "
+            ModConstants.LOGGER.error("AetherSporeType does not have associated status effect: "
                     + sporeType.asString());
             return;
         }
@@ -198,7 +198,7 @@ public final class SporeParticleManager {
         // Make size follow the cached size precision to prevent unintentional imprecision
         size = ((int) (size * CACHED_SIZE_PRECISION)) / CACHED_SIZE_PRECISION;
 
-        Constants.LOGGER.info(
+        ModConstants.LOGGER.info(
                 "Caching new dust particle effect (" + sporeType.asString() + ", " + size + ")");
 
         Vector3f particleColor = Vec3d.unpackRgb(sporeType.getParticleColor()).toVector3f();

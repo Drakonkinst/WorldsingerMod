@@ -8,7 +8,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SeetheComponent;
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.minecraft.command.argument.TimeArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -42,7 +42,7 @@ public class SeetheCommand {
         context.getSource().sendMessage(Text.literal(
                 "Seethe is " + (isSeething ? "ACTIVE" : "INACTIVE") + " for the next " + cycleTicks
                         + " ticks, or " + (MathHelper.floor(
-                        cycleTicks * Constants.TICKS_TO_SECONDS)) + " seconds"));
+                        cycleTicks * ModConstants.TICKS_TO_SECONDS)) + " seconds"));
         ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
         return 1;
     }

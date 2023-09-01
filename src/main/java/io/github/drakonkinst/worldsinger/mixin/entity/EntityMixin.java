@@ -4,7 +4,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
@@ -89,7 +89,8 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
                 Optional<AetherSporeType> aetherSporeType = AetherSporeType.getSporeTypeFromBlock(
                         steppingBlock);
                 if (aetherSporeType.isEmpty()) {
-                    Constants.LOGGER.error("Aether spore block should have a spore type defined");
+                    ModConstants.LOGGER.error(
+                            "Aether spore block should have a spore type defined");
                     return;
                 }
                 SporeParticles.spawnFootstepParticles(serverWorld, aetherSporeType.get(),

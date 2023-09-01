@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.particle;
 
-import io.github.drakonkinst.worldsinger.util.Constants;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
@@ -18,7 +18,8 @@ public class ModParticleTypes {
     private static <T extends ParticleEffect> ParticleType<T> register(String name,
             boolean alwaysShow, ParticleEffect.Factory<T> factory) {
 
-        return Registry.register(Registries.PARTICLE_TYPE, new Identifier(Constants.MOD_ID, name),
+        return Registry.register(Registries.PARTICLE_TYPE,
+                new Identifier(ModConstants.MOD_ID, name),
                 FabricParticleTypes.complex(alwaysShow, factory));
     }
 }
