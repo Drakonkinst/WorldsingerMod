@@ -1,7 +1,9 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import io.github.drakonkinst.worldsinger.entity.SilverLineable;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.item.ModItemTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeetheManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
@@ -9,12 +11,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.BoatEntity.Location;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -33,10 +40,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BoatEntity.class)
-public abstract class BoatEntityMixin extends Entity {
+public abstract class BoatEntityMixin extends Entity implements SilverLineable {
 
     @Unique
     private static final double MAX_FLUID_HEIGHT_TO_NOT_EMBED = 0.05;
+
+    @Unique
+    private static final String SILVER_DURABILITY_KEY = "SilverDurability";
 
     @Unique
     private boolean inSporeSea;
@@ -47,8 +57,41 @@ public abstract class BoatEntityMixin extends Entity {
     @Unique
     private final boolean[] firstPaddle = {true, true};
 
+    @Unique
+    private int silverDurability;
+
     public BoatEntityMixin(EntityType<?> type, World world) {
         super(type, world);
+    }
+
+    @Inject(method = "interact", at = @At("HEAD"), cancellable = true)
+    private void addSilverLining(PlayerEntity player, Hand hand,
+            CallbackInfoReturnable<ActionResult> cir) {
+        ItemStack itemStack = player.getStackInHand(hand);
+        if (itemStack.isIn(ModItemTags.SILVER_INGOTS)
+                && this.worldsinger$getSilverDurability() < SilverLineable.MAX_DURABILITY) {
+            this.worldsinger$setSilverDurability(
+                    this.worldsinger$getSilverDurability() + SilverLineable.REPAIR_AMOUNT);
+            float pitch = 1.0f + (this.random.nextFloat() - this.random.nextFloat()) * 0.2f;
+            // TODO: Temp sound
+            this.playSound(SoundEvents.ENTITY_IRON_GOLEM_REPAIR, 1.0f, pitch);
+            if (!player.getAbilities().creativeMode) {
+                itemStack.decrement(1);
+            }
+            cir.setReturnValue(ActionResult.success(this.getWorld().isClient()));
+        }
+    }
+
+    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
+    private void addSilverDurabilityNBT(NbtCompound nbt, CallbackInfo ci) {
+        nbt.putInt(SILVER_DURABILITY_KEY, this.worldsinger$getSilverDurability());
+    }
+
+    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
+    private void addSilverDurabilityNBT2(NbtCompound nbt, CallbackInfo ci) {
+        if (nbt.contains(SILVER_DURABILITY_KEY)) {
+            this.worldsinger$setSilverDurability(nbt.getInt(SILVER_DURABILITY_KEY));
+        }
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
@@ -284,6 +327,17 @@ public abstract class BoatEntityMixin extends Entity {
     private VoxelShape checkFluidizedBlock(BlockState instance, BlockView blockView,
             BlockPos blockPos) {
         return instance.getCollisionShape(blockView, blockPos, ShapeContext.of(this));
+    }
+
+    @Override
+    public int worldsinger$getSilverDurability() {
+        return silverDurability;
+    }
+
+    @Override
+    public void worldsinger$setSilverDurability(int silverDurability) {
+        this.silverDurability = Math.max(0,
+                Math.min(silverDurability, SilverLineable.MAX_DURABILITY));
     }
 
     @Shadow

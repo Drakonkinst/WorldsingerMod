@@ -58,6 +58,10 @@ public class WorldsingerClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance()
                 .register(ModParticleTypes.SPORE_DUST, SporeDustParticle.Factory::new);
 
+        // Register entity renderers
+        // EntityRendererRegistry.register(ModEntityTypes.SILVER_LINED_BOAT,
+        //         (context) -> new SilverLinedBoatEntityRenderer(context, false));
+
         // Register packets
         ClientPlayNetworking.registerGlobalReceiver(LumarSeetheData.LUMAR_SEETHE_UPDATE_PACKET_ID,
                 (client, handler, buf, responseSender) -> {

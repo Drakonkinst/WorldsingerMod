@@ -1,6 +1,8 @@
 package io.github.drakonkinst.worldsinger.mixin.client;
 
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -10,8 +12,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@Environment(EnvType.CLIENT)
 @Mixin(FluidRenderer.class)
-public class FluidRendererMixin {
+public abstract class FluidRendererMixin {
 
     @Inject(method = "isSameFluid", at = @At("HEAD"), cancellable = true)
     private static void makeSporeFluidsIdentical(FluidState a, FluidState b,
