@@ -59,20 +59,32 @@ public abstract class BoatEntitySilverMixin extends Entity {
 
     @Inject(method = "dropItems", at = @At("HEAD"), cancellable = true)
     private void dropWithSilverData(DamageSource source, CallbackInfo ci) {
-        SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED_ENTITY.get(this);
-        ItemStack stack = new ItemStack(this.asItem());
+        this.dropStack(this.createItemStack());
+        ci.cancel();
+    }
 
+    @Inject(method = "getPickBlockStack", at = @At("RETURN"), cancellable = true)
+    private void dropWithSilverData(CallbackInfoReturnable<ItemStack> cir) {
+        cir.setReturnValue(this.addSilverData(cir.getReturnValue()));
+    }
+
+    @Unique
+    private ItemStack createItemStack() {
+        return this.addSilverData(new ItemStack(this.asItem()));
+    }
+
+    @Unique
+    private ItemStack addSilverData(ItemStack itemStack) {
+        SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED_ENTITY.get(this);
         int silverDurability = silverEntityData.getSilverDurability();
         if (silverDurability > 0) {
-            SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(stack, null);
+            SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(itemStack, null);
             if (silverItemData != null) {
                 silverItemData.worldsinger$setSilverDurability(silverDurability);
             } else {
                 ModConstants.LOGGER.error("Expected to find silver data for new boat item");
             }
         }
-
-        this.dropStack(stack);
-        ci.cancel();
+        return itemStack;
     }
 }
