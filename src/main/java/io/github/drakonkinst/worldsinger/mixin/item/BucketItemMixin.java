@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.item;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidDrainable;
@@ -18,7 +19,6 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -26,28 +26,15 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(BucketItem.class)
 public abstract class BucketItemMixin {
 
-    @Redirect(method = "use", at = @At(value = "FIELD", target = "Lnet/minecraft/item/BucketItem;" +
-            "fluid:Lnet/minecraft/fluid/Fluid;", opcode = Opcodes.GETFIELD, ordinal = 2))
-    private Fluid unblock(BucketItem instance) {
+    @ModifyExpressionValue(method = "use", at = @At(value = "FIELD", target =
+            "Lnet/minecraft/item/BucketItem;" +
+                    "fluid:Lnet/minecraft/fluid/Fluid;", opcode = Opcodes.GETFIELD, ordinal = 2))
+    private Fluid allowAnyFluid(Fluid original) {
         return Fluids.WATER;
     }
 
-    @Redirect(
-            method = "placeFluid",
-            at = @At(value = "FIELD", target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;",
-                    opcode = Opcodes.GETFIELD, ordinal = 0),
-            slice = @Slice(
-                    from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle" +
-                            "(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"),
-                    to = @At(value = "INVOKE", target =
-                            "Lnet/minecraft/block/FluidFillable;tryFillWithFluid"
-                                    +
-                                    "(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;"
-                                    +
-                                    "Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z")
-            )
-    )
-    private Fluid unblock2(BucketItem instance) {
+    @ModifyExpressionValue(method = "placeFluid", at = @At(value = "FIELD", target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;", opcode = Opcodes.GETFIELD, ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticle(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"), to = @At(value = "INVOKE", target = "Lnet/minecraft/block/FluidFillable;tryFillWithFluid(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z")))
+    private Fluid allowAnyFluid2(Fluid original) {
         return Fluids.WATER;
     }
 

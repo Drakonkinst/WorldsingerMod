@@ -1,5 +1,8 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
@@ -44,9 +47,7 @@ public abstract class AbstractBlockStateMixin {
     @Shadow
     public abstract Block getBlock();
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target =
-            "Ljava/util/function/ToIntFunction;applyAsInt" +
-                    "(Ljava/lang/Object;)I"))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/function/ToIntFunction;applyAsInt(Ljava/lang/Object;)I"))
     private <T> int injectLuminance(ToIntFunction<T> instance, T t) {
         if (t instanceof BlockState state && state.getEntries() != null && state.contains(
                 ModProperties.FLUIDLOGGED)) {
@@ -64,8 +65,8 @@ public abstract class AbstractBlockStateMixin {
 
     @Inject(method = "getStateForNeighborUpdate", at = @At("HEAD"))
     private void makeCustomFluidTickable(Direction direction, BlockState neighborState,
-            WorldAccess world,
-            BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> cir) {
+            WorldAccess world, BlockPos pos, BlockPos neighborPos,
+            CallbackInfoReturnable<BlockState> cir) {
         Fluid fluid = Fluidlogged.getFluid(this.asBlockState());
         boolean noFluid = (fluid == null) || Fluids.EMPTY.equals(fluid);
         if (!noFluid) {
@@ -73,28 +74,24 @@ public abstract class AbstractBlockStateMixin {
         }
     }
 
-    // Credit: https://github.com/apace100/water-walking-fix
-    @Inject(method =
+    @ModifyReturnValue(method =
             "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
-                    "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At("RETURN"),
-            cancellable = true)
-    private void fixFluidloggedCollisionShape(BlockView world, BlockPos pos, ShapeContext context,
-            CallbackInfoReturnable<VoxelShape> cir) {
+                    "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At("RETURN"))
+    private VoxelShape fixFluidloggedCollisionShape(VoxelShape originalShape, BlockView world,
+            BlockPos pos, ShapeContext context) {
         FluidState fluidState = world.getFluidState(pos);
-
         int level = fluidState.getLevel();
         if (level == 0) {
-            return;
+            return originalShape;
         }
 
         VoxelShape shape = FluidShapes.VOXEL_SHAPES[level];
         VoxelShape shapeBelow = FluidShapes.VOXEL_SHAPES[level - 1];
-
         if (context.isAbove(shapeBelow, pos, true)
                 && context.canWalkOnFluid(world.getFluidState(pos.up()), fluidState)) {
-            VoxelShape original = cir.getReturnValue();
-            cir.setReturnValue(VoxelShapes.union(original, shape));
+            return VoxelShapes.union(originalShape, shape);
         }
+        return originalShape;
     }
 
     @Inject(method = "getFluidState", at = @At("RETURN"), cancellable = true)
@@ -110,54 +107,50 @@ public abstract class AbstractBlockStateMixin {
         }
     }
 
-    @Redirect(method =
-            "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
-                    "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/block/Block;getCollisionShape(Lnet/minecraft/block/BlockState;"
-                    +
-                    "Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
-                    "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
+    @WrapOperation(method =
+            "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;"
+                    + "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At(value = "INVOKE", target =
+            "Lnet/minecraft/block/Block;getCollisionShape(Lnet/minecraft/block/BlockState;"
+                    + "Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;"
+                    + "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
     private VoxelShape injectCustomFluidCollisionShape(Block instance, BlockState state,
-            BlockView world, BlockPos pos, ShapeContext context) {
-        return instance.getCollisionShape(
-                state.contains(ModProperties.FLUIDLOGGED)
-                        ? state.with(ModProperties.FLUIDLOGGED, 0)
-                        : state,
-                world, pos, context
-        );
+            BlockView world, BlockPos pos, ShapeContext context, Operation<VoxelShape> original) {
+        if (state.contains(ModProperties.FLUIDLOGGED)) {
+            return instance.getCollisionShape(state.with(ModProperties.FLUIDLOGGED, 0), world, pos,
+                    context);
+        } else {
+            return original.call(instance, state, world, pos, context);
+        }
     }
 
-    @Redirect(method =
+    @WrapOperation(method =
             "getOutlineShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
                     "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/block/Block;getOutlineShape(Lnet/minecraft/block/BlockState;" +
                     "Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
                     "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
     private VoxelShape injectCustomFluidOutlineShape(Block instance, BlockState state,
-            BlockView world, BlockPos pos,
-            ShapeContext context) {
-        return instance.getOutlineShape(
-                state.contains(ModProperties.FLUIDLOGGED)
-                        ? state.with(ModProperties.FLUIDLOGGED, 0)
-                        : state,
-                world, pos, context
-        );
+            BlockView world, BlockPos pos, ShapeContext context, Operation<VoxelShape> original) {
+        if (state.contains(ModProperties.FLUIDLOGGED)) {
+            return instance.getOutlineShape(state.with(ModProperties.FLUIDLOGGED, 0), world, pos,
+                    context);
+        } else {
+            return original.call(instance, state, world, pos, context);
+        }
     }
 
-    @Redirect(method = "getSidesShape", at = @At(value = "INVOKE", target =
+    @WrapOperation(method = "getSidesShape", at = @At(value = "INVOKE", target =
             "Lnet/minecraft/block/Block;getSidesShape" +
                     "(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)"
                     +
                     "Lnet/minecraft/util/shape/VoxelShape;"))
     private VoxelShape injectCustomFluidSidesShape(Block instance, BlockState state,
-            BlockView world, BlockPos pos) {
-        ShapeContext context = ShapeContext.absent();
-        return instance.getCollisionShape(
-                state.contains(ModProperties.FLUIDLOGGED)
-                        ? state.with(ModProperties.FLUIDLOGGED, 0)
-                        : state,
-                world, pos, context
-        );
+            BlockView world, BlockPos pos, Operation<VoxelShape> original) {
+        if (state.contains(ModProperties.FLUIDLOGGED)) {
+            return instance.getSidesShape(state.with(ModProperties.FLUIDLOGGED, 0), world, pos);
+        } else {
+            return original.call(instance, state, world, pos);
+        }
     }
 
     @Inject(method = "onStateReplaced", at = @At("HEAD"))

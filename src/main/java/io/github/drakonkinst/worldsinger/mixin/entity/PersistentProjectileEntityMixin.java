@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.block.BlockState;
@@ -13,7 +14,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PersistentProjectileEntity.class)
 public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
@@ -28,14 +28,17 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
         }
     }
 
-    @Inject(method = "shouldFall", at = @At("RETURN"), cancellable = true)
-    private void doNotFallIfInSolidSpores(CallbackInfoReturnable<Boolean> cir) {
+    @ModifyReturnValue(method = "shouldFall", at = @At("RETURN"))
+    private boolean doNotFallIfInSolidSpores(boolean shouldFall) {
+        if (!shouldFall) {
+            return false;
+        }
         World world = this.getWorld();
         boolean isInSolidSpores = this.inBlockState != null
                 && this.inBlockState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
                 && this.inBlockState.getFluidState().isStill()
                 && !LumarSeethe.areSporesFluidized(world);
-        cir.setReturnValue(cir.getReturnValue() && !isInSolidSpores);
+        return !isInSolidSpores;
     }
 
     @Shadow

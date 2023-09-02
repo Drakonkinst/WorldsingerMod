@@ -1,5 +1,8 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
@@ -28,15 +31,13 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
-    @Inject(method = "updateWaterState", at = @At("RETURN"), cancellable = true)
-    private void allowCustomFluidToPushEntity(CallbackInfoReturnable<Boolean> cir) {
-        boolean isTouchingAnyFluid = cir.getReturnValueZ();
+    @ModifyReturnValue(method = "updateWaterState", at = @At("RETURN"))
+    private boolean allowCustomFluidToPushEntity(boolean isTouchingAnyFluid) {
         if (this.updateMovementInFluid(ModFluidTags.AETHER_SPORES, AetherSporeFluid.FLUID_SPEED)) {
             if (!this.isTouchingSporeSea) {
                 if (this.getWorld() instanceof ServerWorld serverWorld) {
@@ -54,7 +55,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
         } else {
             this.isTouchingSporeSea = false;
         }
-        cir.setReturnValue(isTouchingAnyFluid);
+        return isTouchingAnyFluid;
     }
 
     @Unique
@@ -64,12 +65,13 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
                         Collectors.toUnmodifiableSet());
     }
 
-    @Redirect(method = "spawnSprintingParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getRenderType()Lnet/minecraft/block/BlockRenderType;"))
-    private BlockRenderType showSprintingParticlesForCustomFluid(BlockState instance) {
+    @WrapOperation(method = "spawnSprintingParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getRenderType()Lnet/minecraft/block/BlockRenderType;"))
+    private BlockRenderType showSprintingParticlesForCustomFluid(BlockState instance,
+            Operation<BlockRenderType> original) {
         World world = this.getWorld();
         if (!instance.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
                 || LumarSeethe.areSporesFluidized(world)) {
-            return instance.getRenderType();
+            return original.call();
         }
         return BlockRenderType.MODEL;
     }

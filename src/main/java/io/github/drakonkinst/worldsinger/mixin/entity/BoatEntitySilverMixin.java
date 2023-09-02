@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.drakonkinst.worldsinger.api.ModApi;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
@@ -63,9 +64,9 @@ public abstract class BoatEntitySilverMixin extends Entity {
         ci.cancel();
     }
 
-    @Inject(method = "getPickBlockStack", at = @At("RETURN"), cancellable = true)
-    private void dropWithSilverData(CallbackInfoReturnable<ItemStack> cir) {
-        cir.setReturnValue(this.addSilverData(cir.getReturnValue()));
+    @ModifyReturnValue(method = "getPickBlockStack", at = @At("RETURN"))
+    private ItemStack dropWithSilverData(ItemStack itemStack) {
+        return this.addSilverData(itemStack);
     }
 
     @Unique
