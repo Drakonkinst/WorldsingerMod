@@ -29,6 +29,7 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
 
     private final Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels;
 
+    // TODO: Also need separate textures for the chest variants :/
     private static final Map<SilverLiningLevel, Identifier> BOAT_LEVEL_TO_TEXTURE = ImmutableMap.of(
             SilverLiningLevel.LOW,
             new Identifier(ModConstants.MOD_ID, "textures/entity/boat/boat_silver_lining_low.png"),

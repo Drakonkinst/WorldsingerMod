@@ -70,11 +70,14 @@ public final class SporeParticleManager {
         double maxY = minY + height;
         double maxZ = z + radius;
 
-        if (SporeKillable.isSporeKillingBlockNearbyForRange(world, minX, minY, minZ, maxX, maxY,
-                maxZ)
-                || SporeKillable.checkNearbyEntitiesForRange(world, minX, minY, minZ, maxX, maxY,
-                maxZ)) {
-            sporeType = AetherSporeType.DEAD;
+        if (sporeType != AetherSporeType.DEAD) {
+            if (SporeKillable.isSporeKillingBlockNearbyForRange(world, minX, minY, minZ, maxX, maxY,
+                    maxZ)
+                    || SporeKillable.checkNearbyEntitiesForRange(world, minX, minY, minZ, maxX,
+                    maxY,
+                    maxZ)) {
+                sporeType = AetherSporeType.DEAD;
+            }
         }
 
         SporeParticleManager.spawnVisualSporeParticles(world, sporeType, x, minY, z,

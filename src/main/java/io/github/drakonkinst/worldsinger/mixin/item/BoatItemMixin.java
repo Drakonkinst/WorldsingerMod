@@ -4,15 +4,22 @@ import com.llamalad7.mixinextras.sugar.Local;
 import io.github.drakonkinst.worldsinger.api.ModApi;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
-import io.github.drakonkinst.worldsinger.entity.SilverLinedEntityData;
+import io.github.drakonkinst.worldsinger.entity.SilverLinedBoatEntityData;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.SilverLined;
+import java.util.List;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.item.BoatItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Hand;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,14 +27,50 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(BoatItem.class)
-public abstract class BoatItemMixin extends Item implements SilverLined {
+public abstract class BoatItemMixin extends Item {
+
+    @Unique
+    private static final int SILVER_METER_COLOR = 0xC0C0C0;
+
+    @Unique
+    private static final int SILVER_TEXT_COLOR = 0xC0C0C0;
+
+    @Unique
+    private static Style SILVER_TEXT_STYLE = Style.EMPTY.withColor(
+            TextColor.fromRgb(SILVER_TEXT_COLOR));
+
+    @Unique
+    private static final int MAX_METER_STEPS = 13;
 
     public BoatItemMixin(Settings settings) {
         super(settings);
     }
 
-    @Unique
-    private int silverDurability;
+    @Override
+    public boolean isNbtSynced() {
+        return super.isNbtSynced();
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip,
+            TooltipContext context) {
+        SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(stack, null);
+        if (silverItemData == null) {
+            return;
+        }
+        int silverDurability = silverItemData.getSilverDurability();
+        if (silverDurability <= 0) {
+            return;
+        }
+
+        if (context.isAdvanced()) {
+            tooltip.add(Text.translatable("item.silver_durability",
+                    silverDurability,
+                    silverItemData.getMaxSilverDurability()).setStyle(SILVER_TEXT_STYLE));
+        } else {
+            tooltip.add(Text.translatable("item.silver_lined").setStyle(SILVER_TEXT_STYLE));
+        }
+    }
 
     @ModifyVariable(method = "use", at = @At(value = "STORE"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/hit/HitResult;getType()Lnet/minecraft/util/hit/HitResult$Type;", ordinal = 1), to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;setVariant(Lnet/minecraft/entity/vehicle/BoatEntity$Type;)V")))
     private BoatEntity addDataToEntity(BoatEntity entity, @Local PlayerEntity user,
@@ -37,33 +80,51 @@ public abstract class BoatItemMixin extends Item implements SilverLined {
         return entity;
     }
 
+    @Override
+    public boolean isItemBarVisible(ItemStack stack) {
+        int silverDurability = this.getSilverDurability(stack);
+        return super.isItemBarVisible(stack) || silverDurability > 0;
+    }
+
+    @Override
+    public int getItemBarColor(ItemStack stack) {
+        int silverDurability = this.getSilverDurability(stack);
+        if (silverDurability <= 0) {
+            return super.getItemBarColor(stack);
+        }
+        return SILVER_METER_COLOR;
+    }
+
+    @Override
+    public int getItemBarStep(ItemStack stack) {
+        int silverDurability = this.getSilverDurability(stack);
+        if (silverDurability <= 0) {
+            return super.getItemBarStep(stack);
+        }
+        int step = Math.min(
+                Math.round((float) silverDurability * MAX_METER_STEPS
+                        / SilverLinedBoatEntityData.MAX_DURABILITY),
+                MAX_METER_STEPS);
+        return step;
+    }
+
     @Unique
-    private void copySilverDataFromItemToEntity(ItemStack itemStack, BoatEntity entity) {
-        SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(itemStack, null);
+    private int getSilverDurability(ItemStack stack) {
+        SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(stack, null);
         if (silverItemData == null) {
             ModConstants.LOGGER.error("Expected to find silver data for boat item");
-            return;
+            return 0;
         }
-        int silverDurability = silverItemData.worldsinger$getSilverDurability();
+        return silverItemData.getSilverDurability();
+    }
+
+    @Unique
+    private void copySilverDataFromItemToEntity(ItemStack itemStack, BoatEntity entity) {
+        int silverDurability = this.getSilverDurability(itemStack);
         if (silverDurability <= 0) {
             return;
         }
         SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED_ENTITY.get(entity);
         silverEntityData.setSilverDurability(silverDurability);
-    }
-
-    @Override
-    public void worldsinger$setSilverDurability(int durability) {
-        this.silverDurability = durability;
-    }
-
-    @Override
-    public int worldsinger$getSilverDurability() {
-        return silverDurability;
-    }
-
-    @Override
-    public int worldsinger$getMaxSilverDurability() {
-        return SilverLinedEntityData.MAX_BOAT_SILVER_DURABILITY;
     }
 }

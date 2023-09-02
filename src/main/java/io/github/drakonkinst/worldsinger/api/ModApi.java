@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.api;
 
+import io.github.drakonkinst.worldsinger.item.SilverLinedBoatItemData;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.SilverLined;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
@@ -12,7 +13,8 @@ public class ModApi {
             new Identifier(ModConstants.MOD_ID, "silver_lined"), SilverLined.class, Void.class);
 
     public static void initialize() {
-        ModApi.SILVER_LINED_ITEM.registerSelf(
+        ModApi.SILVER_LINED_ITEM.registerForItems(
+                (stack, context) -> new SilverLinedBoatItemData(stack),
                 Items.ACACIA_BOAT,
                 Items.BIRCH_BOAT,
                 Items.CHERRY_BOAT,

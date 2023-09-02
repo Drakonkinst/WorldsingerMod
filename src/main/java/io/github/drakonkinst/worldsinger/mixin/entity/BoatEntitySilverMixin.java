@@ -81,7 +81,7 @@ public abstract class BoatEntitySilverMixin extends Entity {
         if (silverDurability > 0) {
             SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(itemStack, null);
             if (silverItemData != null) {
-                silverItemData.worldsinger$setSilverDurability(silverDurability);
+                silverItemData.setSilverDurability(silverDurability);
             } else {
                 ModConstants.LOGGER.error("Expected to find silver data for new boat item");
             }

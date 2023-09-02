@@ -1,6 +1,8 @@
 {
   "effect.worldsinger.verdant_spores": "Verdant Spores",
   "itemGroup.worldsinger.worldsinger": "Worldsinger",
+  "item.silver_lined": "Silver-Lined",
+  "item.silver_durability": "Silver Durability: %s / %s",
   "item.worldsinger.verdant_spores_bucket": "Bucket of Verdant Spores",
   "item.worldsinger.dead_spores_bucket": "Bucket of Dead Spores",
   "item.worldsinger.salt": "Salt",

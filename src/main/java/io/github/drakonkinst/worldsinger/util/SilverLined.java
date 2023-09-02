@@ -2,9 +2,9 @@ package io.github.drakonkinst.worldsinger.util;
 
 public interface SilverLined {
 
-    int worldsinger$getSilverDurability();
+    int getSilverDurability();
 
-    int worldsinger$getMaxSilverDurability();
+    int getMaxSilverDurability();
 
-    void worldsinger$setSilverDurability(int durability);
+    void setSilverDurability(int durability);
 }

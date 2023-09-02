@@ -5,27 +5,9 @@ import io.github.drakonkinst.worldsinger.util.SilverLined;
 
 public interface SilverLinedComponent extends AutoSyncedComponent, SilverLined {
 
-    default int getSilverDurability() {
-        return worldsinger$getSilverDurability();
-    }
+    int getSilverDurability();
 
-    default int getMaxSilverDurability() {
-        return worldsinger$getMaxSilverDurability();
-    }
+    int getMaxSilverDurability();
 
-    default void setSilverDurability(int durability) {
-        worldsinger$setSilverDurability(durability);
-    }
-
-    @Override
-    @Deprecated
-    int worldsinger$getSilverDurability();
-
-    @Override
-    @Deprecated
-    int worldsinger$getMaxSilverDurability();
-
-    @Override
-    @Deprecated
-    void worldsinger$setSilverDurability(int durability);
+    void setSilverDurability(int durability);
 }
