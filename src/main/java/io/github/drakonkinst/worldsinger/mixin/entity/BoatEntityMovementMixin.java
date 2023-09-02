@@ -48,6 +48,9 @@ public abstract class BoatEntityMovementMixin extends Entity {
     private static final double MAX_FLUID_HEIGHT_TO_NOT_EMBED = 0.05;
 
     @Unique
+    private static final int UNDER_SPORES_SILVER_PENALTY_TICK = 10;
+
+    @Unique
     private boolean inSporeSea;
 
     @Unique
@@ -105,11 +108,15 @@ public abstract class BoatEntityMovementMixin extends Entity {
             }
         }
 
-        if (sporesKilled > 0) {
-            silverData.setSilverDurability(silverData.getSilverDurability() - sporesKilled);
+        int silverDamage =
+                (this.location == Location.UNDER_FLOWING_WATER ? UNDER_SPORES_SILVER_PENALTY_TICK
+                        : 0) + sporesKilled;
+        if (silverDamage > 0) {
+            silverData.setSilverDurability(silverData.getSilverDurability() - silverDamage);
         }
     }
 
+    @Unique
     private void checkRowingParticle(ServerWorld world, int paddleIndex) {
         if (isAtRowingApex(paddleIndex)) {
             if (firstPaddle[paddleIndex]) {
@@ -275,9 +282,6 @@ public abstract class BoatEntityMovementMixin extends Entity {
     }
 
     @Shadow
-    public abstract float getWaterHeightBelow();
-
-    @Shadow
     public abstract boolean isPaddleMoving(int paddle);
 
     @Shadow
@@ -285,13 +289,7 @@ public abstract class BoatEntityMovementMixin extends Entity {
     @Shadow
     private float velocityDecay;
     @Shadow
-    private Location lastLocation;
-    @Shadow
     private Location location;
-    @Shadow
-    private double fallVelocity;
-    @Shadow
-    private float yawVelocity;
     @Shadow
     @Final
     private float[] paddlePhases;
