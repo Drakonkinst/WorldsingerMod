@@ -57,6 +57,31 @@ public abstract class BackgroundRendererMixin {
         }
     }
 
+    // This doesn't work for some reason, maybe an issue with LocalRef?
+    // @Inject(method = "applyFog", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/BackgroundRenderer$FogData;fogStart:F"))
+    // private static void injectCustomFluidFogSettings(Camera camera, FogType fogType,
+    //         float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci,
+    //         @Local LocalRef<FogData> fogDataRef) {
+    //     FluidState fluidState = getSubmersedFluidState(camera);
+    //     if (fluidState == null) {
+    //         return;
+    //     }
+    //
+    //     Entity entity = camera.getFocusedEntity();
+    //     if (fluidState.isIn(ModFluidTags.AETHER_SPORES)) {
+    //         FogData fogData = new FogData(fogType);
+    //         if (entity.isSpectator()) {
+    //             // Match spectator mode settings for other fluids
+    //             fogData.fogStart = -8.0f;
+    //             fogData.fogEnd = viewDistance * 0.5f;
+    //         } else {
+    //             fogData.fogStart = AetherSporeFluid.FOG_START;
+    //             fogData.fogEnd = AetherSporeFluid.FOG_END;
+    //         }
+    //         fogDataRef.set(fogData);
+    //     }
+    // }
+
     @Inject(method = "applyFog", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogStart(F)V"), cancellable = true)
     private static void injectCustomFluidFogSettings(Camera camera, FogType fogType,
             float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci) {
@@ -77,14 +102,12 @@ public abstract class BackgroundRendererMixin {
                 fogData.fogEnd = AetherSporeFluid.FOG_END;
             }
 
-            // End of the method
+            // Call the end of the method
             RenderSystem.setShaderFogStart(fogData.fogStart);
             RenderSystem.setShaderFogEnd(fogData.fogEnd);
             RenderSystem.setShaderFogShape(fogData.fogShape);
-            // Prevent the original fog data from being used by exiting early
             ci.cancel();
         }
-
     }
 
     @Unique

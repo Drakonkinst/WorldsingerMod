@@ -84,24 +84,16 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isFallFlying()Z"), cancellable = true)
     private void injectCustomFluidPhysics(Vec3d movementInput, CallbackInfo ci) {
-        if (!this.isLogicalSideForUpdatingMovement()) {
-            return;
-        }
-
-        if (!this.shouldSwimInFluids()) {
-            return;
-        }
-
-        boolean isFalling = this.getVelocity().y <= 0.0;
-        double gravity = 0.08;
-        if (isFalling && this.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
-            gravity = 0.01;
-        }
-
-        FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
-        if (((SporeFluidEntityStateAccess) this).worldsinger$isTouchingSporeSea()) {
+        if (((SporeFluidEntityStateAccess) this).worldsinger$isTouchingSporeSea()
+                && this.shouldSwimInFluids()) {
+            boolean isFalling = this.getVelocity().y <= 0.0;
+            double gravity = 0.08;
+            if (isFalling && this.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
+                gravity = 0.01;
+            }
+            FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
             float horizontalMovementMultiplier = AetherSporeFluid.HORIZONTAL_DRAG_MULTIPLIER;
             float verticalMovementMultiplier = AetherSporeFluid.VERTICAL_DRAG_MULTIPLIER;
             if (this.canWalkOnFluid(fluidState)) {
@@ -136,7 +128,7 @@ public abstract class LivingEntityMixin extends Entity {
                 this.setVelocity(vec3d.x, 0.3f, vec3d.z);
             }
 
-            // End of method
+            // Remainder of method
             updateLimbs(this instanceof Flutterer);
             ci.cancel();
         }

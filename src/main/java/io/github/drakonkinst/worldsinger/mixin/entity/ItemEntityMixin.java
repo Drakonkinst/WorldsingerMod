@@ -1,19 +1,18 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity {
@@ -49,26 +48,16 @@ public abstract class ItemEntityMixin extends Entity {
         super(type, world);
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ItemEntity;getStandingEyeHeight()F"))
-    private void injectCustomFluidCheck(CallbackInfo ci) {
+    @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ItemEntity;hasNoGravity()Z"))
+    private boolean injectCustomFluidCheck(ItemEntity instance, Operation<Boolean> original) {
         double height = this.getStandingEyeHeight() - HEIGHT_OFFSET;
-
-        // Replicate if/else branching
-        if (this.isTouchingWater() && this.getFluidHeight(FluidTags.WATER) > height) {
-            return;
-        }
-        if (this.isInLava() && this.getFluidHeight(FluidTags.LAVA) > height) {
-            return;
-        }
         if (((SporeFluidEntityStateAccess) this).worldsinger$isInSporeSea() && this.getFluidHeight(
                 ModFluidTags.AETHER_SPORES) > height) {
             this.applySporeSeaBuoyancy();
-
-            // Counteract gravity call
-            if (!this.hasNoGravity()) {
-                this.setVelocity(this.getVelocity().subtract(0.0, GRAVITY, 0.0));
-            }
+            // Skip original gravity
+            return true;
         }
+        return original.call(instance);
     }
 
     @Unique

@@ -33,6 +33,6 @@ public abstract class FluidRendererMixin {
             return true;
         }
         // Default behavior
-        return original.call(fluid);
+        return original.call(instance, fluid);
     }
 }

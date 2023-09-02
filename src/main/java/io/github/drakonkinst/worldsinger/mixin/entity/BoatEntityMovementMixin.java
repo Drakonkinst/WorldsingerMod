@@ -1,5 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
@@ -22,6 +24,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,6 +32,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -60,23 +64,27 @@ public abstract class BoatEntityMovementMixin extends Entity {
         // Do not spawn particles on the first paddle of either oar
         for (int paddleIndex = 0; paddleIndex <= 1; ++paddleIndex) {
             if (this.isPaddleMoving(paddleIndex)) {
-                if (isAtRowingApex(paddleIndex)) {
-                    if (firstPaddle[paddleIndex]) {
-                        firstPaddle[paddleIndex] = false;
-                        continue;
-                    }
-                    if (this.inSporeSea) {
-                        Vec3d vec3d = this.getRotationVec(1.0f);
-                        double xOffset = paddleIndex == 1 ? -vec3d.z : vec3d.z;
-                        double zOffset = paddleIndex == 1 ? vec3d.x : -vec3d.x;
-                        Vec3d pos = new Vec3d(this.getX() + xOffset, this.getY(),
-                                this.getZ() + zOffset);
-                        SporeParticles.spawnRowingParticles(serverWorld,
-                                lastAetherSporeFluid.getSporeType(), pos);
-                    }
-                }
+                checkRowingParticle(serverWorld, paddleIndex);
             } else {
                 firstPaddle[paddleIndex] = true;
+            }
+        }
+    }
+
+    private void checkRowingParticle(ServerWorld world, int paddleIndex) {
+        if (isAtRowingApex(paddleIndex)) {
+            if (firstPaddle[paddleIndex]) {
+                firstPaddle[paddleIndex] = false;
+                return;
+            }
+            if (this.inSporeSea) {
+                Vec3d vec3d = this.getRotationVec(1.0f);
+                double xOffset = paddleIndex == 1 ? -vec3d.z : vec3d.z;
+                double zOffset = paddleIndex == 1 ? vec3d.x : -vec3d.x;
+                Vec3d pos = new Vec3d(this.getX() + xOffset, this.getY(),
+                        this.getZ() + zOffset);
+                SporeParticles.spawnRowingParticles(world,
+                        lastAetherSporeFluid.getSporeType(), pos);
             }
         }
     }
@@ -121,86 +129,21 @@ public abstract class BoatEntityMovementMixin extends Entity {
         }
     }
 
-    @Inject(method = "updateVelocity", at = @At("HEAD"), cancellable = true)
-    private void injectSporeSeaLogic(CallbackInfo ci) {
-        if (!this.inSporeSea) {
-            return;
-        }
-
-        double gravity = this.hasNoGravity() ? 0.0 : -0.04;
-        double f = 0.0;
-        World world = this.getWorld();
-        boolean isFluidized = LumarSeethe.areSporesFluidized(world);
-
-        if (!isFluidized) {
-            // Make turning velocity drop off immediately
+    @Inject(method = "updateVelocity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;setVelocity(DDD)V"), slice = @Slice(to = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/entity/vehicle/BoatEntity;yawVelocity:F")))
+    private void addSporeSeaVelocityLogic(CallbackInfo ci) {
+        if (this.inSporeSea && !LumarSeethe.areSporesFluidized(this.getWorld())) {
             this.velocityDecay = 0.0f;
         }
-        if (this.lastLocation == Location.IN_AIR && this.location != Location.IN_AIR
-                && this.location != Location.ON_LAND) {
-            this.waterLevel = this.getBodyY(1.0);
-            this.setPosition(this.getX(),
-                    (double) (this.getWaterHeightBelow() - this.getHeight()) + 0.101, this.getZ());
-            this.setVelocity(this.getVelocity().multiply(1.0, 0.0, 1.0));
-            this.fallVelocity = 0.0;
-            this.location = Location.IN_WATER;
-            ci.cancel();
-            return;
-        }
-        if (this.location == null || this.location == Location.IN_AIR) {
-            // Let the original method handle it
-            return;
-        }
-
-        if (this.location == Location.IN_WATER) {
-            f = (this.waterLevel - this.getY()) / (double) this.getHeight();
-            if (isFluidized) {
-                this.velocityDecay = 0.9f;
-            }
-        } else if (this.location == Location.UNDER_FLOWING_WATER) {
-            gravity = -7.0E-4;
-            if (isFluidized) {
-                this.velocityDecay = 0.9f;
-            }
-        } else if (this.location == Location.UNDER_WATER) {
-            f = 0.01f;
-            if (isFluidized) {
-                this.velocityDecay = 0.45f;
-            }
-        } else if (this.location == Location.ON_LAND) {
-            Vec3d vec3d = this.getVelocity();
-            gravity = 0.0f;
-            this.setVelocity(vec3d.getX(), Math.max(vec3d.getY(), 0.0), vec3d.getZ());
-        }
-
-        Vec3d vec3d = this.getVelocity();
-        this.setVelocity(vec3d.x * (double) this.velocityDecay, vec3d.y + gravity,
-                vec3d.z * (double) this.velocityDecay);
-        this.yawVelocity *= this.velocityDecay;
-        if (f > 0.0) {
-            Vec3d vec3d2 = this.getVelocity();
-            this.setVelocity(vec3d2.x, (vec3d2.y + f * 0.06153846016296973) * 0.75,
-                    vec3d2.z);
-        }
-        ci.cancel();
     }
 
-    @Inject(method = "updatePaddles", at = @At(value = "HEAD", target = "Lnet/minecraft/entity/vehicle/BoatEntity;setYaw(F)V"), cancellable = true)
-    private void restrictMovementInSporeSea(CallbackInfo ci) {
-        if (!this.hasPassengers()) {
+    @WrapOperation(method = "updatePaddles", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"))
+    private void restrictMovementInSporeSea(BoatEntity instance, Vec3d velocity,
+            Operation<Void> original) {
+        if (this.inSporeSea && this.location != Location.ON_LAND && !LumarSeethe.areSporesFluidized(
+                this.getWorld())) {
             return;
         }
-
-        if (this.inSporeSea && this.location != Location.ON_LAND) {
-            World world = this.getWorld();
-            if (!LumarSeethe.areSporesFluidized(world)) {
-                // Skip to end of method
-                this.setPaddleMovings(
-                        this.pressingRight && !this.pressingLeft || this.pressingForward,
-                        this.pressingLeft && !this.pressingRight || this.pressingForward);
-                ci.cancel();
-            }
-        }
+        original.call(instance, velocity);
     }
 
     @Inject(method = "updatePassengerPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setYaw(F)V"), cancellable = true)
@@ -296,9 +239,6 @@ public abstract class BoatEntityMovementMixin extends Entity {
     public abstract float getWaterHeightBelow();
 
     @Shadow
-    public abstract void setPaddleMovings(boolean leftMoving, boolean rightMoving);
-
-    @Shadow
     public abstract boolean isPaddleMoving(int paddle);
 
     @Shadow
@@ -313,12 +253,6 @@ public abstract class BoatEntityMovementMixin extends Entity {
     private double fallVelocity;
     @Shadow
     private float yawVelocity;
-    @Shadow
-    private boolean pressingRight;
-    @Shadow
-    private boolean pressingLeft;
-    @Shadow
-    private boolean pressingForward;
     @Shadow
     @Final
     private float[] paddlePhases;

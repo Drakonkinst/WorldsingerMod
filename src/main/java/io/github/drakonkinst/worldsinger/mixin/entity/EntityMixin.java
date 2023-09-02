@@ -71,7 +71,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
         World world = this.getWorld();
         if (!instance.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
                 || LumarSeethe.areSporesFluidized(world)) {
-            return original.call();
+            return original.call(instance);
         }
         return BlockRenderType.MODEL;
     }
