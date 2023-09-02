@@ -33,7 +33,7 @@ public abstract class BoatEntitySilverMixin extends Entity {
     public abstract Item asItem();
 
     @Unique
-    private static final int SILVER_REPAIR_AMOUNT = 25;
+    private static final int SILVER_REPAIR_AMOUNT = 625;
 
     public BoatEntitySilverMixin(EntityType<?> type, World world) {
         super(type, world);

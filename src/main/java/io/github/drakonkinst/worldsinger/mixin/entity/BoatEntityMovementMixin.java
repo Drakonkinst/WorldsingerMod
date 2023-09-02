@@ -2,8 +2,13 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.block.SporeKillable;
+import io.github.drakonkinst.worldsinger.component.ModComponents;
+import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
@@ -56,7 +61,13 @@ public abstract class BoatEntityMovementMixin extends Entity {
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
-    private void addParticlesToRowing(CallbackInfo ci) {
+    private void injectTick(CallbackInfo ci) {
+        addParticlesToRowing();
+        killSporeSeaBlocks();
+    }
+
+    @Unique
+    private void addParticlesToRowing() {
         if (!(this.getWorld() instanceof ServerWorld serverWorld) || lastAetherSporeFluid == null) {
             return;
         }
@@ -68,6 +79,34 @@ public abstract class BoatEntityMovementMixin extends Entity {
             } else {
                 firstPaddle[paddleIndex] = true;
             }
+        }
+    }
+
+    @Unique
+    private void killSporeSeaBlocks() {
+        if (!this.inSporeSea) {
+            return;
+        }
+        SilverLinedComponent silverData = ModComponents.SILVER_LINED_ENTITY.get(this);
+        if (silverData.getSilverDurability() <= 0) {
+            return;
+        }
+
+        World world = this.getWorld();
+        int sporesKilled = 0;
+        for (BlockPos pos : BlockPosUtil.iterateBoundingBoxForEntity(this, this.getBlockPos())) {
+            BlockState state = world.getBlockState(pos);
+            if (state.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
+                    && state.getBlock() instanceof SporeKillable sporeKillable) {
+                BlockState newBlockState = SporeKillable.convertToDeadVariant(sporeKillable, state);
+                if (world.setBlockState(pos, newBlockState)) {
+                    sporesKilled += 1;
+                }
+            }
+        }
+
+        if (sporesKilled > 0) {
+            silverData.setSilverDurability(silverData.getSilverDurability() - sporesKilled);
         }
     }
 

@@ -5,11 +5,8 @@ import net.minecraft.block.Block;
 public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemBlock implements
         SporeKillable {
 
-    private final Block deadSporeBlock;
-
-    public LivingTwistingVerdantVineStemBlock(Block deadSporeBlock, Settings settings) {
+    public LivingTwistingVerdantVineStemBlock(Settings settings) {
         super(settings);
-        this.deadSporeBlock = deadSporeBlock;
     }
 
     @Override
@@ -19,6 +16,6 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
 
     @Override
     public Block getDeadSporeBlock() {
-        return deadSporeBlock;
+        return ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT;
     }
 }

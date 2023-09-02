@@ -84,42 +84,41 @@ public final class ModBlocks {
     // Verdant Spores
     public static final Block VERDANT_SPORE_SEA_BLOCK = register("verdant_spore_sea_block",
             new LivingAetherSporeFluidBlock(ModFluids.VERDANT_SPORES, AetherSporeType.VERDANT,
-                    ModBlocks.DEAD_SPORE_SEA_BLOCK, FabricBlockSettings.create()
-                    .strength(100.0f)
-                    .mapColor(MapColor.DARK_GREEN)
-                    .replaceable()
-                    .noCollision()
-                    .ticksRandomly()
-                    .pistonBehavior(PistonBehavior.DESTROY)
-                    .dropsNothing()
-                    .liquid()
-                    .sounds(BlockSoundGroup.SAND)
+                    FabricBlockSettings.create()
+                            .strength(100.0f)
+                            .mapColor(MapColor.DARK_GREEN)
+                            .replaceable()
+                            .noCollision()
+                            .ticksRandomly()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .dropsNothing()
+                            .liquid()
+                            .sounds(BlockSoundGroup.SAND)
             ), false);
     public static final Block VERDANT_SPORE_BLOCK =
             register("verdant_spore_block",
                     new LivingAetherSporeBlock(AetherSporeType.VERDANT,
                             ModBlocks.VERDANT_SPORE_SEA_BLOCK,
-                            ModBlocks.DEAD_SPORE_BLOCK,
                             FabricBlockSettings.create()
                                     .strength(0.5f)
                                     .mapColor(MapColor.DARK_GREEN)
                                     .sounds(BlockSoundGroup.SAND)
                     ), true);
     public static final Block VERDANT_VINE_BLOCK = register("verdant_vine_block",
-            new LivingVerdantVineBlock(ModBlocks.DEAD_VERDANT_VINE_BLOCK,
+            new LivingVerdantVineBlock(
                     FabricBlockSettings.create().strength(2.0f).sounds(BlockSoundGroup.WOOD)
                             .ticksRandomly()
             ), true);
     public static final Block VERDANT_VINE_BRANCH = register(
             "verdant_vine_branch",
-            new LivingVerdantVineBranchBlock(ModBlocks.DEAD_VERDANT_VINE_BRANCH,
+            new LivingVerdantVineBranchBlock(
                     FabricBlockSettings.create()
                             .strength(0.8f)
                             .nonOpaque()
                             .ticksRandomly()
             ), true);
     public static final Block VERDANT_VINE_SNARE = register("verdant_vine_snare",
-            new LivingVerdantVineSnareBlock(ModBlocks.DEAD_VERDANT_VINE_SNARE,
+            new LivingVerdantVineSnareBlock(
                     FabricBlockSettings.create()
                             .solid()
                             .noCollision()
@@ -129,7 +128,7 @@ public final class ModBlocks {
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), true);
     public static final Block TWISTING_VERDANT_VINES = register("twisting_verdant_vines",
-            new LivingTwistingVerdantVineBlock(ModBlocks.DEAD_TWISTING_VERDANT_VINES,
+            new LivingTwistingVerdantVineBlock(
                     FabricBlockSettings.create()
                             .strength(0.4f)
                             .noCollision()
@@ -139,7 +138,7 @@ public final class ModBlocks {
             true);
     public static final Block TWISTING_VERDANT_VINES_PLANT = register(
             "twisting_verdant_vines_plant",
-            new LivingTwistingVerdantVineStemBlock(ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
+            new LivingTwistingVerdantVineStemBlock(
                     FabricBlockSettings.create()
                             .strength(0.4f)
                             .noCollision()

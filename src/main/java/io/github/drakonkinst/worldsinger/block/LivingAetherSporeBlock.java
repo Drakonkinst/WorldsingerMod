@@ -5,16 +5,13 @@ import net.minecraft.block.Block;
 
 public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKillable {
 
-    private final Block deadSporeBlock;
-
     public LivingAetherSporeBlock(AetherSporeType aetherSporeType, Block fluidized,
-            Block deadSporeBlock, Settings settings) {
+            Settings settings) {
         super(aetherSporeType, fluidized, settings);
-        this.deadSporeBlock = deadSporeBlock;
     }
 
     @Override
     public Block getDeadSporeBlock() {
-        return deadSporeBlock;
+        return ModBlocks.DEAD_SPORE_BLOCK;
     }
 }

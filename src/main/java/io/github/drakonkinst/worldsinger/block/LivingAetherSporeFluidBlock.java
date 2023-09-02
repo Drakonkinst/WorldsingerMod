@@ -6,16 +6,13 @@ import net.minecraft.fluid.FlowableFluid;
 
 public class LivingAetherSporeFluidBlock extends AetherSporeFluidBlock implements SporeKillable {
 
-    private final Block deadSporeBlock;
-
     public LivingAetherSporeFluidBlock(FlowableFluid fluid, AetherSporeType aetherSporeType,
-            Block deadSporeBlock, Settings settings) {
+            Settings settings) {
         super(fluid, aetherSporeType, settings);
-        this.deadSporeBlock = deadSporeBlock;
     }
 
     @Override
     public Block getDeadSporeBlock() {
-        return deadSporeBlock;
+        return ModBlocks.DEAD_SPORE_SEA_BLOCK;
     }
 }

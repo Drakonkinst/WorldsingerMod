@@ -24,7 +24,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(BoatItem.class)
 public abstract class BoatItemMixin extends Item {
@@ -72,7 +71,7 @@ public abstract class BoatItemMixin extends Item {
         }
     }
 
-    @ModifyVariable(method = "use", at = @At(value = "STORE"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/hit/HitResult;getType()Lnet/minecraft/util/hit/HitResult$Type;", ordinal = 1), to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;setVariant(Lnet/minecraft/entity/vehicle/BoatEntity$Type;)V")))
+    @ModifyVariable(method = "use", at = @At(value = "STORE"))
     private BoatEntity addDataToEntity(BoatEntity entity, @Local PlayerEntity user,
             @Local Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
@@ -112,7 +111,9 @@ public abstract class BoatItemMixin extends Item {
     private int getSilverDurability(ItemStack stack) {
         SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(stack, null);
         if (silverItemData == null) {
-            ModConstants.LOGGER.error("Expected to find silver data for boat item");
+            ModConstants.LOGGER.error(
+                    "Expected to find silver data for boat item (testing " + stack.getItem()
+                            .toString() + ")");
             return 0;
         }
         return silverItemData.getSilverDurability();

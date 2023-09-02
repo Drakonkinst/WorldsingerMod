@@ -4,7 +4,7 @@ import net.minecraft.entity.vehicle.BoatEntity;
 
 public class SilverLinedBoatEntityData extends SilverLinedEntityData {
 
-    public static final int MAX_DURABILITY = 100;
+    public static final int MAX_DURABILITY = 2500;
 
     public SilverLinedBoatEntityData(BoatEntity boatEntity) {
         super(boatEntity);
