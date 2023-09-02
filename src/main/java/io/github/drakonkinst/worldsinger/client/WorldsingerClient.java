@@ -54,5 +54,7 @@ public class WorldsingerClient implements ClientModInitializer {
         // Register particles
         ParticleFactoryRegistry.getInstance()
                 .register(ModParticleTypes.SPORE_DUST, SporeDustParticle.Factory::new);
+
+        ModModelPredicates.register();
     }
 }
