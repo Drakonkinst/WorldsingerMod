@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.api;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.SilverLined;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 public class ModApi {
@@ -11,6 +12,23 @@ public class ModApi {
             new Identifier(ModConstants.MOD_ID, "silver_lined"), SilverLined.class, Void.class);
 
     public static void initialize() {
-        
+        ModApi.SILVER_LINED_ITEM.registerSelf(
+                Items.ACACIA_BOAT,
+                Items.BIRCH_BOAT,
+                Items.CHERRY_BOAT,
+                Items.DARK_OAK_BOAT,
+                Items.JUNGLE_BOAT,
+                Items.MANGROVE_BOAT,
+                Items.OAK_BOAT,
+                Items.SPRUCE_BOAT,
+                Items.ACACIA_CHEST_BOAT,
+                Items.BIRCH_CHEST_BOAT,
+                Items.CHERRY_CHEST_BOAT,
+                Items.DARK_OAK_CHEST_BOAT,
+                Items.JUNGLE_CHEST_BOAT,
+                Items.MANGROVE_CHEST_BOAT,
+                Items.OAK_CHEST_BOAT,
+                Items.SPRUCE_CHEST_BOAT
+        );
     }
 }

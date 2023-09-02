@@ -1,10 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
-import io.github.drakonkinst.worldsinger.component.ModComponents;
-import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.item.ModItemTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
@@ -12,16 +9,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.BoatEntity.Location;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -40,13 +33,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BoatEntity.class)
-public abstract class BoatEntityMixin extends Entity {
+public abstract class BoatEntityMovementMixin extends Entity {
 
     @Unique
     private static final double MAX_FLUID_HEIGHT_TO_NOT_EMBED = 0.05;
-
-    @Unique
-    private static final int SILVER_REPAIR_AMOUNT = 25;
 
     @Unique
     private boolean inSporeSea;
@@ -57,26 +47,8 @@ public abstract class BoatEntityMixin extends Entity {
     @Unique
     private final boolean[] firstPaddle = {true, true};
 
-    public BoatEntityMixin(EntityType<?> type, World world) {
+    public BoatEntityMovementMixin(EntityType<?> type, World world) {
         super(type, world);
-    }
-
-    @Inject(method = "interact", at = @At("HEAD"), cancellable = true)
-    private void addSilverLining(PlayerEntity player, Hand hand,
-            CallbackInfoReturnable<ActionResult> cir) {
-        SilverLinedComponent silverData = ModComponents.SILVER_LINED_ENTITY.get(this);
-        ItemStack itemStack = player.getStackInHand(hand);
-        if (itemStack.isIn(ModItemTags.SILVER_INGOTS)
-                && silverData.getSilverDurability() < silverData.getMaxSilverDurability()) {
-            silverData.setSilverDurability(silverData.getSilverDurability() + SILVER_REPAIR_AMOUNT);
-            float pitch = 1.0f + (this.random.nextFloat() - this.random.nextFloat()) * 0.2f;
-            // TODO: Temp sound
-            this.playSound(SoundEvents.ENTITY_IRON_GOLEM_REPAIR, 1.0f, pitch);
-            if (!player.getAbilities().creativeMode) {
-                itemStack.decrement(1);
-            }
-            cir.setReturnValue(ActionResult.success(this.getWorld().isClient()));
-        }
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
@@ -109,7 +81,6 @@ public abstract class BoatEntityMixin extends Entity {
         }
     }
 
-    // Did someone say magic numbers?
     @Unique
     private boolean isAtRowingApex(int paddleIndex) {
         float paddlePhase = this.paddlePhases[paddleIndex];
@@ -329,7 +300,6 @@ public abstract class BoatEntityMixin extends Entity {
 
     @Shadow
     public abstract boolean isPaddleMoving(int paddle);
-
 
     @Shadow
     private double waterLevel;

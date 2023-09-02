@@ -23,17 +23,17 @@ public class SilverLinedEntityData implements SilverLinedComponent {
     }
 
     @Override
-    public int getSilverDurability() {
+    public int worldsinger$getSilverDurability() {
         return silverDurability;
     }
 
     @Override
-    public int getMaxSilverDurability() {
+    public int worldsinger$getMaxSilverDurability() {
         return maxSilverDurability;
     }
 
     @Override
-    public void setSilverDurability(int durability) {
+    public void worldsinger$setSilverDurability(int durability) {
         this.silverDurability = Math.max(0, Math.min(durability, maxSilverDurability));
         ModComponents.SILVER_LINED_ENTITY.sync(entity);
     }
