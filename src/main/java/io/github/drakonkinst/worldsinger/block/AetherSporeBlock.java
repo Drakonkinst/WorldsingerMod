@@ -55,7 +55,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
 
         if (AetherSporeFluidBlock.shouldFluidize(world.getBlockState(pos.down()))) {
             // If it should immediately become a liquid, do not spawn particles
-            world.setBlockState(pos, this.fluidizedBlock.getDefaultState(), Block.NOTIFY_ALL);
+            world.setBlockState(pos, this.fluidizedBlock.getDefaultState());
         } else if (world instanceof ServerWorld serverWorld) {
             // Spawn particles based on fall distance
             int fallDistance = fallingBlockEntity.getFallingBlockPos().getY() - pos.getY();

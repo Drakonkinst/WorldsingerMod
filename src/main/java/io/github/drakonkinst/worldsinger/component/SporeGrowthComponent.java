@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.component;
 
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
+import net.minecraft.util.math.BlockPos;
 
 public interface SporeGrowthComponent extends ServerTickingComponent {
 
@@ -8,15 +9,19 @@ public interface SporeGrowthComponent extends ServerTickingComponent {
 
     void setSpores(int spores);
 
-    void addStage(short stageIncrement, short maxStage);
+    void addStage(int stageIncrement);
+
+    void setOrigin(BlockPos pos);
 
     int getWater();
 
     int getSpores();
 
-    short getStage();
+    int getStage();
 
     short getAge();
 
     boolean isInitialGrowth();
+
+    BlockPos getOrigin();
 }

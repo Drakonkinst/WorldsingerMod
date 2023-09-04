@@ -11,12 +11,15 @@ public final class ModBlockTags {
     public static final TagKey<Block> AETHER_SPORE_SEA_BLOCKS = ModBlockTags.of(
             "aether_spore_sea_blocks");
     public static final TagKey<Block> AETHER_SPORE_BLOCKS = ModBlockTags.of("aether_spore_blocks");
+    public static final TagKey<Block> VERDANT_VINE_BLOCK = ModBlockTags.of("verdant_vine_block");
     public static final TagKey<Block> VERDANT_VINE_BRANCH = ModBlockTags.of("verdant_vine_branch");
     public static final TagKey<Block> VERDANT_VINE_SNARE = ModBlockTags.of("verdant_vine_snare");
     public static final TagKey<Block> TWISTING_VERDANT_VINES = ModBlockTags.of(
             "twisting_verdant_vines");
+    public static final TagKey<Block> VERDANT_VINES = ModBlockTags.of("verdant_vines");
     public static final TagKey<Block> KILLS_SPORES = ModBlockTags.of("kills_spores");
     public static final TagKey<Block> SPORES_CAN_GROW = ModBlockTags.of("spores_can_grow");
+    public static final TagKey<Block> SPORES_CAN_BREAK = ModBlockTags.of("spores_can_break");
     public static final TagKey<Block> SHEAR_MINEABLE = ModBlockTags.ofCommon("shear_mineable");
 
     private ModBlockTags() {}

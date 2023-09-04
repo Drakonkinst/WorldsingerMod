@@ -1,8 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ConnectingBlock;
@@ -43,16 +41,6 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
                 .with(Properties.PERSISTENT, false));
     }
 
-    private static List<BlockPos> getNeighbors(BlockPos pos) {
-        List<BlockPos> neighbors = new ArrayList<>();
-
-        for (Direction direction : DIRECTIONS) {
-            neighbors.add(pos.offset(direction));
-        }
-
-        return neighbors;
-    }
-
     private static boolean canConnect(BlockView world, BlockPos pos, BlockState state,
             Direction direction) {
         // Can connect to any other branch block
@@ -68,10 +56,9 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
         // Can connect to twisting vines only if supporting them
         if (state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
-            Direction growthDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(
-                            state)
-                    .getOpposite();
-            return growthDirection == direction;
+            Direction attachDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(
+                    state).getOpposite();
+            return attachDirection == direction;
         }
 
         // Can connect to any solid face
@@ -98,7 +85,7 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
                 continue;
             }
 
-            if (canConnect(world, neighborPos, neighborState, direction)) {
+            if (canConnect(world, neighborPos, neighborState, direction.getOpposite())) {
                 return true;
             }
         }
@@ -126,12 +113,13 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     }
 
     public BlockState withConnectionProperties(BlockView world, BlockPos pos) {
-        List<BlockPos> neighbors = getNeighbors(pos);
+        BlockPos.Mutable neighborPos = new BlockPos.Mutable();
         BlockState state = this.getDefaultState();
         for (int i = 0; i < DIRECTION_PROPERTIES.length; ++i) {
-            BlockPos neighborPos = neighbors.get(i);
+            neighborPos.set(pos.offset(DIRECTIONS[i]));
             BlockState neighborState = world.getBlockState(neighborPos);
-            boolean canConnect = canConnect(world, neighborPos, neighborState, DIRECTIONS[i]);
+            boolean canConnect = canConnect(world, neighborPos, neighborState,
+                    DIRECTIONS[i].getOpposite());
             state = state.with(DIRECTION_PROPERTIES[i], canConnect);
         }
         return state;

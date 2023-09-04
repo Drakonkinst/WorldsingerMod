@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SporeGrowthComponent;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -10,9 +11,6 @@ import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MarkerEntity;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.Vec3d;
@@ -22,11 +20,13 @@ import net.minecraft.world.World;
 public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
 
     private static final int INITIAL_GROWTH_SPEED = 3;
-    private static final int DIRECTION_ARRAY_SIZE = 3 * 3 * 3 - 1;
-    private static final Random random = Random.create();
+    private static final int DIRECTION_ARRAY_SIZE = 6;
+    private static final int MAX_PLACE_ATTEMPTS = 3;
+    protected static final Random random = Random.create();
 
     protected final SporeGrowthComponent sporeGrowthData;
     protected Int3 lastDir = Int3.ZERO;
+    private int placeAttempts = 0;
 
     public AbstractSporeGrowthEntity(EntityType<?> entityType,
             World world) {
@@ -40,10 +40,22 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
 
     protected abstract int getUpdatePeriod();
 
-    protected abstract boolean shouldShowParticles();
+    protected abstract void updateStage();
+
+    protected abstract int getMaxStage();
+
+    protected abstract void onPlaceBlock(BlockState state);
+
+    protected abstract boolean canBreakHere(BlockState state, BlockState replaceWith);
+
+    protected abstract boolean canGrowHere(BlockState state, BlockState replaceWith);
 
     @Override
     public void tick() {
+        if (sporeGrowthData.getOrigin() == null) {
+            sporeGrowthData.setOrigin(this.getBlockPos());
+        }
+
         if (!this.getWorld().isClient()) {
             if (this.shouldBeDead()) {
                 this.discard();
@@ -54,7 +66,7 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     }
 
     protected boolean shouldBeDead() {
-        return sporeGrowthData.getAge() > 100;
+        return sporeGrowthData.getStage() > this.getMaxStage() || sporeGrowthData.getAge() > 100;
     }
 
     private void grow() {
@@ -70,23 +82,48 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     }
 
     private void doGrowStep() {
-        this.placeBlock(this.getNextBlock(), this.shouldShowParticles());
-        this.shiftBlock(this.getNextDirection());
+        if (this.attemptPlaceBlock(this.getNextBlock())) {
+            this.shiftBlock(this.getNextDirection());
+            this.updateStage();
+            placeAttempts = 0;
+        } else {
+            ModConstants.LOGGER.info("FAILED TO PLACE BLOCK");
+            if (++placeAttempts >= MAX_PLACE_ATTEMPTS) {
+                ModConstants.LOGGER.info("DEAD");
+                this.discard();
+            }
+        }
     }
 
-    private void placeBlock(BlockState state, boolean showParticles) {
-        this.getWorld().setBlockState(this.getBlockPos(), state);
-        Vec3d pos = this.getBlockPos().toCenterPos();
-        if (showParticles && this.getWorld() instanceof ServerWorld world) {
-            world.spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, state),
-                    pos.getX(), pos.getY(), pos.getZ(), 100, 0.0, 0.0, 0.0, 0.15f);
+    private boolean attemptPlaceBlock(BlockState state) {
+        if (state == null) {
+            return false;
         }
+        BlockPos blockPos = this.getBlockPos();
+        BlockState originalState = this.getWorld().getBlockState(blockPos);
+        if (this.canBreakHere(originalState, state)) {
+            this.getWorld().breakBlock(blockPos, true, this);
+            return this.placeBlock(state);
+        } else if (this.canGrowHere(originalState, state)) {
+            return this.placeBlock(state);
+        }
+        return false;
+    }
+
+    private boolean placeBlock(BlockState state) {
+        boolean success = this.getWorld().setBlockState(this.getBlockPos(), state);
+        if (success) {
+            this.onPlaceBlock(state);
+        }
+        return success;
     }
 
     private void shiftBlock(Int3 direction) {
         Vec3d pos = this.getPos();
         this.setPosition(pos.add(direction.x(), direction.y(), direction.z()));
-        lastDir = direction;
+        if (!direction.isZero()) {
+            lastDir = direction;
+        }
     }
 
     protected Int3 getNextDirection() {
@@ -96,7 +133,7 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         List<Int3> candidates = new ArrayList<>(DIRECTION_ARRAY_SIZE);
         IntList weights = new IntArrayList(DIRECTION_ARRAY_SIZE);
         int weightSum = 0;
-        for (Int3 direction : Int3.DIAGONAL_3D) {
+        for (Int3 direction : Int3.CARDINAL_3D) {
             if (direction.isZero() || direction.equals(lastDir)) {
                 continue;
             }

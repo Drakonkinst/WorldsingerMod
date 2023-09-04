@@ -183,7 +183,7 @@ public abstract class AbstractBlockStateMixin {
         if (SporeKillable.isSporeKillingBlockNearby(world, pos)) {
             BlockState newBlockState = sporeKillable.getDeadSporeBlock()
                     .getStateWithProperties(state);
-            world.setBlockState(pos, newBlockState, Block.NOTIFY_ALL);
+            world.setBlockState(pos, newBlockState);
         }
     }
 }
