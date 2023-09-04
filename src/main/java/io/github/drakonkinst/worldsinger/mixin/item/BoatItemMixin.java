@@ -125,7 +125,7 @@ public abstract class BoatItemMixin extends Item {
         if (silverDurability <= 0) {
             return;
         }
-        SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED_ENTITY.get(entity);
+        SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED.get(entity);
         silverEntityData.setSilverDurability(silverDurability);
     }
 }

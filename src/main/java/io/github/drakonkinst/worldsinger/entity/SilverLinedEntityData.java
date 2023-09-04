@@ -21,7 +21,7 @@ public abstract class SilverLinedEntityData implements SilverLinedComponent {
     @Override
     public void setSilverDurability(int durability) {
         this.silverDurability = Math.max(0, Math.min(durability, this.getMaxSilverDurability()));
-        ModComponents.SILVER_LINED_ENTITY.sync(entity);
+        ModComponents.SILVER_LINED.sync(entity);
     }
 
     @Override

@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger;
 import io.github.drakonkinst.worldsinger.api.ModApi;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.command.ModCommands;
+import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
@@ -26,6 +27,7 @@ public class Worldsinger implements ModInitializer {
         ModFluids.initialize();
         ModBlocks.initialize();
         ModItems.initialize();
+        ModEntityTypes.initialize();
         ModCommands.initialize();
 
         Fluidlogged.initialize();

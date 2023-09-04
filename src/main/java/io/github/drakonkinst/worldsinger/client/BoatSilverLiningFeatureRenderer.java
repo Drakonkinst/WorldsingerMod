@@ -75,7 +75,7 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             BoatEntity entity, float limbAngle, float limbDistance, float tickDelta,
             float animationProgress, float headYaw, float headPitch) {
-        SilverLinedComponent silverData = ModComponents.SILVER_LINED_ENTITY.get(entity);
+        SilverLinedComponent silverData = ModComponents.SILVER_LINED.get(entity);
         float durabilityFraction =
                 (float) silverData.getSilverDurability()
                         / silverData.getMaxSilverDurability();

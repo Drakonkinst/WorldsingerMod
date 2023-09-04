@@ -57,10 +57,19 @@ public abstract class BoatEntityMovementMixin extends Entity {
     private AetherSporeFluid lastAetherSporeFluid = null;
 
     @Unique
+    private SilverLinedComponent silverData;
+
+    @Unique
     private final boolean[] firstPaddle = {true, true};
 
     public BoatEntityMovementMixin(EntityType<?> type, World world) {
         super(type, world);
+    }
+
+    @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("TAIL"))
+    private void cacheSilverData(EntityType<? extends BoatEntity> entityType, World world,
+            CallbackInfo ci) {
+        this.silverData = ModComponents.SILVER_LINED.get(this);
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
@@ -90,7 +99,6 @@ public abstract class BoatEntityMovementMixin extends Entity {
         if (!this.inSporeSea) {
             return;
         }
-        SilverLinedComponent silverData = ModComponents.SILVER_LINED_ENTITY.get(this);
         if (silverData.getSilverDurability() <= 0) {
             return;
         }

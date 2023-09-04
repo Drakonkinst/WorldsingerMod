@@ -96,12 +96,12 @@ public interface SporeKillable {
     private static boolean checkNearbyEntitiesInBox(World world, Box box) {
         List<BoatEntity> entitiesInRange = world.getEntitiesByClass(BoatEntity.class, box,
                 boatEntity -> {
-                    SilverLinedComponent silverData = ModComponents.SILVER_LINED_ENTITY.get(
+                    SilverLinedComponent silverData = ModComponents.SILVER_LINED.get(
                             boatEntity);
                     boolean hasSilver = silverData.getSilverDurability() > 0;
                     if (hasSilver) {
                         silverData.setSilverDurability(silverData.getSilverDurability() - 1);
-                        ModComponents.SILVER_LINED_ENTITY.sync(boatEntity);
+                        ModComponents.SILVER_LINED.sync(boatEntity);
                     }
                     return hasSilver;
                 });

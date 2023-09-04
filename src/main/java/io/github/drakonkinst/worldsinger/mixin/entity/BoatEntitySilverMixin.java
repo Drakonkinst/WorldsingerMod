@@ -42,7 +42,7 @@ public abstract class BoatEntitySilverMixin extends Entity {
     @Inject(method = "interact", at = @At("HEAD"), cancellable = true)
     private void addSilverLining(PlayerEntity player, Hand hand,
             CallbackInfoReturnable<ActionResult> cir) {
-        SilverLinedComponent silverData = ModComponents.SILVER_LINED_ENTITY.get(this);
+        SilverLinedComponent silverData = ModComponents.SILVER_LINED.get(this);
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.isIn(ModItemTags.SILVER_INGOTS)
                 && silverData.getSilverDurability() < silverData.getMaxSilverDurability()) {
@@ -76,7 +76,7 @@ public abstract class BoatEntitySilverMixin extends Entity {
 
     @Unique
     private ItemStack addSilverData(ItemStack itemStack) {
-        SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED_ENTITY.get(this);
+        SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED.get(this);
         int silverDurability = silverEntityData.getSilverDurability();
         if (silverDurability > 0) {
             SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(itemStack, null);
