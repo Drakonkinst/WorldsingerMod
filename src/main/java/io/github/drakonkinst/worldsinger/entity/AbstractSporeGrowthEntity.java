@@ -102,7 +102,8 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         BlockPos blockPos = this.getBlockPos();
         BlockState originalState = this.getWorld().getBlockState(blockPos);
         if (this.canBreakHere(originalState, state)) {
-            this.getWorld().breakBlock(blockPos, true, this);
+            boolean shouldDropLoot = random.nextInt(3) > 0;
+            this.getWorld().breakBlock(blockPos, shouldDropLoot, this);
             return this.placeBlock(state);
         } else if (this.canGrowHere(originalState, state)) {
             return this.placeBlock(state);
@@ -126,7 +127,7 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         }
     }
 
-    protected Int3 getNextDirection() {
+    private Int3 getNextDirection() {
         World world = this.getWorld();
         BlockPos pos = this.getBlockPos();
         Mutable mutable = new Mutable();
