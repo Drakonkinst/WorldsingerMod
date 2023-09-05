@@ -29,7 +29,7 @@ import net.minecraft.world.WorldAccess;
 
 public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
 
-    private final AetherSporeType aetherSporeType;
+    protected final AetherSporeType aetherSporeType;
     private Block solidBlock = null;
 
     public AetherSporeFluidBlock(FlowableFluid fluid, AetherSporeType sporeType,

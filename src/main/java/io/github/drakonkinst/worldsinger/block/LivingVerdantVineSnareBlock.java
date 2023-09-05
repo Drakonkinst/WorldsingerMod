@@ -11,6 +11,7 @@ import net.minecraft.state.StateManager.Builder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implements
@@ -48,7 +49,7 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
     }
 
     @Override
-    public void reactToWater(ServerWorld world, BlockPos pos, BlockState state, int waterAmount,
+    public void reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
         Direction direction = VerdantVineSnareBlock.getDirection(state);
@@ -56,6 +57,11 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
                 direction.getOffsetZ());
         SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
                 waterAmount, false, true, dir);
+    }
+
+    @Override
+    public boolean hasRandomTicks(BlockState state) {
+        return true;
     }
 
     @Override

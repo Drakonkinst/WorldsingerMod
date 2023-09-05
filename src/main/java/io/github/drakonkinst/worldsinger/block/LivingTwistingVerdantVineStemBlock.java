@@ -8,6 +8,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemBlock implements
@@ -43,9 +44,14 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
     }
 
     @Override
-    public void reactToWater(ServerWorld world, BlockPos pos, BlockState state, int waterAmount,
+    public void reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
         LivingTwistingVerdantVineBlock.growInSameDirection(world, pos, state, random);
+    }
+
+    @Override
+    public boolean hasRandomTicks(BlockState state) {
+        return true;
     }
 
     @Override

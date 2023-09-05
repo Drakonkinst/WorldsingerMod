@@ -1,6 +1,13 @@
 {
   "values": [
     "#minecraft:logs",
-    "#minecraft:planks"
+    "#minecraft:planks",
+    "#minecraft:wooden_stairs",
+    "#minecraft:wooden_slabs",
+    "#minecraft:dirt",
+    "#c:glass_blocks",
+    "#c:glass_panes",
+    "#minecraft:wooden_fences",
+    "#minecraft:fence_gates"
   ]
 }

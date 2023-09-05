@@ -3,14 +3,22 @@ package io.github.drakonkinst.worldsinger.fluid;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidDrainable;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 
 public abstract class VerdantSporeFluid extends LivingAetherSporeFluid {
+
+    public static final int CATALYZE_VALUE_STILL = 250;
+    public static final int CATALYZE_VALUE_FLOWING = 100;
 
     public VerdantSporeFluid() {
         super(AetherSporeType.VERDANT);
@@ -35,6 +43,21 @@ public abstract class VerdantSporeFluid extends LivingAetherSporeFluid {
     protected BlockState toBlockState(FluidState fluidState) {
         return ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState().with(Properties.LEVEL_15,
                 getBlockStateLevel(fluidState));
+    }
+
+    @Override
+    public void reactToWater(World world, BlockPos pos, FluidState fluidState, int waterAmount,
+            Random random) {
+        BlockState blockState = world.getBlockState(pos);
+
+        if (blockState.getBlock() instanceof FluidDrainable fluidDrainable) {
+            fluidDrainable.tryDrainFluid(world, pos, blockState);
+        }
+
+        int catalyzeValue = this.isStill(fluidState) ? CATALYZE_VALUE_STILL
+                : CATALYZE_VALUE_FLOWING;
+        SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), catalyzeValue,
+                waterAmount, true, false);
     }
 
     public static class Flowing extends VerdantSporeFluid {

@@ -28,7 +28,7 @@ import net.minecraft.world.WorldEvents;
 
 public class AetherSporeBlock extends FallingBlock implements FluidDrainable, SporeEmitting {
 
-    private final AetherSporeType aetherSporeType;
+    protected final AetherSporeType aetherSporeType;
     private final Block fluidizedBlock;
 
     public AetherSporeBlock(AetherSporeType sporeType, Block fluidizedBlock, Settings settings) {

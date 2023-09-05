@@ -11,6 +11,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock implements
@@ -19,7 +20,7 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
     private static final int MAX_DEPTH = 3;
 
     // Works for both bud and stem version
-    public static void growInSameDirection(ServerWorld world, BlockPos pos, BlockState state,
+    public static void growInSameDirection(World world, BlockPos pos, BlockState state,
             Random random) {
         if (!state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
             return;
@@ -83,9 +84,14 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
     }
 
     @Override
-    public void reactToWater(ServerWorld world, BlockPos pos, BlockState state, int waterAmount,
+    public void reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
         LivingTwistingVerdantVineBlock.growInSameDirection(world, pos, state, random);
+    }
+
+    @Override
+    public boolean hasRandomTicks(BlockState state) {
+        return true;
     }
 
     @Override

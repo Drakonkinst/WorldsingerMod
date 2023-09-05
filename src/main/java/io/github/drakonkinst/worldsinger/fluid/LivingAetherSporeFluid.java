@@ -10,7 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
-public abstract class LivingAetherSporeFluid extends AetherSporeFluid {
+public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
+        WaterReactiveFluid {
 
     private static final int NUM_RANDOM_SPREAD_PER_RANDOM_TICK = 2;
 
@@ -25,6 +26,12 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid {
 
     @Override
     protected void onRandomTick(World world, BlockPos pos, FluidState state, Random random) {
+        super.onRandomTick(world, pos, state, random);
+
+        if (world.hasRain(pos.up())) {
+            this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
+        }
+
         if (!LumarSeethe.areSporesFluidized(world)) {
             return;
         }
@@ -43,6 +50,5 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid {
                 world.setBlockState(blockPos, blockState);
             }
         }
-        super.onRandomTick(world, pos, state, random);
     }
 }

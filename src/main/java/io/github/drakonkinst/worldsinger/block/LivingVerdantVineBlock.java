@@ -9,6 +9,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingVerdantVineBlock extends VerdantVineBlock implements
@@ -46,11 +47,16 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
     }
 
     @Override
-    public void reactToWater(ServerWorld world, BlockPos pos, BlockState state, int waterAmount,
+    public void reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
         SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
                 waterAmount, false, false);
+    }
+
+    @Override
+    public boolean hasRandomTicks(BlockState state) {
+        return true;
     }
 
     @Override
