@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.VerdantVineBranchBlock;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.BlockState;
@@ -16,6 +17,8 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
@@ -31,6 +34,8 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     private static final int TWISTING_VINES_COST = 1;
     private static final int SPORE_BRANCH_THRESHOLD_MIN = 50;
     private static final int SPORE_BRANCH_THRESHOLD_MAX = 100;
+    private static final int SPORE_SPLIT_MIN = 100;
+    private static final int WATER_SPLIT_MIN = 1;
     private static final int UPDATE_PERIOD = 3;
 
     public VerdantSporeGrowthEntity(EntityType<?> entityType,
@@ -166,6 +171,26 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
                 sporeGrowthData.addStage(1);
             }
         }
+
+        if (sporeGrowthData.getSpores() >= SPORE_SPLIT_MIN
+                && sporeGrowthData.getWater() >= WATER_SPLIT_MIN && random.nextInt(10) == 0) {
+            this.createSplitBranch();
+        }
+    }
+
+    private void createSplitBranch() {
+        float proportion = 0.25f + random.nextFloat() * 0.25f;
+        int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
+        int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
+        // ModConstants.LOGGER.info("CREATING SPLIT " + proportion + " " + numSpores + "/" + (
+        //         sporeGrowthData.getSpores() - numSpores) + " " + numWater + "/" + (
+        //         sporeGrowthData.getWater() - numWater));
+        Vec3d spawnPos = this.getBlockPos().toCenterPos();
+        SporeGrowthSpawner.spawnVerdantSporeGrowth(this.getWorld(),
+                spawnPos, numSpores, numWater,
+                sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0);
+        this.drainSpores(numSpores);
+        this.drainWater(numWater);
     }
 
     @Override
