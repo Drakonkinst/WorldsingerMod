@@ -34,13 +34,13 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     private static final int TWISTING_VINES_COST = 1;
     private static final int SPORE_BRANCH_THRESHOLD_MIN = 50;
     private static final int SPORE_BRANCH_THRESHOLD_MAX = 100;
+    private static final int SPORE_BRANCH_THICK_THRESHOLD = 300;
     private static final int SPORE_SPLIT_MIN = 100;
     private static final int WATER_SPLIT_MIN = 1;
-    private static final int UPDATE_PERIOD = 3;
 
     public VerdantSporeGrowthEntity(EntityType<?> entityType,
             World world) {
-        super(ModEntityTypes.VERDANT_SPORE_GROWTH, world);
+        super(entityType, world);
     }
 
     @Override
@@ -104,13 +104,13 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
             return 0;
         }
 
-        // Prefer to grow upwards
-        weight += 20 * direction.y();
-
-        // Prefer to go in the same direction
+        // Heavy penalty for going in the same direction to encourage curved paths
         if (direction.equals(lastDir)) {
-            weight += 10;
+            return 1;
         }
+
+        // Prefer to grow upwards
+        weight += 30 * direction.y();
 
         // Prefers to go in the same direction away from the origin
         int dirFromOriginX = (int) Math.signum(pos.getX() - sporeGrowthData.getOrigin().getX());
@@ -143,6 +143,12 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
             BlockState state = world.getBlockState(mutable);
             if (state.isIn(ModBlockTags.VERDANT_VINES)) {
                 // Prefer NOT to be adjacent to too many other of the same block
+                if (sporeGrowthData.getStage() == 0
+                        && state.isIn(ModBlockTags.VERDANT_VINE_BLOCK)
+                        && sporeGrowthData.getSpores() > SPORE_BRANCH_THICK_THRESHOLD) {
+                    // Allow thick branches
+                    continue;
+                }
                 vineNeighbors++;
             } else if (state.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)) {
                 // Prefer to move away from the spore sea
@@ -269,11 +275,13 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     private void placeTwistingVineChain(BlockPos pos, Direction direction, int depth) {
         World world = this.getWorld();
 
+        boolean shouldDrainWater = this.shouldDrainWater();
         BlockState state = ModBlocks.TWISTING_VERDANT_VINES.getDefaultState()
-                .with(Properties.VERTICAL_DIRECTION, direction);
+                .with(Properties.VERTICAL_DIRECTION, direction)
+                .with(ModProperties.CATALYZED, shouldDrainWater);
 
         boolean success = this.placeBlockWithEffects(pos, state, TWISTING_VINES_COST,
-                this.shouldDrainWater(), false,
+                shouldDrainWater, false,
                 false);
         if (!success) {
             return;
@@ -304,11 +312,13 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
             wallMountLocation = WallMountLocation.CEILING;
         }
 
+        boolean shouldDrainWater = this.shouldDrainWater();
         BlockState state = ModBlocks.VERDANT_VINE_SNARE.getDefaultState()
                 .with(HorizontalFacingBlock.FACING, direction)
-                .with(WallMountedBlock.FACE, wallMountLocation);
+                .with(WallMountedBlock.FACE, wallMountLocation)
+                .with(ModProperties.CATALYZED, shouldDrainWater);
 
-        this.placeBlockWithEffects(pos, state, VINE_SNARE_COST, this.shouldDrainWater(),
+        this.placeBlockWithEffects(pos, state, VINE_SNARE_COST, shouldDrainWater,
                 false, true);
     }
 
@@ -319,6 +329,15 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
     @Override
     protected int getUpdatePeriod() {
-        return UPDATE_PERIOD;
+        int water = sporeGrowthData.getWater();
+        int spores = sporeGrowthData.getSpores();
+
+        if (water > spores) {
+            return 2;
+        }
+        if (water == spores) {
+            return 3;
+        }
+        return 4;
     }
 }

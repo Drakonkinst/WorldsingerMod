@@ -4,11 +4,14 @@ import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemBlock implements
-        SporeKillable {
+        SporeKillable, WaterReactiveBlock {
 
     public LivingTwistingVerdantVineStemBlock(Settings settings) {
         super(settings);
@@ -29,6 +32,20 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
             placementState = placementState.with(ModProperties.CATALYZED, true);
         }
         return placementState;
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        super.randomTick(state, world, pos, random);
+        if (!state.get(ModProperties.CATALYZED) && world.hasRain(pos.up())) {
+            this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
+        }
+    }
+
+    @Override
+    public void reactToWater(ServerWorld world, BlockPos pos, BlockState state, int waterAmount,
+            Random random) {
+        LivingTwistingVerdantVineBlock.growInSameDirection(world, pos, state, random);
     }
 
     @Override

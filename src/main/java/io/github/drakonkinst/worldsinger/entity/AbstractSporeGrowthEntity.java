@@ -26,7 +26,16 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     private static final int INITIAL_GROWTH_SPEED = 3;
     private static final int DIRECTION_ARRAY_SIZE = 6;
     private static final int MAX_PLACE_ATTEMPTS = 3;
+    private static final int MAX_AGE = 20 * 5;
     protected static final Random random = Random.create();
+
+    public static void playPlaceSoundEffect(World world, BlockPos pos, BlockState state) {
+        Vec3d centerPos = pos.toCenterPos();
+        world.playSound(null, centerPos.getX(), centerPos.getY(), centerPos.getZ(),
+                state.getSoundGroup().getPlaceSound(),
+                SoundCategory.BLOCKS, 1.0f, 0.8f + 0.4f * random.nextFloat(),
+                random.nextLong());
+    }
 
     protected final SporeGrowthComponent sporeGrowthData;
     protected Int3 lastDir = Int3.ZERO;
@@ -48,6 +57,10 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         if (sporeGrowthData.getStage() == 0) {
             sporeGrowthData.addStage(stage);
         }
+    }
+
+    public void setLastDir(Int3 lastDir) {
+        this.lastDir = lastDir;
     }
 
     protected abstract BlockState getNextBlock();
@@ -107,18 +120,13 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         }
 
         if (playSound) {
-            // TODO: Not sure if this is the right method, since there's a lot of them
-            Vec3d centerPos = pos.toCenterPos();
-            this.getWorld().playSound(null, centerPos.getX(), centerPos.getY(), centerPos.getZ(),
-                    state.getSoundGroup().getPlaceSound(),
-                    SoundCategory.BLOCKS, 1.0f, 0.8f + 0.4f * random.nextFloat(),
-                    random.nextLong());
+            AbstractSporeGrowthEntity.playPlaceSoundEffect(this.getWorld(), pos, state);
         }
     }
 
     protected boolean shouldBeDead() {
         return sporeGrowthData.getStage() > this.getMaxStage()
-                || sporeGrowthData.getSpores() <= 0;
+                || sporeGrowthData.getSpores() <= 0 || sporeGrowthData.getAge() > MAX_AGE;
     }
 
     private void grow() {
@@ -203,7 +211,7 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         IntList weights = new IntArrayList(DIRECTION_ARRAY_SIZE);
         int weightSum = 0;
         for (Int3 direction : Int3.CARDINAL_3D) {
-            if (direction.isZero() || direction.equals(lastDir)) {
+            if (direction.isZero() || direction.equals(lastDir.opposite())) {
                 continue;
             }
             mutable.set(pos.getX() + direction.x(), pos.getY() + direction.y(),

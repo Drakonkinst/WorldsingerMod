@@ -52,4 +52,8 @@ public record Int3(int x, int y, int z) {
         }
         return defaultValue;
     }
+
+    public Int3 opposite() {
+        return new Int3(-x, -y, -z);
+    }
 }

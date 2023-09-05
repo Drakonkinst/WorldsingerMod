@@ -72,7 +72,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        entity.slowMovement(state, new Vec3d(0.5, 0.15f, 0.5));
+        entity.slowMovement(state, new Vec3d(0.5, 0.25f, 0.5));
     }
 
     @Override

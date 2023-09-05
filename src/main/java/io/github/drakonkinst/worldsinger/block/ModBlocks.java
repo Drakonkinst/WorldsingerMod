@@ -102,6 +102,7 @@ public final class ModBlocks {
                             FabricBlockSettings.create()
                                     .strength(0.5f)
                                     .mapColor(MapColor.DARK_GREEN)
+                                    .ticksRandomly()
                                     .sounds(BlockSoundGroup.SAND)
                     ), true);
     public static final Block VERDANT_VINE_BLOCK = register("verdant_vine_block",
