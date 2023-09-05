@@ -11,6 +11,8 @@ public interface SporeGrowthComponent extends ServerTickingComponent {
 
     void addStage(int stageIncrement);
 
+    void setInitialGrowth(boolean flag);
+
     void setOrigin(BlockPos pos);
 
     int getWater();

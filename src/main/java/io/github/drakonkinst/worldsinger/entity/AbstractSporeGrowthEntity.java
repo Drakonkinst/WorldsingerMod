@@ -11,6 +11,10 @@ import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MarkerEntity;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.Vec3d;
@@ -34,9 +38,22 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         this.sporeGrowthData = ModComponents.SPORE_GROWTH.get(this);
     }
 
+    public void setSporeData(int spores, int water, boolean initialGrowth) {
+        sporeGrowthData.setSpores(spores);
+        sporeGrowthData.setWater(water);
+        sporeGrowthData.setInitialGrowth(initialGrowth);
+    }
+
+    public void setInitialStage(int stage) {
+        if (sporeGrowthData.getStage() == 0) {
+            sporeGrowthData.addStage(stage);
+        }
+    }
+
     protected abstract BlockState getNextBlock();
 
-    protected abstract int getWeight(World world, BlockPos pos, Int3 direction);
+    protected abstract int getWeight(World world, BlockPos pos, Int3 direction,
+            boolean allowPassthrough);
 
     protected abstract int getUpdatePeriod();
 
@@ -44,11 +61,13 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
 
     protected abstract int getMaxStage();
 
-    protected abstract void onPlaceBlock(BlockState state);
+    protected abstract void onGrowBlock(BlockPos pos, BlockState state);
 
     protected abstract boolean canBreakHere(BlockState state, BlockState replaceWith);
 
     protected abstract boolean canGrowHere(BlockState state, BlockState replaceWith);
+
+    protected abstract boolean isGrowthBlock(BlockState state);
 
     @Override
     public void tick() {
@@ -65,8 +84,41 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         }
     }
 
+    protected boolean placeBlockWithEffects(BlockPos pos, BlockState state, int cost,
+            boolean drainsWater, boolean showParticles, boolean playSound) {
+        boolean success = this.getWorld().setBlockState(pos, state);
+
+        if (success) {
+            this.doGrowEffects(pos, state, cost, drainsWater, showParticles, playSound);
+        }
+
+        return success;
+    }
+
+    protected void doGrowEffects(BlockPos pos, BlockState state, int cost, boolean drainsWater,
+            boolean showParticles, boolean playSound) {
+        if (drainsWater) {
+            this.drainWater(cost);
+        }
+        this.drainSpores(cost);
+
+        if (showParticles) {
+            this.spawnParticles(pos.toCenterPos(), state);
+        }
+
+        if (playSound) {
+            // TODO: Not sure if this is the right method, since there's a lot of them
+            Vec3d centerPos = pos.toCenterPos();
+            this.getWorld().playSound(null, centerPos.getX(), centerPos.getY(), centerPos.getZ(),
+                    state.getSoundGroup().getPlaceSound(),
+                    SoundCategory.BLOCKS, 1.0f, 0.8f + 0.4f * random.nextFloat(),
+                    random.nextLong());
+        }
+    }
+
     protected boolean shouldBeDead() {
-        return sporeGrowthData.getStage() > this.getMaxStage() || sporeGrowthData.getAge() > 100;
+        return sporeGrowthData.getStage() > this.getMaxStage()
+                || sporeGrowthData.getSpores() <= 0;
     }
 
     private void grow() {
@@ -82,20 +134,34 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     }
 
     private void doGrowStep() {
-        if (this.attemptPlaceBlock(this.getNextBlock())) {
-            this.shiftBlock(this.getNextDirection());
+        if (this.attemptGrowBlock(this.getNextBlock())) {
+            this.shiftBlock(this.getNextDirection(false));
             this.updateStage();
             placeAttempts = 0;
-        } else {
-            ModConstants.LOGGER.info("FAILED TO PLACE BLOCK");
-            if (++placeAttempts >= MAX_PLACE_ATTEMPTS) {
-                ModConstants.LOGGER.info("DEAD");
-                this.discard();
+        } else if (this.canMoveThrough()) {
+            Int3 direction = this.getNextDirection(true);
+            if (direction.isZero()) {
+                incrementPlaceAttempts();
+            } else {
+                this.shiftBlock(direction);
             }
+        } else {
+            incrementPlaceAttempts();
         }
     }
 
-    private boolean attemptPlaceBlock(BlockState state) {
+    private void incrementPlaceAttempts() {
+        if (++placeAttempts >= MAX_PLACE_ATTEMPTS) {
+            ModConstants.LOGGER.info("Failed to grow, discarding");
+            this.discard();
+        }
+    }
+
+    private boolean canMoveThrough() {
+        return this.isGrowthBlock(this.getWorld().getBlockState(this.getBlockPos()));
+    }
+
+    private boolean attemptGrowBlock(BlockState state) {
         if (state == null) {
             return false;
         }
@@ -104,17 +170,19 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         if (this.canBreakHere(originalState, state)) {
             boolean shouldDropLoot = random.nextInt(3) > 0;
             this.getWorld().breakBlock(blockPos, shouldDropLoot, this);
-            return this.placeBlock(state);
+            return this.growBlock(state);
         } else if (this.canGrowHere(originalState, state)) {
-            return this.placeBlock(state);
+            return this.growBlock(state);
         }
         return false;
     }
 
-    private boolean placeBlock(BlockState state) {
-        boolean success = this.getWorld().setBlockState(this.getBlockPos(), state);
+    private boolean growBlock(BlockState state) {
+        // Set the block only, let each block handle its own grow effects in onGrowBlock()
+        BlockPos pos = this.getBlockPos();
+        boolean success = this.getWorld().setBlockState(pos, state);
         if (success) {
-            this.onPlaceBlock(state);
+            this.onGrowBlock(pos, state);
         }
         return success;
     }
@@ -127,7 +195,7 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         }
     }
 
-    private Int3 getNextDirection() {
+    private Int3 getNextDirection(boolean allowPassthrough) {
         World world = this.getWorld();
         BlockPos pos = this.getBlockPos();
         Mutable mutable = new Mutable();
@@ -140,13 +208,14 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
             }
             mutable.set(pos.getX() + direction.x(), pos.getY() + direction.y(),
                     pos.getZ() + direction.z());
-            int weight = this.getWeight(world, mutable, direction);
+            int weight = this.getWeight(world, mutable, direction, allowPassthrough);
             if (weight > 0) {
                 candidates.add(direction);
                 weights.add(weight);
                 weightSum += weight;
             }
         }
+
         Int3 nextDirection = chooseWeighted(candidates, weights, weightSum);
         return nextDirection;
     }
@@ -168,5 +237,21 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
             }
         }
         return Int3.ZERO;
+    }
+
+    protected void drainSpores(int cost) {
+        sporeGrowthData.setSpores(sporeGrowthData.getSpores() - cost);
+    }
+
+    protected void drainWater(int cost) {
+        sporeGrowthData.setWater(sporeGrowthData.getWater() - cost);
+    }
+
+    private void spawnParticles(Vec3d centerPos, BlockState state) {
+        if (this.getWorld() instanceof ServerWorld serverWorld) {
+            serverWorld.spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, state),
+                    centerPos.getX(), centerPos.getY(), centerPos.getZ(), 100, 0.0, 0.0, 0.0,
+                    0.15f);
+        }
     }
 }

@@ -29,12 +29,12 @@ public class SporeGrowthEntityData implements SporeGrowthComponent {
 
     @Override
     public void setWater(int water) {
-        this.waterRemaining = water;
+        this.waterRemaining = Math.max(0, water);
     }
 
     @Override
     public void setSpores(int spores) {
-        this.sporesRemaining = spores;
+        this.sporesRemaining = Math.max(0, spores);
     }
 
     @Override
@@ -42,6 +42,11 @@ public class SporeGrowthEntityData implements SporeGrowthComponent {
         if (stageIncrement > 0) {
             this.stage += (short) stageIncrement;
         }
+    }
+
+    @Override
+    public void setInitialGrowth(boolean flag) {
+        this.initial = flag;
     }
 
     @Override

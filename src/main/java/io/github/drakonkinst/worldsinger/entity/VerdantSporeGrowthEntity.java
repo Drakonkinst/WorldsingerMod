@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.entity;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.VerdantVineBranchBlock;
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,37 +12,51 @@ import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.EntityType;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
+    public static final int MAX_STAGE = 1;
+
     private static final Direction[] CARDINAL_DIRECTIONS = Direction.values();
     private static final int MAX_TWISTING_VINE_DEPTH_UP = 3;
     private static final int MAX_TWISTING_VINE_DEPTH_DOWN = 7;
+    private static final int VINE_BLOCK_COST = 10;
+    private static final int VINE_BRANCH_COST = 5;
+    private static final int VINE_SNARE_COST = 3;
+    private static final int TWISTING_VINES_COST = 1;
+    private static final int SPORE_BRANCH_THRESHOLD_MIN = 50;
+    private static final int SPORE_BRANCH_THRESHOLD_MAX = 100;
+    private static final int UPDATE_PERIOD = 3;
 
     public VerdantSporeGrowthEntity(EntityType<?> entityType,
             World world) {
-        super(entityType, world);
+        super(ModEntityTypes.VERDANT_SPORE_GROWTH, world);
     }
 
     @Override
     protected BlockState getNextBlock() {
+        BlockState state = null;
         if (sporeGrowthData.getStage() == 0) {
-            return ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
+            state = ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
                     .with(Properties.AXIS, this.getPlacementAxis());
         } else if (sporeGrowthData.getStage() == 1) {
             VerdantVineBranchBlock block = (VerdantVineBranchBlock) ModBlocks.VERDANT_VINE_BRANCH;
-            return block.withConnectionProperties(this.getWorld(), this.getBlockPos());
+            state = block.withConnectionProperties(this.getWorld(), this.getBlockPos());
         }
-        return null;
+
+        if (state == null) {
+            return null;
+        }
+
+        if (this.shouldDrainWater() && state.contains(ModProperties.CATALYZED)) {
+            state = state.with(ModProperties.CATALYZED, true);
+        }
+        return state;
     }
 
     private Axis getPlacementAxis() {
@@ -59,7 +74,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     }
 
     @Override
-    protected int getWeight(World world, BlockPos pos, Int3 direction) {
+    protected int getWeight(World world, BlockPos pos, Int3 direction, boolean allowPassthrough) {
         if (sporeGrowthData.getStage() == 3) {
             if (direction.x() != 0 || direction.z() != 0) {
                 return 0;
@@ -67,7 +82,6 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         }
 
         BlockState state = world.getBlockState(pos);
-
         int weight = 0;
 
         // Prefer not to break through blocks
@@ -76,6 +90,9 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         } else if (this.canGrowHere(state, null)) {
             // Can grow through lesser vines
             weight = 80;
+        } else if (allowPassthrough && this.isGrowthBlock(state)) {
+            // If allowPassthrough is true, we assume that no actual block will be placed
+            weight = 5;
         }
 
         if (weight == 0) {
@@ -103,9 +120,12 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         weight += this.getNeighborBonus(world, pos);
 
         // Bonus for moving away from origin
-        weight += 10 * this.getDistanceFromOrigin(pos);
+        int bonusDistanceFromOrigin =
+                this.getDistanceFromOrigin(pos) - this.getDistanceFromOrigin(this.getBlockPos());
+        weight += 10 * bonusDistanceFromOrigin;
 
-        return weight;
+        // Always have some weight, so it is an option if no other options are good
+        return Math.max(1, weight);
     }
 
     private int getNeighborBonus(World world, BlockPos pos) {
@@ -139,8 +159,12 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
     @Override
     protected void updateStage() {
-        if (sporeGrowthData.getStage() < this.getMaxStage() && random.nextInt(10) == 0) {
-            sporeGrowthData.addStage(1);
+        if (sporeGrowthData.getStage() == 0
+                && sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MAX) {
+            if (sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MIN
+                    || random.nextInt(5) == 0) {
+                sporeGrowthData.addStage(1);
+            }
         }
     }
 
@@ -157,22 +181,35 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     }
 
     @Override
-    protected void onPlaceBlock(BlockState state) {
-        showParticles(state);
-        attemptPlaceDecorators();
+    protected boolean isGrowthBlock(BlockState state) {
+        return state.isIn(ModBlockTags.VERDANT_VINES);
     }
 
-    private void showParticles(BlockState state) {
-        if (this.getWorld() instanceof ServerWorld serverWorld) {
-            Vec3d pos = this.getBlockPos().toCenterPos();
-            serverWorld.spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, state),
-                    pos.getX(), pos.getY(), pos.getZ(), 100, 0.0, 0.0, 0.0, 0.15f);
+    @Override
+    protected void onGrowBlock(BlockPos pos, BlockState state) {
+        int cost = state.isOf(ModBlocks.VERDANT_VINE_BLOCK) ? VINE_BLOCK_COST : VINE_BRANCH_COST;
+        boolean drainsWater = state.getOrEmpty(ModProperties.CATALYZED).orElse(false);
+        this.doGrowEffects(pos, state, cost, drainsWater, true, true);
+        this.attemptPlaceDecorators();
+    }
+
+    private boolean shouldDrainWater() {
+        int spores = sporeGrowthData.getSpores();
+        int water = sporeGrowthData.getWater();
+        if (water >= spores) {
+            return true;
         }
+        if (water <= 0) {
+            return false;
+        }
+        // Want water to last as long as possible, so higher proportion of spores means lower chance
+        float chanceToCatalyze = (float) spores / water;
+        return random.nextFloat() < chanceToCatalyze;
     }
 
     private boolean attemptPlaceDecorators() {
         World world = this.getWorld();
-        if (random.nextInt(3) == 0) {
+        if (sporeGrowthData.getSpores() <= 0 || random.nextInt(3) == 0) {
             return false;
         }
         List<Direction> validDirections = new ArrayList<>(6);
@@ -209,17 +246,24 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
         BlockState state = ModBlocks.TWISTING_VERDANT_VINES.getDefaultState()
                 .with(Properties.VERTICAL_DIRECTION, direction);
-        world.setBlockState(pos, state);
 
-        BlockPos nextPos = pos.offset(direction);
+        boolean success = this.placeBlockWithEffects(pos, state, TWISTING_VINES_COST,
+                this.shouldDrainWater(), false,
+                false);
+        if (!success) {
+            return;
+        }
 
+        // Chance to continue growth
         if (direction == Direction.UP && depth >= MAX_TWISTING_VINE_DEPTH_UP) {
             return;
         }
         if (direction == Direction.DOWN && depth >= MAX_TWISTING_VINE_DEPTH_DOWN) {
             return;
         }
-        if (this.canPlaceDecorator(world.getBlockState(nextPos)) && random.nextInt(5) > 0) {
+        BlockPos nextPos = pos.offset(direction);
+        if (sporeGrowthData.getSpores() > 0 && this.canPlaceDecorator(world.getBlockState(nextPos))
+                && random.nextInt(5) > 0) {
             this.placeTwistingVineChain(nextPos, direction, depth + 1);
         }
     }
@@ -238,16 +282,18 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         BlockState state = ModBlocks.VERDANT_VINE_SNARE.getDefaultState()
                 .with(HorizontalFacingBlock.FACING, direction)
                 .with(WallMountedBlock.FACE, wallMountLocation);
-        this.getWorld().setBlockState(pos, state);
+
+        this.placeBlockWithEffects(pos, state, VINE_SNARE_COST, this.shouldDrainWater(),
+                false, true);
     }
 
     @Override
     protected int getMaxStage() {
-        return 1;
+        return MAX_STAGE;
     }
 
     @Override
     protected int getUpdatePeriod() {
-        return 3;
+        return UPDATE_PERIOD;
     }
 }
