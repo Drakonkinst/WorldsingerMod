@@ -5,7 +5,9 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.VerdantVineBranchBlock;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.BlockState;
@@ -13,6 +15,7 @@ import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.EntityType;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -36,6 +39,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     private static final int SPORE_BRANCH_THICK_THRESHOLD = 300;
     private static final int SPORE_SPLIT_MIN = 100;
     private static final int WATER_SPLIT_MIN = 1;
+    private static final int SPORE_WATER_THRESHOLD = 25;
 
     public VerdantSporeGrowthEntity(EntityType<?> entityType,
             World world) {
@@ -96,7 +100,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
             weight = 200;
         } else if (allowPassthrough && this.isGrowthBlock(state)) {
             // If allowPassthrough is true, we assume that no actual block will be placed
-            weight = 5;
+            weight = 10;
         }
 
         if (weight == 0) {
@@ -105,7 +109,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
         // Heavy penalty for going in the same direction to encourage curved paths
         if (direction.equals(lastDir)) {
-            return 1;
+            return 5;
         }
 
         // Prefer to grow upwards
@@ -169,10 +173,14 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
     @Override
     protected void updateStage() {
-        if (sporeGrowthData.getStage() == 0
-                && sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MAX) {
-            if (sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MIN
-                    || random.nextInt(5) == 0) {
+        if (sporeGrowthData.getStage() == 0) {
+            // Advance stage if low on water
+            if (sporeGrowthData.getWater() <= SPORE_WATER_THRESHOLD) {
+                sporeGrowthData.addStage(1);
+            } else if (sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MIN
+                    || (sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MAX
+                    && random.nextInt(5) == 0)) {
+                // Chance to advance stage if low on spores
                 sporeGrowthData.addStage(1);
             }
         }
@@ -221,6 +229,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         boolean drainsWater = state.getOrEmpty(ModProperties.CATALYZED).orElse(false);
         this.doGrowEffects(pos, state, cost, drainsWater, true, true);
         this.attemptPlaceDecorators();
+        this.applySporeEffectToEntities(pos);
     }
 
     private boolean shouldDrainWater() {
@@ -319,6 +328,12 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
         this.placeBlockWithEffects(pos, state, VINE_SNARE_COST, shouldDrainWater,
                 false, true);
+    }
+
+    private void applySporeEffectToEntities(BlockPos pos) {
+        if (this.getWorld() instanceof ServerWorld world) {
+            SporeParticleManager.damageEntitiesInBlock(world, AetherSporeType.VERDANT, pos);
+        }
     }
 
     @Override

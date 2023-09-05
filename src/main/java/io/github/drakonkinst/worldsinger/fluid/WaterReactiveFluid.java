@@ -8,11 +8,11 @@ import net.minecraft.world.World;
 
 public interface WaterReactiveFluid {
 
-    void reactToWater(World world, BlockPos pos, FluidState fluidState, int waterAmount,
+    boolean reactToWater(World world, BlockPos pos, FluidState fluidState, int waterAmount,
             Random random);
 
-    default void reactToWater(World world, BlockPos pos, FluidState fluidState,
+    default boolean reactToWater(World world, BlockPos pos, FluidState fluidState,
             int waterAmount) {
-        reactToWater(world, pos, fluidState, waterAmount, WaterReactiveBlock.random);
+        return reactToWater(world, pos, fluidState, waterAmount, WaterReactiveBlock.random);
     }
 }

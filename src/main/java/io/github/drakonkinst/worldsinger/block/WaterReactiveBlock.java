@@ -9,10 +9,10 @@ public interface WaterReactiveBlock {
 
     Random random = Random.create();
 
-    void reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
+    boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random);
 
-    default void reactToWater(World world, BlockPos pos, BlockState state, int waterAmount) {
-        reactToWater(world, pos, state, waterAmount, random);
+    default boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount) {
+        return reactToWater(world, pos, state, waterAmount, random);
     }
 }

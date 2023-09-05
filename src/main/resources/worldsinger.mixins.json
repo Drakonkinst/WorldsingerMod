@@ -23,6 +23,8 @@
     "entity.ItemEntityMixin",
     "entity.LivingEntityMixin",
     "entity.PersistentProjectileEntityMixin",
+    "entity.PotionEntityMixin",
+    "entity.ProjectileUtilMixin",
     "entity.ai.BirdPathNodeMakerMixin",
     "entity.ai.LandPathNodeMakerMixin",
     "entity.ai.SwimGoalMixin",

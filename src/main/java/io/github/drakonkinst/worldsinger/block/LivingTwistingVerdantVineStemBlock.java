@@ -44,9 +44,14 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
     }
 
     @Override
-    public void reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
+    public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
+        if (state.get(ModProperties.CATALYZED)) {
+            return false;
+        }
+
         LivingTwistingVerdantVineBlock.growInSameDirection(world, pos, state, random);
+        return true;
     }
 
     @Override

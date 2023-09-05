@@ -47,11 +47,16 @@ public class LivingVerdantVineBranchBlock extends VerdantVineBranchBlock impleme
     }
 
     @Override
-    public void reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
+    public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
+        if (state.get(ModProperties.CATALYZED)) {
+            return false;
+        }
+
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
         SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
                 waterAmount, false, true);
+        return true;
     }
 
     @Override

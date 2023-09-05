@@ -49,14 +49,19 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
     }
 
     @Override
-    public void reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
+    public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
+        if (state.get(ModProperties.CATALYZED)) {
+            return false;
+        }
+
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
         Direction direction = VerdantVineSnareBlock.getDirection(state);
         Int3 dir = new Int3(direction.getOffsetX(), direction.getOffsetY(),
                 direction.getOffsetZ());
         SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
                 waterAmount, false, true, dir);
+        return true;
     }
 
     @Override

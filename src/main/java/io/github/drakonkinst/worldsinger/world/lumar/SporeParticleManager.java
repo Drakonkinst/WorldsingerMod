@@ -60,10 +60,6 @@ public final class SporeParticleManager {
         int particleCount = Math.max(particleCountPerBlock,
                 MathHelper.ceil(particleCountPerBlock * volume));
 
-        ModConstants.LOGGER.info(
-                "Creating spore particle with radius=" + radius + ", height=" + height + ", size="
-                        + particleSize + ", count=" + particleCount);
-
         double minX = x - radius;
         double minZ = z - radius;
         double maxX = x + radius;
@@ -151,6 +147,17 @@ public final class SporeParticleManager {
 
     private static void damageEntities(ServerWorld world, AetherSporeType sporeType,
             double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        Box box = new Box(minX, minY, minZ, maxX, maxY, maxZ);
+        SporeParticleManager.damageEntitiesInBox(world, sporeType, box);
+    }
+
+    public static void damageEntitiesInBlock(ServerWorld world, AetherSporeType sporeType,
+            BlockPos pos) {
+        Box box = new Box(pos);
+        SporeParticleManager.damageEntitiesInBox(world, sporeType, box);
+    }
+
+    private static void damageEntitiesInBox(ServerWorld world, AetherSporeType sporeType, Box box) {
         if (sporeType == AetherSporeType.DEAD) {
             return;
         }
@@ -163,15 +170,16 @@ public final class SporeParticleManager {
         }
 
         // Deal damage
-        Box box = new Box(minX, minY, minZ, maxX, maxY, maxZ);
         List<LivingEntity> entitiesInRange = world.getEntitiesByClass(LivingEntity.class, box,
-                entity -> isValidEntity(entity, box));
+                entity -> sporesCanAffect(entity)
+                        && (entity.getType().isIn(ModEntityTypeTags.SPORES_ALWAYS_AFFECT)
+                        || box.contains(entity.getEyePos())));
         for (LivingEntity entity : entitiesInRange) {
             applySporeEffect(entity, statusEffect);
         }
     }
 
-    private static boolean isValidEntity(Entity entity, Box box) {
+    public static boolean sporesCanAffect(Entity entity) {
         if (entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
             return false;
         }
@@ -179,8 +187,7 @@ public final class SporeParticleManager {
                 || playerEntity.isSpectator())) {
             return false;
         }
-        return entity.getType().isIn(ModEntityTypeTags.SPORES_ALWAYS_AFFECT) || box.contains(
-                entity.getEyePos());
+        return true;
     }
 
     private static SporeDustParticleEffect getCachedSporeParticleEffect(

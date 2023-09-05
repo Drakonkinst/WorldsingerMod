@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.entity;
 
+import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SporeGrowthComponent;
@@ -142,7 +143,7 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     protected boolean shouldBeDead() {
         return sporeGrowthData.getStage() > this.getMaxStage()
                 || sporeGrowthData.getSpores() <= 0 || sporeGrowthData.getAge() > MAX_AGE
-                || placeAttempts >= MAX_PLACE_ATTEMPTS;
+                || placeAttempts >= MAX_PLACE_ATTEMPTS || sporeGrowthData.getWater() <= 0;
     }
 
     private void grow() {
@@ -197,6 +198,8 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
                 boolean shouldDropLoot = random.nextInt(3) > 0;
                 this.getWorld().breakBlock(blockPos, shouldDropLoot, this);
             }
+            return this.growBlock(state);
+        } else if (originalState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)) {
             return this.growBlock(state);
         }
         return false;
