@@ -79,7 +79,8 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
             do {
                 mutable.move(Direction.UP);
             }
-            while (world.getFluidState(mutable).isIn(ModFluidTags.VERDANT_SPORES));
+            while (world.getFluidState(mutable).isIn(ModFluidTags.VERDANT_SPORES)
+                    && mutable.getY() < world.getTopY());
 
             if (world.getBlockState(mutable).isAir()) {
                 // Found a good position, use it
