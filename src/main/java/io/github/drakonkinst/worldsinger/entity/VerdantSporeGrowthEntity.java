@@ -25,7 +25,6 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
     public static final int MAX_STAGE = 1;
 
-    private static final Direction[] CARDINAL_DIRECTIONS = Direction.values();
     private static final int MAX_TWISTING_VINE_DEPTH_UP = 3;
     private static final int MAX_TWISTING_VINE_DEPTH_DOWN = 7;
     private static final int VINE_BLOCK_COST = 10;
@@ -91,10 +90,10 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
         // Prefer not to break through blocks
         if (this.canBreakHere(state, null)) {
-            weight = 20;
+            weight = 10;
         } else if (this.canGrowHere(state, null)) {
             // Can grow through lesser vines
-            weight = 80;
+            weight = 200;
         } else if (allowPassthrough && this.isGrowthBlock(state)) {
             // If allowPassthrough is true, we assume that no actual block will be placed
             weight = 5;

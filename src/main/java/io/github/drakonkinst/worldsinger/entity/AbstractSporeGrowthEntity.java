@@ -1,8 +1,9 @@
 package io.github.drakonkinst.worldsinger.entity;
 
+import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SporeGrowthComponent;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -17,16 +18,20 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
 
+    protected static final Direction[] CARDINAL_DIRECTIONS = Direction.values();
+
     private static final int INITIAL_GROWTH_SPEED = 3;
     private static final int DIRECTION_ARRAY_SIZE = 6;
     private static final int MAX_PLACE_ATTEMPTS = 3;
     private static final int MAX_AGE = 20 * 5;
+    private static final int SPORE_DRAIN_NEAR_SPORE_KILLABLE = 50;
     protected static final Random random = Random.create();
 
     public static void playPlaceSoundEffect(World world, BlockPos pos, BlockState state) {
@@ -35,6 +40,13 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
                 state.getSoundGroup().getPlaceSound(),
                 SoundCategory.BLOCKS, 1.0f, 0.8f + 0.4f * random.nextFloat(),
                 random.nextLong());
+    }
+
+    private static void resetCatalyzed(World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        if (state.contains(ModProperties.CATALYZED) && state.get(ModProperties.CATALYZED)) {
+            world.setBlockState(pos, state.with(ModProperties.CATALYZED, false));
+        }
     }
 
     protected final SporeGrowthComponent sporeGrowthData;
@@ -90,6 +102,9 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
 
         if (!this.getWorld().isClient()) {
             if (this.shouldBeDead()) {
+                if (sporeGrowthData.getSpores() > 0) {
+                    this.onEarlyDiscard();
+                }
                 this.discard();
             } else {
                 this.grow();
@@ -126,7 +141,8 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
 
     protected boolean shouldBeDead() {
         return sporeGrowthData.getStage() > this.getMaxStage()
-                || sporeGrowthData.getSpores() <= 0 || sporeGrowthData.getAge() > MAX_AGE;
+                || sporeGrowthData.getSpores() <= 0 || sporeGrowthData.getAge() > MAX_AGE
+                || placeAttempts >= MAX_PLACE_ATTEMPTS;
     }
 
     private void grow() {
@@ -142,6 +158,10 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     }
 
     private void doGrowStep() {
+        if (SporeKillable.isSporeKillingBlockNearby(this.getWorld(), this.getBlockPos())) {
+            this.drainSpores(SPORE_DRAIN_NEAR_SPORE_KILLABLE);
+        }
+
         if (this.attemptGrowBlock(this.getNextBlock())) {
             this.shiftBlock(this.getNextDirection(false));
             this.updateStage();
@@ -149,19 +169,12 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         } else if (this.canMoveThrough()) {
             Int3 direction = this.getNextDirection(true);
             if (direction.isZero()) {
-                incrementPlaceAttempts();
+                placeAttempts++;
             } else {
                 this.shiftBlock(direction);
             }
         } else {
-            incrementPlaceAttempts();
-        }
-    }
-
-    private void incrementPlaceAttempts() {
-        if (++placeAttempts >= MAX_PLACE_ATTEMPTS) {
-            ModConstants.LOGGER.info("Failed to grow, discarding");
-            this.discard();
+            placeAttempts++;
         }
     }
 
@@ -180,6 +193,10 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
             this.getWorld().breakBlock(blockPos, shouldDropLoot, this);
             return this.growBlock(state);
         } else if (this.canGrowHere(originalState, state)) {
+            if (!originalState.isAir()) {
+                boolean shouldDropLoot = random.nextInt(3) > 0;
+                this.getWorld().breakBlock(blockPos, shouldDropLoot, this);
+            }
             return this.growBlock(state);
         }
         return false;
@@ -260,6 +277,16 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
             serverWorld.spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, state),
                     centerPos.getX(), centerPos.getY(), centerPos.getZ(), 100, 0.0, 0.0, 0.0,
                     0.15f);
+        }
+    }
+
+    private void onEarlyDiscard() {
+        BlockPos pos = this.getBlockPos();
+        BlockPos.Mutable mutable = pos.mutableCopy();
+        World world = this.getWorld();
+        AbstractSporeGrowthEntity.resetCatalyzed(world, pos);
+        for (Direction direction : CARDINAL_DIRECTIONS) {
+            AbstractSporeGrowthEntity.resetCatalyzed(world, mutable.set(pos.offset(direction)));
         }
     }
 }

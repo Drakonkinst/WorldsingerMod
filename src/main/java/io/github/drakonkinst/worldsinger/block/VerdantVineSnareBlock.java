@@ -111,7 +111,8 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         super.randomTick(state, world, pos, random);
         // Decay over time
-        if (LumarSeethe.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)) {
+        if (LumarSeethe.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)
+                && !world.isRaining()) {
             world.breakBlock(pos, true);
         }
     }
