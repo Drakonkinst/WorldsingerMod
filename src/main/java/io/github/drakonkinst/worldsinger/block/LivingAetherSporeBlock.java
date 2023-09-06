@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.Block;
@@ -19,6 +20,20 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     public LivingAetherSporeBlock(AetherSporeType aetherSporeType, Block fluidized,
             Settings settings) {
         super(aetherSporeType, fluidized, settings);
+    }
+
+    @Override
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
+        if (waterNeighborPos != null) {
+            SporeGrowthSpawner.catalyzeAroundWater(world, waterNeighborPos);
+            if (aetherSporeType == AetherSporeType.VERDANT) {
+                world.setBlockState(pos, ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
+                        .with(ModProperties.CATALYZED, true));
+            }
+            return;
+        }
+        super.scheduledTick(state, world, pos, random);
     }
 
     @Override

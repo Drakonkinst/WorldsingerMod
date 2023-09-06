@@ -3,6 +3,9 @@ package io.github.drakonkinst.worldsinger.block;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Waterloggable;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
@@ -14,14 +17,17 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBlock {
+public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBlock implements
+        Waterloggable {
 
     private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 16.0,
             12.0);
 
     public TwistingVerdantVineStemBlock(Settings settings) {
         super(settings, SHAPE);
-        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false));
+        this.setDefaultState(this.getDefaultState()
+                .with(Properties.PERSISTENT, false)
+                .with(Properties.WATERLOGGED, false));
     }
 
     @Override
@@ -36,7 +42,7 @@ public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBloc
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.PERSISTENT);
+        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED);
         super.appendProperties(builder);
     }
 
@@ -45,9 +51,20 @@ public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBloc
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
-            placementState = placementState.with(Properties.PERSISTENT, true);
+            placementState = placementState
+                    .with(Properties.PERSISTENT, true)
+                    .with(Properties.WATERLOGGED,
+                            ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(
+                                    Fluids.WATER));
+            ;
         }
         return placementState;
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false)
+                : super.getFluidState(state);
     }
 
     @Override
@@ -68,6 +85,9 @@ public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBloc
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
             BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (state.get(Properties.WATERLOGGED)) {
+            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
                 neighborPos).with(Properties.PERSISTENT, state.get(Properties.PERSISTENT));
     }

@@ -5,8 +5,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.WallMountedBlock;
+import net.minecraft.block.Waterloggable;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
@@ -18,10 +21,11 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class VerdantVineSnareBlock extends WallMountedBlock {
+public class VerdantVineSnareBlock extends WallMountedBlock implements Waterloggable {
 
     private static final double MIN_VERTICAL = 0.0;
     private static final double MAX_VERTICAL = 16.0;
@@ -41,8 +45,11 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
 
     public VerdantVineSnareBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH)
-                .with(FACE, WallMountLocation.FLOOR).with(Properties.PERSISTENT, false));
+        this.setDefaultState(this.getDefaultState()
+                .with(FACING, Direction.NORTH)
+                .with(FACE, WallMountLocation.FLOOR)
+                .with(Properties.PERSISTENT, false)
+                .with(Properties.WATERLOGGED, false));
     }
 
     public static Direction getDirection(BlockState state) {
@@ -77,7 +84,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACE, FACING, Properties.PERSISTENT);
+        builder.add(FACE, FACING, Properties.PERSISTENT, Properties.WATERLOGGED);
         super.appendProperties(builder);
     }
 
@@ -97,7 +104,11 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
             placementState = placementState
-                    .with(Properties.PERSISTENT, true);
+                    .with(Properties.PERSISTENT, true)
+                    .with(Properties.WATERLOGGED,
+                            ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(
+                                    Fluids.WATER));
+            ;
         }
         return placementState;
     }
@@ -115,5 +126,21 @@ public class VerdantVineSnareBlock extends WallMountedBlock {
                 && !world.isRaining()) {
             world.breakBlock(pos, true);
         }
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false)
+                : super.getFluidState(state);
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
+            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (state.get(Properties.WATERLOGGED)) {
+            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        }
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
+                neighborPos);
     }
 }

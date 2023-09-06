@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.entity;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.VerdantVineBranchBlock;
+import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
@@ -62,6 +63,11 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
             return null;
         }
 
+        if (state.contains(ModProperties.FLUIDLOGGED)) {
+            int fluidloggedIndex = Fluidlogged.getFluidIndex(
+                    this.getWorld().getFluidState(this.getBlockPos()).getFluid());
+            state = state.with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
+        }
         if (this.shouldDrainWater() && state.contains(ModProperties.CATALYZED)) {
             state = state.with(ModProperties.CATALYZED, true);
         }
@@ -285,9 +291,11 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         World world = this.getWorld();
 
         boolean shouldDrainWater = this.shouldDrainWater();
+        int fluidloggedIndex = Fluidlogged.getFluidIndex(world.getFluidState(pos).getFluid());
         BlockState state = ModBlocks.TWISTING_VERDANT_VINES.getDefaultState()
                 .with(Properties.VERTICAL_DIRECTION, direction)
-                .with(ModProperties.CATALYZED, shouldDrainWater);
+                .with(ModProperties.CATALYZED, shouldDrainWater)
+                .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
 
         boolean success = this.placeBlockWithEffects(pos, state, TWISTING_VINES_COST,
                 shouldDrainWater, false,
@@ -322,10 +330,13 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         }
 
         boolean shouldDrainWater = this.shouldDrainWater();
+        int fluidloggedIndex = Fluidlogged.getFluidIndex(
+                this.getWorld().getFluidState(pos).getFluid());
         BlockState state = ModBlocks.VERDANT_VINE_SNARE.getDefaultState()
                 .with(HorizontalFacingBlock.FACING, direction)
                 .with(WallMountedBlock.FACE, wallMountLocation)
-                .with(ModProperties.CATALYZED, shouldDrainWater);
+                .with(ModProperties.CATALYZED, shouldDrainWater)
+                .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
 
         this.placeBlockWithEffects(pos, state, VINE_SNARE_COST, shouldDrainWater,
                 false, true);
