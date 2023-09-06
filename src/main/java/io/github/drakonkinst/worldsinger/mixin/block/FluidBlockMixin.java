@@ -1,8 +1,10 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
 import com.google.common.collect.ImmutableList;
+import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.LivingAetherSporeFluid;
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
@@ -48,6 +50,9 @@ public abstract class FluidBlockMixin {
             BlockPos neighborPos = pos.offset(direction.getOpposite());
             if (world.getFluidState(neighborPos).isIn(FluidTags.WATER)) {
                 SporeGrowthSpawner.catalyzeAroundWater(world, neighborPos);
+                world.setBlockState(neighborPos,
+                        ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
+                                .with(ModProperties.CATALYZED, true));
                 cir.setReturnValue(false);
                 return;
             }

@@ -107,9 +107,9 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
     }
 
     @Override
-    protected boolean canBeReplacedWith(FluidState fluidState, BlockView blockView,
-            BlockPos blockPos, Fluid fluid, Direction direction) {
-        return fluidState.isIn(ModFluidTags.AETHER_SPORES) && !fluidState.isStill();
+    protected boolean canBeReplacedWith(FluidState state, BlockView world,
+            BlockPos pos, Fluid fluid, Direction direction) {
+        return state.isIn(ModFluidTags.AETHER_SPORES) && !state.isStill();
     }
 
     @Override

@@ -28,7 +28,6 @@
     "entity.ai.BirdPathNodeMakerMixin",
     "entity.ai.LandPathNodeMakerMixin",
     "entity.ai.SwimGoalMixin",
-    "fluid.WaterFluidMixin",
     "item.BlockItemMixin",
     "item.BoatItemMixin",
     "item.BucketItemMixin",

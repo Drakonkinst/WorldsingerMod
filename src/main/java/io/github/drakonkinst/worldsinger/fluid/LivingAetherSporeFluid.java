@@ -2,8 +2,10 @@ package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -11,9 +13,12 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
 public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
         WaterReactiveFluid {
@@ -60,6 +65,23 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
                 world.setBlockState(blockPos, blockState);
             }
         }
+    }
+
+    @Override
+    protected void flow(WorldAccess world, BlockPos pos, BlockState state, Direction direction,
+            FluidState fluidState) {
+        if (direction == Direction.DOWN) {
+            FluidState neighborState = world.getFluidState(pos);
+            if (neighborState.isIn(FluidTags.WATER)) {
+                if (state.getBlock() instanceof FluidBlock && world instanceof World realWorld) {
+                    SporeGrowthSpawner.catalyzeAroundWater(realWorld, pos);
+                    world.setBlockState(pos, ModBlocks.VERDANT_VINE_BLOCK.getDefaultState().with(
+                            ModProperties.CATALYZED, true), Block.NOTIFY_ALL);
+                    return;
+                }
+            }
+        }
+        super.flow(world, pos, state, direction, fluidState);
     }
 
     @Override
