@@ -292,4 +292,8 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
             AbstractSporeGrowthEntity.resetCatalyzed(world, mutable.set(pos.offset(direction)));
         }
     }
+
+    public SporeGrowthComponent getSporeGrowthData() {
+        return sporeGrowthData;
+    }
 }

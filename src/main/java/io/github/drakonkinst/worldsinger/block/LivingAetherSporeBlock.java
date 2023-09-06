@@ -28,12 +28,17 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     }
 
     @Override
+    public boolean canReactToWater(World world, BlockPos pos, BlockState state) {
+        return true;
+    }
+
+    @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
         world.removeBlock(pos, false);
         if (aetherSporeType == AetherSporeType.VERDANT) {
             SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
-                    waterAmount, true, false);
+                    waterAmount, true, false, false);
         }
         return true;
     }

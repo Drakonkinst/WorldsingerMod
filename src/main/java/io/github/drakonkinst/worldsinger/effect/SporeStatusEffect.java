@@ -86,11 +86,11 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
                 // Found a good position, use it
                 SporeGrowthSpawner.spawnVerdantSporeGrowth(world,
                         mutable.move(Direction.DOWN).toCenterPos(),
-                        LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false);
+                        LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false, false);
             } else {
                 // Use original position
                 SporeGrowthSpawner.spawnVerdantSporeGrowth(world, entity.getPos(),
-                        LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false);
+                        LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false, false);
             }
         }
     }

@@ -45,7 +45,7 @@ public abstract class VerdantSporeFluid extends LivingAetherSporeFluid {
     protected void doWaterReaction(World world, BlockPos pos, FluidState state, int sporeAmount,
             int waterAmount, Random random) {
         SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), sporeAmount,
-                waterAmount, true, false);
+                waterAmount, true, false, false);
     }
 
     public static class Flowing extends VerdantSporeFluid {

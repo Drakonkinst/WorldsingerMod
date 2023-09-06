@@ -201,7 +201,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
         SporeGrowthSpawner.spawnVerdantSporeGrowth(this.getWorld(),
                 spawnPos, numSpores, numWater,
-                sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0);
+                sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true);
         this.drainSpores(numSpores);
         this.drainWater(numWater);
     }
