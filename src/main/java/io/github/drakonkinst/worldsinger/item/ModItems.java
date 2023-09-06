@@ -34,7 +34,11 @@ public final class ModItems {
                             .maxCount(1)));
     public static final Item SALT = ModItems.register("salt",
             new SaltItem(new FabricItemSettings()));
+    public static final Item RAW_SILVER = ModItems.register("raw_silver",
+            new SaltItem(new FabricItemSettings()));
     public static final Item SILVER_INGOT = ModItems.register("silver_ingot",
+            new Item(new FabricItemSettings()));
+    public static final Item SILVER_NUGGET = ModItems.register("silver_nugget",
             new Item(new FabricItemSettings()));
 
     // Item Groups
@@ -69,8 +73,15 @@ public final class ModItems {
             itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_SNARE);
             itemGroup.add(ModBlocks.DEAD_TWISTING_VERDANT_VINES);
             itemGroup.add(ModBlocks.SALTSTONE);
+            itemGroup.add(ModBlocks.SALTSTONE_SALT_ORE);
+            itemGroup.add(ModBlocks.SALTSTONE_SILVER_ORE);
             itemGroup.add(ModItems.SALT);
+            itemGroup.add(ModBlocks.SALT_BLOCK);
+            itemGroup.add(ModItems.RAW_SILVER);
             itemGroup.add(ModItems.SILVER_INGOT);
+            itemGroup.add(ModItems.SILVER_NUGGET);
+            itemGroup.add(ModBlocks.SILVER_BLOCK);
+            itemGroup.add(ModBlocks.RAW_SILVER_BLOCK);
         });
     }
 

@@ -1,7 +1,6 @@
 {
   "values": [
     "#c:has_salt",
-    "#c:has_silver",
-    "minecraft:iron_block"
+    "#c:has_silver"
   ]
 }

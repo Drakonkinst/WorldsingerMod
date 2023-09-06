@@ -1,6 +1,11 @@
 {
   "replace": false,
   "values": [
-    "worldsinger:saltstone"
+    "worldsinger:saltstone",
+    "worldsinger:saltstone_silver_ore",
+    "worldsinger:saltstone_salt_ore",
+    "worldsinger:salt_block",
+    "worldsinger:raw_silver_block",
+    "worldsinger:silver_block"
   ]
 }

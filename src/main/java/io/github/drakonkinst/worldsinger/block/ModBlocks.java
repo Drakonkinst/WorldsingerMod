@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
+import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
@@ -154,6 +155,32 @@ public final class ModBlocks {
                     .requiresTool()
                     .strength(1.5f, 6.0f)
             ), true);
+    public static final Block SALTSTONE_SALT_ORE = register("saltstone_salt_ore",
+            new ExperienceDroppingBlock(FabricBlockSettings.create()
+                    .requiresTool()
+                    .strength(3.0f, 3.0f)
+            ), true);
+    public static final Block SALTSTONE_SILVER_ORE = register("saltstone_silver_ore",
+            new ExperienceDroppingBlock(FabricBlockSettings.create()
+                    .requiresTool()
+                    .strength(3.0f, 3.0f)
+            ), true);
+    public static final Block SALT_BLOCK = register("salt_block", new Block(
+            FabricBlockSettings.create()
+                    .requiresTool()
+                    .strength(5.0f, 6.0f)
+    ), true);
+    public static final Block SILVER_BLOCK = register("silver_block", new Block(
+            FabricBlockSettings.create()
+                    .requiresTool()
+                    .strength(5.0f, 6.0f)
+                    .sounds(BlockSoundGroup.METAL)
+    ), true);
+    public static final Block RAW_SILVER_BLOCK = register("raw_silver_block", new Block(
+            FabricBlockSettings.create()
+                    .requiresTool()
+                    .strength(5.0f, 6.0f)
+    ), true);
 
     public static <T extends Block> T register(String id, T block, boolean shouldRegisterItem) {
         Identifier blockId = new Identifier(ModConstants.MOD_ID, id);

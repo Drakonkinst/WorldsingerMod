@@ -2,6 +2,10 @@
   "default": 0,
   "entries": {
     "worldsinger:saltstone": 2,
-    "minecraft:iron_block": 5
+    "worldsinger:saltstone_salt_ore": 2,
+    "worldsinger:saltstone_silver_ore": 3,
+    "#c:salt_blocks": 4,
+    "worldsinger:raw_silver_block": 4,
+    "#c:silver_blocks": 5
   }
 }

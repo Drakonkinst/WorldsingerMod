@@ -7,6 +7,7 @@
   "item.worldsinger.verdant_spores_bucket": "Bucket of Verdant Spores",
   "item.worldsinger.dead_spores_bucket": "Bucket of Dead Spores",
   "item.worldsinger.salt": "Salt",
+  "item.worldsinger.raw_silver": "Raw Silver",
   "item.worldsinger.silver_ingot": "Silver Ingot",
   "item.worldsinger.silver_nugget": "Silver Nugget",
   "item.worldsinger.silver_block": "Silver Block",
@@ -20,5 +21,10 @@
   "block.worldsinger.dead_verdant_vine_branch": "Dead Verdant Vine Branch",
   "block.worldsinger.dead_verdant_vine_snare": "Dead Verdant Vine Snare",
   "block.worldsinger.dead_twisting_verdant_vines": "Dead Twisting Verdant Vines",
-  "block.worldsinger.saltstone": "Saltstone"
+  "block.worldsinger.saltstone": "Saltstone",
+  "block.worldsinger.saltstone_salt_ore": "Saltstone Salt Ore",
+  "block.worldsinger.saltstone_silver_ore": "Saltstone Silver Ore",
+  "block.worldsinger.salt_block": "Salt Block",
+  "block.worldsinger.silver_block": "Silver Block",
+  "block.worldsinger.raw_silver_block": "Raw Silver Block"
 }
