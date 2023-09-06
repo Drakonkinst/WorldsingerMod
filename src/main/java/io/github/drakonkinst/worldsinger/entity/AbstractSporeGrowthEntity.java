@@ -7,6 +7,7 @@ import io.github.drakonkinst.worldsinger.component.SporeGrowthComponent;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MarkerEntity;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -140,6 +142,9 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     }
 
     protected boolean shouldBeDead() {
+        if (sporeGrowthData.getWater() <= 0) {
+            ModConstants.LOGGER.info("NO WATER " + sporeGrowthData.getWater());
+        }
         return sporeGrowthData.getStage() > this.getMaxStage()
                 || sporeGrowthData.getSpores() <= 0 || sporeGrowthData.getAge() > MAX_AGE
                 || placeAttempts >= MAX_PLACE_ATTEMPTS || sporeGrowthData.getWater() <= 0;
@@ -158,8 +163,19 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     }
 
     private void doGrowStep() {
-        if (SporeKillable.isSporeKillingBlockNearby(this.getWorld(), this.getBlockPos())) {
+        World world = this.getWorld();
+        BlockPos pos = this.getBlockPos();
+
+        if (SporeKillable.isSporeKillingBlockNearby(world, pos)) {
             this.drainSpores(SPORE_DRAIN_NEAR_SPORE_KILLABLE);
+        }
+
+        if (sporeGrowthData.getWater() < sporeGrowthData.getSpores()
+                && world.getFluidState(pos).isIn(FluidTags.WATER)) {
+            int waterAbsorbed = SporeGrowthSpawner.absorbWaterAtBlock(world, pos);
+            if (waterAbsorbed > 0) {
+                sporeGrowthData.setWater(sporeGrowthData.getWater() + waterAbsorbed);
+            }
         }
 
         if (this.attemptGrowBlock(this.getNextBlock())) {

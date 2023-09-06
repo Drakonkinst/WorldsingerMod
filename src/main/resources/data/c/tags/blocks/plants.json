@@ -1,0 +1,20 @@
+{
+  "values": [
+    "#minecraft:saplings",
+    "#minecraft:crops",
+    "#c:dripleaf_plants",
+    "minecraft:attached_pumpkin_stem",
+    "minecraft:attached_melon_stem",
+    "#minecraft:flowers",
+    "#c:vines",
+    "#c:fungi_plants",
+    "#c:roots",
+    "#c:grass_plants",
+    "#c:sea_plants",
+    "minecraft:dead_bush",
+    "minecraft:glow_lichen",
+    "minecraft:spore_blossom",
+    "minecraft:sugar_cane",
+    "minecraft:sweet_berry_bush"
+  ]
+}

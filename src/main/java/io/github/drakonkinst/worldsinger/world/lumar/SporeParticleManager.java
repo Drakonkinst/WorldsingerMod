@@ -209,7 +209,8 @@ public final class SporeParticleManager {
         size = ((int) (size * CACHED_SIZE_PRECISION)) / CACHED_SIZE_PRECISION;
 
         ModConstants.LOGGER.info(
-                "Caching new dust particle effect (" + sporeType.asString() + ", " + size + ")");
+                "Caching new dust particle effect (" + sporeType.asString() + ", " + size + "), "
+                        + (cachedDustParticleEffects.size() + 1) + " particles cached");
 
         Vector3f particleColor = Vec3d.unpackRgb(sporeType.getParticleColor()).toVector3f();
         return new SporeDustParticleEffect(particleColor, size);

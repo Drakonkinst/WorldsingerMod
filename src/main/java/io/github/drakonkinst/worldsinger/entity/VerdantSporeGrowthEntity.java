@@ -202,9 +202,6 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         float proportion = 0.25f + random.nextFloat() * 0.25f;
         int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
         int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
-        // ModConstants.LOGGER.info("CREATING SPLIT " + proportion + " " + numSpores + "/" + (
-        //         sporeGrowthData.getSpores() - numSpores) + " " + numWater + "/" + (
-        //         sporeGrowthData.getWater() - numWater));
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
         SporeGrowthSpawner.spawnVerdantSporeGrowth(this.getWorld(),
                 spawnPos, numSpores, numWater,

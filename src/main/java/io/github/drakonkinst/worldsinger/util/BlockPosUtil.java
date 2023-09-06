@@ -31,9 +31,6 @@ public final class BlockPosUtil {
             int offsetX, int offsetY, int offsetZ) {
         int width = MathHelper.ceil(entity.getWidth());
         int height = MathHelper.ceil(entity.getHeight());
-        // ModConstants.LOGGER.info(
-        //         entity.getType().getUntranslatedName() + " has dimensions " + width + " x "
-        //                 + height);
 
         int minX = blockPos.getX() - (width / 2) + offsetX;
         int maxX = blockPos.getX() + ((width - 1) / 2) + offsetX;

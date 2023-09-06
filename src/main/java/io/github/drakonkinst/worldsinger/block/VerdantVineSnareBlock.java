@@ -123,7 +123,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
         super.randomTick(state, world, pos, random);
         // Decay over time
         if (LumarSeethe.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)
-                && !world.isRaining()) {
+                && !world.isRaining() && world.isSkyVisible(pos.up())) {
             world.breakBlock(pos, true);
         }
     }

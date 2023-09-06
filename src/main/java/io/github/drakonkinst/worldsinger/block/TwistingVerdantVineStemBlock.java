@@ -77,7 +77,7 @@ public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBloc
         super.randomTick(state, world, pos, random);
         // Decay over time
         if (LumarSeethe.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)
-                && !world.isRaining()) {
+                && !world.isRaining() && world.isSkyVisible(pos.up())) {
             world.breakBlock(pos, true);
         }
     }

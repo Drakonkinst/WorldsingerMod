@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.component.SporeGrowthComponent;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.math.BlockPos;
 
 public class SporeGrowthEntityData implements SporeGrowthComponent {
@@ -29,12 +30,16 @@ public class SporeGrowthEntityData implements SporeGrowthComponent {
 
     @Override
     public void setWater(int water) {
-        this.waterRemaining = Math.max(0, water);
+        if (this.waterRemaining < Integer.MAX_VALUE) {
+            this.waterRemaining = Math.max(0, water);
+        }
     }
 
     @Override
     public void setSpores(int spores) {
-        this.sporesRemaining = Math.max(0, spores);
+        if (this.sporesRemaining < Integer.MAX_VALUE) {
+            this.sporesRemaining = Math.max(0, spores);
+        }
     }
 
     @Override
@@ -91,10 +96,12 @@ public class SporeGrowthEntityData implements SporeGrowthComponent {
         this.initial = tag.getBoolean(NBT_KEY_INITIAL_GROWTH);
         this.stage = tag.getShort(NBT_KEY_STAGE);
         this.age = tag.getShort(NBT_KEY_AGE);
-        int x = tag.getInt(NBT_KEY_ORIGIN_X);
-        int y = tag.getInt(NBT_KEY_ORIGIN_Y);
-        int z = tag.getInt(NBT_KEY_ORIGIN_Z);
-        this.origin = new BlockPos(x, y, z);
+        if (tag.contains(NBT_KEY_ORIGIN_X, NbtElement.INT_TYPE)) {
+            int x = tag.getInt(NBT_KEY_ORIGIN_X);
+            int y = tag.getInt(NBT_KEY_ORIGIN_Y);
+            int z = tag.getInt(NBT_KEY_ORIGIN_Z);
+            this.origin = new BlockPos(x, y, z);
+        }
     }
 
     @Override
@@ -104,9 +111,11 @@ public class SporeGrowthEntityData implements SporeGrowthComponent {
         tag.putBoolean(NBT_KEY_INITIAL_GROWTH, this.initial);
         tag.putShort(NBT_KEY_STAGE, this.stage);
         tag.putShort(NBT_KEY_AGE, this.age);
-        tag.putInt(NBT_KEY_ORIGIN_X, this.origin.getX());
-        tag.putInt(NBT_KEY_ORIGIN_Y, this.origin.getY());
-        tag.putInt(NBT_KEY_ORIGIN_Z, this.origin.getZ());
+        if (this.origin != null) {
+            tag.putInt(NBT_KEY_ORIGIN_X, this.origin.getX());
+            tag.putInt(NBT_KEY_ORIGIN_Y, this.origin.getY());
+            tag.putInt(NBT_KEY_ORIGIN_Z, this.origin.getZ());
+        }
     }
 
     @Override

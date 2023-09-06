@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.block.LivingAetherSporeBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
+import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
@@ -69,7 +70,14 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
     private void onDeathEffect(LivingEntity entity) {
         World world = entity.getWorld();
         if (aetherSporeType == AetherSporeType.VERDANT) {
+            // Fill with snare blocks
             SporeStatusEffect.growVerdantSpores(world, entity);
+
+            // Only spawn spore growth if in the spore sea
+            if (!world.getFluidState(entity.getBlockPos()).isIn(ModFluidTags.VERDANT_SPORES)
+                    || !((SporeFluidEntityStateAccess) entity).worldsinger$isTouchingSporeSea()) {
+                return;
+            }
 
             // Do a little hack to move spore growth position to the topmost block
             int waterAmount = MathHelper.ceil(

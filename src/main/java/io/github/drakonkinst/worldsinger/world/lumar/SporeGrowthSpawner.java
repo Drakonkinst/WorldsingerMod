@@ -32,7 +32,7 @@ public final class SporeGrowthSpawner {
 
     private static final int WATER_AMOUNT_STILL = 250;
     private static final int WATER_AMOUNT_FLOWING = 25;
-    private static final int MAX_WATER_AMOUNT = 2500;
+    private static final int MAX_WATER_AMOUNT = 1500;
     private static final double SAME_GROWTH_SEARCH_RADIUS = 3.0;
     private static final int MAX_ITERATIONS = 129;
     private static final int MAX_DEPTH = 32;
@@ -63,9 +63,6 @@ public final class SporeGrowthSpawner {
         if (isSmall) {
             entity.setInitialStage(VerdantSporeGrowthEntity.MAX_STAGE);
         }
-        if (!isSplit) {
-            ModConstants.LOGGER.info("SPAWNED");
-        }
 
         world.spawnEntity(entity);
     }
@@ -87,8 +84,6 @@ public final class SporeGrowthSpawner {
         SporeGrowthComponent sporeGrowthData = existingSporeGrowthEntity.getSporeGrowthData();
         sporeGrowthData.setSpores(sporeGrowthData.getSpores() + spores);
         sporeGrowthData.setWater(sporeGrowthData.getWater() + water);
-        ModConstants.LOGGER.info("COPIED AND INCREASED " + sporeGrowthData.getSpores() + " "
-                + sporeGrowthData.getWater());
         return true;
     }
 
@@ -97,8 +92,6 @@ public final class SporeGrowthSpawner {
         if (waterAmount <= 0) {
             return;
         }
-
-        ModConstants.LOGGER.info("WATER ABSORBED: " + waterAmount);
 
         // Check for other blocks that can be catalyzed by this block
         List<Pair<BlockPos, WaterReactive>> neighborReactives = new ArrayList<>(6);
@@ -113,8 +106,6 @@ public final class SporeGrowthSpawner {
                 neighborReactives.add(Pair.of(neighborPos, waterReactiveFluid));
             }
         }
-
-        ModConstants.LOGGER.info("NEIGHBOR REACTIVES: " + neighborReactives.size());
 
         if (neighborReactives.isEmpty()) {
             return;
@@ -161,7 +152,7 @@ public final class SporeGrowthSpawner {
         return totalWaterAmount;
     }
 
-    private static int absorbWaterAtBlock(World world, BlockPos pos) {
+    public static int absorbWaterAtBlock(World world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         FluidState fluidState = world.getFluidState(pos);
         if (!fluidState.isIn(FluidTags.WATER)) {
