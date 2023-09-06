@@ -51,7 +51,7 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
         if (world instanceof World realWorld) {
             BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
             if (waterNeighborPos != null) {
-                SporeGrowthSpawner.catalyzeAroundWater(realWorld, pos);
+                SporeGrowthSpawner.catalyzeAroundWater(realWorld, waterNeighborPos);
             }
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,

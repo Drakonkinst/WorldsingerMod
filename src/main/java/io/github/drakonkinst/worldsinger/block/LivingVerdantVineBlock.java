@@ -88,7 +88,8 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
         if (this.canReactToWater(pos, state) && world instanceof World realWorld) {
             BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
             if (waterNeighborPos != null) {
-                SporeGrowthSpawner.catalyzeAroundWater(realWorld, pos);
+                SporeGrowthSpawner.catalyzeAroundWater(realWorld, waterNeighborPos);
+                state = state.with(ModProperties.CATALYZED, true);
             }
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
