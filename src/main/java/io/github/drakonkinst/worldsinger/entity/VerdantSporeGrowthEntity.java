@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.entity;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.VerdantVineBranchBlock;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
@@ -141,7 +142,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         int weightBonus = 0;
         int vineNeighbors = 0;
         boolean hugsBlock = false;
-        for (Direction direction : CARDINAL_DIRECTIONS) {
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             mutable.set(pos.offset(direction));
             BlockState state = world.getBlockState(mutable);
             if (state.isIn(ModBlockTags.VERDANT_VINES)) {
@@ -254,7 +255,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         List<Direction> validDirections = new ArrayList<>(6);
         BlockPos pos = this.getBlockPos();
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (Direction direction : CARDINAL_DIRECTIONS) {
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             mutable.set(pos.offset(direction));
             if (this.canPlaceDecorator(world.getBlockState(mutable))) {
                 validDirections.add(direction);

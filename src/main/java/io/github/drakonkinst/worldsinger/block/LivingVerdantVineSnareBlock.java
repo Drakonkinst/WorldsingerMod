@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implements
@@ -49,14 +50,14 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
     }
 
     @Override
-    public boolean canReactToWater(World world, BlockPos pos, BlockState state) {
+    public boolean canReactToWater(BlockPos pos, BlockState state) {
         return !state.get(ModProperties.CATALYZED);
     }
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
-        if (!this.canReactToWater(world, pos, state)) {
+        if (!this.canReactToWater(pos, state)) {
             return false;
         }
 
@@ -67,6 +68,19 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
         SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
                 waterAmount, false, true, false, dir);
         return true;
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
+            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (this.canReactToWater(pos, state) && world instanceof World realWorld) {
+            BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
+            if (waterNeighborPos != null) {
+                SporeGrowthSpawner.catalyzeAroundWater(realWorld, pos);
+            }
+        }
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
+                neighborPos);
     }
 
     @Override

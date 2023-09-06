@@ -30,7 +30,6 @@ import net.minecraft.world.World;
 
 public final class SporeGrowthSpawner {
 
-    private static final Direction[] DIRECTIONS = Direction.values();
     private static final int WATER_AMOUNT_STILL = 250;
     private static final int WATER_AMOUNT_FLOWING = 25;
     private static final int MAX_WATER_AMOUNT = 2500;
@@ -103,11 +102,11 @@ public final class SporeGrowthSpawner {
 
         // Check for other blocks that can be catalyzed by this block
         List<Pair<BlockPos, WaterReactive>> neighborReactives = new ArrayList<>(6);
-        for (Direction direction : DIRECTIONS) {
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             BlockPos neighborPos = waterPos.offset(direction);
             BlockState neighborState = world.getBlockState(neighborPos);
             if (neighborState.getBlock() instanceof WaterReactiveBlock waterReactiveBlock
-                    && waterReactiveBlock.canReactToWater(world, neighborPos, neighborState)) {
+                    && waterReactiveBlock.canReactToWater(neighborPos, neighborState)) {
                 neighborReactives.add(Pair.of(neighborPos, waterReactiveBlock));
             } else if (neighborState.getFluidState()
                     .getFluid() instanceof WaterReactiveFluid waterReactiveFluid) {
@@ -155,7 +154,7 @@ public final class SporeGrowthSpawner {
             if (depth >= MAX_DEPTH) {
                 continue;
             }
-            for (Direction direction : DIRECTIONS) {
+            for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
                 queue.add(IntObjectPair.of(depth + 1, pos.offset(direction)));
             }
         }

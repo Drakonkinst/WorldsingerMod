@@ -10,7 +10,7 @@ public interface WaterReactiveBlock extends WaterReactive {
 
     Random random = Random.create();
 
-    boolean canReactToWater(World world, BlockPos pos, BlockState state);
+    boolean canReactToWater(BlockPos pos, BlockState state);
 
     boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random);

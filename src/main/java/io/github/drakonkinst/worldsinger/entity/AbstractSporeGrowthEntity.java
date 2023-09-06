@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SporeGrowthComponent;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -25,8 +26,6 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
-
-    protected static final Direction[] CARDINAL_DIRECTIONS = Direction.values();
 
     private static final int INITIAL_GROWTH_SPEED = 3;
     private static final int DIRECTION_ARRAY_SIZE = 6;
@@ -288,7 +287,7 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         BlockPos.Mutable mutable = pos.mutableCopy();
         World world = this.getWorld();
         AbstractSporeGrowthEntity.resetCatalyzed(world, pos);
-        for (Direction direction : CARDINAL_DIRECTIONS) {
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             AbstractSporeGrowthEntity.resetCatalyzed(world, mutable.set(pos.offset(direction)));
         }
     }

@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.entity.AbstractSporeGrowthEntity;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -12,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock implements
@@ -84,18 +86,31 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
     }
 
     @Override
-    public boolean canReactToWater(World world, BlockPos pos, BlockState state) {
+    public boolean canReactToWater(BlockPos pos, BlockState state) {
         return !state.get(ModProperties.CATALYZED);
     }
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
-        if (!this.canReactToWater(world, pos, state)) {
+        if (!this.canReactToWater(pos, state)) {
             return false;
         }
         LivingTwistingVerdantVineBlock.growInSameDirection(world, pos, state, random);
         return true;
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
+            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (this.canReactToWater(pos, state) && world instanceof World realWorld) {
+            BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
+            if (waterNeighborPos != null) {
+                SporeGrowthSpawner.catalyzeAroundWater(realWorld, pos);
+            }
+        }
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
+                neighborPos);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -75,7 +76,7 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        for (Direction direction : Direction.values()) {
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             BlockPos neighborPos = pos.offset(direction);
             BlockState neighborState = world.getBlockState(neighborPos);
 

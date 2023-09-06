@@ -6,8 +6,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
 public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKillable,
         WaterReactiveBlock {
@@ -28,7 +30,7 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     }
 
     @Override
-    public boolean canReactToWater(World world, BlockPos pos, BlockState state) {
+    public boolean canReactToWater(BlockPos pos, BlockState state) {
         return true;
     }
 
@@ -41,6 +43,19 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
                     waterAmount, true, false, false);
         }
         return true;
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
+            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (world instanceof World realWorld) {
+            BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
+            if (waterNeighborPos != null) {
+                SporeGrowthSpawner.catalyzeAroundWater(realWorld, pos);
+            }
+        }
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
+                neighborPos);
     }
 
     @Override
