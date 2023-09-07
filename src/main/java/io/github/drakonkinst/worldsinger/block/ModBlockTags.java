@@ -20,6 +20,7 @@ public final class ModBlockTags {
     public static final TagKey<Block> KILLS_SPORES = ModBlockTags.of("kills_spores");
     public static final TagKey<Block> SPORES_CAN_GROW = ModBlockTags.of("spores_can_grow");
     public static final TagKey<Block> SPORES_CAN_BREAK = ModBlockTags.of("spores_can_break");
+    public static final TagKey<Block> STEEL_ANVIL = ModBlockTags.of("steel_anvil");
 
     public static final TagKey<Block> FLUIDS_CANNOT_BREAK = ModBlockTags.ofCommon(
             "fluids_cannot_break");

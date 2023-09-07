@@ -2,15 +2,21 @@ package io.github.drakonkinst.worldsinger.item;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.material.ModArmorMaterials;
+import io.github.drakonkinst.worldsinger.material.ModToolMaterials;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ShovelItem;
+import net.minecraft.item.SwordItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -58,6 +64,16 @@ public final class ModItems {
             ModArmorMaterials.STEEL, ArmorItem.Type.LEGGINGS, new FabricItemSettings()));
     public static final Item STEEL_BOOTS = ModItems.register("steel_boots", new ArmorItem(
             ModArmorMaterials.STEEL, ArmorItem.Type.BOOTS, new FabricItemSettings()));
+    public static final Item STEEL_SWORD = ModItems.register("steel_sword", new SwordItem(
+            ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
+    public static final Item STEEL_PICKAXE = ModItems.register("steel_pickaxe", new PickaxeItem(
+            ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
+    public static final Item STEEL_AXE = ModItems.register("steel_axe", new AxeItem(
+            ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
+    public static final Item STEEL_SHOVEL = ModItems.register("steel_shovel", new ShovelItem(
+            ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
+    public static final Item STEEL_HOE = ModItems.register("steel_hoe", new HoeItem(
+            ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
 
     // Item Groups
     private static final ItemGroup WORLDSINGER_ITEM_GROUP = FabricItemGroup.builder()
@@ -108,6 +124,11 @@ public final class ModItems {
             itemGroup.add(ModItems.STEEL_INGOT);
             itemGroup.add(ModItems.STEEL_NUGGET);
             itemGroup.add(ModBlocks.STEEL_BLOCK);
+            itemGroup.add(ModItems.STEEL_SWORD);
+            itemGroup.add(ModItems.STEEL_AXE);
+            itemGroup.add(ModItems.STEEL_PICKAXE);
+            itemGroup.add(ModItems.STEEL_SHOVEL);
+            itemGroup.add(ModItems.STEEL_HOE);
             itemGroup.add(ModItems.STEEL_HELMET);
             itemGroup.add(ModItems.STEEL_CHESTPLATE);
             itemGroup.add(ModItems.STEEL_LEGGINGS);

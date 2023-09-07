@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.material;
 
+import com.google.common.base.Suppliers;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import java.util.function.Supplier;
 import net.minecraft.item.ArmorItem.Type;
@@ -21,11 +22,11 @@ public enum ModArmorMaterials implements ArmorMaterial {
     private final SoundEvent equipSound;
     private final float toughness;
     private final float knockbackResistance;
-    private final Supplier<Ingredient> repairIngredientSupplier;
+    private final Supplier<Ingredient> repairIngredient;
 
     ModArmorMaterials(String name, int durabilityMultiplier, int[] protectionValues,
             int enchantability, SoundEvent equipSound, float toughness, float knockbackResistance,
-            Supplier<Ingredient> repairIngredientSupplier) {
+            Supplier<Ingredient> repairIngredient) {
         this.name = name;
         this.durabilityMultiplier = durabilityMultiplier;
         this.protectionValues = protectionValues;
@@ -33,7 +34,8 @@ public enum ModArmorMaterials implements ArmorMaterial {
         this.equipSound = equipSound;
         this.toughness = toughness;
         this.knockbackResistance = knockbackResistance;
-        this.repairIngredientSupplier = repairIngredientSupplier;
+        this.repairIngredient = Suppliers.memoize(repairIngredient::get);
+
     }
 
     @Override
@@ -58,7 +60,7 @@ public enum ModArmorMaterials implements ArmorMaterial {
 
     @Override
     public Ingredient getRepairIngredient() {
-        return repairIngredientSupplier.get();
+        return repairIngredient.get();
     }
 
     @Override

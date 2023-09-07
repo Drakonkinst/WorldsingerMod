@@ -31,7 +31,8 @@
     "fluid.FlowableFluidMixin",
     "item.BlockItemMixin",
     "item.BoatItemMixin",
-    "item.BucketItemMixin"
+    "item.BucketItemMixin",
+    "screen.AnvilScreenHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
