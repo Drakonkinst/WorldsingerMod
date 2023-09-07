@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.client;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
@@ -22,39 +21,59 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.BoatEntity.Type;
+import net.minecraft.entity.vehicle.ChestBoatEntity;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity, BoatEntityModel> {
 
+    private static final int CHEST_VALUE = 8;
+    private static final int RAFT_VALUE = 4;
+
     private final Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels;
 
-    // TODO: Also need separate textures for the chest variants :/
-    private static final Map<SilverLiningLevel, Identifier> BOAT_LEVEL_TO_TEXTURE = ImmutableMap.of(
-            SilverLiningLevel.LOW,
-            new Identifier(ModConstants.MOD_ID, "textures/entity/boat/boat_silver_lining_low.png"),
-            SilverLiningLevel.MEDIUM,
-            new Identifier(ModConstants.MOD_ID,
-                    "textures/entity/boat/boat_silver_lining_medium.png"),
-            SilverLiningLevel.HIGH,
-            new Identifier(ModConstants.MOD_ID, "textures/entity/boat/boat_silver_lining_high.png"),
-            SilverLiningLevel.PERFECT,
-            new Identifier(ModConstants.MOD_ID,
-                    "textures/entity/boat/boat_silver_lining_perfect.png")
-    );
+    private static final Identifier[] TEXTURE_MAP = BoatSilverLiningFeatureRenderer.generateTextureMap();
 
-    private static final Map<SilverLiningLevel, Identifier> RAFT_LEVEL_TO_TEXTURE = ImmutableMap.of(
-            SilverLiningLevel.LOW,
-            new Identifier(ModConstants.MOD_ID, "textures/entity/boat/raft_silver_lining_low.png"),
-            SilverLiningLevel.MEDIUM,
-            new Identifier(ModConstants.MOD_ID,
-                    "textures/entity/boat/raft_silver_lining_medium.png"),
-            SilverLiningLevel.HIGH,
-            new Identifier(ModConstants.MOD_ID, "textures/entity/boat/raft_silver_lining_high.png"),
-            SilverLiningLevel.PERFECT,
-            new Identifier(ModConstants.MOD_ID,
-                    "textures/entity/boat/raft_silver_lining_perfect.png")
-    );
+    private static Identifier[] generateTextureMap() {
+        String[] entityTypes = {"boat", "chest_boat"};
+        String[] boatVariants = {"boat", "raft"};
+        String[] silverLevels = {"low", "medium", "high", "perfect"};
+        Identifier[] textureMap = new Identifier[entityTypes.length * boatVariants.length
+                * silverLevels.length];
+
+        int i = 0;
+        for (String entityType : entityTypes) {
+            for (String boatVariant : boatVariants) {
+                for (String silverLevel : silverLevels) {
+                    textureMap[i++] = new Identifier(ModConstants.MOD_ID,
+                            "textures/entity/" + entityType + "/" + boatVariant + "_silver_lining_"
+                                    + silverLevel + ".png");
+                }
+            }
+        }
+
+        return textureMap;
+    }
+
+    // Boat variant can be represented as a binary number
+    // Chest = 1 bit, Raft = 1 bit, Silver Lining State = 2 bits
+    // Returns a negative number if not silver-lined
+    private static int encodeBoatVariant(BoatEntity entity) {
+        SilverLinedComponent silverData = ModComponents.SILVER_LINED.get(entity);
+        float durabilityFraction =
+                (float) silverData.getSilverDurability()
+                        / silverData.getMaxSilverDurability();
+        SilverLiningLevel level = SilverLiningLevel.fromDurability(durabilityFraction);
+        if (level == SilverLiningLevel.NONE) {
+            return -1;
+        }
+
+        boolean hasChest = entity instanceof ChestBoatEntity;
+        boolean isRaft = entity.getVariant() == Type.BAMBOO;
+        int silverLiningValue = level.ordinal() - 1;
+        int encoded = (hasChest ? CHEST_VALUE : 0) + (isRaft ? RAFT_VALUE : 0) + silverLiningValue;
+        return encoded;
+    }
 
     protected static <T extends Entity> void renderModel(EntityModel<T> model, Identifier texture,
             MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
@@ -75,22 +94,13 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             BoatEntity entity, float limbAngle, float limbDistance, float tickDelta,
             float animationProgress, float headYaw, float headPitch) {
-        SilverLinedComponent silverData = ModComponents.SILVER_LINED.get(entity);
-        float durabilityFraction =
-                (float) silverData.getSilverDurability()
-                        / silverData.getMaxSilverDurability();
-        SilverLiningLevel level = SilverLiningLevel.fromDurability(durabilityFraction);
-        if (level == SilverLiningLevel.NONE) {
+        int encodedVariant = BoatSilverLiningFeatureRenderer.encodeBoatVariant(entity);
+        if (encodedVariant < 0) {
             return;
         }
-        Identifier identifier;
-        boolean isRaft = entity.getVariant() == Type.BAMBOO;
-        if (isRaft) {
-            identifier = RAFT_LEVEL_TO_TEXTURE.get(level);
-        } else {
-            identifier = BOAT_LEVEL_TO_TEXTURE.get(level);
-        }
-        BoatSilverLiningFeatureRenderer.renderModel(this.getModelForBoat(entity), identifier,
+
+        Identifier texture = TEXTURE_MAP[encodedVariant];
+        BoatSilverLiningFeatureRenderer.renderModel(this.getModelForBoat(entity), texture,
                 matrices,
                 vertexConsumers, light);
     }
