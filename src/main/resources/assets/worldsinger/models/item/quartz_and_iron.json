@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "worldsinger:item/quartz_and_iron"
+  }
+}
