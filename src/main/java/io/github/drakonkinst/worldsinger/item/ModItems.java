@@ -1,10 +1,12 @@
 package io.github.drakonkinst.worldsinger.item;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.material.ModArmorMaterials;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -40,6 +42,22 @@ public final class ModItems {
             new Item(new FabricItemSettings()));
     public static final Item SILVER_NUGGET = ModItems.register("silver_nugget",
             new Item(new FabricItemSettings()));
+
+    // Steel
+    public static final Item CRUDE_IRON = ModItems.register("crude_iron",
+            new Item(new FabricItemSettings()));
+    public static final Item STEEL_INGOT = ModItems.register("steel_ingot",
+            new Item(new FabricItemSettings()));
+    public static final Item STEEL_NUGGET = ModItems.register("steel_nugget",
+            new Item(new FabricItemSettings()));
+    public static final Item STEEL_HELMET = ModItems.register("steel_helmet", new ArmorItem(
+            ModArmorMaterials.STEEL, ArmorItem.Type.HELMET, new FabricItemSettings()));
+    public static final Item STEEL_CHESTPLATE = ModItems.register("steel_chestplate", new ArmorItem(
+            ModArmorMaterials.STEEL, ArmorItem.Type.CHESTPLATE, new FabricItemSettings()));
+    public static final Item STEEL_LEGGINGS = ModItems.register("steel_leggings", new ArmorItem(
+            ModArmorMaterials.STEEL, ArmorItem.Type.LEGGINGS, new FabricItemSettings()));
+    public static final Item STEEL_BOOTS = ModItems.register("steel_boots", new ArmorItem(
+            ModArmorMaterials.STEEL, ArmorItem.Type.BOOTS, new FabricItemSettings()));
 
     // Item Groups
     private static final ItemGroup WORLDSINGER_ITEM_GROUP = FabricItemGroup.builder()
@@ -77,11 +95,26 @@ public final class ModItems {
             itemGroup.add(ModBlocks.SALTSTONE_SILVER_ORE);
             itemGroup.add(ModItems.SALT);
             itemGroup.add(ModBlocks.SALT_BLOCK);
+
+            // Silver
             itemGroup.add(ModItems.RAW_SILVER);
             itemGroup.add(ModItems.SILVER_INGOT);
             itemGroup.add(ModItems.SILVER_NUGGET);
             itemGroup.add(ModBlocks.SILVER_BLOCK);
             itemGroup.add(ModBlocks.RAW_SILVER_BLOCK);
+
+            // Steel
+            itemGroup.add(ModItems.CRUDE_IRON);
+            itemGroup.add(ModItems.STEEL_INGOT);
+            itemGroup.add(ModItems.STEEL_NUGGET);
+            itemGroup.add(ModBlocks.STEEL_BLOCK);
+            itemGroup.add(ModItems.STEEL_HELMET);
+            itemGroup.add(ModItems.STEEL_CHESTPLATE);
+            itemGroup.add(ModItems.STEEL_LEGGINGS);
+            itemGroup.add(ModItems.STEEL_BOOTS);
+            itemGroup.add(ModBlocks.STEEL_ANVIL);
+            itemGroup.add(ModBlocks.CHIPPED_STEEL_ANVIL);
+            itemGroup.add(ModBlocks.DAMAGED_STEEL_ANVIL);
         });
     }
 

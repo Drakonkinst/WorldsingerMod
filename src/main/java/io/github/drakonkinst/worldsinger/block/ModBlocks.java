@@ -202,6 +202,40 @@ public final class ModBlocks {
                     .strength(5.0f, 6.0f)
     ), true);
 
+    // Steel
+    public static final Block STEEL_BLOCK = register("steel_block", new Block(
+            FabricBlockSettings.create()
+                    .requiresTool()
+                    // +1 strength of Iron Block, same blast resistance as End Stone
+                    .strength(6.0f, 9.0f)
+    ), true);
+    public static final Block STEEL_ANVIL = register("steel_anvil", new SteelAnvilBlock(
+            FabricBlockSettings.create()
+                    .requiresTool()
+                    // +1 strength of Iron Anvil, same blast resistance as Anvil
+                    .strength(6.0f, 1200.0f)
+                    .sounds(BlockSoundGroup.ANVIL)
+                    .pistonBehavior(PistonBehavior.BLOCK)
+    ), true);
+    public static final Block CHIPPED_STEEL_ANVIL = register("chipped_steel_anvil",
+            new SteelAnvilBlock(
+                    FabricBlockSettings.create()
+                            .requiresTool()
+                            // Same settings as Steel Anvil
+                            .strength(6.0f, 1200.0f)
+                            .sounds(BlockSoundGroup.ANVIL)
+                            .pistonBehavior(PistonBehavior.BLOCK)
+            ), true);
+    public static final Block DAMAGED_STEEL_ANVIL = register("damaged_steel_anvil",
+            new SteelAnvilBlock(
+                    FabricBlockSettings.create()
+                            .requiresTool()
+                            // Same settings as Steel Anvil
+                            .strength(6.0f, 1200.0f)
+                            .sounds(BlockSoundGroup.ANVIL)
+                            .pistonBehavior(PistonBehavior.BLOCK)
+            ), true);
+
     public static <T extends Block> T register(String id, T block, boolean shouldRegisterItem) {
         Identifier blockId = new Identifier(ModConstants.MOD_ID, id);
 
