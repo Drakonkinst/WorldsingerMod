@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.util.WaterReactive;
+import io.github.drakonkinst.worldsinger.world.WaterReactive;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;

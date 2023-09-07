@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.util;
+package io.github.drakonkinst.worldsinger.world;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

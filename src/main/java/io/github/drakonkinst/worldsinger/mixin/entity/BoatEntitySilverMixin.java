@@ -6,7 +6,7 @@ import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.item.ModItemTags;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
-import io.github.drakonkinst.worldsinger.util.SilverLined;
+import io.github.drakonkinst.worldsinger.world.SilverLined;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;

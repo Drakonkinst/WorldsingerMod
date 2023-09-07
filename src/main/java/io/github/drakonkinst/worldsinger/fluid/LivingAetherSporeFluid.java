@@ -1,11 +1,11 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
-import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -61,7 +61,7 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
             BlockPos blockPos = pos.add(offsetX, offsetY, offsetZ);
             if (world.getBlockState(blockPos).isOf(ModBlocks.DEAD_SPORE_SEA_BLOCK)
                     && world.getFluidState(blockPos).isStill()
-                    && !SporeKillable.isSporeKillingBlockNearby(world, blockPos)) {
+                    && !SporeKillingManager.isSporeKillingBlockNearby(world, blockPos)) {
                 world.setBlockState(blockPos, blockState);
             }
         }
@@ -74,7 +74,7 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
             FluidState neighborState = world.getFluidState(pos);
             if (neighborState.isIn(FluidTags.WATER)) {
                 if (state.getBlock() instanceof FluidBlock && world instanceof World realWorld) {
-                    SporeGrowthSpawner.catalyzeAroundWater(realWorld, pos);
+                    WaterReactionManager.catalyzeAroundWater(realWorld, pos);
                     world.setBlockState(pos, ModBlocks.VERDANT_VINE_BLOCK.getDefaultState().with(
                             ModProperties.CATALYZED, true), Block.NOTIFY_ALL);
                     return;

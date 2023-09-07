@@ -5,7 +5,7 @@ import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -114,7 +114,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
             // Spawn dissolving particles
             if (fluid instanceof AetherSporeFluid sporeFluid
                     && world instanceof ServerWorld serverWorld) {
-                SporeParticles.spawnBlockParticles(serverWorld, sporeFluid.getSporeType(),
+                SporeParticleSpawner.spawnBlockParticles(serverWorld, sporeFluid.getSporeType(),
                         pos, 0.6, 1.0);
             }
             waterloggable.tryDrainFluid(world, pos, blockState);
@@ -165,7 +165,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
             float fallDistance) {
         // Spawn splash particles upon landing (during stilling)
         if (fallDistance > 0.25f && world instanceof ServerWorld serverWorld) {
-            SporeParticles.spawnSplashParticles(serverWorld, aetherSporeType, entity,
+            SporeParticleSpawner.spawnSplashParticles(serverWorld, aetherSporeType, entity,
                     fallDistance, false);
         }
         super.onLandedUpon(world, state, pos, entity, fallDistance);
@@ -176,7 +176,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
             ProjectileEntity projectile) {
         // Spawn projectile particles upon landing (during stilling)
         if (world instanceof ServerWorld serverWorld) {
-            SporeParticles.spawnProjectileParticles(serverWorld, aetherSporeType,
+            SporeParticleSpawner.spawnProjectileParticles(serverWorld, aetherSporeType,
                     projectile.getPos());
         }
         super.onProjectileHit(world, state, hit, projectile);

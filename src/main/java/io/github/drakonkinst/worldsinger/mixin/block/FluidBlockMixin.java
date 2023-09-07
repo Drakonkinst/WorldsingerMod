@@ -5,7 +5,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.LivingAetherSporeFluid;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
@@ -49,7 +49,7 @@ public abstract class FluidBlockMixin {
         for (Direction direction : FLOW_DIRECTIONS) {
             BlockPos neighborPos = pos.offset(direction.getOpposite());
             if (world.getFluidState(neighborPos).isIn(FluidTags.WATER)) {
-                SporeGrowthSpawner.catalyzeAroundWater(world, neighborPos);
+                WaterReactionManager.catalyzeAroundWater(world, neighborPos);
                 world.setBlockState(neighborPos,
                         ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
                                 .with(ModProperties.CATALYZED, true));

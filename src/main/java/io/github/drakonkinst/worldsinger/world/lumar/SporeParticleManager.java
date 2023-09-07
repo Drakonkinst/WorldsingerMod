@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.world.lumar;
 
 import com.google.common.collect.ImmutableMap;
-import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.particle.SporeDustParticleEffect;
@@ -25,8 +24,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.Vector3f;
 
-// Represents a mote of spore particles, which can
-// actively damage entities it comes into contact with.
+// Creates spore particles that can interact with entities
 public final class SporeParticleManager {
 
     private static final float CACHED_SIZE_PRECISION = 20.0f;
@@ -67,9 +65,11 @@ public final class SporeParticleManager {
         double maxZ = z + radius;
 
         if (sporeType != AetherSporeType.DEAD) {
-            if (SporeKillable.isSporeKillingBlockNearbyForRange(world, minX, minY, minZ, maxX, maxY,
+            if (SporeKillingManager.isSporeKillingBlockNearbyForRange(world, minX, minY, minZ, maxX,
+                    maxY,
                     maxZ)
-                    || SporeKillable.checkNearbyEntitiesForRange(world, minX, minY, minZ, maxX,
+                    || SporeKillingManager.checkNearbyEntitiesForRange(world, minX, minY, minZ,
+                    maxX,
                     maxY,
                     maxZ)) {
                 sporeType = AetherSporeType.DEAD;
@@ -113,8 +113,8 @@ public final class SporeParticleManager {
     // These are client-side and have no effect
     public static void spawnDisplayParticles(World world, AetherSporeType sporeType, double x,
             double y, double z, float particleSize) {
-        if (SporeKillable.isSporeKillingBlockNearby(world, BlockPos.ofFloored(x, y, z))
-                || SporeKillable.checkNearbyEntities(world, new Vec3d(x, y, z))) {
+        if (SporeKillingManager.isSporeKillingBlockNearby(world, BlockPos.ofFloored(x, y, z))
+                || SporeKillingManager.checkNearbyEntities(world, new Vec3d(x, y, z))) {
             sporeType = AetherSporeType.DEAD;
         }
 

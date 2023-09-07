@@ -11,7 +11,8 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
@@ -109,7 +110,8 @@ public abstract class BoatEntityMovementMixin extends Entity {
             BlockState state = world.getBlockState(pos);
             if (state.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
                     && state.getBlock() instanceof SporeKillable sporeKillable) {
-                BlockState newBlockState = SporeKillable.convertToDeadVariant(sporeKillable, state);
+                BlockState newBlockState = SporeKillingManager.convertToDeadVariant(sporeKillable,
+                        state);
                 if (world.setBlockState(pos, newBlockState)) {
                     sporesKilled += 1;
                 }
@@ -137,7 +139,7 @@ public abstract class BoatEntityMovementMixin extends Entity {
                 double zOffset = paddleIndex == 1 ? vec3d.x : -vec3d.x;
                 Vec3d pos = new Vec3d(this.getX() + xOffset, this.getY(),
                         this.getZ() + zOffset);
-                SporeParticles.spawnRowingParticles(world,
+                SporeParticleSpawner.spawnRowingParticles(world,
                         lastAetherSporeFluid.getSporeType(), pos);
             }
         }

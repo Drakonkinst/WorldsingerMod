@@ -1,5 +1,6 @@
-package io.github.drakonkinst.worldsinger.registry;
+package io.github.drakonkinst.worldsinger.registry.datatable;
 
+import io.github.drakonkinst.worldsinger.registry.ModRegistries;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;

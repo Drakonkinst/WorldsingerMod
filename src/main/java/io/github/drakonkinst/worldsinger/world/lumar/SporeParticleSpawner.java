@@ -5,7 +5,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public class SporeParticles {
+// Spawns various kinds of spore particles
+public final class SporeParticleSpawner {
 
     // TODO: Should tune these values later
     // Splashing when landing on block or in a fluid
@@ -101,4 +102,6 @@ public class SporeParticles {
                 blockRadius, 0.0, blockRadius * 2.0 * heightMultiplier, 0.0, BLOCK_PARTICLE_SIZE,
                 BLOCK_PARTICLE_COUNT);
     }
+
+    private SporeParticleSpawner() {}
 }

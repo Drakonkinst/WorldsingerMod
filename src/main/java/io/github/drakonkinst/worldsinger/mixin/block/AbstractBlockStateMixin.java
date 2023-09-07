@@ -9,9 +9,10 @@ import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockAccessor;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockSettingsAccessor;
-import io.github.drakonkinst.worldsinger.registry.DataTable;
-import io.github.drakonkinst.worldsinger.registry.DataTables;
+import io.github.drakonkinst.worldsinger.registry.datatable.DataTable;
+import io.github.drakonkinst.worldsinger.registry.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import java.util.function.ToIntFunction;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -170,7 +171,7 @@ public abstract class AbstractBlockStateMixin {
         if (radius <= 0) {
             return;
         }
-        if (SporeKillable.killNearbySpores(world, pos, radius) > 0) {
+        if (SporeKillingManager.killNearbySpores(world, pos, radius) > 0) {
             // TODO: Play some kind of effect
         }
     }
@@ -180,7 +181,7 @@ public abstract class AbstractBlockStateMixin {
         if (!(state.getBlock() instanceof SporeKillable sporeKillable)) {
             return;
         }
-        if (SporeKillable.isSporeKillingBlockNearby(world, pos)) {
+        if (SporeKillingManager.isSporeKillingBlockNearby(world, pos)) {
             BlockState newBlockState = sporeKillable.getDeadSporeBlock()
                     .getStateWithProperties(state);
             world.setBlockState(pos, newBlockState);

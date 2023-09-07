@@ -6,7 +6,7 @@ import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.entity.SilverLinedBoatEntityData;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
-import io.github.drakonkinst.worldsinger.util.SilverLined;
+import io.github.drakonkinst.worldsinger.world.SilverLined;
 import java.util.List;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;

@@ -1,13 +1,13 @@
 package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SporeGrowthComponent;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
@@ -166,13 +166,13 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         World world = this.getWorld();
         BlockPos pos = this.getBlockPos();
 
-        if (SporeKillable.isSporeKillingBlockNearby(world, pos)) {
+        if (SporeKillingManager.isSporeKillingBlockNearby(world, pos)) {
             this.drainSpores(SPORE_DRAIN_NEAR_SPORE_KILLABLE);
         }
 
         if (sporeGrowthData.getWater() < sporeGrowthData.getSpores()
                 && world.getFluidState(pos).isIn(FluidTags.WATER)) {
-            int waterAbsorbed = SporeGrowthSpawner.absorbWaterAtBlock(world, pos);
+            int waterAbsorbed = WaterReactionManager.absorbWaterAtBlock(world, pos);
             if (waterAbsorbed > 0) {
                 sporeGrowthData.setWater(sporeGrowthData.getWater() + waterAbsorbed);
             }

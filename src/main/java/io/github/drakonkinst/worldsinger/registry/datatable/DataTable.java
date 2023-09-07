@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.registry;
+package io.github.drakonkinst.worldsinger.registry.datatable;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;

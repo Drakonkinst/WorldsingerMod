@@ -3,7 +3,7 @@ package io.github.drakonkinst.worldsinger.block;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticles;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -60,9 +60,11 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
             // Spawn particles based on fall distance
             int fallDistance = fallingBlockEntity.getFallingBlockPos().getY() - pos.getY();
             if (fallDistance >= 4) {
-                SporeParticles.spawnBlockParticles(serverWorld, aetherSporeType, pos, 1.5, 0.45);
+                SporeParticleSpawner.spawnBlockParticles(serverWorld, aetherSporeType, pos, 1.5,
+                        0.45);
             } else {
-                SporeParticles.spawnBlockParticles(serverWorld, aetherSporeType, pos, 0.75, 0.5);
+                SporeParticleSpawner.spawnBlockParticles(serverWorld, aetherSporeType, pos, 0.75,
+                        0.5);
             }
         }
     }
@@ -70,7 +72,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     @Override
     public void onDestroyedOnLanding(World world, BlockPos pos, FallingBlockEntity entity) {
         if (world instanceof ServerWorld serverWorld) {
-            SporeParticles.spawnBlockParticles(serverWorld, aetherSporeType, pos, 2.5, 0.45);
+            SporeParticleSpawner.spawnBlockParticles(serverWorld, aetherSporeType, pos, 2.5, 0.45);
         }
     }
 
@@ -102,7 +104,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         // Spawn splash particles on landing
         if (fallDistance > 0.25f && world instanceof ServerWorld serverWorld
                 && !(entity instanceof FallingBlockEntity)) {
-            SporeParticles.spawnSplashParticles(serverWorld, aetherSporeType, entity,
+            SporeParticleSpawner.spawnSplashParticles(serverWorld, aetherSporeType, entity,
                     fallDistance, false);
         }
         super.onLandedUpon(world, state, pos, entity, fallDistance);
@@ -114,7 +116,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         // Spawn projectile particles on hit
         if (world instanceof ServerWorld serverWorld) {
             Vec3d pos = projectile.getPos();
-            SporeParticles.spawnProjectileParticles(serverWorld, aetherSporeType, pos);
+            SporeParticleSpawner.spawnProjectileParticles(serverWorld, aetherSporeType, pos);
         }
         super.onProjectileHit(world, state, hit, projectile);
     }
@@ -123,7 +125,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
         // Spawn breaking particles on break
         if (world instanceof ServerWorld serverWorld) {
-            SporeParticles.spawnBlockParticles(serverWorld, aetherSporeType, pos, 0.6, 1.0);
+            SporeParticleSpawner.spawnBlockParticles(serverWorld, aetherSporeType, pos, 0.6, 1.0);
         }
         super.onBroken(world, pos, state);
     }

@@ -2,7 +2,7 @@ package io.github.drakonkinst.worldsinger.client;
 
 import io.github.drakonkinst.worldsinger.api.ModApi;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
-import io.github.drakonkinst.worldsinger.util.SilverLined;
+import io.github.drakonkinst.worldsinger.world.SilverLined;
 import net.minecraft.client.item.ClampedModelPredicateProvider;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.util.Identifier;

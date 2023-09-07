@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
+import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -76,7 +77,7 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
         if (this.canReactToWater(pos, state) && world instanceof World realWorld) {
             BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
             if (waterNeighborPos != null) {
-                SporeGrowthSpawner.catalyzeAroundWater(realWorld, waterNeighborPos);
+                WaterReactionManager.catalyzeAroundWater(realWorld, waterNeighborPos);
                 state = state.with(ModProperties.CATALYZED, true);
             }
         }
