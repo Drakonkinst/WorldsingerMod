@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.AxeItem;
+import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -74,6 +75,12 @@ public final class ModItems {
             ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
     public static final Item STEEL_HOE = ModItems.register("steel_hoe", new HoeItem(
             ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
+    public static final Item QUARTZ_AND_STEEL = ModItems.register("quartz_and_steel",
+            new FlintAndSteelItem(new FabricItemSettings().maxDamage(88)));
+    public static final Item FLINT_AND_IRON = ModItems.register("flint_and_iron",
+            new FaultyFirestarterItem(0.33f, new FabricItemSettings().maxDamage(64)));
+    public static final Item QUARTZ_AND_IRON = ModItems.register("quartz_and_iron",
+            new FaultyFirestarterItem(0.33f, new FabricItemSettings().maxDamage(88)));
 
     // Item Groups
     private static final ItemGroup WORLDSINGER_ITEM_GROUP = FabricItemGroup.builder()
@@ -136,6 +143,9 @@ public final class ModItems {
             itemGroup.add(ModBlocks.STEEL_ANVIL);
             itemGroup.add(ModBlocks.CHIPPED_STEEL_ANVIL);
             itemGroup.add(ModBlocks.DAMAGED_STEEL_ANVIL);
+            itemGroup.add(ModItems.QUARTZ_AND_STEEL);
+            itemGroup.add(ModItems.FLINT_AND_IRON);
+            itemGroup.add(ModItems.QUARTZ_AND_IRON);
         });
     }
 

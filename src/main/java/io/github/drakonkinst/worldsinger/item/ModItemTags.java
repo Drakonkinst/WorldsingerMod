@@ -8,7 +8,9 @@ import net.minecraft.util.Identifier;
 
 public final class ModItemTags {
 
-    public static final TagKey<Item> SALT = ModItemTags.ofCommon("salt");
+    public static final TagKey<Item> FLINT_AND_STEEL_VARIANTS = ModItemTags.of(
+            "flint_and_steel_variants");
+
     public static final TagKey<Item> SILVER_INGOTS = ModItemTags.ofCommon("silver_ingots");
 
     private static TagKey<Item> of(String id) {

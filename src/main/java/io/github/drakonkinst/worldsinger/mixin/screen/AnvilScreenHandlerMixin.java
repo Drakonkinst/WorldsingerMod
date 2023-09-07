@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AnvilScreenHandler.class)
-public class AnvilScreenHandlerMixin {
+public abstract class AnvilScreenHandlerMixin {
 
     @Unique
     // Half the chance for a steel anvil to break
