@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "x",
+    "x",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "x": {
+      "tag": "c:steel_ingots"
+    }
+  },
+  "result": {
+    "item": "worldsinger:steel_sword"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "x x",
+    "xxx",
+    "xxx"
+  ],
+  "key": {
+    "x": {
+      "tag": "c:steel_ingots"
+    }
+  },
+  "result": {
+    "item": "worldsinger:steel_chestplate"
+  }
+}

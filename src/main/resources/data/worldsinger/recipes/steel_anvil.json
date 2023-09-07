@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    " x ",
+    "xxx"
+  ],
+  "key": {
+    "#": {
+      "tag": "c:steel_blocks"
+    },
+    "x": {
+      "tag": "c:steel_ingots"
+    }
+  },
+  "result": {
+    "item": "worldsinger:steel_anvil"
+  }
+}

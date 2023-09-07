@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "xxx",
+    "x x",
+    "x x"
+  ],
+  "key": {
+    "x": {
+      "tag": "c:steel_ingots"
+    }
+  },
+  "result": {
+    "item": "worldsinger:steel_leggings"
+  }
+}
