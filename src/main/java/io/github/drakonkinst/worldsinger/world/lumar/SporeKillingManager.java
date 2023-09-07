@@ -9,6 +9,7 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.registry.datatable.DataTable;
 import io.github.drakonkinst.worldsinger.registry.datatable.DataTables;
+import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.List;
 import net.minecraft.block.Block;
@@ -46,6 +47,9 @@ public final class SporeKillingManager {
 
             // Kill SporeKillable block
             if (blockState.getBlock() instanceof SporeKillable sporeKillable) {
+                if (BlockPosUtil.isInvestitureBlocked(world, pos, currentPos)) {
+                    continue;
+                }
                 blockState = convertToDeadVariant(sporeKillable, blockState);
                 wasChanged = true;
             }
@@ -55,6 +59,9 @@ public final class SporeKillingManager {
                 FluidState fluidState = blockState.getFluidState();
                 if (fluidState.isIn(ModFluidTags.AETHER_SPORES) && !fluidState.isIn(
                         ModFluidTags.DEAD_SPORES)) {
+                    if (BlockPosUtil.isInvestitureBlocked(world, pos, currentPos)) {
+                        continue;
+                    }
                     blockState = blockState.with(ModProperties.FLUIDLOGGED, deadSporeFluidIndex);
                     wasChanged = true;
                 }
@@ -78,9 +85,14 @@ public final class SporeKillingManager {
             }
 
             int distance = getDistance(pos, currentPos);
-            if (dataTable.getIntForBlock(blockState) >= distance) {
-                return true;
+            if (dataTable.getIntForBlock(blockState) < distance) {
+                continue;
             }
+
+            if (BlockPosUtil.isInvestitureBlocked(world, currentPos, pos)) {
+                continue;
+            }
+            return true;
         }
         return false;
     }
@@ -130,6 +142,7 @@ public final class SporeKillingManager {
         int searchMaxY = maxY + MAX_BLOCK_RADIUS;
         int searchMaxZ = maxZ + MAX_BLOCK_RADIUS;
 
+        BlockPos.Mutable closestPos = new BlockPos.Mutable();
         for (BlockPos searchPos : BlockPos.iterate(searchMinX, searchMinY, searchMinZ, searchMaxX,
                 searchMaxY, searchMaxZ)) {
             BlockState blockState = world.getBlockState(searchPos);
@@ -137,13 +150,28 @@ public final class SporeKillingManager {
                 continue;
             }
 
-            int distance = getDistanceBetweenPointAndCube(searchPos.getX(),
-                    searchPos.getY(), searchPos.getZ(), minX, minY, minZ, maxX, maxY, maxZ);
-            if (dataTable.getIntForBlock(blockState) >= distance) {
-                return true;
+            SporeKillingManager.calcClosestPointOnCuboid(searchPos.getX(),
+                    searchPos.getY(), searchPos.getZ(), minX, minY, minZ, maxX, maxY, maxZ,
+                    closestPos);
+            int distance = getDistance(searchPos, closestPos);
+            if (dataTable.getIntForBlock(blockState) < distance) {
+                continue;
             }
+
+            if (BlockPosUtil.isInvestitureBlocked(world, searchPos, closestPos)) {
+                continue;
+            }
+            return true;
         }
         return false;
+    }
+
+    private static void calcClosestPointOnCuboid(int x, int y, int z, int minX, int minY,
+            int minZ, int maxX, int maxY, int maxZ, BlockPos.Mutable mutable) {
+        int closestX = clamp(x, minX, maxX);
+        int closestY = clamp(y, minY, maxY);
+        int closestZ = clamp(z, minZ, maxZ);
+        mutable.set(closestX, closestY, closestZ);
     }
 
     private static int getDistanceBetweenPointAndCube(int x, int y, int z, int minX, int minY,
