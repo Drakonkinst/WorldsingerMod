@@ -14,9 +14,11 @@ import org.jetbrains.annotations.NotNull;
 public final class DataTables {
 
     public static final RegistryKey<DataTable> SPORE_KILLING_RADIUS = DataTables.of(
-            "spore_killing_radius");
-    public static final RegistryKey<DataTable> ENTITY_WEIGHT = DataTables.of(
-            "entity_weight");
+            "block/spore_killing_radius");
+    public static final RegistryKey<DataTable> BLOCK_IRON_CONTENT = DataTables.of(
+            "block/iron_content");
+    public static final RegistryKey<DataTable> BLOCK_STEEL_CONTENT = DataTables.of(
+            "block/steel_content");
 
     private static final Int2ObjectMap<DataTable> dummyDataTables = new Int2ObjectArrayMap<>();
 

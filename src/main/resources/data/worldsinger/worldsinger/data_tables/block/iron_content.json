@@ -1,0 +1,27 @@
+{
+  "default": 0,
+  "entries": {
+    "minecraft:iron_block": 5,
+    "#minecraft:anvil": 5,
+    "minecraft:raw_iron_block": 4,
+    "minecraft:cauldron": 3,
+    "minecraft:hopper": 2,
+    "minecraft:iron_door": 2,
+    "minecraft:iron_trapdoor": 2,
+    "minecraft:iron_bars": 2,
+    "minecraft:iron_ore": 2,
+    "minecraft:deepslate_iron_ore": 2,
+    "minecraft:blast_furnace": 2,
+    "minecraft:smithing_table": 2,
+    "minecraft:stonecutter": 2,
+    "minecraft:lantern": 1,
+    "minecraft:soul_lantern": 1,
+    "minecraft:activator_rail": 1,
+    "minecraft:detector_rail": 1,
+    "minecraft:rail": 1,
+    "minecraft:heavy_weighted_pressure_plate": 1,
+    "minecraft:piston": 1,
+    "minecraft:sticky_piston": 1,
+    "minecraft:tripwire_hook": 1
+  }
+}

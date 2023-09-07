@@ -1,0 +1,8 @@
+{
+  "default": 0,
+  "entries": {
+    "worldsinger:saltstone_silver_ore": 2,
+    "worldsinger:raw_silver_block": 4,
+    "worldsinger:silver_block": 5
+  }
+}
