@@ -21,7 +21,6 @@ public final class ModBlockTags {
     public static final TagKey<Block> SPORES_CAN_GROW = ModBlockTags.of("spores_can_grow");
     public static final TagKey<Block> SPORES_CAN_BREAK = ModBlockTags.of("spores_can_break");
 
-    public static final TagKey<Block> SHEAR_MINEABLE = ModBlockTags.ofCommon("shear_mineable");
     public static final TagKey<Block> FLUIDS_CANNOT_BREAK = ModBlockTags.ofCommon(
             "fluids_cannot_break");
 

@@ -34,6 +34,7 @@ public final class ModBlocks {
     public static final Block DEAD_SPORE_BLOCK = register("dead_spore_block",
             new AetherSporeBlock(AetherSporeType.DEAD, ModBlocks.DEAD_SPORE_SEA_BLOCK,
                     FabricBlockSettings.create()
+                            // 0.5x strength of living version
                             .strength(0.5f)
                             .mapColor(MapColor.GRAY)
                             .sounds(BlockSoundGroup.SAND)
@@ -41,6 +42,7 @@ public final class ModBlocks {
     public static final Block DEAD_VERDANT_VINE_BLOCK = register("dead_verdant_vine_block",
             new VerdantVineBlock(
                     FabricBlockSettings.create()
+                            // 0.5x strength of living version
                             .strength(1.0f)
                             .sounds(BlockSoundGroup.WOOD)
                             .ticksRandomly()
@@ -48,6 +50,7 @@ public final class ModBlocks {
     public static final Block DEAD_VERDANT_VINE_BRANCH = register("dead_verdant_vine_branch",
             new VerdantVineBranchBlock(
                     FabricBlockSettings.create()
+                            // 0.5x strength of living version
                             .strength(0.4f)
                             .nonOpaque()
                             .ticksRandomly()
@@ -58,6 +61,7 @@ public final class ModBlocks {
                             .solid()
                             .noCollision()
                             .requiresTool()
+                            // 0.5x strength of living version
                             .strength(0.4f)
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)
@@ -65,6 +69,7 @@ public final class ModBlocks {
     public static final Block DEAD_TWISTING_VERDANT_VINES = register("dead_twisting_verdant_vines",
             new TwistingVerdantVineBlock(
                     FabricBlockSettings.create()
+                            // 0.5x strength of living version
                             .strength(0.2f)
                             .noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
@@ -75,6 +80,7 @@ public final class ModBlocks {
             "dead_twisting_verdant_vines_plant",
             new TwistingVerdantVineStemBlock(
                     FabricBlockSettings.create()
+                            // 0.5x strength of living version
                             .strength(0.2f)
                             .noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
@@ -108,13 +114,17 @@ public final class ModBlocks {
                     ), true);
     public static final Block VERDANT_VINE_BLOCK = register("verdant_vine_block",
             new LivingVerdantVineBlock(
-                    FabricBlockSettings.create().strength(2.0f).sounds(BlockSoundGroup.WOOD)
+                    FabricBlockSettings.create()
+                            // Same strength as log
+                            .strength(2.0f)
+                            .sounds(BlockSoundGroup.WOOD)
                             .ticksRandomly()
             ), true);
     public static final Block VERDANT_VINE_BRANCH = register(
             "verdant_vine_branch",
             new LivingVerdantVineBranchBlock(
                     FabricBlockSettings.create()
+                            // 2x the strength of Chorus Plant
                             .strength(0.8f)
                             .nonOpaque()
                             .ticksRandomly()
@@ -125,6 +135,7 @@ public final class ModBlocks {
                             .solid()
                             .noCollision()
                             .requiresTool()
+                            // Same strength as branch
                             .strength(0.8f)
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)
@@ -132,6 +143,7 @@ public final class ModBlocks {
     public static final Block TWISTING_VERDANT_VINES = register("twisting_verdant_vines",
             new LivingTwistingVerdantVineBlock(
                     FabricBlockSettings.create()
+                            // Same strength as Ladder
                             .strength(0.4f)
                             .noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
@@ -142,6 +154,7 @@ public final class ModBlocks {
             "twisting_verdant_vines_plant",
             new LivingTwistingVerdantVineStemBlock(
                     FabricBlockSettings.create()
+                            // Same strength as Twisting Verdant Vines
                             .strength(0.4f)
                             .noCollision()
                             .sounds(BlockSoundGroup.WEEPING_VINES)
@@ -153,32 +166,39 @@ public final class ModBlocks {
     public static final Block SALTSTONE = register("saltstone",
             new Block(FabricBlockSettings.create()
                     .requiresTool()
+                    // Slightly easier to break than Cobblestone
                     .strength(1.5f, 6.0f)
             ), true);
     public static final Block SALTSTONE_SALT_ORE = register("saltstone_salt_ore",
             new ExperienceDroppingBlock(FabricBlockSettings.create()
                     .requiresTool()
-                    .strength(3.0f, 3.0f)
+                    // Slightly easier to break than Stone Coal Ore
+                    .strength(2.5f, 3.0f)
             ), true);
     public static final Block SALTSTONE_SILVER_ORE = register("saltstone_silver_ore",
             new ExperienceDroppingBlock(FabricBlockSettings.create()
                     .requiresTool()
-                    .strength(3.0f, 3.0f)
+                    // Slightly easier to break than Stone Iron/Gold Ore
+                    .strength(2.5f, 3.0f)
             ), true);
     public static final Block SALT_BLOCK = register("salt_block", new Block(
             FabricBlockSettings.create()
                     .requiresTool()
-                    .strength(5.0f, 6.0f)
+                    // Same strength as Calcite
+                    .strength(0.75f)
+                    .sounds(BlockSoundGroup.CALCITE)
     ), true);
     public static final Block SILVER_BLOCK = register("silver_block", new Block(
             FabricBlockSettings.create()
                     .requiresTool()
-                    .strength(5.0f, 6.0f)
+                    // Same strength as Gold Block
+                    .strength(3.0f, 6.0f)
                     .sounds(BlockSoundGroup.METAL)
     ), true);
     public static final Block RAW_SILVER_BLOCK = register("raw_silver_block", new Block(
             FabricBlockSettings.create()
                     .requiresTool()
+                    // Same strength as Raw Gold Block
                     .strength(5.0f, 6.0f)
     ), true);
 
