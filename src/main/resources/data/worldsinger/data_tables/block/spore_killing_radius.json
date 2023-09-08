@@ -1,4 +1,5 @@
 {
+  "type": "block",
   "default": 0,
   "entries": {
     "worldsinger:saltstone_silver_ore": 3,

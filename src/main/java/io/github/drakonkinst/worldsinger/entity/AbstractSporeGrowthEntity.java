@@ -170,7 +170,6 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         if (currentForce == null || lastPos == null || !lastPos.equals(this.getBlockPos())) {
             BlockPos pos = this.getBlockPos();
             currentForce = SporeGrowthMovement.calcExternalForce(this.getWorld(), pos);
-            ModConstants.LOGGER.info("CURRENT FORCE " + currentForce);
             lastPos = pos;
         }
     }

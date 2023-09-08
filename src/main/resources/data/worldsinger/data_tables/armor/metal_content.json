@@ -1,4 +1,5 @@
 {
+  "type": "item",
   "default": 0,
   "entries": {
     "minecraft:iron_helmet": 5,

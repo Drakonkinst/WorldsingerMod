@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.world.lumar;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.registry.datatable.DataTable;
-import io.github.drakonkinst.worldsinger.registry.datatable.DataTables;
+import io.github.drakonkinst.worldsinger.datatable.DataTable;
+import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.MetalQueryManager;
@@ -30,8 +30,7 @@ public final class SporeGrowthMovement {
     }
 
     private static void calcBlockExternalForce(World world, BlockPos pos, Vector3d force) {
-        DataTable metalContentTable = DataTables.getOrElse(world, DataTables.BLOCK_METAL_CONTENT,
-                0);
+        DataTable metalContentTable = DataTables.get(DataTables.BLOCK_METAL_CONTENT);
 
         int minX = pos.getX() - MAX_SEARCH_RADIUS;
         int minY = pos.getY() - MAX_SEARCH_RADIUS;
@@ -85,10 +84,8 @@ public final class SporeGrowthMovement {
 
     // This is so spaghetti I'm so sorry
     private static void calcEntityExternalForce(World world, BlockPos pos, Vector3d force) {
-        DataTable metalContentTable = DataTables.getOrElse(world, DataTables.ENTITY_METAL_CONTENT,
-                0);
-        DataTable armorMetalContentTable = DataTables.getOrElse(world,
-                DataTables.ARMOR_METAL_CONTENT, 0);
+        DataTable metalContentTable = DataTables.get(DataTables.ENTITY_METAL_CONTENT);
+        DataTable armorMetalContentTable = DataTables.get(DataTables.ARMOR_METAL_CONTENT);
         Box box = new Box(pos).expand(MAX_SEARCH_RADIUS);
         double forceX = 0;
         double forceY = 0;

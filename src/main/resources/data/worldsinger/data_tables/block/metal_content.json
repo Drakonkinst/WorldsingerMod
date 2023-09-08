@@ -1,4 +1,5 @@
 {
+  "type": "block",
   "default": 0,
   "entries": {
     "worldsinger:silver_block": 9,

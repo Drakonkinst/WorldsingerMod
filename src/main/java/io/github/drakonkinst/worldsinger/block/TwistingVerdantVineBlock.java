@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
@@ -88,8 +87,7 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         super.randomTick(state, world, pos, random);
         // Decay over time
-        if (LumarSeethe.areSporesFluidized(world) && !state.get(Properties.PERSISTENT)
-                && !world.isRaining() && world.isSkyVisible(pos.up())) {
+        if (VerdantVineBlock.canDecay(world, pos, state, random)) {
             world.breakBlock(pos, true);
         }
     }

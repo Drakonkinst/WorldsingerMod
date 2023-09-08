@@ -1,144 +1,50 @@
 package io.github.drakonkinst.worldsinger.datatable;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
-import io.github.drakonkinst.worldsinger.util.json.JsonStack;
-import io.github.drakonkinst.worldsinger.util.json.JsonType;
-import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.minecraft.resource.JsonDataLoader;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
-import org.apache.commons.lang3.StringUtils;
 
-public class DataTables extends JsonDataLoader implements IdentifiableResourceReloadListener {
+public final class DataTables {
 
-    public static DataTables INSTANCE;
+    public static final Identifier ARMOR_METAL_CONTENT = DataTables.of("armor/metal_content");
+    public static final Identifier BLOCK_METAL_CONTENT = DataTables.of("block/metal_content");
+    public static final Identifier SPORE_KILLING_RADIUS = DataTables.of(
+            "block/spore_killing_radius");
+    public static final Identifier ENTITY_METAL_CONTENT = DataTables.of("entity/metal_content");
 
-    private static final DataTable DUMMY = new DataTable(DataTableType.MISC, 0,
-            new Object2IntArrayMap<>(), null);
-    private static final Identifier IDENTIFIER = new Identifier(ModConstants.MOD_ID, "data_tables");
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final DataTableType[] DATA_TABLE_TYPES = DataTableType.values();
+    public static void initialize() {}
 
-    private final Map<Identifier, DataTable> dataTables = new HashMap<>();
-    private boolean tagsResolved = false;
-
-    public DataTables() {
-        super(GSON, "data_tables");
-        INSTANCE = this;
-    }
-
-    public DataTable get(Identifier id) {
-        if (!tagsResolved) {
-            ModConstants.LOGGER.warn("Attempting to access data table " + id
-                    + " before tags are fully resolved, results may be inaccurate");
-        }
-        return dataTables.getOrDefault(id, DUMMY);
-    }
-
-    @Override
-    protected void apply(Map<Identifier, JsonElement> data, ResourceManager manager,
-            Profiler profiler) {
-        tagsResolved = false;
-        dataTables.clear();
-        data.forEach(this::loadDataTable);
-        ModConstants.LOGGER.info("Loaded " + dataTables.size() + " data tables");
-    }
-
-    private void loadDataTable(Identifier dataTableId, JsonElement element) {
-        JsonStack jsonStack = new JsonStack(GSON, element);
-        jsonStack.allow("replace", "type", "default", "entries");
-
-        boolean replace = jsonStack.getBooleanOrElse("replace", false);
-        int defaultValue = jsonStack.maybeInt("default").orElse(0);
-        Optional<String> typeStr = jsonStack.maybeString("type");
-        DataTableType type = typeStr.map(str -> getMatchingType(str.toLowerCase()))
-                .orElse(DataTableType.MISC);
-
-        Object2IntMap<Identifier> entryTable = new Object2IntArrayMap<>();
-        Object2IntMap<Identifier> unresolvedTags = null;
-        jsonStack.push("entries");
-        for (Map.Entry<String, JsonElement> entry : jsonStack.peek().entrySet()) {
-            String key = entry.getKey();
-            JsonElement valueEl = entry.getValue();
-            int value;
-            if (JsonType.NUMBER.is(valueEl)) {
-                value = JsonType.NUMBER.cast(valueEl).getAsInt();
-            } else {
-                jsonStack.addError("Expected data table entry value to be an integer");
-                continue;
-            }
-
-            if (key.startsWith("#")) {
-                if (unresolvedTags == null) {
-                    unresolvedTags = new Object2IntArrayMap<>();
-                }
-                String tag = key.substring(1);
-                unresolvedTags.put(new Identifier(tag), value);
-            } else {
-                entryTable.put(new Identifier(key), value);
-            }
-        }
-
-        List<String> errors = jsonStack.getErrors();
-        if (!errors.isEmpty()) {
+    public static DataTable get(Identifier id) {
+        if (DataTableRegistry.INSTANCE == null) {
             ModConstants.LOGGER.error(
-                    "Failed to parse data table " + dataTableId + ": " + StringUtils.join(errors));
-            return;
+                    "Error: Attempted to access data tables but data tables have not been initialized");
         }
-
-        if (dataTables.containsKey(dataTableId) && !replace) {
-            DataTable existingDataTable = dataTables.get(dataTableId);
-            if (existingDataTable.getType() != type) {
-                ModConstants.LOGGER.warn(
-                        "Tried to override data table but data table types do not match: expected "
-                                + existingDataTable.getType().getName() + ", got "
-                                + type.getName());
-                return;
-            }
-            existingDataTable.merge(entryTable, unresolvedTags);
-        } else {
-            dataTables.put(dataTableId,
-                    new DataTable(type, defaultValue, entryTable, unresolvedTags));
-        }
+        // Temp check
+        // if (!DataTables.contains(id)) {
+        //     ModConstants.LOGGER.warn("Data table " + id + " does not exist, returning dummy");
+        // }
+        return DataTableRegistry.INSTANCE.get(id);
     }
 
-    private DataTableType getMatchingType(String typeStr) {
-        for (DataTableType type : DATA_TABLE_TYPES) {
-            if (type.getName().equals(typeStr)) {
-                return type;
-            }
+    public static Optional<DataTable> getOptional(Identifier id) {
+        if (DataTableRegistry.INSTANCE == null) {
+            ModConstants.LOGGER.error(
+                    "Error: Attempted to access data tables but data tables have not been initialized");
         }
-        return DataTableType.MISC;
+        return DataTableRegistry.INSTANCE.getOptional(id);
     }
 
-    public void resolveTags() {
-        int numResolvedTables = 0;
-        for (Map.Entry<Identifier, DataTable> entry : dataTables.entrySet()) {
-            List<Identifier> failedTags = entry.getValue().resolveTags();
-            if (failedTags != null && !failedTags.isEmpty()) {
-                ModConstants.LOGGER.error("Failed to resolve tags for data table " + entry.getKey()
-                        + ": Unrecognized tags " + StringUtils.join(
-                        failedTags.stream().map(Identifier::toString)));
-            } else {
-                numResolvedTables++;
-            }
+    public static boolean contains(Identifier id) {
+        if (DataTableRegistry.INSTANCE == null) {
+            ModConstants.LOGGER.error(
+                    "Error: Attempted to access data tables but data tables have not been initialized");
         }
-        ModConstants.LOGGER.info("Resolved tags for " + numResolvedTables + " data tables");
-        tagsResolved = true;
+        return DataTableRegistry.INSTANCE.contains(id);
     }
 
-    @Override
-    public Identifier getFabricId() {
-        return IDENTIFIER;
+    private static Identifier of(String id) {
+        return new Identifier(ModConstants.MOD_ID, id);
     }
+
+    private DataTables() {}
 }

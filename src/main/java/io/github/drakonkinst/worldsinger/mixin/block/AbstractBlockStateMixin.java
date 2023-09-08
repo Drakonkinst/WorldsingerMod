@@ -5,12 +5,12 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
+import io.github.drakonkinst.worldsinger.datatable.DataTable;
+import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockAccessor;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockSettingsAccessor;
-import io.github.drakonkinst.worldsinger.registry.datatable.DataTable;
-import io.github.drakonkinst.worldsinger.registry.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import java.util.function.ToIntFunction;
@@ -166,7 +166,7 @@ public abstract class AbstractBlockStateMixin {
         if (!state.isIn(ModBlockTags.KILLS_SPORES)) {
             return;
         }
-        DataTable dataTable = DataTables.getOrElse(world, DataTables.SPORE_KILLING_RADIUS, 0);
+        DataTable dataTable = DataTables.get(DataTables.SPORE_KILLING_RADIUS);
         int radius = dataTable.getIntForBlock(state);
         if (radius <= 0) {
             return;
