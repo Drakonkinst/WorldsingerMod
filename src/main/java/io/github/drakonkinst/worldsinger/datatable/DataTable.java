@@ -51,7 +51,7 @@ public class DataTable {
         if (type == DataTableType.ITEM) {
             return resolveItemTags();
         }
-        return null;
+        return unresolvedTags.keySet().stream().toList();
     }
 
     private List<Identifier> resolveBlockTags() {

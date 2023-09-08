@@ -84,7 +84,7 @@ public class DataTableRegistry extends JsonDataLoader implements
         boolean replace = jsonStack.getBooleanOrElse("replace", false);
         int defaultValue = jsonStack.maybeInt("default").orElse(0);
         Optional<String> typeStr = jsonStack.maybeString("type");
-        DataTableType type = typeStr.map(str -> getMatchingType(str.toLowerCase()))
+        DataTableType type = typeStr.map(str -> getMatchingType(jsonStack, str.toLowerCase()))
                 .orElse(DataTableType.MISC);
 
         Object2IntMap<Identifier> entryTable = new Object2IntArrayMap<>();
@@ -135,23 +135,32 @@ public class DataTableRegistry extends JsonDataLoader implements
         }
     }
 
-    private DataTableType getMatchingType(String typeStr) {
+    private DataTableType getMatchingType(JsonStack jsonStack, String typeStr) {
         for (DataTableType type : DATA_TABLE_TYPES) {
             if (type.getName().equals(typeStr)) {
                 return type;
             }
         }
+        jsonStack.addError("Unrecognized data table type " + typeStr);
         return DataTableType.MISC;
     }
 
     public void resolveTags() {
         int numResolvedTables = 0;
         for (Map.Entry<Identifier, DataTable> entry : dataTables.entrySet()) {
-            List<Identifier> failedTags = entry.getValue().resolveTags();
+            DataTable dataTable = entry.getValue();
+            List<Identifier> failedTags = dataTable.resolveTags();
             if (failedTags != null && !failedTags.isEmpty()) {
-                ModConstants.LOGGER.error("Failed to resolve tags for data table " + entry.getKey()
-                        + ": Unrecognized tags " + StringUtils.join(
-                        failedTags.stream().map(Identifier::toString)));
+                if (dataTable.getType() == DataTableType.MISC) {
+                    ModConstants.LOGGER.warn(
+                            "Data table " + entry.getKey() + " is of type " + dataTable.getType()
+                                    + " and is unable to resolve tags. Specify a type to resolve.");
+                } else {
+                    ModConstants.LOGGER.error(
+                            "Failed to resolve tags for data table " + entry.getKey()
+                                    + ": Unrecognized tags " + StringUtils.join(
+                                    failedTags.stream().map(Identifier::toString).toList()));
+                }
             } else {
                 numResolvedTables++;
             }
