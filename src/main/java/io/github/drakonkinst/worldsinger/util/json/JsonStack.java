@@ -58,16 +58,45 @@ public class JsonStack {
         return child(key, JsonType.BOOLEAN).getAsBoolean();
     }
 
+    public boolean getBooleanOrElse(String key, boolean defaultValue) {
+        Optional<JsonPrimitive> child = maybeChild(key, JsonType.BOOLEAN);
+        return child.map(JsonPrimitive::getAsBoolean).orElse(defaultValue);
+    }
+
+    public int getInt(String key) {
+        return child(key, JsonType.NUMBER).getAsInt();
+    }
+
     public OptionalInt maybeInt(String key) {
         Optional<JsonPrimitive> child = maybeChild(key, JsonType.NUMBER);
         return child.map(jsonPrimitive -> OptionalInt.of(jsonPrimitive.getAsInt()))
                 .orElseGet(OptionalInt::empty);
     }
 
+    public String getString(String key) {
+        return child(key, JsonType.STRING).getAsString();
+    }
+
+    public JsonObject getObject(String key) {
+        return child(key, JsonType.OBJECT).getAsJsonObject();
+    }
+
+    public Optional<String> maybeString(String key) {
+        Optional<JsonPrimitive> child = maybeChild(key, JsonType.STRING);
+        return child.map(JsonPrimitive::getAsString);
+    }
+
     public <T> Stream<T> streamAs(String key, Class<T> elementType) {
         return maybeChild(key, JsonType.ARRAY).stream()
                 .flatMap(array -> StreamSupport.stream(array.spliterator(), false))
                 .map(element -> gson.fromJson(element, elementType));
+    }
+
+    public JsonObject peek() {
+        if (elementPath.isEmpty()) {
+            return null;
+        }
+        return elementPath.peek().json();
     }
 
     private <T extends JsonElement> T child(String key, JsonType<T> expected) {
