@@ -8,6 +8,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
@@ -35,7 +38,7 @@ public class DataTable {
 
     // Create a dummy data table that only returns a single value
     public DataTable(int defaultValue) {
-        this.defaultValue = 0;
+        this.defaultValue = defaultValue;
         this.idTable = new Object2IntArrayMap<>();
         this.tagTable = new Object2IntArrayMap<>();
     }
@@ -73,6 +76,42 @@ public class DataTable {
         for (Identifier blockTag : blockTags) {
             if (tagTable.containsKey(blockTag)) {
                 return tagTable.getInt(blockTag);
+            }
+        }
+
+        return defaultValue;
+    }
+
+    public int getIntForEntity(Entity entity) {
+        Identifier id = EntityType.getId(entity.getType());
+
+        if (idTable.containsKey(id)) {
+            return idTable.getInt(id);
+        }
+
+        // TODO: This is deprecated, should find a better way
+        List<Identifier> entityTypeTags = entity.getType().getRegistryEntry().streamTags()
+                .map(TagKey::id).toList();
+        for (Identifier entityTypeTag : entityTypeTags) {
+            if (tagTable.containsKey(entityTypeTag)) {
+                return tagTable.getInt(entityTypeTag);
+            }
+        }
+
+        return defaultValue;
+    }
+
+    public int getIntForItem(Item item) {
+        Identifier id = Registries.ITEM.getId(item);
+
+        if (idTable.containsKey(id)) {
+            return idTable.getInt(id);
+        }
+
+        List<Identifier> itemTags = item.getRegistryEntry().streamTags().map(TagKey::id).toList();
+        for (Identifier itemTag : itemTags) {
+            if (tagTable.containsKey(itemTag)) {
+                return tagTable.getInt(itemTag);
             }
         }
 

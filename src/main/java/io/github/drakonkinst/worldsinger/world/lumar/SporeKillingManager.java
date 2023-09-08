@@ -84,7 +84,7 @@ public final class SporeKillingManager {
                 continue;
             }
 
-            int distance = getDistance(pos, currentPos);
+            int distance = BlockPosUtil.getDistance(pos, currentPos);
             if (dataTable.getIntForBlock(blockState) < distance) {
                 continue;
             }
@@ -153,7 +153,7 @@ public final class SporeKillingManager {
             SporeKillingManager.calcClosestPointOnCuboid(searchPos.getX(),
                     searchPos.getY(), searchPos.getZ(), minX, minY, minZ, maxX, maxY, maxZ,
                     closestPos);
-            int distance = getDistance(searchPos, closestPos);
+            int distance = BlockPosUtil.getDistance(searchPos, closestPos);
             if (dataTable.getIntForBlock(blockState) < distance) {
                 continue;
             }
@@ -179,25 +179,11 @@ public final class SporeKillingManager {
         int closestX = clamp(x, minX, maxX);
         int closestY = clamp(y, minY, maxY);
         int closestZ = clamp(z, minZ, maxZ);
-        return getDistance(x, y, z, closestX, closestY, closestZ);
+        return BlockPosUtil.getDistance(x, y, z, closestX, closestY, closestZ);
     }
 
     private static int clamp(int value, int min, int max) {
         return Math.max(Math.min(value, max), min);
-    }
-
-    private static int getDistance(BlockPos pos1, BlockPos pos2) {
-        return getDistance(pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(),
-                pos2.getZ());
-    }
-
-    // Effective radius is a square, so use Chebyshev distance.
-    // If we want a more realistic distance, consider Manhattan distance.
-    private static int getDistance(int x1, int y1, int z1, int x2, int y2, int z2) {
-        int deltaX = Math.abs(x1 - x2);
-        int deltaY = Math.abs(y1 - y2);
-        int deltaZ = Math.abs(z1 - z2);
-        return Math.max(deltaX, Math.max(deltaY, deltaZ));
     }
 
     public static BlockState convertToDeadVariant(SporeKillable sporeKillable,

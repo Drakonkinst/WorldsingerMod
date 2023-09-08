@@ -123,9 +123,9 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         weight += 30 * direction.y();
 
         // Prefers to go in the same direction away from the origin
-        int dirFromOriginX = (int) Math.signum(pos.getX() - sporeGrowthData.getOrigin().getX());
-        int dirFromOriginY = (int) Math.signum(pos.getY() - sporeGrowthData.getOrigin().getY());
-        int dirFromOriginZ = (int) Math.signum(pos.getZ() - sporeGrowthData.getOrigin().getZ());
+        int dirFromOriginX = Integer.signum(pos.getX() - sporeGrowthData.getOrigin().getX());
+        int dirFromOriginY = Integer.signum(pos.getY() - sporeGrowthData.getOrigin().getY());
+        int dirFromOriginZ = Integer.signum(pos.getZ() - sporeGrowthData.getOrigin().getZ());
         if (direction.y() == dirFromOriginX || direction.y() == dirFromOriginY
                 || direction.z() == dirFromOriginZ) {
             weight += 50;
@@ -139,8 +139,15 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
                 this.getDistanceFromOrigin(pos) - this.getDistanceFromOrigin(this.getBlockPos());
         weight += 10 * bonusDistanceFromOrigin;
 
-        // Always have some weight, so it is an option if no other options are good
-        return Math.max(1, weight);
+        // Massive bonus for going along with external force
+        double multiplier = this.getExternalForceMultiplier(direction);
+        weight += (int) (500 * multiplier);
+
+        // Always have some weight, so it is an options if no other options are good
+        weight = Math.max(1, weight);
+        // ModConstants.LOGGER.info("WEIGHT = " + weight + " for direction " + direction);
+
+        return weight;
     }
 
     private int getNeighborBonus(World world, BlockPos pos) {

@@ -16,15 +16,16 @@ public final class DataTables {
 
     public static final RegistryKey<DataTable> SPORE_KILLING_RADIUS = DataTables.of(
             "block/spore_killing_radius");
-    public static final RegistryKey<DataTable> BLOCK_IRON_CONTENT = DataTables.of(
-            "block/iron_content");
-    public static final RegistryKey<DataTable> BLOCK_STEEL_CONTENT = DataTables.of(
-            "block/steel_content");
+    public static final RegistryKey<DataTable> BLOCK_METAL_CONTENT = DataTables.of(
+            "block/metal_content");
+    public static final RegistryKey<DataTable> ENTITY_METAL_CONTENT = DataTables.of(
+            "entity/metal_content");
+    public static final RegistryKey<DataTable> ARMOR_METAL_CONTENT = DataTables.of(
+            "armor/metal_content");
 
     private static final Int2ObjectMap<DataTable> dummyDataTables = new Int2ObjectArrayMap<>();
 
     private DataTables() {}
-
 
     public static void register() {
         DynamicRegistries.registerSynced(ModRegistries.DATA_TABLES, DataTable.CODEC);

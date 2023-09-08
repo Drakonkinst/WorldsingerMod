@@ -10,8 +10,11 @@ public final class ModItemTags {
 
     public static final TagKey<Item> FLINT_AND_STEEL_VARIANTS = ModItemTags.of(
             "flint_and_steel_variants");
+    public static final TagKey<Item> HAS_STEEL = ModItemTags.of("has_steel");
+    public static final TagKey<Item> HAS_IRON = ModItemTags.of("has_iron");
 
     public static final TagKey<Item> SILVER_INGOTS = ModItemTags.ofCommon("silver_ingots");
+    public static final TagKey<Item> SHIELDS = ModItemTags.ofCommon("shields");
 
     private static TagKey<Item> of(String id) {
         return TagKey.of(RegistryKeys.ITEM, new Identifier(ModConstants.MOD_ID, id));

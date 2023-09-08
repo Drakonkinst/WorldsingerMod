@@ -7,6 +7,7 @@ import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthMovement;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -26,6 +27,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import org.joml.Vector3d;
 
 public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
 
@@ -54,6 +56,8 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     protected final SporeGrowthComponent sporeGrowthData;
     protected Int3 lastDir = Int3.ZERO;
     private int placeAttempts = 0;
+    private BlockPos lastPos = null;
+    private Vector3d currentForce = null;
 
     public AbstractSporeGrowthEntity(EntityType<?> entityType,
             World world) {
@@ -142,9 +146,6 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     }
 
     protected boolean shouldBeDead() {
-        if (sporeGrowthData.getWater() <= 0) {
-            ModConstants.LOGGER.info("NO WATER " + sporeGrowthData.getWater());
-        }
         return sporeGrowthData.getStage() > this.getMaxStage()
                 || sporeGrowthData.getSpores() <= 0 || sporeGrowthData.getAge() > MAX_AGE
                 || placeAttempts >= MAX_PLACE_ATTEMPTS || sporeGrowthData.getWater() <= 0;
@@ -152,13 +153,25 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
 
     private void grow() {
         if (sporeGrowthData.isInitialGrowth()) {
+            // Only recalculate forces once per tick, leading to less precision when moving quickly
+            this.recalculateForces();
             for (int i = 0; i < INITIAL_GROWTH_SPEED; ++i) {
                 this.doGrowStep();
             }
         } else {
             if ((sporeGrowthData.getAge() + this.getId()) % this.getUpdatePeriod() == 0) {
+                this.recalculateForces();
                 this.doGrowStep();
             }
+        }
+    }
+
+    private void recalculateForces() {
+        if (currentForce == null || lastPos == null || !lastPos.equals(this.getBlockPos())) {
+            BlockPos pos = this.getBlockPos();
+            currentForce = SporeGrowthMovement.calcExternalForce(this.getWorld(), pos);
+            ModConstants.LOGGER.info("CURRENT FORCE " + currentForce);
+            lastPos = pos;
         }
     }
 
@@ -306,6 +319,15 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             AbstractSporeGrowthEntity.resetCatalyzed(world, mutable.set(pos.offset(direction)));
         }
+    }
+
+    // Returns a value between -1 and 1 based on how well the direction matches the current
+    // direction.
+    protected double getExternalForceMultiplier(Int3 direction) {
+        double dot = direction.x() * currentForce.x()
+                + direction.y() * currentForce.y()
+                + direction.z() * currentForce.z();
+        return dot;
     }
 
     public SporeGrowthComponent getSporeGrowthData() {

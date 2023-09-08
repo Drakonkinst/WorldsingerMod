@@ -1,0 +1,7 @@
+{
+  "default": 0,
+  "entries": {
+    "minecraft:iron_golem": 36,
+    "#c:minecarts": 5
+  }
+}

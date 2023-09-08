@@ -19,10 +19,7 @@ public class Worldsinger implements ModInitializer {
     public void onInitialize() {
         ModConstants.LOGGER.info("Initializing Worldsinger...");
 
-        ModApi.initialize();
-        ModRegistries.register();
         ModProperties.initialize();
-
         ModParticleTypes.initialize();
         ModFluids.initialize();
         ModBlocks.initialize();
@@ -31,5 +28,7 @@ public class Worldsinger implements ModInitializer {
         ModCommands.initialize();
 
         Fluidlogged.initialize();
+        ModRegistries.register();
+        ModApi.initialize();
     }
 }

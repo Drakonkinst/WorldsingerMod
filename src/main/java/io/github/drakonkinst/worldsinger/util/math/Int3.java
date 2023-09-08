@@ -56,4 +56,13 @@ public record Int3(int x, int y, int z) {
     public Int3 opposite() {
         return new Int3(-x, -y, -z);
     }
+
+    // Converts all values to their sign
+    public Int3 toSigns() {
+        return new Int3(
+                Integer.signum(x),
+                Integer.signum(y),
+                Integer.signum(z)
+        );
+    }
 }

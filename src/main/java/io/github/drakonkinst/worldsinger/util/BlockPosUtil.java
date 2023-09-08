@@ -70,4 +70,18 @@ public final class BlockPosUtil {
         int maxZ = blockPos.getZ() + ((width - 1) / 2) + offsetZ;
         return BlockPos.iterate(minX, minY, minZ, maxX, maxY, maxZ);
     }
+
+    public static int getDistance(BlockPos pos1, BlockPos pos2) {
+        return getDistance(pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(),
+                pos2.getZ());
+    }
+
+    // Effective radius is a square, so use Chebyshev distance.
+    // If we want a more realistic distance, consider Manhattan distance.
+    public static int getDistance(int x1, int y1, int z1, int x2, int y2, int z2) {
+        int deltaX = Math.abs(x1 - x2);
+        int deltaY = Math.abs(y1 - y2);
+        int deltaZ = Math.abs(z1 - z2);
+        return Math.max(deltaX, Math.max(deltaY, deltaZ));
+    }
 }
