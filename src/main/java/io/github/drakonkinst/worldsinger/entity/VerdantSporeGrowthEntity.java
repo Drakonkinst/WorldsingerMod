@@ -42,6 +42,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     private static final int SPORE_SPLIT_MIN = 100;
     private static final int WATER_SPLIT_MIN = 1;
     private static final int SPORE_WATER_THRESHOLD = 25;
+    private static final int FORCE_MODIFIER_MULTIPLIER = 20;
 
     public VerdantSporeGrowthEntity(EntityType<?> entityType,
             World world) {
@@ -140,8 +141,8 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
         weight += 10 * bonusDistanceFromOrigin;
 
         // Massive bonus for going along with external force
-        double multiplier = this.getExternalForceMultiplier(direction);
-        weight += (int) (500 * multiplier);
+        double forceModifier = this.getExternalForceModifier(direction);
+        weight += MathHelper.floor(FORCE_MODIFIER_MULTIPLIER * forceModifier);
 
         // Always have some weight, so it is an options if no other options are good
         weight = Math.max(1, weight);

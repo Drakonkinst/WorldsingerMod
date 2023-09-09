@@ -14,6 +14,8 @@ public final class DataTables {
 
     public static void initialize() {}
 
+    // Warning: Do NOT cache DataTable instances! They are overwritten each reload
+    // and this will cause data leakage.
     public static DataTable get(Identifier id) {
         if (DataTableRegistry.INSTANCE == null) {
             ModConstants.LOGGER.error(

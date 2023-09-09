@@ -57,7 +57,8 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     protected Int3 lastDir = Int3.ZERO;
     private int placeAttempts = 0;
     private BlockPos lastPos = null;
-    private Vector3d currentForce = null;
+    private Vector3d currentForceDir = new Vector3d();
+    private double currentForceMagnitude = 0.0;
 
     public AbstractSporeGrowthEntity(EntityType<?> entityType,
             World world) {
@@ -167,9 +168,13 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     }
 
     private void recalculateForces() {
-        if (currentForce == null || lastPos == null || !lastPos.equals(this.getBlockPos())) {
+        if (lastPos == null || !lastPos.equals(this.getBlockPos())) {
             BlockPos pos = this.getBlockPos();
-            currentForce = SporeGrowthMovement.calcExternalForce(this.getWorld(), pos);
+            SporeGrowthMovement.calcExternalForce(this.getWorld(), pos, currentForceDir);
+            currentForceMagnitude = currentForceDir.length();
+            if (currentForceMagnitude > 0.0) {
+                currentForceDir.mul(1.0 / currentForceMagnitude);
+            }
             lastPos = pos;
         }
     }
@@ -276,6 +281,7 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     }
 
     private Int3 chooseWeighted(List<Int3> candidates, IntList weights, int weightSum) {
+
         if (candidates.isEmpty()) {
             return Int3.ZERO;
         }
@@ -320,13 +326,13 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         }
     }
 
-    // Returns a value between -1 and 1 based on how well the direction matches the current
-    // direction.
-    protected double getExternalForceMultiplier(Int3 direction) {
-        double dot = direction.x() * currentForce.x()
-                + direction.y() * currentForce.y()
-                + direction.z() * currentForce.z();
-        return dot;
+    // Returns [-currentForceMagnitude, +currentForceMagnitude]
+    protected double getExternalForceModifier(Int3 direction) {
+        // Dot product returns [-1, 1] based on how well direction matches currentForceDir
+        double dot = direction.x() * currentForceDir.x()
+                + direction.y() * currentForceDir.y()
+                + direction.z() * currentForceDir.z();
+        return dot * currentForceMagnitude;
     }
 
     public SporeGrowthComponent getSporeGrowthData() {

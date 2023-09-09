@@ -22,11 +22,10 @@ public final class SporeGrowthMovement {
     private static final int MAX_SEARCH_RADIUS = 5;
     private static final int BLOCK_FORCE_MULTIPLIER = 10;
 
-    public static Vector3d calcExternalForce(World world, BlockPos pos) {
-        Vector3d force = new Vector3d();
+    public static void calcExternalForce(World world, BlockPos pos, Vector3d force) {
+        force.zero();
         SporeGrowthMovement.calcBlockExternalForce(world, pos, force);
         SporeGrowthMovement.calcEntityExternalForce(world, pos, force);
-        return SporeGrowthMovement.normalizeIfNonZero(force);
     }
 
     private static void calcBlockExternalForce(World world, BlockPos pos, Vector3d force) {
@@ -163,13 +162,6 @@ public final class SporeGrowthMovement {
             return dir.negate();
         }
         return dir;
-    }
-
-    private static Vector3d normalizeIfNonZero(Vector3d vector) {
-        if (vector.x() != 0.0f || vector.y() != 0.0f || vector.z() != 0.0f) {
-            return vector.normalize();
-        }
-        return vector;
     }
 
     private SporeGrowthMovement() {}
