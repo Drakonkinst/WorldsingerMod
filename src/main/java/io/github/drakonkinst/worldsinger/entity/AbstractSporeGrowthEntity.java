@@ -27,6 +27,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
@@ -95,9 +96,9 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
 
     protected abstract void onGrowBlock(BlockPos pos, BlockState state);
 
-    protected abstract boolean canBreakHere(BlockState state, BlockState replaceWith);
+    protected abstract boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith);
 
-    protected abstract boolean canGrowHere(BlockState state, BlockState replaceWith);
+    protected abstract boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith);
 
     protected abstract boolean isGrowthBlock(BlockState state);
 

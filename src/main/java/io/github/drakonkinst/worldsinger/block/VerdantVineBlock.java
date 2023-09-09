@@ -15,12 +15,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class VerdantVineBlock extends PillarBlock {
 
+    // Vine blocks decay if not persistent, is not raining, and seethe is on.
+    // They decay faster if open to sky or above a fluid.
     public static boolean canDecay(ServerWorld world, BlockPos pos, BlockState state,
             Random random) {
         return LumarSeethe.areSporesFluidized(world)
                 && !state.get(Properties.PERSISTENT)
                 && !world.isRaining()
-                && (world.isSkyVisible(pos.up()) || !state.getFluidState().isOf(Fluids.EMPTY));
+                && (world.isSkyVisible(pos.up()) || !world.getFluidState(pos.down()).isOf(
+                Fluids.EMPTY) || random.nextInt(5) == 0);
     }
 
     public VerdantVineBlock(Settings settings) {

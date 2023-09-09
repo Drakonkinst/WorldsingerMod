@@ -25,6 +25,7 @@ import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
@@ -142,6 +143,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
         // Massive bonus for going along with external force
         double forceModifier = this.getExternalForceModifier(direction);
+        ModConstants.LOGGER.info("FORCE MODIFIER " + forceModifier);
         weight += MathHelper.floor(FORCE_MODIFIER_MULTIPLIER * forceModifier);
 
         // Always have some weight, so it is an options if no other options are good
@@ -219,15 +221,17 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     }
 
     @Override
-    protected boolean canBreakHere(BlockState state, BlockState replaceWith) {
+    protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
         return state.isIn(ModBlockTags.SPORES_CAN_BREAK);
     }
 
     @Override
-    protected boolean canGrowHere(BlockState state, BlockState replaceWith) {
+    protected boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith) {
         return state.isIn(ModBlockTags.SPORES_CAN_GROW)
                 || state.isIn(ModBlockTags.VERDANT_VINE_SNARE)
-                || state.isIn(ModBlockTags.TWISTING_VERDANT_VINES);
+                || state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)
+                || (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)
+                && sporeGrowthData.getStage() == 0);
     }
 
     @Override

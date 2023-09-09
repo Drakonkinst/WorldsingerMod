@@ -57,15 +57,11 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
 
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        if (WallMountedBlock.canPlaceAt(world, pos,
-                WallMountedBlock.getDirection(state).getOpposite())) {
+        Direction attachDirection = WallMountedBlock.getDirection(state).getOpposite();
+        if (WallMountedBlock.canPlaceAt(world, pos, attachDirection)) {
             return true;
         }
-        BlockState attachedBlockState = world.getBlockState(
-                pos.offset(WallMountedBlock.getDirection(state).getOpposite()));
-        if (attachedBlockState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)) {
-            return true;
-        }
+        BlockState attachedBlockState = world.getBlockState(pos.offset(attachDirection));
         if (attachedBlockState.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
             return true;
         }
