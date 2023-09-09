@@ -10,9 +10,11 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.FlintAndSteelItem;
+import net.minecraft.item.FoodComponent;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
@@ -41,6 +43,14 @@ public final class ModItems {
                     new FabricItemSettings()
                             .recipeRemainder(Items.BUCKET)
                             .maxCount(1)));
+    public static final Item VERDANT_VINE = ModItems.register("verdant_vine",
+            new Item(new FabricItemSettings().food(
+                    new FoodComponent.Builder()
+                            // Same as Dried Kelp
+                            .hunger(1)
+                            .saturationModifier(0.3f)
+                            .snack()
+                            .build())));
     public static final Item SALT = ModItems.register("salt",
             new SaltItem(new FabricItemSettings()));
     public static final Item RAW_SILVER = ModItems.register("raw_silver",
@@ -100,52 +110,110 @@ public final class ModItems {
         RegistryKey<ItemGroup> moddedItemsItemGroupKey = RegistryKey.of(RegistryKeys.ITEM_GROUP,
                 moddedItemsIdentifier);
 
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((itemGroup) -> {
+            itemGroup.addAfter(Items.IRON_SWORD,
+                    ModItems.STEEL_SWORD);
+            itemGroup.addAfter(Items.IRON_AXE,
+                    ModItems.STEEL_AXE);
+            itemGroup.addAfter(Items.IRON_BOOTS,
+                    ModItems.STEEL_HELMET,
+                    ModItems.STEEL_CHESTPLATE,
+                    ModItems.STEEL_LEGGINGS,
+                    ModItems.STEEL_BOOTS);
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
+            itemGroup.addAfter(Items.IRON_HOE,
+                    ModItems.STEEL_SHOVEL,
+                    ModItems.STEEL_PICKAXE,
+                    ModItems.STEEL_AXE,
+                    ModItems.STEEL_HOE);
+            itemGroup.addAfter(Items.FLINT_AND_STEEL,
+                    ModItems.QUARTZ_AND_STEEL,
+                    ModItems.FLINT_AND_IRON,
+                    ModItems.QUARTZ_AND_IRON);
+            itemGroup.addAfter(Items.MILK_BUCKET,
+                    ModItems.VERDANT_SPORES_BUCKET,
+                    ModItems.DEAD_SPORES_BUCKET);
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register((itemGroup) -> {
+            itemGroup.addAfter(Items.DAMAGED_ANVIL,
+                    ModBlocks.STEEL_ANVIL,
+                    ModBlocks.CHIPPED_STEEL_ANVIL,
+                    ModBlocks.DAMAGED_STEEL_ANVIL);
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register((itemGroup) -> {
+            itemGroup.addAfter(Items.DEEPSLATE,
+                    ModBlocks.SALTSTONE);
+            itemGroup.addAfter(Items.DEEPSLATE_COAL_ORE,
+                    ModBlocks.SALTSTONE_SALT_ORE
+            );
+            itemGroup.addAfter(Items.DEEPSLATE_IRON_ORE,
+                    ModBlocks.SALTSTONE_SILVER_ORE
+            );
+            itemGroup.addAfter(Items.WET_SPONGE,
+                    ModBlocks.VERDANT_SPORE_BLOCK,
+                    ModBlocks.DEAD_SPORE_BLOCK,
+                    ModBlocks.VERDANT_VINE_BLOCK,
+                    ModBlocks.VERDANT_VINE_BRANCH,
+                    ModBlocks.VERDANT_VINE_SNARE,
+                    ModBlocks.TWISTING_VERDANT_VINES,
+                    ModBlocks.DEAD_VERDANT_VINE_BLOCK,
+                    ModBlocks.DEAD_VERDANT_VINE_BRANCH,
+                    ModBlocks.DEAD_VERDANT_VINE_SNARE,
+                    ModBlocks.DEAD_TWISTING_VERDANT_VINES
+            );
+            itemGroup.addAfter(Items.RAW_GOLD_BLOCK,
+                    ModBlocks.RAW_SILVER_BLOCK);
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> {
+            itemGroup.addAfter(Items.RAW_GOLD,
+                    ModItems.RAW_SILVER);
+            itemGroup.addAfter(Items.IRON_NUGGET,
+                    ModItems.STEEL_NUGGET);
+            itemGroup.addAfter(Items.IRON_INGOT,
+                    ModItems.STEEL_INGOT);
+            itemGroup.addAfter(Items.GOLD_NUGGET,
+                    ModItems.SILVER_NUGGET);
+            itemGroup.addAfter(Items.GOLD_INGOT,
+                    ModItems.SILVER_INGOT);
+            itemGroup.addBefore(Items.NETHERITE_SCRAP,
+                    ModItems.CRUDE_IRON);
+            itemGroup.addAfter(Items.SUGAR,
+                    ModItems.SALT);
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((itemGroup) -> {
+            itemGroup.addBefore(Items.GOLD_BLOCK,
+                    ModBlocks.STEEL_BLOCK);
+            itemGroup.addBefore(Items.REDSTONE_BLOCK,
+                    ModBlocks.SILVER_BLOCK);
+            itemGroup.addAfter(Items.NETHERITE_BLOCK,
+                    ModBlocks.SALT_BLOCK);
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register((itemGroup) -> {
+            itemGroup.addAfter(Items.DRIED_KELP,
+                    ModItems.VERDANT_VINE);
+        });
+
         ItemGroupEvents.modifyEntriesEvent(moddedItemsItemGroupKey).register((itemGroup) -> {
+            // Only include the highlight items/blocks here
             itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
-            itemGroup.add(ModBlocks.VERDANT_SPORE_BLOCK);
+            itemGroup.add(ModItems.DEAD_SPORES_BUCKET);
             itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK);
             itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH);
             itemGroup.add(ModBlocks.VERDANT_VINE_SNARE);
             itemGroup.add(ModBlocks.TWISTING_VERDANT_VINES);
-            itemGroup.add(ModItems.DEAD_SPORES_BUCKET);
-            itemGroup.add(ModBlocks.DEAD_SPORE_BLOCK);
-            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_BLOCK);
-            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_BRANCH);
-            itemGroup.add(ModBlocks.DEAD_VERDANT_VINE_SNARE);
-            itemGroup.add(ModBlocks.DEAD_TWISTING_VERDANT_VINES);
-            itemGroup.add(ModBlocks.SALTSTONE);
-            itemGroup.add(ModBlocks.SALTSTONE_SALT_ORE);
-            itemGroup.add(ModBlocks.SALTSTONE_SILVER_ORE);
             itemGroup.add(ModItems.SALT);
-            itemGroup.add(ModBlocks.SALT_BLOCK);
-
-            // Silver
-            itemGroup.add(ModItems.RAW_SILVER);
             itemGroup.add(ModItems.SILVER_INGOT);
-            itemGroup.add(ModItems.SILVER_NUGGET);
-            itemGroup.add(ModBlocks.SILVER_BLOCK);
-            itemGroup.add(ModBlocks.RAW_SILVER_BLOCK);
-
-            // Steel
-            itemGroup.add(ModItems.CRUDE_IRON);
             itemGroup.add(ModItems.STEEL_INGOT);
-            itemGroup.add(ModItems.STEEL_NUGGET);
+            itemGroup.add(ModBlocks.SALTSTONE);
+            itemGroup.add(ModBlocks.SILVER_BLOCK);
             itemGroup.add(ModBlocks.STEEL_BLOCK);
-            itemGroup.add(ModItems.STEEL_SWORD);
-            itemGroup.add(ModItems.STEEL_AXE);
-            itemGroup.add(ModItems.STEEL_PICKAXE);
-            itemGroup.add(ModItems.STEEL_SHOVEL);
-            itemGroup.add(ModItems.STEEL_HOE);
-            itemGroup.add(ModItems.STEEL_HELMET);
-            itemGroup.add(ModItems.STEEL_CHESTPLATE);
-            itemGroup.add(ModItems.STEEL_LEGGINGS);
-            itemGroup.add(ModItems.STEEL_BOOTS);
-            itemGroup.add(ModBlocks.STEEL_ANVIL);
-            itemGroup.add(ModBlocks.CHIPPED_STEEL_ANVIL);
-            itemGroup.add(ModBlocks.DAMAGED_STEEL_ANVIL);
-            itemGroup.add(ModItems.QUARTZ_AND_STEEL);
-            itemGroup.add(ModItems.FLINT_AND_IRON);
-            itemGroup.add(ModItems.QUARTZ_AND_IRON);
         });
     }
 

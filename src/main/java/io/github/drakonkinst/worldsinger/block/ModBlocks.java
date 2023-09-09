@@ -118,6 +118,7 @@ public final class ModBlocks {
                             // Same strength as log
                             .strength(2.0f)
                             .sounds(BlockSoundGroup.WOOD)
+                            .requiresTool()
                             .ticksRandomly()
             ), true);
     public static final Block VERDANT_VINE_BRANCH = register(
@@ -126,6 +127,7 @@ public final class ModBlocks {
                     FabricBlockSettings.create()
                             // 2x the strength of Chorus Plant
                             .strength(0.8f)
+                            .requiresTool()
                             .nonOpaque()
                             .ticksRandomly()
             ), true);
