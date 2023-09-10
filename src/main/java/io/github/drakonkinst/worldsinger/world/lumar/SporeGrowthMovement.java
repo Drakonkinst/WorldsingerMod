@@ -66,7 +66,7 @@ public final class SporeGrowthMovement {
                 continue;
             }
 
-            Vec3d dir = getNormalizedVectorBetween(currentPos, pos, hasSteel);
+            Vec3d dir = BlockPosUtil.getNormalizedVectorBetween(currentPos, pos, hasSteel);
             int distance = BlockPosUtil.getDistance(pos, currentPos);
 
             if (range < distance) {
@@ -81,7 +81,6 @@ public final class SporeGrowthMovement {
         force.add(forceX, forceY, forceZ);
     }
 
-    // This is so spaghetti I'm so sorry
     private static void calcEntityExternalForce(World world, BlockPos pos, Vector3d force) {
         DataTable metalContentTable = DataTables.get(DataTables.ENTITY_METAL_CONTENT);
         DataTable armorMetalContentTable = DataTables.get(DataTables.ARMOR_METAL_CONTENT);
@@ -93,14 +92,15 @@ public final class SporeGrowthMovement {
         List<LivingEntity> nearbyLivingEntities = world.getEntitiesByClass(LivingEntity.class, box,
                 LivingEntity::isAlive);
         for (LivingEntity entity : nearbyLivingEntities) {
-            BlockPos entityPos = entity.getBlockPos();
-            if (BlockPosUtil.isInvestitureBlocked(world, entityPos, pos)) {
+            Vec3d entityCenter = BlockPosUtil.getEntityCenter(entity);
+            Vec3d blockCenter = pos.toCenterPos();
+            if (BlockPosUtil.isInvestitureBlocked(world, entityCenter, blockCenter)) {
                 continue;
             }
 
-            int ironContent = MetalQueryManager.getIronContent(entity, metalContentTable,
+            int ironContent = MetalQueryManager.getIronContentForEntity(entity, metalContentTable,
                     armorMetalContentTable);
-            int steelContent = MetalQueryManager.getSteelContent(entity, metalContentTable,
+            int steelContent = MetalQueryManager.getSteelContentForEntity(entity, metalContentTable,
                     armorMetalContentTable);
 
             if ((ironContent <= 0 && steelContent <= 0) || ironContent == steelContent) {
@@ -117,14 +117,15 @@ public final class SporeGrowthMovement {
                 isIron = false;
             }
 
-            Vec3d forceDir = getNormalizedVectorBetween(pos, entityPos, isIron);
-            int distance = BlockPosUtil.getDistance(entityPos, pos);
-            int power = Math.max(0, metalContent - distance);
+            double distance = entityCenter.distanceTo(blockCenter);
+            double power = Math.max(0.0, metalContent - distance);
 
             if (power == 0) {
                 continue;
             }
 
+            Vec3d forceDir = BlockPosUtil.getNormalizedVectorBetween(blockCenter, entityCenter,
+                    isIron);
             forceX += forceDir.getX() * power;
             forceY += forceDir.getY() * power;
             forceZ += forceDir.getZ() * power;
@@ -133,35 +134,29 @@ public final class SporeGrowthMovement {
         List<AbstractMinecartEntity> nearbyMinecarts = world.getEntitiesByClass(
                 AbstractMinecartEntity.class, box, Entity::isAlive);
         for (AbstractMinecartEntity entity : nearbyMinecarts) {
-            BlockPos entityPos = entity.getBlockPos();
-            if (BlockPosUtil.isInvestitureBlocked(world, entityPos, pos)) {
+            Vec3d entityCenter = BlockPosUtil.getEntityCenter(entity);
+            Vec3d blockCenter = pos.toCenterPos();
+            if (BlockPosUtil.isInvestitureBlocked(world, entityCenter, blockCenter)) {
                 continue;
             }
 
             // Assume this entity will only have iron content
-            int ironContent = MetalQueryManager.getIronContent(entity, metalContentTable,
+            int ironContent = MetalQueryManager.getIronContentForEntity(entity, metalContentTable,
                     armorMetalContentTable);
-            int distance = BlockPosUtil.getDistance(entityPos, pos);
-            int power = Math.max(0, ironContent - distance);
+            double distance = entityCenter.distanceTo(blockCenter);
+            double power = Math.max(0, ironContent - distance);
             if (power == 0) {
                 continue;
             }
 
-            Vec3d forceDir = getNormalizedVectorBetween(entityPos, pos, false);
+            Vec3d forceDir = BlockPosUtil.getNormalizedVectorBetween(entityCenter, blockCenter,
+                    false);
             forceX += forceDir.getX() * power;
             forceY += forceDir.getY() * power;
             forceZ += forceDir.getZ() * power;
         }
 
         force.add(forceX, forceY, forceZ);
-    }
-
-    private static Vec3d getNormalizedVectorBetween(BlockPos from, BlockPos to, boolean negate) {
-        Vec3d dir = from.toCenterPos().subtract(to.toCenterPos()).normalize();
-        if (negate) {
-            return dir.negate();
-        }
-        return dir;
     }
 
     private SporeGrowthMovement() {}

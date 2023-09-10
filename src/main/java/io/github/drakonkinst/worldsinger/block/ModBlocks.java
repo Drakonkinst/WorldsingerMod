@@ -165,7 +165,8 @@ public final class ModBlocks {
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), false);
     public static final Block VERDANT_SPORE_CAULDRON = register("verdant_spore_cauldron",
-            new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
+            new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)
+                    .ticksRandomly(),
                     ModCauldronBehaviors.VERDANT_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.VERDANT
             ), false);
     public static final Block DEAD_SPORE_CAULDRON = register("dead_spore_cauldron",

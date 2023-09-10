@@ -32,9 +32,18 @@ public class SporeCauldronBlock extends LeveledCauldronBlock implements SporeEmi
             if (entity.isOnFire()) {
                 entity.extinguish();
             }
-            entity.extinguish();
-            if (world.getRandom().nextInt(10) == 0 && world instanceof ServerWorld serverWorld) {
-                SporeParticleSpawner.spawnBlockParticles(serverWorld, sporeType, pos, 0.6, 1.0);
+        }
+    }
+
+    @Override
+    public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
+            float fallDistance) {
+        super.onLandedUpon(world, state, pos, entity, fallDistance);
+        if (!world.isClient() && this.isEntityTouchingFluid(state, pos,
+                entity)) {
+            if (world instanceof ServerWorld serverWorld) {
+                SporeParticleSpawner.spawnBlockParticles(serverWorld, sporeType, pos, 0.6,
+                        Math.min(fallDistance, 3.0));
                 LeveledCauldronBlock.decrementFluidLevel(state, world, pos);
             }
         }

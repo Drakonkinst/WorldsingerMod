@@ -8,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.item.Item;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
@@ -15,7 +16,7 @@ import net.minecraft.world.World;
 public class LivingSporeCauldronBlock extends SporeCauldronBlock implements SporeKillable,
         WaterReactiveBlock {
 
-    private static final int CATALYZE_VALUE = 250;
+    private static final int CATALYZE_VALUE_PER_LEVEL = 80;
 
     public LivingSporeCauldronBlock(Settings settings, Map<Item, CauldronBehavior> behaviorMap,
             AetherSporeType sporeType) {
@@ -33,6 +34,14 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
     }
 
     @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        super.randomTick(state, world, pos, random);
+        if (world.hasRain(pos.up())) {
+            this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
+        }
+    }
+
+    @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
         BlockPos abovePos = pos.up();
@@ -44,7 +53,7 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
         world.setBlockState(pos, Blocks.CAULDRON.getStateWithProperties(state));
         if (sporeType == AetherSporeType.VERDANT) {
             SporeGrowthSpawner.spawnVerdantSporeGrowth(world, abovePos.toCenterPos(),
-                    CATALYZE_VALUE,
+                    CATALYZE_VALUE_PER_LEVEL * state.get(LEVEL),
                     waterAmount, true, false, false);
         }
         return true;

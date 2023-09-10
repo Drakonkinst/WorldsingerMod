@@ -29,12 +29,23 @@ public final class BlockPosUtil {
                 ModBlockTags.BLOCKS_INVESTITURE);
     }
 
+    public static boolean isInvestitureBlocked(World world, Vec3d emitterPos,
+            Vec3d listenerPos) {
+        return BlockPosUtil.isOccluded(world, emitterPos, listenerPos,
+                ModBlockTags.BLOCKS_INVESTITURE);
+    }
+
     // Note: This only works for BlockPos, we may want something different for entities to account
     // for their hitboxes? Maybe raycast from all corners of their bounding box
     public static boolean isOccluded(World world, BlockPos emitterPos, BlockPos listenerPos,
             TagKey<Block> blockTag) {
         Vec3d fromPos = emitterPos.toCenterPos();
         Vec3d toPos = listenerPos.toCenterPos();
+        return BlockPosUtil.isOccluded(world, fromPos, toPos, blockTag);
+    }
+
+    public static boolean isOccluded(World world, Vec3d fromPos, Vec3d toPos,
+            TagKey<Block> blockTag) {
         for (Direction direction : Direction.values()) {
             Vec3d vec3d3 = fromPos.offset(direction, 1.0E-5f);
             if (world.raycast(new BlockStateRaycastContext(vec3d3, toPos, state -> state.isIn(
@@ -83,5 +94,23 @@ public final class BlockPosUtil {
         int deltaY = Math.abs(y1 - y2);
         int deltaZ = Math.abs(z1 - z2);
         return Math.max(deltaX, Math.max(deltaY, deltaZ));
+    }
+
+    public static Vec3d getNormalizedVectorBetween(BlockPos from, BlockPos to, boolean negate) {
+        return BlockPosUtil.getNormalizedVectorBetween(from.toCenterPos(), to.toCenterPos(),
+                negate);
+    }
+
+    public static Vec3d getNormalizedVectorBetween(Vec3d from, Vec3d to, boolean negate) {
+        Vec3d dir = from.subtract(to).normalize();
+        if (negate) {
+            return dir.negate();
+        }
+        return dir;
+    }
+
+    public static Vec3d getEntityCenter(Entity entity) {
+        Vec3d pos = entity.getPos();
+        return new Vec3d(pos.getX(), pos.getY() + entity.getHeight() * 0.5, pos.getZ());
     }
 }

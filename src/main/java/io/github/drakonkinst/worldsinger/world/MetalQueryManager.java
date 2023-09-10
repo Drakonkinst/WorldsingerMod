@@ -11,13 +11,13 @@ public class MetalQueryManager {
     private static final int HELD_ITEM_METAL_VALUE = 1;
     private static final int USING_SHIELD_BONUS = 2;
 
-    public static int getIronContent(Entity entity, DataTable entityDataTable,
+    public static int getIronContentForEntity(Entity entity, DataTable entityDataTable,
             DataTable armorDataTable) {
         return MetalQueryManager.getMetalContentForEntity(entity, Metals.IRON, entityDataTable,
                 armorDataTable);
     }
 
-    public static int getSteelContent(Entity entity, DataTable entityDataTable,
+    public static int getSteelContentForEntity(Entity entity, DataTable entityDataTable,
             DataTable armorDataTable) {
         return MetalQueryManager.getMetalContentForEntity(entity, Metals.STEEL, entityDataTable,
                 armorDataTable);
