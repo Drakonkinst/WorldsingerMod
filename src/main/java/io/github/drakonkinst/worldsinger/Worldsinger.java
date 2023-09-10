@@ -10,6 +10,7 @@ import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
+import io.github.drakonkinst.worldsinger.potion.ModPotions;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.fabricmc.api.ModInitializer;
@@ -30,6 +31,7 @@ public class Worldsinger implements ModInitializer {
         ModItems.initialize();
         ModEntityTypes.initialize();
         ModCommands.initialize();
+        ModPotions.register();
 
         Fluidlogged.initialize();
         DataTables.initialize();

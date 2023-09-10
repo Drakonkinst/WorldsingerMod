@@ -56,11 +56,13 @@ public final class ModItems {
             "dead_spores_splash_bottle",
             new SplashSporeBottleItem(
                     AetherSporeType.DEAD, new FabricItemSettings()
+                    .recipeRemainder(Items.GLASS_BOTTLE)
                     .maxCount(1)));
     public static final Item VERDANT_SPORES_SPLASH_BOTTLE = ModItems.register(
             "verdant_spores_splash_bottle",
             new SplashSporeBottleItem(
                     AetherSporeType.VERDANT, new FabricItemSettings()
+                    .recipeRemainder(Items.GLASS_BOTTLE)
                     .maxCount(1)));
     public static final Item VERDANT_VINE = ModItems.register("verdant_vine",
             new Item(new FabricItemSettings().food(

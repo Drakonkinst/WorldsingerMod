@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.item;
 
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.List;
@@ -40,11 +39,10 @@ public class SporeBottleItem extends PotionItem implements SporeEmitting {
             Criteria.CONSUME_ITEM.trigger(serverPlayerEntity, stack);
         }
         if (!world.isClient) {
-            if (sporeType == AetherSporeType.DEAD) {
+            StatusEffect statusEffect = sporeType.getStatusEffect();
+            if (statusEffect == null) {
                 // TODO: Deal flat damage to entity
             } else {
-                StatusEffect statusEffect = sporeType.getStatusEffect();
-                ModConstants.LOGGER.info(sporeType.asString() + " -> " + statusEffect);
                 SporeParticleManager.applySporeEffect(user, statusEffect);
             }
         }
