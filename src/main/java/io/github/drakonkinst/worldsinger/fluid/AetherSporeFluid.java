@@ -142,12 +142,12 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
             }
         }
 
-        BlockPos abovePos = pos.up();
-        BlockState aboveBlockState = world.getBlockState(abovePos);
-        FluidState aboveFluidState = aboveBlockState.getFluidState();
+        BlockPos posAbove = pos.up();
+        BlockState stateAbove = world.getBlockState(posAbove);
+        FluidState aboveFluidState = stateAbove.getFluidState();
         if (!aboveFluidState.isEmpty() && aboveFluidState.getFluid() instanceof AetherSporeFluid
                 && ((FlowableFluidInvoker) this).worldsinger$receivesFlow(Direction.UP, world, pos,
-                state, abovePos, aboveBlockState)) {
+                state, posAbove, stateAbove)) {
             return this.getFlowing(8, true);
         }
         int updatedFluidLevel = maxNeighboringFluidLevel - this.getLevelDecreasePerBlock(world);

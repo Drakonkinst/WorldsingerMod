@@ -44,15 +44,15 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
-        BlockPos abovePos = pos.up();
-        BlockState aboveBlockState = world.getBlockState(abovePos);
-        if (!aboveBlockState.isAir() && !aboveBlockState.isIn(ModBlockTags.SPORES_CAN_GROW)
-                && !aboveBlockState.isIn(ModBlockTags.SPORES_CAN_BREAK)) {
+        BlockPos posAbove = pos.up();
+        BlockState stateAbove = world.getBlockState(posAbove);
+        if (!stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) && !stateAbove.isIn(
+                ModBlockTags.SPORES_CAN_BREAK)) {
             return false;
         }
         world.setBlockState(pos, Blocks.CAULDRON.getStateWithProperties(state));
         if (sporeType == AetherSporeType.VERDANT) {
-            SporeGrowthSpawner.spawnVerdantSporeGrowth(world, abovePos.toCenterPos(),
+            SporeGrowthSpawner.spawnVerdantSporeGrowth(world, posAbove.toCenterPos(),
                     CATALYZE_VALUE_PER_LEVEL * state.get(LEVEL),
                     waterAmount, true, false, false);
         }

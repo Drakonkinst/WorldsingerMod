@@ -63,7 +63,7 @@ public final class WaterReactionManager {
         }
     }
 
-    private static int absorbWater(World world, BlockPos centerPos) {
+    public static int absorbWater(World world, BlockPos centerPos) {
         ArrayDeque<IntObjectPair<BlockPos>> queue = new ArrayDeque<>();
         LongOpenHashSet visited = new LongOpenHashSet();
         queue.add(IntObjectPair.of(0, centerPos));

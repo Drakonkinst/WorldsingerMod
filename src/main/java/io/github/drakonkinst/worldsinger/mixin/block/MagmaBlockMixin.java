@@ -28,8 +28,8 @@ public abstract class MagmaBlockMixin extends Block {
     private void addSporeFluidizationCheckScheduledTick(BlockState state, ServerWorld world,
             BlockPos pos, Random random, CallbackInfo ci) {
         BlockPos posAbove = pos.up();
-        BlockState blockStateAbove = world.getBlockState(posAbove);
-        AetherSporeFluidBlock.update(world, posAbove, blockStateAbove, state);
+        BlockState stateAbove = world.getBlockState(posAbove);
+        AetherSporeFluidBlock.update(world, posAbove, stateAbove, state);
     }
 
     @Inject(method = "getStateForNeighborUpdate", at = @At("RETURN"))
@@ -45,8 +45,8 @@ public abstract class MagmaBlockMixin extends Block {
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState,
             boolean moved) {
         BlockPos posAbove = pos.up();
-        BlockState blockStateAbove = world.getBlockState(posAbove);
-        AetherSporeFluidBlock.update(world, posAbove, blockStateAbove, newState);
+        BlockState stateAbove = world.getBlockState(posAbove);
+        AetherSporeFluidBlock.update(world, posAbove, stateAbove, newState);
         super.onStateReplaced(state, world, pos, newState, moved);
     }
 }

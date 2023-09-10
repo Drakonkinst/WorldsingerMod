@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
+import io.github.drakonkinst.worldsinger.entity.ThrownSporeBottleEntity;
 import io.github.drakonkinst.worldsinger.util.math.ExtendedRaycastContext;
 import io.github.drakonkinst.worldsinger.util.math.ExtendedRaycastContext.ExtendedFluidHandling;
 import net.minecraft.entity.Entity;
@@ -19,7 +20,8 @@ public abstract class ProjectileUtilMixin {
     @Redirect(method = "getCollision(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/entity/Entity;Ljava/util/function/Predicate;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/world/World;)Lnet/minecraft/util/hit/HitResult;", at = @At(value = "NEW", target = "(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/world/RaycastContext$ShapeType;Lnet/minecraft/world/RaycastContext$FluidHandling;Lnet/minecraft/entity/Entity;)Lnet/minecraft/world/RaycastContext;"))
     private static RaycastContext makeThrownPotionsBreakAgainstSporeSea(Vec3d start, Vec3d end,
             ShapeType shapeType, FluidHandling fluidHandling, Entity entity) {
-        if (entity instanceof PotionEntity) {
+        // Make potions break upon hitting spore sea instead of falling through
+        if (entity instanceof PotionEntity || entity instanceof ThrownSporeBottleEntity) {
             return new ExtendedRaycastContext(start, end, shapeType,
                     ExtendedFluidHandling.SPORE_SEA, entity);
         }
