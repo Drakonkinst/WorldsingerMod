@@ -6,7 +6,9 @@ import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ExperienceDroppingBlock;
+import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
@@ -162,6 +164,14 @@ public final class ModBlocks {
                             .sounds(BlockSoundGroup.WEEPING_VINES)
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)
+            ), false);
+    public static final Block VERDANT_SPORE_CAULDRON = register("verdant_spore_cauldron",
+            new LeveledCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
+                    precipitation -> false, ModCauldronBehaviors.VERDANT_SPORE_CAULDRON_BEHAVIOR
+            ), false);
+    public static final Block DEAD_SPORE_CAULDRON = register("dead_spore_cauldron",
+            new LeveledCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
+                    precipitation -> false, ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR
             ), false);
 
     // Other

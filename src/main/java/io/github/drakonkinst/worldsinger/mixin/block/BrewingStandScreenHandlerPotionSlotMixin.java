@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(targets = "net.minecraft.screen.BrewingStandScreenHandler$PotionSlot")
-public class BrewingStandScreenHandlerPotionSlotMixin {
+public abstract class BrewingStandScreenHandlerPotionSlotMixin {
 
     @Inject(method = "matches", at = @At("HEAD"), cancellable = true)
     private static void allowCustomPotions(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {

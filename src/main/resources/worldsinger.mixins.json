@@ -37,6 +37,7 @@
     "item.BlockItemMixin",
     "item.BoatItemMixin",
     "item.BucketItemMixin",
+    "item.GlassBottleItemMixin",
     "screen.AnvilScreenHandlerMixin"
   ],
   "injectors": {
