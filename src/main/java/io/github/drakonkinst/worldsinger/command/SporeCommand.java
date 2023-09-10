@@ -66,7 +66,8 @@ public class SporeCommand {
         float size = getFloat(context, "size");
         int count = getInteger(context, "count");
         SporeParticleManager.createSporeParticles(context.getSource().getWorld(),
-                aetherSporeType.get(), pos.x, pos.y, pos.z, horizontalRadius, height, size, count);
+                aetherSporeType.get(), pos.x, pos.y, pos.z, horizontalRadius, height, size, count,
+                false);
         context.getSource().sendFeedback(() -> Text.literal(
                 "Spawned aether spore particle of type " + aetherSporeType.get().asString()), true);
         return 1;

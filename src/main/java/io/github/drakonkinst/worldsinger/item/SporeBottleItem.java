@@ -43,7 +43,8 @@ public class SporeBottleItem extends PotionItem implements SporeEmitting {
             if (statusEffect == null) {
                 // TODO: Deal flat damage to entity
             } else {
-                SporeParticleManager.applySporeEffect(user, statusEffect);
+                SporeParticleManager.applySporeEffect(user, statusEffect,
+                        SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);
             }
         }
         if (playerEntity != null) {

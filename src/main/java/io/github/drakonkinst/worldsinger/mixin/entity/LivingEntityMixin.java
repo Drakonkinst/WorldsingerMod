@@ -156,7 +156,7 @@ public abstract class LivingEntityMixin extends Entity {
         for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
             if (this.isSubmergedIn(entry.getKey())) {
                 SporeParticleManager.applySporeEffect((LivingEntity) (Object) this,
-                        entry.getValue());
+                        entry.getValue(), SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);
             }
         }
     }

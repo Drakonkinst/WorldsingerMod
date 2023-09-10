@@ -3,12 +3,14 @@ package io.github.drakonkinst.worldsinger.entity;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.item.SporeBottleItem;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FlyingItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
@@ -45,17 +47,18 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
     @Override
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
-        if (this.getWorld().isClient()) {
+        World world = this.getWorld();
+        if (world.isClient()) {
             return;
         }
-        // TODO
-        Vec3d pos = hitResult.getPos();
-        // SporeParticleSpawner.
-        this.getWorld()
-                .playSound(null, pos.getX(), pos.getY(), pos.getZ(),
-                        SoundEvents.ENTITY_SPLASH_POTION_BREAK,
-                        SoundCategory.NEUTRAL, 1.0f, random.nextFloat() * 0.1f + 0.9f,
-                        this.getWorld().getRandom().nextLong());
+        Vec3d pos = this.getPos();
+        if (world instanceof ServerWorld serverWorld) {
+            SporeParticleSpawner.spawnSplashPotionParticles(serverWorld, this.getSporeType(), pos);
+        }
+        world.playSound(null, pos.getX(), pos.getY(), pos.getZ(),
+                SoundEvents.ENTITY_SPLASH_POTION_BREAK,
+                SoundCategory.NEUTRAL, 1.0f, random.nextFloat() * 0.1f + 0.9f,
+                world.getRandom().nextLong());
         this.discard();
     }
 

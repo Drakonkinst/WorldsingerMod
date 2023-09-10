@@ -143,13 +143,10 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
 
         // Massive bonus for going along with external force
         double forceModifier = this.getExternalForceModifier(direction);
-        ModConstants.LOGGER.info("FORCE MODIFIER " + forceModifier);
         weight += MathHelper.floor(FORCE_MODIFIER_MULTIPLIER * forceModifier);
 
         // Always have some weight, so it is an options if no other options are good
         weight = Math.max(1, weight);
-        // ModConstants.LOGGER.info("WEIGHT = " + weight + " for direction " + direction);
-
         return weight;
     }
 
