@@ -1,14 +1,11 @@
 package io.github.drakonkinst.worldsinger.world.lumar;
 
-import com.google.common.collect.ImmutableMap;
-import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.particle.SporeDustParticleEffect;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.List;
-import java.util.Map;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
@@ -30,8 +27,6 @@ public final class SporeParticleManager {
     private static final float CACHED_SIZE_PRECISION = 20.0f;
     private static final Int2ObjectMap<SporeDustParticleEffect> cachedDustParticleEffects = new Int2ObjectOpenHashMap<>();
     private static final int SPORE_EFFECT_DURATION_TICKS = 40;
-    private static final Map<AetherSporeType, StatusEffect> SPORE_TO_STATUS_EFFECT = ImmutableMap.of(
-            AetherSporeType.VERDANT, ModStatusEffects.VERDANT_SPORES);
     private static final float MIN_PARTICLE_SIZE = 0.3f;
     private static final float MAX_PARTICLE_SIZE = 10.0f;
     private static final double MIN_RADIUS = 0.1;
@@ -162,7 +157,7 @@ public final class SporeParticleManager {
             return;
         }
 
-        StatusEffect statusEffect = SPORE_TO_STATUS_EFFECT.get(sporeType);
+        StatusEffect statusEffect = sporeType.getStatusEffect();
         if (statusEffect == null) {
             ModConstants.LOGGER.error("AetherSporeType does not have associated status effect: "
                     + sporeType.asString());

@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.material.ModArmorMaterials;
 import io.github.drakonkinst.worldsinger.material.ModToolMaterials;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -43,6 +44,24 @@ public final class ModItems {
                     new FabricItemSettings()
                             .recipeRemainder(Items.BUCKET)
                             .maxCount(1)));
+    public static final Item DEAD_SPORES_BOTTLE = ModItems.register("dead_spores_bottle",
+            new SporeBottleItem(
+                    AetherSporeType.DEAD, new FabricItemSettings()
+                    .maxCount(1)));
+    public static final Item VERDANT_SPORES_BOTTLE = ModItems.register("verdant_spores_bottle",
+            new SporeBottleItem(
+                    AetherSporeType.VERDANT, new FabricItemSettings()
+                    .maxCount(1)));
+    public static final Item DEAD_SPORES_SPLASH_BOTTLE = ModItems.register(
+            "dead_spores_splash_bottle",
+            new SplashSporeBottleItem(
+                    AetherSporeType.DEAD, new FabricItemSettings()
+                    .maxCount(1)));
+    public static final Item VERDANT_SPORES_SPLASH_BOTTLE = ModItems.register(
+            "verdant_spores_splash_bottle",
+            new SplashSporeBottleItem(
+                    AetherSporeType.VERDANT, new FabricItemSettings()
+                    .maxCount(1)));
     public static final Item VERDANT_VINE = ModItems.register("verdant_vine",
             new Item(new FabricItemSettings().food(
                     new FoodComponent.Builder()
@@ -214,6 +233,11 @@ public final class ModItems {
             itemGroup.add(ModBlocks.SALTSTONE);
             itemGroup.add(ModBlocks.SILVER_BLOCK);
             itemGroup.add(ModBlocks.STEEL_BLOCK);
+
+            itemGroup.add(ModItems.VERDANT_SPORES_BOTTLE);
+            itemGroup.add(ModItems.VERDANT_SPORES_SPLASH_BOTTLE);
+            itemGroup.add(ModItems.DEAD_SPORES_BOTTLE);
+            itemGroup.add(ModItems.DEAD_SPORES_SPLASH_BOTTLE);
         });
     }
 

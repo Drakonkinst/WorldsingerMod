@@ -35,7 +35,7 @@ public abstract class BoatItemMixin extends Item {
     private static final int SILVER_TEXT_COLOR = 0xC0C0C0;
 
     @Unique
-    private static Style SILVER_TEXT_STYLE = Style.EMPTY.withColor(
+    private static final Style SILVER_TEXT_STYLE = Style.EMPTY.withColor(
             TextColor.fromRgb(SILVER_TEXT_COLOR));
 
     @Unique

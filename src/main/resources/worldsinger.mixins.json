@@ -33,6 +33,7 @@
     "fluid.FlowableFluidMixin",
     "item.BlockItemMixin",
     "item.BoatItemMixin",
+    "item.BrewingRecipeRegistryMixin",
     "item.BucketItemMixin",
     "screen.AnvilScreenHandlerMixin"
   ],
@@ -42,6 +43,7 @@
   "client": [
     "client.BackgroundRendererMixin",
     "client.BoatEntityRendererMixin",
-    "client.FluidRendererMixin"
+    "client.FluidRendererMixin",
+    "client.ItemColorsMixin"
   ]
 }

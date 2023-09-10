@@ -16,7 +16,16 @@ public final class ModEntityTypes {
             "verdant_spore_growth",
             FabricEntityTypeBuilder.create(SpawnGroup.MISC, VerdantSporeGrowthEntity::new)
                     .dimensions(EntityDimensions.fixed(0.0f, 0.0f))
-                    .trackRangeChunks(0).build());
+                    .trackRangeChunks(0)
+                    .build());
+    public static final EntityType<ThrownSporeBottleEntity> THROWN_SPORE_BOTTLE = register(
+            "spore_bottle",
+            FabricEntityTypeBuilder.<ThrownSporeBottleEntity>create(SpawnGroup.MISC,
+                            ThrownSporeBottleEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.25f, 0.25f))
+                    .trackRangeChunks(4)
+                    .trackedUpdateRate(10)
+                    .build());
 
     public static void initialize() {
     }

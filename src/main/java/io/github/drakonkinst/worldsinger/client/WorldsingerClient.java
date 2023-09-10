@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.client;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
@@ -11,7 +12,9 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -54,6 +57,10 @@ public class WorldsingerClient implements ClientModInitializer {
         // Register particles
         ParticleFactoryRegistry.getInstance()
                 .register(ModParticleTypes.SPORE_DUST, SporeDustParticle.Factory::new);
+
+        // Register entity renderers
+        EntityRendererRegistry.register(ModEntityTypes.THROWN_SPORE_BOTTLE,
+                FlyingItemEntityRenderer::new);
 
         ModModelPredicates.register();
     }

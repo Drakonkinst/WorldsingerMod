@@ -52,8 +52,7 @@ public class DataTableRegistry extends JsonDataLoader implements
             ModConstants.LOGGER.warn("Attempting to access data table " + id
                     + " before tags are fully resolved, results may be inaccurate");
         }
-        DataTable dataTable = dataTables.get(id);
-        return dataTable == null ? Optional.empty() : Optional.of(dataTable);
+        return Optional.ofNullable(dataTables.get(id));
     }
 
     public boolean contains(Identifier id) {
