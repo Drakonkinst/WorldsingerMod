@@ -2,6 +2,9 @@ package io.github.drakonkinst.worldsinger.datatable;
 
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import java.util.Optional;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
 public final class DataTables {
@@ -12,7 +15,21 @@ public final class DataTables {
             "block/spore_killing_radius");
     public static final Identifier ENTITY_METAL_CONTENT = DataTables.of("entity/metal_content");
 
-    public static void initialize() {}
+    public static void initialize() {
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA)
+                .registerReloadListener(new DataTableRegistry());
+
+        CommonLifecycleEvents.TAGS_LOADED.register(((registries, client) -> {
+            if (!client) {
+                if (DataTableRegistry.INSTANCE != null) {
+                    DataTableRegistry.INSTANCE.resolveTags();
+                } else {
+                    ModConstants.LOGGER.error(
+                            "Failed to resolve tags for data tables: Data tables not initialized");
+                }
+            }
+        }));
+    }
 
     // Warning: Do NOT cache DataTable instances! They are overwritten each reload
     // and this will cause data leakage.
