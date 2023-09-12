@@ -38,7 +38,8 @@
     "item.BoatItemMixin",
     "item.BucketItemMixin",
     "item.GlassBottleItemMixin",
-    "screen.AnvilScreenHandlerMixin"
+    "screen.AnvilScreenHandlerMixin",
+    "worldgen.ChunkGeneratorMixin"
   ],
   "injectors": {
     "defaultRequire": 1

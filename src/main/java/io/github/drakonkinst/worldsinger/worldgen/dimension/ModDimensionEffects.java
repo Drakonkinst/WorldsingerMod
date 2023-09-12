@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.dimension;
+package io.github.drakonkinst.worldsinger.worldgen.dimension;
 
 import io.github.drakonkinst.worldsinger.mixin.accessor.DimensionEffectsAccessor;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarDimensionEffects;

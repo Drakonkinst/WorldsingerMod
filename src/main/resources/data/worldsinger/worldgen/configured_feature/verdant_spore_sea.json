@@ -1,0 +1,6 @@
+{
+  "type": "worldsinger:replace_with_spore_sea",
+  "config": {
+    "block": "worldsinger:verdant_spore_sea_block"
+  }
+}

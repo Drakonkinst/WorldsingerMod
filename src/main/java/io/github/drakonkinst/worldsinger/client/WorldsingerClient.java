@@ -1,11 +1,11 @@
 package io.github.drakonkinst.worldsinger.client;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
-import io.github.drakonkinst.worldsinger.dimension.ModDimensionEffects;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
+import io.github.drakonkinst.worldsinger.worldgen.dimension.ModDimensionEffects;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
