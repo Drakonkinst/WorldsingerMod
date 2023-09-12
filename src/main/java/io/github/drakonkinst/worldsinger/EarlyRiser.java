@@ -15,5 +15,9 @@ public class EarlyRiser implements Runnable {
         String pathNodeTypeEnum = remapper.mapClassName(INTERMEDIARY, "net.minecraft.class_7");
         ClassTinkerers.enumBuilder(pathNodeTypeEnum, float.class).addEnum("AETHER_SPORE_SEA", -1.0f)
                 .build();
+
+        String skyTypeEnum = remapper.mapClassName(INTERMEDIARY,
+                "net.minecraft.class_5294$class_5401");
+        ClassTinkerers.enumBuilder(skyTypeEnum).addEnum("LUMAR").build();
     }
 }

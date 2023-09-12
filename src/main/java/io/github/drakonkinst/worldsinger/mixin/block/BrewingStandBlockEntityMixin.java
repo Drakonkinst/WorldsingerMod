@@ -19,7 +19,7 @@ public abstract class BrewingStandBlockEntityMixin {
         if (slot == 3 || slot == 4 || !this.getStack(slot).isEmpty()) {
             return;
         }
-        for (Ingredient ingredient : BrewingRecipeRegistryAccessor.getPotionTypes()) {
+        for (Ingredient ingredient : BrewingRecipeRegistryAccessor.worldsinger$getPotionTypes()) {
             if (ingredient.test(stack)) {
                 cir.setReturnValue(true);
                 return;

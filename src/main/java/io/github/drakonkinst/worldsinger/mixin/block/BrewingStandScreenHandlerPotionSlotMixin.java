@@ -13,7 +13,7 @@ public abstract class BrewingStandScreenHandlerPotionSlotMixin {
 
     @Inject(method = "matches", at = @At("HEAD"), cancellable = true)
     private static void allowCustomPotions(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        for (Ingredient ingredient : BrewingRecipeRegistryAccessor.getPotionTypes()) {
+        for (Ingredient ingredient : BrewingRecipeRegistryAccessor.worldsinger$getPotionTypes()) {
             if (ingredient.test(stack)) {
                 cir.setReturnValue(true);
                 return;

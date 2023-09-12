@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface BrewingRecipeRegistryAccessor {
 
     @Accessor("POTION_TYPES")
-    static List<Ingredient> getPotionTypes() {
+    static List<Ingredient> worldsinger$getPotionTypes() {
         throw new UnsupportedOperationException();
     }
 }

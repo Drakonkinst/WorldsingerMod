@@ -44,6 +44,7 @@
     "defaultRequire": 1
   },
   "client": [
+    "accessor.DimensionEffectsAccessor",
     "client.BackgroundRendererMixin",
     "client.BoatEntityRendererMixin",
     "client.FluidRendererMixin",
