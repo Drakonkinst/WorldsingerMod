@@ -7,13 +7,12 @@ import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import dev.onyxstudios.cca.api.v3.scoreboard.ScoreboardComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.scoreboard.ScoreboardComponentInitializer;
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.entity.AbstractSporeGrowthEntity;
 import io.github.drakonkinst.worldsinger.entity.SilverLinedBoatEntityData;
 import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntityData;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.util.Identifier;
 
 public final class ModComponents implements ScoreboardComponentInitializer,
         EntityComponentInitializer {
@@ -26,7 +25,7 @@ public final class ModComponents implements ScoreboardComponentInitializer,
             "spore_growth", SporeGrowthComponent.class);
 
     private static <T extends Component> ComponentKey<T> register(String id, Class<T> clazz) {
-        return ComponentRegistry.getOrCreate(new Identifier(ModConstants.MOD_ID, id), clazz);
+        return ComponentRegistry.getOrCreate(Worldsinger.id(id), clazz);
     }
 
     @Override

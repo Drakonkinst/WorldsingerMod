@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.minecraft.block.Block;
 import net.minecraft.registry.RegistryKeys;
@@ -31,7 +32,7 @@ public final class ModBlockTags {
     private ModBlockTags() {}
 
     private static TagKey<Block> of(String id) {
-        return TagKey.of(RegistryKeys.BLOCK, new Identifier(ModConstants.MOD_ID, id));
+        return TagKey.of(RegistryKeys.BLOCK, Worldsinger.id(id));
     }
 
     private static TagKey<Block> ofCommon(String id) {

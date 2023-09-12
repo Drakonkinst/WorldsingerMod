@@ -1,9 +1,9 @@
 package io.github.drakonkinst.worldsinger.item;
 
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.material.ModArmorMaterials;
 import io.github.drakonkinst.worldsinger.material.ModToolMaterials;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -120,13 +120,13 @@ public final class ModItems {
             .build();
 
     public static <T extends Item> T register(String id, T item) {
-        Identifier itemId = new Identifier(ModConstants.MOD_ID, id);
+        Identifier itemId = Worldsinger.id(id);
         return Registry.register(Registries.ITEM, itemId, item);
     }
 
     public static void initialize() {
         // Custom item group
-        Identifier moddedItemsIdentifier = new Identifier(ModConstants.MOD_ID, "worldsinger");
+        Identifier moddedItemsIdentifier = Worldsinger.id("worldsinger");
         Registry.register(Registries.ITEM_GROUP, moddedItemsIdentifier, WORLDSINGER_ITEM_GROUP);
         RegistryKey<ItemGroup> moddedItemsItemGroupKey = RegistryKey.of(RegistryKeys.ITEM_GROUP,
                 moddedItemsIdentifier);

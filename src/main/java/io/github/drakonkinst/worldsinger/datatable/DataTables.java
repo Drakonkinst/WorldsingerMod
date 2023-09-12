@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.datatable;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import java.util.Optional;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -63,7 +62,7 @@ public final class DataTables {
     }
 
     private static Identifier of(String id) {
-        return new Identifier(ModConstants.MOD_ID, id);
+        return Worldsinger.id(id);
     }
 
     private DataTables() {}

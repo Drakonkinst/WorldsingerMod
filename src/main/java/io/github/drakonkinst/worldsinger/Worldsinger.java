@@ -15,6 +15,7 @@ import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.worldgen.feature.ModFeatures;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,5 +41,9 @@ public class Worldsinger implements ModInitializer {
         Fluidlogged.initialize();
         DataTables.initialize();
         ModApi.initialize();
+    }
+
+    public static Identifier id(String id) {
+        return new Identifier(ModConstants.MOD_ID, id);
     }
 }

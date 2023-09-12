@@ -1,11 +1,10 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
-import io.github.drakonkinst.worldsinger.util.ModConstants;
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 
 public final class ModFluids {
 
@@ -23,8 +22,7 @@ public final class ModFluids {
     );
 
     public static <T extends Fluid> T register(String id, T fluid) {
-        Identifier fluidId = new Identifier(ModConstants.MOD_ID, id);
-        return Registry.register(Registries.FLUID, fluidId, fluid);
+        return Registry.register(Registries.FLUID, Worldsinger.id(id), fluid);
     }
 
     public static void initialize() {}

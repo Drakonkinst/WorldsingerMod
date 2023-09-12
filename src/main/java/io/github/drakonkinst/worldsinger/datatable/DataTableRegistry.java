@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import io.github.drakonkinst.worldsinger.Worldsinger;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.json.JsonStack;
 import io.github.drakonkinst.worldsinger.util.json.JsonType;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -28,7 +27,7 @@ public class DataTableRegistry extends JsonDataLoader implements
 
     private static final DataTable DUMMY = new DataTable(DataTableType.MISC, 0,
             new Object2IntArrayMap<>(), null);
-    private static final Identifier IDENTIFIER = new Identifier(ModConstants.MOD_ID, "data_tables");
+    private static final Identifier IDENTIFIER = Worldsinger.id("data_tables");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final DataTableType[] DATA_TABLE_TYPES = DataTableType.values();
 

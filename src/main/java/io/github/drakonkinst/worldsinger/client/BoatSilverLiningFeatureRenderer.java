@@ -1,9 +1,9 @@
 package io.github.drakonkinst.worldsinger.client;
 
 import com.mojang.datafixers.util.Pair;
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.SilverLiningLevel;
 import java.util.Map;
 import net.fabricmc.api.EnvType;
@@ -45,7 +45,7 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
         for (String entityType : entityTypes) {
             for (String boatVariant : boatVariants) {
                 for (String silverLevel : silverLevels) {
-                    textureMap[i++] = new Identifier(ModConstants.MOD_ID,
+                    textureMap[i++] = Worldsinger.id(
                             "textures/entity/" + entityType + "/" + boatVariant + "_silver_lining_"
                                     + silverLevel + ".png");
                 }

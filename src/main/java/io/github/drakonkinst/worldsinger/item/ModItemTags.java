@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.item;
 
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.minecraft.item.Item;
 import net.minecraft.registry.RegistryKeys;
@@ -17,7 +18,7 @@ public final class ModItemTags {
     public static final TagKey<Item> SHIELDS = ModItemTags.ofCommon("shields");
 
     private static TagKey<Item> of(String id) {
-        return TagKey.of(RegistryKeys.ITEM, new Identifier(ModConstants.MOD_ID, id));
+        return TagKey.of(RegistryKeys.ITEM, Worldsinger.id(id));
     }
 
     private static TagKey<Item> ofCommon(String id) {
