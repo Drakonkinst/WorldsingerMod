@@ -1,10 +1,10 @@
 package io.github.drakonkinst.worldsinger.mixin.item;
 
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.AetherSporeBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -58,7 +58,7 @@ public abstract class GlassBottleItemMixin extends Item {
                 this.fillWithSporeBottle(world, user, itemStack, blockPos,
                         aetherSporeFluid.getSporeType(), cir);
             } else {
-                ModConstants.LOGGER.error(
+                Worldsinger.LOGGER.error(
                         "Expected aether spore fluid to extend AetherSporeFluid class");
             }
             return;
@@ -70,7 +70,7 @@ public abstract class GlassBottleItemMixin extends Item {
                 this.fillWithSporeBottle(world, user, itemStack, blockPos,
                         aetherSporeBlock.getSporeType(), cir);
             } else {
-                ModConstants.LOGGER.error(
+                Worldsinger.LOGGER.error(
                         "Expected aether spore block to extend AetherSporeBlock class");
             }
         }

@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.world.lumar;
 
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.particle.SporeDustParticleEffect;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.List;
@@ -168,7 +168,7 @@ public final class SporeParticleManager {
 
         StatusEffect statusEffect = sporeType.getStatusEffect();
         if (statusEffect == null) {
-            ModConstants.LOGGER.error("AetherSporeType does not have associated status effect: "
+            Worldsinger.LOGGER.error("AetherSporeType does not have associated status effect: "
                     + sporeType.asString());
             return;
         }
@@ -220,7 +220,7 @@ public final class SporeParticleManager {
         // Make size follow the cached size precision to prevent unintentional imprecision
         size = ((int) (size * CACHED_SIZE_PRECISION)) / CACHED_SIZE_PRECISION;
 
-        ModConstants.LOGGER.info(
+        Worldsinger.LOGGER.info(
                 "Caching new dust particle effect (" + sporeType.asString() + ", " + size + "), "
                         + (cachedDustParticleEffects.size() + 1) + " particles cached");
 

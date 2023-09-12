@@ -1,10 +1,10 @@
 package io.github.drakonkinst.worldsinger.world.lumar;
 
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.datatable.DataTable;
 import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.MetalQueryManager;
 import java.util.List;
 import net.minecraft.block.BlockState;
@@ -57,7 +57,7 @@ public final class SporeGrowthMovement {
 
             int range = metalContentTable.getIntForBlock(blockState);
             if (range <= 0) {
-                ModConstants.LOGGER.warn("Block " + blockState.getBlock().getName()
+                Worldsinger.LOGGER.warn("Block " + blockState.getBlock().getName()
                         + " is defined as having iron or steel, but no metal content value is given");
                 continue;
             }

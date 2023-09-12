@@ -1,11 +1,11 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.api.ModApi;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.item.ModItemTags;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.SilverLined;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -83,7 +83,7 @@ public abstract class BoatEntitySilverMixin extends Entity {
             if (silverItemData != null) {
                 silverItemData.setSilverDurability(silverDurability);
             } else {
-                ModConstants.LOGGER.error("Expected to find silver data for new boat item");
+                Worldsinger.LOGGER.error("Expected to find silver data for new boat item");
             }
         }
         return itemStack;

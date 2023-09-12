@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.datatable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.json.JsonStack;
 import io.github.drakonkinst.worldsinger.util.json.JsonType;
@@ -41,7 +42,7 @@ public class DataTableRegistry extends JsonDataLoader implements
 
     public DataTable get(Identifier id) {
         if (!tagsResolved) {
-            ModConstants.LOGGER.warn("Attempting to access data table " + id
+            Worldsinger.LOGGER.warn("Attempting to access data table " + id
                     + " before tags are fully resolved, results may be inaccurate");
         }
         return dataTables.getOrDefault(id, DUMMY);
@@ -49,7 +50,7 @@ public class DataTableRegistry extends JsonDataLoader implements
 
     public Optional<DataTable> getOptional(Identifier id) {
         if (!tagsResolved) {
-            ModConstants.LOGGER.warn("Attempting to access data table " + id
+            Worldsinger.LOGGER.warn("Attempting to access data table " + id
                     + " before tags are fully resolved, results may be inaccurate");
         }
         return Optional.ofNullable(dataTables.get(id));
@@ -57,7 +58,7 @@ public class DataTableRegistry extends JsonDataLoader implements
 
     public boolean contains(Identifier id) {
         if (!tagsResolved) {
-            ModConstants.LOGGER.warn("Attempting to access data table " + id
+            Worldsinger.LOGGER.warn("Attempting to access data table " + id
                     + " before tags are fully resolved, results may be inaccurate");
         }
         return dataTables.containsKey(id);
@@ -73,7 +74,7 @@ public class DataTableRegistry extends JsonDataLoader implements
         tagsResolved = false;
         dataTables.clear();
         data.forEach(this::loadDataTable);
-        ModConstants.LOGGER.info("Loaded " + dataTables.size() + " data tables");
+        Worldsinger.LOGGER.info("Loaded " + dataTables.size() + " data tables");
     }
 
     private void loadDataTable(Identifier dataTableId, JsonElement element) {
@@ -113,7 +114,7 @@ public class DataTableRegistry extends JsonDataLoader implements
 
         List<String> errors = jsonStack.getErrors();
         if (!errors.isEmpty()) {
-            ModConstants.LOGGER.error(
+            Worldsinger.LOGGER.error(
                     "Failed to parse data table " + dataTableId + ": " + StringUtils.join(errors));
             return;
         }
@@ -121,7 +122,7 @@ public class DataTableRegistry extends JsonDataLoader implements
         if (dataTables.containsKey(dataTableId) && !replace) {
             DataTable existingDataTable = dataTables.get(dataTableId);
             if (existingDataTable.getType() != type) {
-                ModConstants.LOGGER.warn(
+                Worldsinger.LOGGER.warn(
                         "Tried to override data table but data table types do not match: expected "
                                 + existingDataTable.getType().getName() + ", got "
                                 + type.getName());
@@ -151,11 +152,11 @@ public class DataTableRegistry extends JsonDataLoader implements
             List<Identifier> failedTags = dataTable.resolveTags();
             if (failedTags != null && !failedTags.isEmpty()) {
                 if (dataTable.getType() == DataTableType.MISC) {
-                    ModConstants.LOGGER.warn(
+                    Worldsinger.LOGGER.warn(
                             "Data table " + entry.getKey() + " is of type " + dataTable.getType()
                                     + " and is unable to resolve tags. Specify a type to resolve.");
                 } else {
-                    ModConstants.LOGGER.error(
+                    Worldsinger.LOGGER.error(
                             "Failed to resolve tags for data table " + entry.getKey()
                                     + ": Unrecognized tags " + StringUtils.join(
                                     failedTags.stream().map(Identifier::toString).toList()));
@@ -164,7 +165,7 @@ public class DataTableRegistry extends JsonDataLoader implements
                 numResolvedTables++;
             }
         }
-        ModConstants.LOGGER.info("Resolved tags for " + numResolvedTables + " data tables");
+        Worldsinger.LOGGER.info("Resolved tags for " + numResolvedTables + " data tables");
         tagsResolved = true;
     }
 

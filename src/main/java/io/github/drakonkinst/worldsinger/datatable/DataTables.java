@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.datatable;
 
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import java.util.Optional;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
@@ -24,7 +25,7 @@ public final class DataTables {
                 if (DataTableRegistry.INSTANCE != null) {
                     DataTableRegistry.INSTANCE.resolveTags();
                 } else {
-                    ModConstants.LOGGER.error(
+                    Worldsinger.LOGGER.error(
                             "Failed to resolve tags for data tables: Data tables not initialized");
                 }
             }
@@ -35,7 +36,7 @@ public final class DataTables {
     // and this will cause data leakage.
     public static DataTable get(Identifier id) {
         if (DataTableRegistry.INSTANCE == null) {
-            ModConstants.LOGGER.error(
+            Worldsinger.LOGGER.error(
                     "Error: Attempted to access data tables but data tables have not been initialized");
         }
         // Temp check
@@ -47,7 +48,7 @@ public final class DataTables {
 
     public static Optional<DataTable> getOptional(Identifier id) {
         if (DataTableRegistry.INSTANCE == null) {
-            ModConstants.LOGGER.error(
+            Worldsinger.LOGGER.error(
                     "Error: Attempted to access data tables but data tables have not been initialized");
         }
         return DataTableRegistry.INSTANCE.getOptional(id);
@@ -55,7 +56,7 @@ public final class DataTables {
 
     public static boolean contains(Identifier id) {
         if (DataTableRegistry.INSTANCE == null) {
-            ModConstants.LOGGER.error(
+            Worldsinger.LOGGER.error(
                     "Error: Attempted to access data tables but data tables have not been initialized");
         }
         return DataTableRegistry.INSTANCE.contains(id);

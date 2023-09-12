@@ -1,11 +1,11 @@
 package io.github.drakonkinst.worldsinger.mixin.item;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.api.ModApi;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.entity.SilverLinedBoatEntityData;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.SilverLined;
 import java.util.List;
 import net.minecraft.client.item.TooltipContext;
@@ -111,7 +111,7 @@ public abstract class BoatItemMixin extends Item {
     private int getSilverDurability(ItemStack stack) {
         SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(stack, null);
         if (silverItemData == null) {
-            ModConstants.LOGGER.error(
+            Worldsinger.LOGGER.error(
                     "Expected to find silver data for boat item (testing " + stack.getItem()
                             .toString() + ")");
             return 0;

@@ -15,12 +15,16 @@ import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.worldgen.feature.ModFeatures;
 import net.fabricmc.api.ModInitializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Worldsinger implements ModInitializer {
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(ModConstants.MOD_ID);
+
     @Override
     public void onInitialize() {
-        ModConstants.LOGGER.info("Initializing Worldsinger...");
+        LOGGER.info("Initializing Worldsinger...");
 
         ModProperties.initialize();
         ModParticleTypes.initialize();
