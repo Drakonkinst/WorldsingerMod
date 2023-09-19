@@ -12,6 +12,7 @@ import net.minecraft.block.FallingBlock;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -25,6 +26,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldEvents;
+import org.jetbrains.annotations.Nullable;
 
 public class AetherSporeBlock extends FallingBlock implements FluidDrainable, SporeEmitting {
 
@@ -89,7 +91,8 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     }
 
     @Override
-    public ItemStack tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state) {
+    public ItemStack tryDrainFluid(@Nullable PlayerEntity player, WorldAccess world, BlockPos pos,
+            BlockState state) {
         world.setBlockState(pos, Blocks.AIR.getDefaultState(),
                 Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD);
         if (!world.isClient()) {

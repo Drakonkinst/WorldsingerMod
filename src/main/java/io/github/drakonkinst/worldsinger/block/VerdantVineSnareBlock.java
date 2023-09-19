@@ -5,7 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.Waterloggable;
-import net.minecraft.block.enums.WallMountLocation;
+import net.minecraft.block.enums.BlockFace;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -46,7 +46,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
         super(settings);
         this.setDefaultState(this.getDefaultState()
                 .with(FACING, Direction.NORTH)
-                .with(FACE, WallMountLocation.FLOOR)
+                .with(FACE, BlockFace.FLOOR)
                 .with(Properties.PERSISTENT, false)
                 .with(Properties.WATERLOGGED, false));
     }

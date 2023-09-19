@@ -117,7 +117,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
                 SporeParticleSpawner.spawnBlockParticles(serverWorld, sporeFluid.getSporeType(),
                         pos, 0.6, 1.0);
             }
-            waterloggable.tryDrainFluid(world, pos, blockState);
+            waterloggable.tryDrainFluid(null, world, pos, blockState);
             return true;
         }
 

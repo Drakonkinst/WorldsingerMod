@@ -103,7 +103,7 @@ public final class WaterReactionManager {
             return 0;
         }
         Block block = blockState.getBlock();
-        if (block instanceof FluidDrainable && !((FluidDrainable) block).tryDrainFluid(world,
+        if (block instanceof FluidDrainable && !((FluidDrainable) block).tryDrainFluid(null, world,
                 pos, blockState).isEmpty()) {
             // Full fluid block
             return WATER_AMOUNT_STILL;

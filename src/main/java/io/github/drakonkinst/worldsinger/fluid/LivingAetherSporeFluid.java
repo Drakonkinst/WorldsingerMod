@@ -92,7 +92,7 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
         int sporeAmount = this.isStill(fluidState) ? CATALYZE_VALUE_STILL : CATALYZE_VALUE_FLOWING;
 
         if (block instanceof FluidDrainable fluidDrainable) {
-            ItemStack itemStack = fluidDrainable.tryDrainFluid(world, pos, blockState);
+            ItemStack itemStack = fluidDrainable.tryDrainFluid(null, world, pos, blockState);
             if (itemStack.isEmpty() && block instanceof FluidBlock) {
                 world.setBlockState(pos, Blocks.AIR.getDefaultState());
             }

@@ -15,7 +15,7 @@ import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.WallMountedBlock;
-import net.minecraft.block.enums.WallMountLocation;
+import net.minecraft.block.enums.BlockFace;
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
@@ -325,14 +325,14 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     }
 
     private void placeSnare(BlockPos pos, Direction direction) {
-        WallMountLocation wallMountLocation = WallMountLocation.WALL;
+        BlockFace blockFace = BlockFace.WALL;
 
         if (direction == Direction.UP) {
             direction = Direction.NORTH;
-            wallMountLocation = WallMountLocation.FLOOR;
+            blockFace = BlockFace.FLOOR;
         } else if (direction == Direction.DOWN) {
             direction = Direction.NORTH;
-            wallMountLocation = WallMountLocation.CEILING;
+            blockFace = BlockFace.CEILING;
         }
 
         boolean shouldDrainWater = this.shouldDrainWater();
@@ -340,7 +340,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
                 this.getWorld().getFluidState(pos).getFluid());
         BlockState state = ModBlocks.VERDANT_VINE_SNARE.getDefaultState()
                 .with(HorizontalFacingBlock.FACING, direction)
-                .with(WallMountedBlock.FACE, wallMountLocation)
+                .with(WallMountedBlock.FACE, blockFace)
                 .with(ModProperties.CATALYZED, shouldDrainWater)
                 .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
 
