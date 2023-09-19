@@ -10,7 +10,7 @@
   "default_fluid": {
     "Name": "minecraft:water",
     "Properties": {
-      "level": 0
+      "level": "0"
     }
   },
   "spawn_target": [
@@ -489,13 +489,31 @@
                               "if_true": {
                                 "type": "minecraft:biome",
                                 "biome_is": [
-                                  "worldsinger:saltstone_beach"
+                                  "worldsinger:saltstone_island"
                                 ]
                               },
                               "then_run": {
                                 "type": "minecraft:block",
                                 "result_state": {
                                   "Name": "worldsinger:saltstone"
+                                }
+                              }
+                            },
+                            {
+                              "type": "minecraft:condition",
+                              "if_true": {
+                                "type": "minecraft:biome",
+                                "biome_is": [
+                                  "worldsinger:lumar_rocks",
+                                  "worldsinger:lumar_peaks",
+                                  "worldsinger:emerald_sea",
+                                  "worldsinger:deep_emerald_sea"
+                                ]
+                              },
+                              "then_run": {
+                                "type": "minecraft:block",
+                                "result_state": {
+                                  "Name": "minecraft:stone"
                                 }
                               }
                             },
@@ -513,7 +531,8 @@
                         "if_true": {
                           "type": "minecraft:biome",
                           "biome_is": [
-                            "worldsinger:saltstone_beach"
+                            "worldsinger:saltstone_beach",
+                            "worldsinger:saltstone_island"
                           ]
                         },
                         "then_run": {

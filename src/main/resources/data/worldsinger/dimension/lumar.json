@@ -1,63 +1,279 @@
 {
   "type": "worldsinger:lumar",
   "generator": {
-    "type": "noise",
+    "type": "minecraft:noise",
     "settings": "worldsinger:lumar",
     "biome_source": {
-      "type": "multi_noise",
+      "type": "minecraft:multi_noise",
       "biomes": [
         {
           "biome": "worldsinger:emerald_sea",
           "parameters": {
-            "continentalness": [
-              -0.455,
-              -0.19
-            ],
-            "depth": 0.0,
-            "erosion": [
-              -1.0,
-              1.0
+            "temperature": [
+              -1,
+              0.55
             ],
             "humidity": [
-              -1.0,
-              1.0
+              -1,
+              1
             ],
-            "offset": 0.0,
-            "temperature": [
-              -0.15,
-              0.2
+            "continentalness": [
+              -0.455,
+              0.03
+            ],
+            "erosion": [
+              -1,
+              1
             ],
             "weirdness": [
-              -1.0,
-              1.0
-            ]
+              -1,
+              1
+            ],
+            "depth": 0,
+            "offset": 0
           }
         },
         {
-          "biome": "worldsinger:saltstone_beach",
+          "biome": "worldsinger:emerald_sea",
           "parameters": {
-            "continentalness": [
-              -0.19,
-              -0.11
-            ],
-            "depth": 0.0,
-            "erosion": [
-              0.05,
-              0.45
+            "temperature": [
+              0.55,
+              1
             ],
             "humidity": [
-              -1.0,
-              -0.35
+              -1,
+              1
             ],
-            "offset": 0.0,
+            "continentalness": [
+              -0.455,
+              -0.05
+            ],
+            "erosion": [
+              -1,
+              1
+            ],
+            "weirdness": [
+              -1,
+              1
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "worldsinger:emerald_sea",
+          "parameters": {
+            "temperature": [
+              0.55,
+              1
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "continentalness": [
+              -0.05,
+              0.35
+            ],
+            "erosion": [
+              -1,
+              1
+            ],
+            "weirdness": [
+              -0.1,
+              0.1
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "worldsinger:emerald_sea",
+          "parameters": {
+            "temperature": [
+              -1,
+              0.55
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "continentalness": [
+              0.03,
+              0.35
+            ],
+            "erosion": [
+              -1,
+              1
+            ],
+            "weirdness": [
+              -0.1,
+              0.1
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "worldsinger:deep_emerald_sea",
+          "parameters": {
+            "temperature": [
+              -1,
+              1
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "continentalness": [
+              -1.05,
+              -0.455
+            ],
+            "erosion": [
+              -1,
+              1
+            ],
+            "weirdness": [
+              -1,
+              1
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "worldsinger:lumar_forest",
+          "parameters": {
             "temperature": [
               -0.45,
               -0.15
             ],
+            "humidity": [
+              -0.1,
+              0.1
+            ],
+            "continentalness": [
+              0.3,
+              1
+            ],
+            "erosion": [
+              -0.7799,
+              -0.375
+            ],
+            "weirdness": [
+              -1,
+              -0.9333
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "worldsinger:lumar_peaks",
+          "parameters": {
+            "temperature": [
+              -1,
+              -0.15
+            ],
+            "humidity": [
+              -1,
+              0.3
+            ],
+            "continentalness": [
+              0.3,
+              1
+            ],
+            "erosion": [
+              -1,
+              -0.375
+            ],
+            "weirdness": [
+              -0.9333,
+              -0.5666
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "worldsinger:lumar_plains",
+          "parameters": {
+            "temperature": [
+              -0.45,
+              -0.15
+            ],
+            "humidity": [
+              -1,
+              -0.35
+            ],
+            "continentalness": [
+              -0.11,
+              0.3
+            ],
+            "erosion": [
+              -1,
+              -0.375
+            ],
+            "weirdness": [
+              -0.9333,
+              -0.7666
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "worldsinger:lumar_rocks",
+          "parameters": {
+            "temperature": [
+              -1,
+              0.55
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "continentalness": [
+              0.03,
+              1
+            ],
+            "erosion": [
+              -1,
+              1.0
+            ],
             "weirdness": [
               -1.0,
               -0.9333
-            ]
+            ],
+            "depth": 0,
+            "offset": 0
+          }
+        },
+        {
+          "biome": "worldsinger:saltstone_island",
+          "parameters": {
+            "temperature": [
+              0.55,
+              1
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "continentalness": [
+              -0.05,
+              1.0
+            ],
+            "erosion": [
+              -1.0,
+              1.0
+            ],
+            "weirdness": [
+              -1.0,
+              1.0
+            ],
+            "depth": 0,
+            "offset": 0.0
           }
         }
       ]

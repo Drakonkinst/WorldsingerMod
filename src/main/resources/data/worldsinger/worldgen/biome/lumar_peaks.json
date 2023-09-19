@@ -1,6 +1,12 @@
 {
-  "carvers": {},
-  "downfall": 0.5,
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
+  },
+  "downfall": 0.9,
   "effects": {
     "fog_color": 12638463,
     "mood_sound": {
@@ -9,14 +15,24 @@
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000
     },
-    "sky_color": 8103167,
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": false,
+      "sound": "minecraft:music.overworld.jagged_peaks"
+    },
+    "sky_color": 8756735,
     "water_color": 4159204,
     "water_fog_color": 329011
   },
   "features": [
     [],
-    [],
-    [],
+    [
+    ],
+    [
+    ],
+    [
+    ],
     [],
     [],
     [
@@ -45,20 +61,44 @@
       "minecraft:ore_copper",
       "minecraft:disk_sand",
       "minecraft:disk_clay",
-      "minecraft:disk_gravel"
+      "minecraft:disk_gravel",
+      "minecraft:ore_emerald"
+    ],
+    [
     ],
     [],
-    [],
-    [],
-    []
+    [
+      "minecraft:glow_lichen"
+    ],
+    [
+    ]
   ],
   "has_precipitation": false,
   "spawn_costs": {},
   "spawners": {
-    "ambient": [],
-    "creature": [],
+    "ambient": [
+      {
+        "type": "minecraft:bat",
+        "maxCount": 8,
+        "minCount": 8,
+        "weight": 10
+      }
+    ],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "minecraft:goat",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 5
+      }
+    ],
     "misc": [],
-    "underground_water_creature": []
+    "monster": [],
+    "underground_water_creature": [
+    ],
+    "water_ambient": [],
+    "water_creature": []
   },
-  "temperature": 0.5
+  "temperature": -0.7
 }
