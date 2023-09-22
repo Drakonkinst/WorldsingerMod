@@ -520,7 +520,10 @@
                             {
                               "type": "minecraft:block",
                               "result_state": {
-                                "Name": "minecraft:grass_block"
+                                "Name": "minecraft:grass_block",
+                                "Properties": {
+                                  "snowy": "false"
+                                }
                               }
                             }
                           ]
@@ -531,7 +534,6 @@
                         "if_true": {
                           "type": "minecraft:biome",
                           "biome_is": [
-                            "worldsinger:saltstone_beach",
                             "worldsinger:saltstone_island"
                           ]
                         },

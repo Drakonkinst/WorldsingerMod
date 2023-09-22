@@ -8,6 +8,7 @@ import net.minecraft.world.biome.Biome;
 public class ModBiomes {
 
     public static final RegistryKey<Biome> EMERALD_SEA = ModBiomes.of("emerald_sea");
+    public static final RegistryKey<Biome> DEEP_EMERALD_SEA = ModBiomes.of("deep_emerald_sea");
 
     private static RegistryKey<Biome> of(String id) {
         return RegistryKey.of(RegistryKeys.BIOME, Worldsinger.id(id));
