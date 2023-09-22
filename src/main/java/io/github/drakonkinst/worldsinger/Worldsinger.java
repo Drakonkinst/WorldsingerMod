@@ -13,6 +13,7 @@ import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.potion.ModPotions;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.worldgen.dimension.ModDimensionTypes;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ public class Worldsinger implements ModInitializer {
         ModCommands.initialize();
         ModPotions.register();
         ModCauldronBehaviors.initialize();
+        ModDimensionTypes.initialize();
 
         Fluidlogged.initialize();
         DataTables.initialize();

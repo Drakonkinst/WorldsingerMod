@@ -6,6 +6,7 @@
     "accessor.AbstractBlockAccessor",
     "accessor.AbstractBlockSettingsAccessor",
     "accessor.BrewingRecipeRegistryAccessor",
+    "accessor.ChunkNoiseSamplerInvoker",
     "accessor.FlowableFluidInvoker",
     "accessor.LandPathNodeMakerInvoker",
     "block.AbstractBlockStateMixin",
@@ -38,7 +39,8 @@
     "item.BoatItemMixin",
     "item.BucketItemMixin",
     "item.GlassBottleItemMixin",
-    "screen.AnvilScreenHandlerMixin"
+    "screen.AnvilScreenHandlerMixin",
+    "worldgen.WorldChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1
