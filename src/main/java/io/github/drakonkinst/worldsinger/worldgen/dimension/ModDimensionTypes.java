@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.worldgen.dimension;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.worldgen.lumar.LumarChunkGenerator;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;

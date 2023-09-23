@@ -3,7 +3,7 @@ package io.github.drakonkinst.worldsinger.mixin.worldgen;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.worldgen.dimension.LumarChunkGenerator;
+import io.github.drakonkinst.worldsinger.worldgen.lumar.LumarChunkGenerator;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

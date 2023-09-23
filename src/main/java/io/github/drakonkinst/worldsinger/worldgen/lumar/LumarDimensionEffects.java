@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world.lumar;
+package io.github.drakonkinst.worldsinger.worldgen.lumar;
 
 import io.github.drakonkinst.worldsinger.util.ModEnums;
 import net.fabricmc.api.EnvType;
@@ -18,7 +18,8 @@ public class LumarDimensionEffects extends DimensionEffects {
 
     @Override
     public Vec3d adjustFogColor(Vec3d color, float sunHeight) {
-        return null;
+        return color.multiply(sunHeight * 0.94f + 0.06f, sunHeight * 0.94f + 0.06f,
+                sunHeight * 0.91f + 0.09f);
     }
 
     @Override

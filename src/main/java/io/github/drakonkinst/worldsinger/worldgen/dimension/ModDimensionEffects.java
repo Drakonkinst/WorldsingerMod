@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.worldgen.dimension;
 
 import io.github.drakonkinst.worldsinger.mixin.accessor.DimensionEffectsAccessor;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarDimensionEffects;
+import io.github.drakonkinst.worldsinger.worldgen.lumar.LumarDimensionEffects;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

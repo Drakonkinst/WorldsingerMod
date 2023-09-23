@@ -1,10 +1,11 @@
-package io.github.drakonkinst.worldsinger.worldgen.dimension;
+package io.github.drakonkinst.worldsinger.worldgen.lumar;
 
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.worldgen.dimension.CustomNoiseChunkGenerator;
 import java.util.function.Supplier;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

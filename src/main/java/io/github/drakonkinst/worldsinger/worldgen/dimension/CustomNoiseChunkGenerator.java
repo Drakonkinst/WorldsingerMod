@@ -70,10 +70,10 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
         GenerationShapeConfig generationShapeConfig = this.getSettings().value()
                 .generationShapeConfig()
                 .trimHeight(world);
-        int i = generationShapeConfig.verticalCellBlockCount();
-        int j = generationShapeConfig.minimumY();
-        int k = MathHelper.floorDiv(j, i);
-        int l = MathHelper.floorDiv(generationShapeConfig.height(), i);
+        int numVerticalBlocks = generationShapeConfig.verticalCellBlockCount();
+        int minY = generationShapeConfig.minimumY();
+        int k = MathHelper.floorDiv(minY, numVerticalBlocks);
+        int l = MathHelper.floorDiv(generationShapeConfig.height(), numVerticalBlocks);
         if (l <= 0) {
             return OptionalInt.empty();
         }
@@ -81,17 +81,17 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
             blockStates = null;
         } else {
             blockStates = new BlockState[generationShapeConfig.height()];
-            columnSample.setValue(new VerticalBlockSample(j, blockStates));
+            columnSample.setValue(new VerticalBlockSample(minY, blockStates));
         }
-        int m = generationShapeConfig.horizontalCellBlockCount();
-        int n = Math.floorDiv(x, m);
-        int o = Math.floorDiv(z, m);
-        int p = Math.floorMod(x, m);
-        int q = Math.floorMod(z, m);
-        int r = n * m;
-        int s = o * m;
-        double d = (double) p / (double) m;
-        double e = (double) q / (double) m;
+        int numHorizontalBlocks = generationShapeConfig.horizontalCellBlockCount();
+        int n = Math.floorDiv(x, numHorizontalBlocks);
+        int o = Math.floorDiv(z, numHorizontalBlocks);
+        int p = Math.floorMod(x, numHorizontalBlocks);
+        int q = Math.floorMod(z, numHorizontalBlocks);
+        int r = n * numHorizontalBlocks;
+        int s = o * numHorizontalBlocks;
+        double tX = (double) p / (double) numHorizontalBlocks;
+        double tZ = (double) q / (double) numHorizontalBlocks;
 
         ChunkNoiseSampler chunkNoiseSampler = new ChunkNoiseSampler(1, noiseConfig, r, s,
                 generationShapeConfig, DensityFunctionTypes.Beardifier.INSTANCE,
@@ -101,26 +101,26 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
         chunkNoiseSampler.sampleEndDensity(0);
         for (int t = l - 1; t >= 0; --t) {
             chunkNoiseSampler.onSampledCellCorners(t, 0);
-            for (int u = i - 1; u >= 0; --u) {
+            for (int u = numVerticalBlocks - 1; u >= 0; --u) {
 
-                int v = (k + t) * i + u;
-                double f = (double) u / (double) i;
-                chunkNoiseSampler.interpolateY(v, f);
-                chunkNoiseSampler.interpolateX(x, d);
-                chunkNoiseSampler.interpolateZ(z, e);
+                int y = (k + t) * numVerticalBlocks + u;
+                double tY = (double) u / (double) numVerticalBlocks;
+                chunkNoiseSampler.interpolateY(y, tY);
+                chunkNoiseSampler.interpolateX(x, tX);
+                chunkNoiseSampler.interpolateZ(z, tZ);
                 BlockState sampledState = ((ChunkNoiseSamplerInvoker) chunkNoiseSampler).worldsinger$sampleBlockState();
                 BlockState blockState =
                         sampledState == null ? this.getSettings().value().defaultBlock()
                                 : sampledState;
                 if (blockStates != null) {
-                    int w = t * i + u;
+                    int w = t * numVerticalBlocks + u;
                     blockStates[w] = blockState;
                 }
                 if (stopPredicate == null || !stopPredicate.test(blockState)) {
                     continue;
                 }
                 chunkNoiseSampler.stopInterpolation();
-                return OptionalInt.of(v + 1);
+                return OptionalInt.of(y + 1);
             }
         }
         chunkNoiseSampler.stopInterpolation();
@@ -170,18 +170,19 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
         GenerationShapeConfig generationShapeConfig = this.getSettings().value()
                 .generationShapeConfig()
                 .trimHeight(chunk.getHeightLimitView());
-        int i = generationShapeConfig.minimumY();
-        int j = MathHelper.floorDiv(i, generationShapeConfig.verticalCellBlockCount());
-        int k = MathHelper.floorDiv(generationShapeConfig.height(),
-                generationShapeConfig.verticalCellBlockCount());
+        int minY = generationShapeConfig.minimumY();
+        int numVerticalBlocks = generationShapeConfig.verticalCellBlockCount();
+        int j = MathHelper.floorDiv(minY, numVerticalBlocks);
+        int k = MathHelper.floorDiv(generationShapeConfig.height(), numVerticalBlocks);
         if (k <= 0) {
             return CompletableFuture.completedFuture(chunk);
         }
-        int l = chunk.getSectionIndex(k * generationShapeConfig.verticalCellBlockCount() - 1 + i);
-        int m = chunk.getSectionIndex(i);
+        int maxSectionIndex = chunk.getSectionIndex(
+                k * generationShapeConfig.verticalCellBlockCount() - 1 + minY);
+        int minSectionIndex = chunk.getSectionIndex(minY);
         HashSet<ChunkSection> set = Sets.newHashSet();
-        for (int n = l; n >= m; --n) {
-            ChunkSection chunkSection = chunk.getSection(n);
+        for (int sectionIndex = maxSectionIndex; sectionIndex >= minSectionIndex; --sectionIndex) {
+            ChunkSection chunkSection = chunk.getSection(sectionIndex);
             chunkSection.lock();
             set.add(chunkSection);
         }
