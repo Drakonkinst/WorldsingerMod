@@ -504,26 +504,24 @@
                               "if_true": {
                                 "type": "minecraft:biome",
                                 "biome_is": [
-                                  "worldsinger:lumar_rocks",
-                                  "worldsinger:lumar_peaks",
-                                  "worldsinger:emerald_sea",
-                                  "worldsinger:deep_emerald_sea"
+                                  "worldsinger:lumar_forest",
+                                  "worldsinger:lumar_grasslands"
                                 ]
                               },
                               "then_run": {
                                 "type": "minecraft:block",
                                 "result_state": {
-                                  "Name": "minecraft:stone"
+                                  "Name": "minecraft:grass_block",
+                                  "Properties": {
+                                    "snowy": "false"
+                                  }
                                 }
                               }
                             },
                             {
                               "type": "minecraft:block",
                               "result_state": {
-                                "Name": "minecraft:grass_block",
-                                "Properties": {
-                                  "snowy": "false"
-                                }
+                                "Name": "minecraft:stone"
                               }
                             }
                           ]
@@ -541,6 +539,32 @@
                           "type": "minecraft:block",
                           "result_state": {
                             "Name": "worldsinger:saltstone"
+                          }
+                        }
+                      },
+                      {
+                        "type": "minecraft:condition",
+                        "if_true": {
+                          "type": "minecraft:biome",
+                          "biome_is": [
+                            "worldsinger:lumar_forest",
+                            "worldsinger:lumar_grasslands"
+                          ]
+                        },
+                        "then_run": {
+                          "type": "minecraft:condition",
+                          "if_true": {
+                            "type": "minecraft:stone_depth",
+                            "add_surface_depth": true,
+                            "offset": 0,
+                            "secondary_depth_range": 0,
+                            "surface_type": "floor"
+                          },
+                          "then_run": {
+                            "type": "minecraft:block",
+                            "result_state": {
+                              "Name": "minecraft:dirt"
+                            }
                           }
                         }
                       },

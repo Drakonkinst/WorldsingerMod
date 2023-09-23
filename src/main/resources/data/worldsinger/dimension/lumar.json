@@ -88,6 +88,33 @@
           }
         },
         {
+          "biome": "worldsinger:lumar_grasslands",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              1.0
+            ],
+            "humidity": [
+              0.3,
+              1.0
+            ],
+            "continentalness": [
+              0.3,
+              1.0
+            ],
+            "erosion": [
+              -1.0,
+              -0.375
+            ],
+            "weirdness": [
+              -0.9333,
+              -0.7666
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
           "biome": "worldsinger:lumar_peaks",
           "parameters": {
             "temperature": [
@@ -95,8 +122,8 @@
               1.0
             ],
             "humidity": [
-              -0.1,
-              0.1
+              -0.35,
+              1.0
             ],
             "continentalness": [
               0.15,
@@ -104,7 +131,7 @@
             ],
             "erosion": [
               -1.0,
-              -0.375
+              -0.7799
             ],
             "weirdness": [
               -0.9333,
@@ -115,27 +142,27 @@
           }
         },
         {
-          "biome": "worldsinger:lumar_plains",
+          "biome": "worldsinger:lumar_peaks",
           "parameters": {
             "temperature": [
               -1.0,
               1.0
             ],
             "humidity": [
-              0.1,
-              0.3
+              -0.35,
+              1.0
             ],
             "continentalness": [
-              -0.11,
-              0.3
+              0.15,
+              1.0
             ],
             "erosion": [
               -1.0,
-              -0.375
+              -0.7799
             ],
             "weirdness": [
-              -0.9333,
-              -0.7666
+              0.5666,
+              0.9333
             ],
             "depth": 0.0,
             "offset": 0.0
@@ -153,8 +180,89 @@
               1.0
             ],
             "continentalness": [
-              0.03,
+              -0.1,
+              0.0
+            ],
+            "erosion": [
+              -1.0,
               1.0
+            ],
+            "weirdness": [
+              0.533,
+              0.8
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "worldsinger:lumar_rocks",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              1.0
+            ],
+            "humidity": [
+              -0.35,
+              1.0
+            ],
+            "continentalness": [
+              -0.1,
+              0.0
+            ],
+            "erosion": [
+              -1.0,
+              1.0
+            ],
+            "weirdness": [
+              -0.8,
+              -0.533
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "worldsinger:lumar_rocks",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              1.0
+            ],
+            "humidity": [
+              -0.35,
+              1.0
+            ],
+            "continentalness": [
+              0.0,
+              0.15
+            ],
+            "erosion": [
+              -1.0,
+              1.0
+            ],
+            "weirdness": [
+              0.1,
+              1.0
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "worldsinger:lumar_rocks",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              1.0
+            ],
+            "humidity": [
+              -0.35,
+              1.0
+            ],
+            "continentalness": [
+              0.0,
+              0.15
             ],
             "erosion": [
               -1.0,
@@ -162,7 +270,7 @@
             ],
             "weirdness": [
               -1.0,
-              -0.9333
+              -0.1
             ],
             "depth": 0.0,
             "offset": 0.0

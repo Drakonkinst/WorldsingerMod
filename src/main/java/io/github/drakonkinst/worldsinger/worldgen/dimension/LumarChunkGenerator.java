@@ -22,13 +22,7 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
 
     public static final int SEA_LEVEL = 80;
-
-    private static final Block PLACEHOLDER_BLOCK = ModBlocks.DEAD_SPORE_SEA_BLOCK;
-    private static final Supplier<FluidLevelSampler> SPORE_SEA_PLACEHOLDER = Suppliers.memoize(
-            LumarChunkGenerator::createFluidLevelSampler);
-    private static final BlockState WATER = Blocks.WATER.getDefaultState();
-    private static final BlockState EMERALD_SEA = ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState();
-
+    public static final Block PLACEHOLDER_BLOCK = ModBlocks.DEAD_SPORE_SEA_BLOCK;
     public static final Codec<LumarChunkGenerator> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     BiomeSource.CODEC.fieldOf("biome_source")
@@ -36,6 +30,23 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
                     ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings")
                             .forGetter(LumarChunkGenerator::getSettings)
             ).apply(instance, instance.stable(LumarChunkGenerator::new)));
+
+    private static final Supplier<FluidLevelSampler> SPORE_SEA_PLACEHOLDER = Suppliers.memoize(
+            LumarChunkGenerator::createFluidLevelSampler);
+    private static final BlockState WATER = Blocks.WATER.getDefaultState();
+    private static final BlockState EMERALD_SEA = ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState();
+
+    public static BlockState getSporeSeaBlockAtPos(BlockState state, NoiseConfig noiseConfig, int x,
+            int y, int z) {
+        DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
+        double temperature = noiseConfig.getNoiseRouter().temperature().sample(noisePos);
+        // if (temperature > 0.0) {
+        //     return EMERALD_SEA;
+        // } else {
+        //     return WATER;
+        // }
+        return EMERALD_SEA;
+    }
 
     private static AquiferSampler.FluidLevelSampler createFluidLevelSampler() {
         AquiferSampler.FluidLevel fluidLevel = new AquiferSampler.FluidLevel(-54,
@@ -62,14 +73,7 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
             return state;
         }
 
-        DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
-        double temperature = noiseConfig.getNoiseRouter().temperature().sample(noisePos);
-        // if (temperature > 0.0) {
-        //     return EMERALD_SEA;
-        // } else {
-        //     return WATER;
-        // }
-        return EMERALD_SEA;
+        return LumarChunkGenerator.getSporeSeaBlockAtPos(state, noiseConfig, x, y, z);
     }
 
     @Override
