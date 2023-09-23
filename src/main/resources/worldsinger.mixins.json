@@ -51,6 +51,7 @@
     "client.BackgroundRendererMixin",
     "client.BoatEntityRendererMixin",
     "client.FluidRendererMixin",
-    "client.ItemColorsMixin"
+    "client.ItemColorsMixin",
+    "client.WorldRendererMixin"
   ]
 }

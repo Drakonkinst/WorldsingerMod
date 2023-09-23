@@ -9,7 +9,7 @@ import net.minecraft.util.math.Vec3d;
 @Environment(EnvType.CLIENT)
 public class LumarDimensionEffects extends DimensionEffects {
 
-    private static final float CLOUD_HEIGHT = 192.0f;
+    private static final float CLOUD_HEIGHT = 384.0f;
 
     public LumarDimensionEffects() {
         // TODO: What does alternateSkyColor do?
