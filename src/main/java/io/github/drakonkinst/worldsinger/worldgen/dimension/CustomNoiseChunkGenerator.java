@@ -108,14 +108,15 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
                 chunkNoiseSampler.interpolateY(v, f);
                 chunkNoiseSampler.interpolateX(x, d);
                 chunkNoiseSampler.interpolateZ(z, e);
-                BlockState blockState = ((ChunkNoiseSamplerInvoker) chunkNoiseSampler).worldsinger$sampleBlockState();
-                BlockState blockState2 =
-                        blockState == null ? this.getSettings().value().defaultBlock() : blockState;
+                BlockState sampledState = ((ChunkNoiseSamplerInvoker) chunkNoiseSampler).worldsinger$sampleBlockState();
+                BlockState blockState =
+                        sampledState == null ? this.getSettings().value().defaultBlock()
+                                : sampledState;
                 if (blockStates != null) {
                     int w = t * i + u;
-                    blockStates[w] = blockState2;
+                    blockStates[w] = blockState;
                 }
-                if (stopPredicate == null || !stopPredicate.test(blockState2)) {
+                if (stopPredicate == null || !stopPredicate.test(blockState)) {
                     continue;
                 }
                 chunkNoiseSampler.stopInterpolation();

@@ -89,8 +89,8 @@
         }
       }
     },
-    "fluid_level_floodedness": 0.0,
-    "fluid_level_spread": 0.0,
+    "fluid_level_floodedness": -1.0,
+    "fluid_level_spread": -1.0,
     "lava": 0.0,
     "vein_gap": 0.0,
     "vein_ridged": 0.0,

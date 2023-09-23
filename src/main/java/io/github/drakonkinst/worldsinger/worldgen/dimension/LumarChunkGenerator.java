@@ -64,11 +64,12 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
 
         DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
         double temperature = noiseConfig.getNoiseRouter().temperature().sample(noisePos);
-        if (temperature > 0.0) {
-            return EMERALD_SEA;
-        } else {
-            return WATER;
-        }
+        // if (temperature > 0.0) {
+        //     return EMERALD_SEA;
+        // } else {
+        //     return WATER;
+        // }
+        return EMERALD_SEA;
     }
 
     @Override
