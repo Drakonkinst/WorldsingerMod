@@ -39,7 +39,7 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
-// Custom noise-based chunk generator that allows for a custom fluid level sampler to be used
+// Custom noise-based chunk generator that allows for additional generation behaviors
 public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
 
     private static final BlockState AIR = Blocks.AIR.getDefaultState();
@@ -276,6 +276,4 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
             int y) {
         return fluidState.isEmpty() || !aquiferSampler.needsFluidTick();
     }
-
-
 }

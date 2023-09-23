@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import java.util.function.Supplier;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FluidState;
@@ -22,6 +23,7 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
 
     public static final int SEA_LEVEL = 80;
 
+    private static final Block PLACEHOLDER_BLOCK = ModBlocks.DEAD_SPORE_SEA_BLOCK;
     private static final Supplier<FluidLevelSampler> SPORE_SEA_PLACEHOLDER = Suppliers.memoize(
             LumarChunkGenerator::createFluidLevelSampler);
     private static final BlockState WATER = Blocks.WATER.getDefaultState();
@@ -39,7 +41,7 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
         AquiferSampler.FluidLevel fluidLevel = new AquiferSampler.FluidLevel(-54,
                 Blocks.LAVA.getDefaultState());
         AquiferSampler.FluidLevel fluidLevel2 = new AquiferSampler.FluidLevel(SEA_LEVEL,
-                ModBlocks.DEAD_SPORE_SEA_BLOCK.getDefaultState());
+                PLACEHOLDER_BLOCK.getDefaultState());
         return (x, y, z) -> {
             if (y < Math.min(-54, SEA_LEVEL)) {
                 return fluidLevel;
@@ -56,7 +58,7 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
     @Override
     public BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig, int x, int y,
             int z) {
-        if (!state.isOf(ModBlocks.DEAD_SPORE_SEA_BLOCK)) {
+        if (!state.isOf(PLACEHOLDER_BLOCK)) {
             return state;
         }
 
