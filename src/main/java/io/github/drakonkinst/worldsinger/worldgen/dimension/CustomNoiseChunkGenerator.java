@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.worldgen.dimension;
 
 import com.google.common.collect.Sets;
-import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.ChunkNoiseSamplerInvoker;
 import java.util.HashSet;
 import java.util.OptionalInt;
@@ -29,7 +28,6 @@ import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.StructureWeightSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler;
-import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.ChunkNoiseSampler;
@@ -45,20 +43,24 @@ import org.jetbrains.annotations.Nullable;
 public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
 
     private static final BlockState AIR = Blocks.AIR.getDefaultState();
-    protected final Supplier<FluidLevelSampler> customFluidLevelSampler;
+
+    private final Supplier<AquiferSampler.FluidLevelSampler> customFluidLevelSampler;
 
     public CustomNoiseChunkGenerator(BiomeSource biomeSource,
             RegistryEntry<ChunkGeneratorSettings> settings,
-            Supplier<FluidLevelSampler> customFluidLevelSampler) {
+            Supplier<AquiferSampler.FluidLevelSampler> customFluidLevelSampler) {
         super(biomeSource, settings);
         this.customFluidLevelSampler = customFluidLevelSampler;
     }
 
-    private ChunkNoiseSampler createChunkNoiseSampler(Chunk chunk, StructureAccessor world,
+    public abstract BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig, int x,
+            int y, int z);
+
+    protected ChunkNoiseSampler createChunkNoiseSampler(Chunk chunk, StructureAccessor world,
             Blender blender, NoiseConfig noiseConfig) {
         return ChunkNoiseSampler.create(chunk, noiseConfig,
                 StructureWeightSampler.createStructureWeightSampler(world, chunk.getPos()),
-                this.getSettings().value(), this.customFluidLevelSampler.get(), blender);
+                this.getSettings().value(), customFluidLevelSampler.get(), blender);
     }
 
     private OptionalInt sampleHeightmap(HeightLimitView world, NoiseConfig noiseConfig, int x,
@@ -90,9 +92,10 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
         int s = o * m;
         double d = (double) p / (double) m;
         double e = (double) q / (double) m;
+
         ChunkNoiseSampler chunkNoiseSampler = new ChunkNoiseSampler(1, noiseConfig, r, s,
                 generationShapeConfig, DensityFunctionTypes.Beardifier.INSTANCE,
-                this.getSettings().value(), this.customFluidLevelSampler.get(),
+                this.getSettings().value(), customFluidLevelSampler.get(),
                 Blender.getNoBlending());
         chunkNoiseSampler.sampleStartDensity();
         chunkNoiseSampler.sampleEndDensity(0);
@@ -216,7 +219,7 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
                     chunkNoiseSampler.onSampledCellCorners(cellY, cellZ);
                     for (int posY = verticalCellCount - 1; posY >= 0; --posY) {
                         int y = (minimumCellY + cellY) * verticalCellCount + posY;
-                        int blockY = y & 0xF;
+                        int chunkY = y & 0xF;
                         int sectionIndex = chunk.getSectionIndex(y);
                         if (lastSectionIndex != sectionIndex) {
                             lastSectionIndex = sectionIndex;
@@ -226,12 +229,12 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
                         chunkNoiseSampler.interpolateY(y, d);
                         for (int posX = 0; posX < horizontalCellCount; ++posX) {
                             int x = startX + cellX * horizontalCellCount + posX;
-                            int blockX = x & 0xF;
+                            int chunkX = x & 0xF;
                             double tX = (double) posX / (double) horizontalCellCount;
                             chunkNoiseSampler.interpolateX(x, tX);
                             for (int posZ = 0; posZ < horizontalCellCount; ++posZ) {
                                 int z = startZ + cellZ * horizontalCellCount + posZ;
-                                int blockZ = z & 0xF;
+                                int chunkZ = z & 0xF;
                                 double tZ = (double) posZ / (double) horizontalCellCount;
                                 chunkNoiseSampler.interpolateZ(z, tZ);
                                 BlockState blockState = ((ChunkNoiseSamplerInvoker) chunkNoiseSampler).worldsinger$sampleBlockState();
@@ -243,13 +246,16 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
                                     continue;
                                 }
 
-                                chunkSection.setBlockState(blockX, blockY, blockZ, blockState,
+                                // Allow block state to be modified before placement
+                                blockState = this.modifyBlockState(blockState, noiseConfig, x,
+                                        y, z);
+                                chunkSection.setBlockState(chunkX, chunkY, chunkZ, blockState,
                                         false);
-                                oceanFloorHeightmap.trackUpdate(blockX, y, blockZ, blockState);
-                                worldSurfaceHeightmap.trackUpdate(blockX, y, blockZ, blockState);
+                                oceanFloorHeightmap.trackUpdate(chunkX, y, chunkZ, blockState);
+                                worldSurfaceHeightmap.trackUpdate(chunkX, y, chunkZ, blockState);
 
-                                // Add extra check for custom fluids
-                                if ((!this.shouldDoPostProcessing(aquiferSampler,
+                                // Allow multiple conditions to skip post-processing
+                                if ((this.shouldSkipPostProcessing(aquiferSampler,
                                         blockState.getFluidState(), y))) {
                                     continue;
                                 }
@@ -266,10 +272,9 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
         return chunk;
     }
 
-    private boolean shouldDoPostProcessing(AquiferSampler aquiferSampler, FluidState fluidState,
+    protected boolean shouldSkipPostProcessing(AquiferSampler aquiferSampler, FluidState fluidState,
             int y) {
-        return !fluidState.isEmpty() && (aquiferSampler.needsFluidTick() || (
-                y == this.getSeaLevel() - 1 && fluidState.isIn(ModFluidTags.AETHER_SPORES)));
+        return fluidState.isEmpty() || !aquiferSampler.needsFluidTick();
     }
 
 
