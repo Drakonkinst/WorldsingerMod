@@ -7,7 +7,7 @@
       "type": "minecraft:multi_noise",
       "biomes": [
         {
-          "biome": "worldsinger:emerald_sea",
+          "biome": "worldsinger:spore_sea",
           "parameters": {
             "temperature": [
               -1.0,
@@ -34,7 +34,7 @@
           }
         },
         {
-          "biome": "worldsinger:deep_emerald_sea",
+          "biome": "worldsinger:deep_spore_sea",
           "parameters": {
             "temperature": [
               -1.0,

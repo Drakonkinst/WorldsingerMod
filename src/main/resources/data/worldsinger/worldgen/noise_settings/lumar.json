@@ -637,18 +637,28 @@
       {
         "type": "minecraft:condition",
         "if_true": {
-          "type": "minecraft:not",
-          "invert": {
-            "type": "minecraft:water",
-            "offset": 0,
-            "surface_depth_multiplier": 0,
-            "add_stone_depth": true
-          }
+          "type": "minecraft:stone_depth",
+          "add_surface_depth": true,
+          "offset": 0,
+          "secondary_depth_range": 0,
+          "surface_type": "floor"
         },
         "then_run": {
-          "type": "minecraft:block",
-          "result_state": {
-            "Name": "minecraft:magma_block"
+          "type": "minecraft:condition",
+          "if_true": {
+            "type": "minecraft:not",
+            "invert": {
+              "type": "minecraft:water",
+              "offset": 0,
+              "surface_depth_multiplier": 0,
+              "add_stone_depth": true
+            }
+          },
+          "then_run": {
+            "type": "minecraft:block",
+            "result_state": {
+              "Name": "minecraft:magma_block"
+            }
           }
         }
       }

@@ -1,5 +1,9 @@
 {
-  "carvers": {},
+  "carvers": {
+    "air": [
+      "worldsinger:lumar_cave_extra_underground"
+    ]
+  },
   "downfall": 0.0,
   "effects": {
     "fog_color": 12638463,
@@ -15,8 +19,13 @@
   },
   "features": [
     [],
-    [],
-    [],
+    [
+      "minecraft:lake_lava_underground",
+      "worldsinger:lake_water_underground"
+    ],
+    [
+      "worldsinger:amethyst_geode_lower"
+    ],
     [],
     [],
     [
@@ -35,8 +44,6 @@
       "minecraft:ore_iron_small",
       "minecraft:ore_gold",
       "minecraft:ore_gold_lower",
-      "minecraft:ore_redstone",
-      "minecraft:ore_redstone_lower",
       "minecraft:ore_diamond",
       "minecraft:ore_diamond_large",
       "minecraft:ore_diamond_buried",

@@ -35,31 +35,20 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
     private static final Supplier<FluidLevelSampler> SPORE_SEA_PLACEHOLDER = Suppliers.memoize(
             LumarChunkGenerator::createFluidLevelSampler);
     private static final BlockState WATER = Blocks.WATER.getDefaultState();
+    private static final BlockState LAVA = Blocks.LAVA.getDefaultState();
     private static final BlockState EMERALD_SEA = ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState();
 
     public static BlockState getSporeSeaBlockAtPos(BlockState state, NoiseConfig noiseConfig, int x,
             int y, int z) {
         DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
         double temperature = noiseConfig.getNoiseRouter().temperature().sample(noisePos);
-        // if (temperature > 0.0) {
-        //     return EMERALD_SEA;
-        // } else {
-        //     return WATER;
-        // }
         return EMERALD_SEA;
     }
 
     private static AquiferSampler.FluidLevelSampler createFluidLevelSampler() {
-        AquiferSampler.FluidLevel fluidLevel = new AquiferSampler.FluidLevel(-54,
-                Blocks.LAVA.getDefaultState());
-        AquiferSampler.FluidLevel fluidLevel2 = new AquiferSampler.FluidLevel(SEA_LEVEL,
+        AquiferSampler.FluidLevel fluidLevel = new AquiferSampler.FluidLevel(SEA_LEVEL,
                 PLACEHOLDER_BLOCK.getDefaultState());
-        return (x, y, z) -> {
-            if (y < Math.min(-54, SEA_LEVEL)) {
-                return fluidLevel;
-            }
-            return fluidLevel2;
-        };
+        return (x, y, z) -> fluidLevel;
     }
 
     public LumarChunkGenerator(BiomeSource biomeSource,
