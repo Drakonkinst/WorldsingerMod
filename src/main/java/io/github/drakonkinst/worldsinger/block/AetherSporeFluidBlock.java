@@ -65,8 +65,12 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
 
     // Update fluidization for a single block. Returns false if obstructed
     public static boolean updateFluidizationForBlock(WorldAccess world, BlockPos pos,
-            BlockState blockState,
-            boolean fluidized) {
+            BlockState blockState, boolean fluidized) {
+        // Fix blocks getting overridden where they shouldn't be
+        if (!world.getBlockState(pos).isOf(blockState.getBlock())) {
+            return false;
+        }
+
         if (fluidized) {
             return fluidizeBlock(world, pos, blockState);
         } else {

@@ -41,6 +41,7 @@
     "item.GlassBottleItemMixin",
     "screen.AnvilScreenHandlerMixin",
     "worldgen.CarverMixin",
+    "worldgen.ShipwreckGeneratorPieceMixin",
     "worldgen.WorldChunkMixin"
   ],
   "injectors": {

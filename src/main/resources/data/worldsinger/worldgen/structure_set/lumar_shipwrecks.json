@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 362873824,
+    "separation": 4,
+    "spacing": 24
+  },
+  "structures": [
+    {
+      "structure": "worldsinger:lumar_shipwreck",
+      "weight": 1
+    }
+  ]
+}

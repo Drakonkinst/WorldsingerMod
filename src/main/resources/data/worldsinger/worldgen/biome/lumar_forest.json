@@ -6,7 +6,7 @@
       "worldsinger:lumar_canyon"
     ]
   },
-  "downfall": 0.6,
+  "downfall": 0.0,
   "effects": {
     "fog_color": 12638463,
     "mood_sound": {
@@ -126,5 +126,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.6
+  "temperature": 2.0
 }

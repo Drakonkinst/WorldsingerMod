@@ -124,7 +124,6 @@ public abstract class BackgroundRendererMixin {
         float fluidHeight = fluidState.getHeight(cameraWorld, cameraBlockPos);
         double yPos = camera.getPos().getY();
         boolean submersedInFluid = yPos < cameraBlockPos.getY() + fluidHeight;
-
         if (submersedInFluid) {
             return fluidState;
         }
