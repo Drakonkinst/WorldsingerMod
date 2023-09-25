@@ -13,6 +13,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.AquiferSampler;
 import net.minecraft.world.gen.chunk.AquiferSampler.FluidLevelSampler;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -20,6 +21,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.densityfunction.DensityFunction;
 import net.minecraft.world.gen.noise.NoiseConfig;
 import net.minecraft.world.gen.noise.NoiseRouter;
+import org.jetbrains.annotations.Nullable;
 
 public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
 
@@ -39,10 +41,23 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
     private static final BlockState LAVA = Blocks.LAVA.getDefaultState();
     private static final BlockState EMERALD_SEA = ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState();
 
-    public static BlockState getSporeSeaBlockAtPos(BlockState state, NoiseConfig noiseConfig, int x,
+    public static BlockState getSporeSeaBlockAtPos(BlockState state, NoiseConfig noiseConfig,
+            @Nullable Chunk chunk, int x,
             int y, int z) {
         DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
         NoiseRouter noiseRouter = noiseConfig.getNoiseRouter();
+
+        // if (chunk != null) {
+        //     boolean isNearLakeBiome = Arrays.stream(chunk.getSectionArray()).anyMatch(
+        //             chunkSection -> chunkSection.getBiomeContainer()
+        //                     .hasAny(biome -> biome.isIn(ModBiomeTags.LUMAR_HAS_LAKES)));
+        //     // boolean isInLakeBiome = chunk.getBiomeForNoiseGen(BiomeCoords.fromBlock(x),
+        //     //                 BiomeCoords.fromBlock(y), BiomeCoords.fromBlock(z)).isIn(
+        //     //                 ModBiomeTags.LUMAR_HAS_LAKES)
+        //     if (isNearLakeBiome) {
+        //         return WATER;
+        //     }
+        // }
         double temperature = noiseRouter.temperature().sample(noisePos);
         return EMERALD_SEA;
     }
@@ -59,13 +74,13 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
     }
 
     @Override
-    public BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig, int x, int y,
-            int z) {
+    public BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig,
+            @Nullable Chunk chunk, int x, int y, int z) {
         if (!state.isOf(PLACEHOLDER_BLOCK)) {
             return state;
         }
 
-        return LumarChunkGenerator.getSporeSeaBlockAtPos(state, noiseConfig, x, y, z);
+        return LumarChunkGenerator.getSporeSeaBlockAtPos(state, noiseConfig, chunk, x, y, z);
     }
 
     @Override

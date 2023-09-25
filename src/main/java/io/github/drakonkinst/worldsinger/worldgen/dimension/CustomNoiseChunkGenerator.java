@@ -53,8 +53,8 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
         this.customFluidLevelSampler = customFluidLevelSampler;
     }
 
-    public abstract BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig, int x,
-            int y, int z);
+    public abstract BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig,
+            @Nullable Chunk chunk, int x, int y, int z);
 
     protected ChunkNoiseSampler createChunkNoiseSampler(Chunk chunk, StructureAccessor world,
             Blender blender, NoiseConfig noiseConfig) {
@@ -249,8 +249,8 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
                                 }
 
                                 // Allow block state to be modified before placement
-                                blockState = this.modifyBlockState(blockState, noiseConfig, x,
-                                        y, z);
+                                blockState = this.modifyBlockState(blockState, noiseConfig, chunk,
+                                        x, y, z);
                                 chunkSection.setBlockState(chunkX, chunkY, chunkZ, blockState,
                                         false);
                                 oceanFloorHeightmap.trackUpdate(chunkX, y, chunkZ, blockState);

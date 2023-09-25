@@ -590,9 +590,21 @@
                         "surface_type": "floor"
                       },
                       "then_run": {
-                        "type": "minecraft:block",
-                        "result_state": {
-                          "Name": "minecraft:magma_block"
+                        "type": "minecraft:condition",
+                        "if_true": {
+                          "type": "minecraft:not",
+                          "invert": {
+                            "type": "minecraft:biome",
+                            "biome_is": [
+                              "worldsinger:lumar_forest"
+                            ]
+                          }
+                        },
+                        "then_run": {
+                          "type": "minecraft:block",
+                          "result_state": {
+                            "Name": "minecraft:magma_block"
+                          }
                         }
                       }
                     },
@@ -655,9 +667,21 @@
             }
           },
           "then_run": {
-            "type": "minecraft:block",
-            "result_state": {
-              "Name": "minecraft:magma_block"
+            "type": "minecraft:condition",
+            "if_true": {
+              "type": "minecraft:not",
+              "invert": {
+                "type": "minecraft:biome",
+                "biome_is": [
+                  "worldsinger:lumar_forest"
+                ]
+              }
+            },
+            "then_run": {
+              "type": "minecraft:block",
+              "result_state": {
+                "Name": "minecraft:magma_block"
+              }
             }
           }
         }

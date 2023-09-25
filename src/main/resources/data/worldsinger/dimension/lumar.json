@@ -72,16 +72,43 @@
               1.0
             ],
             "continentalness": [
-              0.3,
+              0.2,
               1.0
             ],
             "erosion": [
-              -0.7799,
+              -1.0,
               -0.375
             ],
             "weirdness": [
               -1.0,
               -0.9333
+            ],
+            "depth": 0.0,
+            "offset": 0.1
+          }
+        },
+        {
+          "biome": "worldsinger:lumar_grasslands",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              1.0
+            ],
+            "humidity": [
+              0.3,
+              1.0
+            ],
+            "continentalness": [
+              0.2,
+              1.0
+            ],
+            "erosion": [
+              -1.0,
+              -0.375
+            ],
+            "weirdness": [
+              -0.9333,
+              -0.7666
             ],
             "depth": 0.0,
             "offset": 0.0
@@ -99,7 +126,7 @@
               1.0
             ],
             "continentalness": [
-              0.3,
+              0.2,
               1.0
             ],
             "erosion": [
@@ -107,8 +134,8 @@
               -0.375
             ],
             "weirdness": [
-              -0.9333,
-              -0.7666
+              0.7666,
+              0.9333
             ],
             "depth": 0.0,
             "offset": 0.0
@@ -188,8 +215,8 @@
               1.0
             ],
             "weirdness": [
-              0.533,
-              0.8
+              0.5333,
+              0.7666
             ],
             "depth": 0.0,
             "offset": 0.0
@@ -215,8 +242,8 @@
               1.0
             ],
             "weirdness": [
-              -0.8,
-              -0.533
+              -0.7666,
+              -0.5333
             ],
             "depth": 0.0,
             "offset": 0.0

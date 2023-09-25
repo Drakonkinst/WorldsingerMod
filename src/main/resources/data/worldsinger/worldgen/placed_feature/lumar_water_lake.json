@@ -1,0 +1,8 @@
+{
+  "feature": "worldsinger:lumar_water_lake",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
