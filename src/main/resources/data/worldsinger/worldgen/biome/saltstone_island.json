@@ -59,7 +59,9 @@
     ],
     [],
     [],
-    [],
+    [
+      "worldsinger:patch_dead_bush_higher"
+    ],
     []
   ],
   "has_precipitation": false,
