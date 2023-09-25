@@ -1,0 +1,20 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "frequency": 0.004,
+    "frequency_reduction_method": "legacy_type_3",
+    "salt": 41837187,
+    "separation": 0,
+    "spacing": 1
+  },
+  "structures": [
+    {
+      "structure": "worldsinger:lumar_oak_mineshaft",
+      "weight": 1
+    },
+    {
+      "structure": "worldsinger:lumar_birch_mineshaft",
+      "weight": 1
+    }
+  ]
+}

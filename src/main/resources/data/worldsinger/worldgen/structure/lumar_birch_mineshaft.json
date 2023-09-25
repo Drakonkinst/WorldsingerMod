@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:custom_mineshaft",
+  "biomes": "#worldsinger:has_structure/lumar_mineshaft",
+  "mineshaft_type": "lumar_birch",
+  "spawn_overrides": {},
+  "step": "underground_structures"
+}

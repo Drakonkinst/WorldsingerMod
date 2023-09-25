@@ -14,6 +14,8 @@ import io.github.drakonkinst.worldsinger.registry.ModPotions;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.worldgen.dimension.ModDimensionTypes;
+import io.github.drakonkinst.worldsinger.worldgen.structure.ModStructurePieceTypes;
+import io.github.drakonkinst.worldsinger.worldgen.structure.ModStructureTypes;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -37,6 +39,8 @@ public class Worldsinger implements ModInitializer {
         ModPotions.register();
         ModCauldronBehaviors.initialize();
         ModDimensionTypes.initialize();
+        ModStructurePieceTypes.initialize();
+        ModStructureTypes.initialize();
 
         Fluidlogged.initialize();
         DataTables.initialize();
