@@ -34,6 +34,33 @@
           }
         },
         {
+          "biome": "worldsinger:spore_sea",
+          "parameters": {
+            "temperature": [
+              -1.0,
+              1.0
+            ],
+            "humidity": [
+              -1.0,
+              1.0
+            ],
+            "continentalness": [
+              -0.1,
+              0.7
+            ],
+            "erosion": [
+              -1.0,
+              1.0
+            ],
+            "weirdness": [
+              -0.1,
+              0.1
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
           "biome": "worldsinger:deep_spore_sea",
           "parameters": {
             "temperature": [
@@ -126,7 +153,7 @@
               1.0
             ],
             "continentalness": [
-              0.5,
+              0.3,
               1.0
             ],
             "erosion": [
@@ -153,7 +180,7 @@
               1.0
             ],
             "continentalness": [
-              0.5,
+              0.3,
               1.0
             ],
             "erosion": [
@@ -289,7 +316,7 @@
             ],
             "continentalness": [
               0.0,
-              0.15
+              0.3
             ],
             "erosion": [
               -1.0,
@@ -316,7 +343,7 @@
             ],
             "continentalness": [
               0.0,
-              0.15
+              0.3
             ],
             "erosion": [
               -1.0,
