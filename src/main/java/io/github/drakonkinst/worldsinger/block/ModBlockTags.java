@@ -25,6 +25,8 @@ public final class ModBlockTags {
     public static final TagKey<Block> BLOCKS_INVESTITURE = ModBlockTags.of("blocks_investiture");
     public static final TagKey<Block> HAS_STEEL = ModBlockTags.of("has_steel");
     public static final TagKey<Block> HAS_IRON = ModBlockTags.of("has_iron");
+    public static final TagKey<Block> SEAGULLS_SPAWNABLE_ON = ModBlockTags.of(
+            "seagulls_spawnable_on");
 
     public static final TagKey<Block> FLUIDS_CANNOT_BREAK = ModBlockTags.ofCommon(
             "fluids_cannot_break");

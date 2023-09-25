@@ -9,6 +9,7 @@
     "accessor.ChunkNoiseSamplerInvoker",
     "accessor.FlowableFluidInvoker",
     "accessor.LandPathNodeMakerInvoker",
+    "accessor.SpawnRestrictionAccessor",
     "block.AbstractBlockStateMixin",
     "block.BlockMixin",
     "block.BrewingStandBlockEntityMixin",

@@ -1,4 +1,5 @@
 accessWidener v1 named
 accessible class net/minecraft/client/render/BackgroundRenderer$FogData
 accessible class net/minecraft/world/gen/densityfunction/DensityFunctionTypes$Beardifier
+accessible class net/minecraft/entity/SpawnRestriction$Entry
 extendable class net/minecraft/world/gen/chunk/NoiseChunkGenerator
