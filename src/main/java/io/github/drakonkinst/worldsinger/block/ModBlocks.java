@@ -180,6 +180,7 @@ public final class ModBlocks {
                     .requiresTool()
                     // Slightly harder to break than Netherrack
                     .strength(0.5f, 6.0f)
+                    .sounds(BlockSoundGroup.NETHERRACK)
             ), true);
     public static final Block SALTSTONE_SALT_ORE = register("saltstone_salt_ore",
             new ExperienceDroppingBlock(FabricBlockSettings.create()

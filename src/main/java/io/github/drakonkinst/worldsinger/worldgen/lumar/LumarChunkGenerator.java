@@ -19,6 +19,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.densityfunction.DensityFunction;
 import net.minecraft.world.gen.noise.NoiseConfig;
+import net.minecraft.world.gen.noise.NoiseRouter;
 
 public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
 
@@ -41,7 +42,8 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
     public static BlockState getSporeSeaBlockAtPos(BlockState state, NoiseConfig noiseConfig, int x,
             int y, int z) {
         DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
-        double temperature = noiseConfig.getNoiseRouter().temperature().sample(noisePos);
+        NoiseRouter noiseRouter = noiseConfig.getNoiseRouter();
+        double temperature = noiseRouter.temperature().sample(noisePos);
         return EMERALD_SEA;
     }
 
