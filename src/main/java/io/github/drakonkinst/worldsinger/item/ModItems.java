@@ -171,8 +171,9 @@ public final class ModItems {
             itemGroup.addAfter(Items.DEEPSLATE_COAL_ORE,
                     ModBlocks.SALTSTONE_SALT_ORE
             );
-            itemGroup.addAfter(Items.DEEPSLATE_IRON_ORE,
-                    ModBlocks.SALTSTONE_SILVER_ORE
+            itemGroup.addAfter(Items.DEEPSLATE_GOLD_ORE,
+                    ModBlocks.SILVER_ORE,
+                    ModBlocks.DEEPSLATE_SILVER_ORE
             );
             itemGroup.addAfter(Items.WET_SPONGE,
                     ModBlocks.VERDANT_SPORE_BLOCK,

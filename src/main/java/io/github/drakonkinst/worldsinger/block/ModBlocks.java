@@ -178,19 +178,13 @@ public final class ModBlocks {
     public static final Block SALTSTONE = register("saltstone",
             new Block(FabricBlockSettings.create()
                     .requiresTool()
-                    // Slightly easier to break than Cobblestone
-                    .strength(1.5f, 6.0f)
+                    // Slightly harder to break than Netherrack
+                    .strength(0.5f, 6.0f)
             ), true);
     public static final Block SALTSTONE_SALT_ORE = register("saltstone_salt_ore",
             new ExperienceDroppingBlock(FabricBlockSettings.create()
                     .requiresTool()
-                    // Slightly easier to break than Stone Coal Ore
-                    .strength(2.5f, 3.0f)
-            ), true);
-    public static final Block SALTSTONE_SILVER_ORE = register("saltstone_silver_ore",
-            new ExperienceDroppingBlock(FabricBlockSettings.create()
-                    .requiresTool()
-                    // Slightly easier to break than Stone Iron/Gold Ore
+                    // Slightly easier to break than Nether Gold Ore
                     .strength(2.5f, 3.0f)
             ), true);
     public static final Block SALT_BLOCK = register("salt_block", new Block(
@@ -200,6 +194,18 @@ public final class ModBlocks {
                     .strength(0.75f)
                     .sounds(BlockSoundGroup.CALCITE)
     ), true);
+    public static final Block SILVER_ORE = register("silver_ore",
+            new ExperienceDroppingBlock(FabricBlockSettings.create()
+                    .requiresTool()
+                    // Equal to Gold Ore
+                    .strength(3.0f, 3.0f)
+            ), true);
+    public static final Block DEEPSLATE_SILVER_ORE = register("deepslate_silver_ore",
+            new ExperienceDroppingBlock(FabricBlockSettings.create()
+                    .requiresTool()
+                    // Equal to Deepslate Gold Ore
+                    .strength(4.5f, 3.0f)
+            ), true);
     public static final Block SILVER_BLOCK = register("silver_block", new Block(
             FabricBlockSettings.create()
                     .requiresTool()

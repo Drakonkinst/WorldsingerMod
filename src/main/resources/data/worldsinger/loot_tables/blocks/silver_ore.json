@@ -24,7 +24,7 @@
                   }
                 }
               ],
-              "name": "worldsinger:saltstone_silver_ore"
+              "name": "worldsinger:silver_ore"
             },
             {
               "type": "minecraft:item",
@@ -46,5 +46,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "worldsinger:blocks/saltstone_silver_ore"
+  "random_sequence": "worldsinger:blocks/silver_ore"
 }

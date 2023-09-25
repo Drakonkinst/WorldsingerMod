@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "worldsinger:block/saltstone_silver_ore"
+    "all": "worldsinger:block/silver_ore"
   }
 }

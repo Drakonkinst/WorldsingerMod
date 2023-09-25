@@ -29,7 +29,9 @@
       "minecraft:amethyst_geode"
     ],
     [],
-    [],
+    [
+      "minecraft:desert_well"
+    ],
     [],
     [
       "minecraft:ore_gravel",
@@ -60,7 +62,10 @@
     [],
     [],
     [
-      "worldsinger:patch_dead_bush_higher"
+      "minecraft:glow_lichen",
+      "worldsinger:patch_dead_bush_higher",
+      "minecraft:brown_mushroom_normal",
+      "minecraft:red_mushroom_normal"
     ],
     []
   ],
