@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "worldsinger:lumar_saltstone_well",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 16,
+    "separation": 4,
+    "salt": 24268923
+  }
+}
