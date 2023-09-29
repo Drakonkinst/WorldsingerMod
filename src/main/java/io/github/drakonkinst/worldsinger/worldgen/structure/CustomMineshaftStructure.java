@@ -3,13 +3,13 @@ package io.github.drakonkinst.worldsinger.worldgen.structure;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.drakonkinst.worldsinger.registry.ModLootTables;
 import java.util.Optional;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.loot.LootTables;
 import net.minecraft.structure.StructurePiecesCollector;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
@@ -81,9 +81,9 @@ public class CustomMineshaftStructure extends Structure {
 
     public enum Type implements StringIdentifiable {
         LUMAR_OAK("lumar_oak", Blocks.OAK_LOG, Blocks.OAK_PLANKS, Blocks.OAK_FENCE, true, true,
-                false, false, true, LootTables.ABANDONED_MINESHAFT_CHEST),
+                false, false, true, ModLootTables.LUMAR_SALTSTONE_MINESHAFT_CHEST),
         LUMAR_BIRCH("lumar_birch", Blocks.BIRCH_LOG, Blocks.BIRCH_PLANKS, Blocks.BIRCH_FENCE, true,
-                true, false, false, true, LootTables.ABANDONED_MINESHAFT_CHEST);
+                true, false, false, true, ModLootTables.LUMAR_SALTSTONE_MINESHAFT_CHEST);
 
         public static final Codec<Type> CODEC;
         private static final IntFunction<Type> BY_ID;

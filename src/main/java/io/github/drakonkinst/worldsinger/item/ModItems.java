@@ -47,23 +47,23 @@ public final class ModItems {
     public static final Item DEAD_SPORES_BOTTLE = ModItems.register("dead_spores_bottle",
             new SporeBottleItem(
                     AetherSporeType.DEAD, new FabricItemSettings()
-                    .maxCount(1)));
+                    .maxCount(Items.POTION.getMaxCount())));
     public static final Item VERDANT_SPORES_BOTTLE = ModItems.register("verdant_spores_bottle",
             new SporeBottleItem(
                     AetherSporeType.VERDANT, new FabricItemSettings()
-                    .maxCount(1)));
+                    .maxCount(Items.POTION.getMaxCount())));
     public static final Item DEAD_SPORES_SPLASH_BOTTLE = ModItems.register(
             "dead_spores_splash_bottle",
             new SplashSporeBottleItem(
                     AetherSporeType.DEAD, new FabricItemSettings()
                     .recipeRemainder(Items.GLASS_BOTTLE)
-                    .maxCount(1)));
+                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
     public static final Item VERDANT_SPORES_SPLASH_BOTTLE = ModItems.register(
             "verdant_spores_splash_bottle",
             new SplashSporeBottleItem(
                     AetherSporeType.VERDANT, new FabricItemSettings()
                     .recipeRemainder(Items.GLASS_BOTTLE)
-                    .maxCount(1)));
+                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
     public static final Item VERDANT_VINE = ModItems.register("verdant_vine",
             new Item(new FabricItemSettings().food(
                     new FoodComponent.Builder()

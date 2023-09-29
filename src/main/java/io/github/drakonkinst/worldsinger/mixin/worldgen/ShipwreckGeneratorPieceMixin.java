@@ -22,8 +22,8 @@ public abstract class ShipwreckGeneratorPieceMixin {
 
     @Unique
     private static final Map<String, Identifier> LUMAR_LOOT_TABLES = Map.of(
-            "map_chest", ModLootTables.LUMAR_SHIPWRECK_MAP_CHEST,
-            "treasure_chest", ModLootTables.LUMAR_SHIPWRECK_TREASURE_CHEST,
+            "map_chest", ModLootTables.LUMAR_SHIPWRECK_SPROUTER_CHEST,
+            "treasure_chest", ModLootTables.LUMAR_SHIPWRECK_CAPTAIN_CHEST,
             "supply_chest", ModLootTables.LUMAR_SHIPWRECK_SUPPLY_CHEST
     );
 
