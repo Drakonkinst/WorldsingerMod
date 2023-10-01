@@ -88,6 +88,10 @@ public final class ModBlocks {
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), false);
+    public static final Block DEAD_SPORE_CAULDRON = register("dead_spore_cauldron",
+            new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
+                    ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.DEAD
+            ), false);
 
     // Verdant Spores
     public static final Block VERDANT_SPORE_SEA_BLOCK = register("verdant_spore_sea_block",
@@ -169,9 +173,34 @@ public final class ModBlocks {
                     .ticksRandomly(),
                     ModCauldronBehaviors.VERDANT_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.VERDANT
             ), false);
-    public static final Block DEAD_SPORE_CAULDRON = register("dead_spore_cauldron",
+
+    // Crimson Spores
+    public static final Block CRIMSON_SPORE_SEA_BLOCK = register("crimson_spore_sea_block",
+            new LivingAetherSporeFluidBlock(ModFluids.CRIMSON_SPORES, AetherSporeType.CRIMSON,
+                    FabricBlockSettings.create()
+                            .strength(100.0f)
+                            .mapColor(MapColor.DARK_RED)
+                            .replaceable()
+                            .noCollision()
+                            .ticksRandomly()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .dropsNothing()
+                            .liquid()
+                            .sounds(BlockSoundGroup.SAND)
+            ), false);
+    public static final Block CRIMSON_SPORE_BLOCK =
+            register("crimson_spore_block",
+                    new LivingAetherSporeBlock(AetherSporeType.CRIMSON,
+                            ModBlocks.CRIMSON_SPORE_SEA_BLOCK,
+                            FabricBlockSettings.create()
+                                    .strength(0.5f)
+                                    .mapColor(MapColor.DARK_RED)
+                                    .ticksRandomly()
+                                    .sounds(BlockSoundGroup.SAND)
+                    ), true);
+    public static final Block CRIMSON_SPORE_CAULDRON = register("crimson_spore_cauldron",
             new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
-                    ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.DEAD
+                    ModCauldronBehaviors.CRIMSON_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.CRIMSON
             ), false);
 
     // Other

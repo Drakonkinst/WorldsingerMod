@@ -46,6 +46,12 @@ public final class ModItems {
                     new FabricItemSettings()
                             .recipeRemainder(Items.BUCKET)
                             .maxCount(1)));
+    public static final Item CRIMSON_SPORES_BUCKET = ModItems.register(
+            "crimson_spores_bucket", new AetherSporeBucketItem(ModBlocks.CRIMSON_SPORE_BLOCK,
+                    SoundEvents.BLOCK_POWDER_SNOW_PLACE,
+                    new FabricItemSettings()
+                            .recipeRemainder(Items.BUCKET)
+                            .maxCount(1)));
 
     // Spore Bottles
     public static final Item DEAD_SPORES_BOTTLE = ModItems.register("dead_spores_bottle",
@@ -282,8 +288,10 @@ public final class ModItems {
 
         ItemGroupEvents.modifyEntriesEvent(moddedItemsItemGroupKey).register((itemGroup) -> {
             // Only include the highlight items/blocks here
-            itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
             itemGroup.add(ModItems.DEAD_SPORES_BUCKET);
+            itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
+            itemGroup.add(ModItems.CRIMSON_SPORES_BUCKET);
+            
             itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK);
             itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH);
             itemGroup.add(ModBlocks.VERDANT_VINE_SNARE);

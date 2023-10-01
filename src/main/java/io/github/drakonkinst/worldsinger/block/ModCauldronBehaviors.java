@@ -20,11 +20,14 @@ public final class ModCauldronBehaviors {
 
     public static final Map<Item, CauldronBehavior> DEAD_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
     public static final Map<Item, CauldronBehavior> VERDANT_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
+    public static final Map<Item, CauldronBehavior> CRIMSON_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
 
     public static final CauldronBehavior FILL_WITH_DEAD_SPORES = new FillWithFluidCauldronBehavior(
             () -> ModBlocks.DEAD_SPORE_CAULDRON);
     public static final CauldronBehavior FILL_WITH_VERDANT_SPORES = new FillWithFluidCauldronBehavior(
             () -> ModBlocks.VERDANT_SPORE_CAULDRON);
+    public static final CauldronBehavior FILL_WITH_CRIMSON_SPORES = new FillWithFluidCauldronBehavior(
+            () -> ModBlocks.CRIMSON_SPORE_CAULDRON);
 
     private static final SoundEvent FILL_SPORE_BOTTLE_SOUND = SoundEvents.BLOCK_SAND_BREAK;
     private static final SoundEvent FILL_SPORE_BUCKET_SOUND = SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW;
@@ -41,11 +44,15 @@ public final class ModCauldronBehaviors {
         ModCauldronBehaviors.registerSporeBucket(VERDANT_SPORE_CAULDRON_BEHAVIOR,
                 ModBlocks.VERDANT_SPORE_CAULDRON,
                 ModItems.VERDANT_SPORES_BUCKET, ModItems.VERDANT_SPORES_BOTTLE);
+        ModCauldronBehaviors.registerSporeBucket(CRIMSON_SPORE_CAULDRON_BEHAVIOR,
+                ModBlocks.CRIMSON_SPORE_CAULDRON,
+                ModItems.CRIMSON_SPORES_BUCKET, ModItems.CRIMSON_SPORES_BOTTLE);
     }
 
     private static void registerExtraBucketBehavior(Map<Item, CauldronBehavior> behavior) {
         behavior.put(ModItems.DEAD_SPORES_BUCKET, ModCauldronBehaviors.FILL_WITH_DEAD_SPORES);
         behavior.put(ModItems.VERDANT_SPORES_BUCKET, ModCauldronBehaviors.FILL_WITH_VERDANT_SPORES);
+        behavior.put(ModItems.CRIMSON_SPORES_BUCKET, ModCauldronBehaviors.FILL_WITH_CRIMSON_SPORES);
     }
 
     private static void registerSporeBucket(Map<Item, CauldronBehavior> behavior,

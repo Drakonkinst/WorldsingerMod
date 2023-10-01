@@ -36,13 +36,21 @@ public class WorldsingerClient implements ClientModInitializer {
                         Worldsinger.id("block/dead_spore_block"),
                         Worldsinger.id("block/dead_spore_sea_block_flow")
                 ));
+        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.CRIMSON_SPORES,
+                ModFluids.FLOWING_CRIMSON_SPORES,
+                new SimpleFluidRenderHandler(
+                        Worldsinger.id("block/crimson_spore_block"),
+                        Worldsinger.id("block/crimson_spore_sea_block_flow")
+                ));
 
         // Register fluid render layer as translucent (needed to make boats cull properly)
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
                 ModFluids.VERDANT_SPORES,
                 ModFluids.FLOWING_VERDANT_SPORES,
                 ModFluids.DEAD_SPORES,
-                ModFluids.FLOWING_DEAD_SPORES);
+                ModFluids.FLOWING_DEAD_SPORES,
+                ModFluids.CRIMSON_SPORES,
+                ModFluids.FLOWING_CRIMSON_SPORES);
 
         // Register block render layer
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),

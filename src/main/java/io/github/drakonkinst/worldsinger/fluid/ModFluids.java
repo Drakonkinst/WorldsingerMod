@@ -20,6 +20,12 @@ public final class ModFluids {
     public static final FlowableFluid FLOWING_VERDANT_SPORES = register("flowing_verdant_spores",
             new VerdantSporeFluid.Flowing()
     );
+    public static final FlowableFluid CRIMSON_SPORES = register("crimson_spores",
+            new CrimsonSporeFluid.Still()
+    );
+    public static final FlowableFluid FLOWING_CRIMSON_SPORES = register("flowing_crimson_spores",
+            new CrimsonSporeFluid.Flowing()
+    );
 
     public static <T extends Fluid> T register(String id, T fluid) {
         return Registry.register(Registries.FLUID, Worldsinger.id(id), fluid);
