@@ -27,13 +27,13 @@ public class WorldsingerClient implements ClientModInitializer {
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.VERDANT_SPORES,
                 ModFluids.FLOWING_VERDANT_SPORES,
                 new SimpleFluidRenderHandler(
-                        Worldsinger.id("block/verdant_spore_sea_block_still"),
+                        Worldsinger.id("block/verdant_spore_block"),
                         Worldsinger.id("block/verdant_spore_sea_block_flow")
                 ));
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.DEAD_SPORES,
                 ModFluids.FLOWING_DEAD_SPORES,
                 new SimpleFluidRenderHandler(
-                        Worldsinger.id("block/dead_spore_sea_block_still"),
+                        Worldsinger.id("block/dead_spore_block"),
                         Worldsinger.id("block/dead_spore_sea_block_flow")
                 ));
 
