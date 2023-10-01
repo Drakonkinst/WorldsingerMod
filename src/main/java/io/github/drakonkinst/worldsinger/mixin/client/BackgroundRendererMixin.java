@@ -27,13 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BackgroundRenderer.class)
 public abstract class BackgroundRendererMixin {
 
-    @Shadow
-    private static float red;
-    @Shadow
-    private static float green;
-    @Shadow
-    private static float blue;
-
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;"))
     private static void injectCustomFluidColors(Camera camera, float tickDelta, ClientWorld world,
             int viewDistance, float skyDarkness, CallbackInfo ci) {
@@ -129,4 +122,11 @@ public abstract class BackgroundRendererMixin {
         }
         return null;
     }
+
+    @Shadow
+    private static float red;
+    @Shadow
+    private static float green;
+    @Shadow
+    private static float blue;
 }

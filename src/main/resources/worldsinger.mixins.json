@@ -41,6 +41,7 @@
     "item.BucketItemMixin",
     "item.GlassBottleItemMixin",
     "screen.AnvilScreenHandlerMixin",
+    "world.WorldMixin",
     "worldgen.CarverMixin",
     "worldgen.ShipwreckGeneratorPieceMixin",
     "worldgen.WorldChunkMixin"

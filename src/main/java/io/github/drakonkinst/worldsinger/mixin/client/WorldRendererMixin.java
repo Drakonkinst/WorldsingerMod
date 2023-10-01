@@ -115,8 +115,7 @@ public abstract class WorldRendererMixin {
                 GlStateManager.DstFactor.ONE, GlStateManager.SrcFactor.ONE,
                 GlStateManager.DstFactor.ZERO);
         matrices.push();
-        float i = 1.0f - world.getRainGradient(tickDelta);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, i);
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0f));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(
                 world.getSkyAngle(tickDelta) * 360.0f));
@@ -158,7 +157,7 @@ public abstract class WorldRendererMixin {
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
         // Draw stars
-        float u = world.method_23787(tickDelta) * i;
+        float u = world.method_23787(tickDelta);
         if (u > 0.0f) {
             RenderSystem.setShaderColor(u, u, u, u);
             BackgroundRenderer.clearFog();
