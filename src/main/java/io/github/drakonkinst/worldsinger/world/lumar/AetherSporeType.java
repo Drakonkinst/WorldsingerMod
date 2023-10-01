@@ -17,9 +17,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringIdentifiable;
 
 public enum AetherSporeType implements StringIdentifiable {
-    DEAD("dead", 0x888888, 0xaaaaaa, () -> null, () -> ModItems.DEAD_SPORES_BOTTLE),
-    VERDANT("verdant", 0x2e522e, 0x64aa4a, () -> ModStatusEffects.VERDANT_SPORES,
-            () -> ModItems.VERDANT_SPORES_BOTTLE);
+    DEAD("dead", 0x888888, 0xaaaaaa,
+            () -> null, () -> ModItems.DEAD_SPORES_BOTTLE),
+    VERDANT("verdant", 0x2e522e, 0x64aa4a,
+            () -> ModStatusEffects.VERDANT_SPORES, () -> ModItems.VERDANT_SPORES_BOTTLE),
+    CRIMSON("crimson", 0xd72e2d, 0xe44d61,
+            () -> ModStatusEffects.CRIMSON_SPORES, () -> ModItems.CRIMSON_SPORES_BOTTLE),
+    ZEPHYR("zephyr", 0x4b9bb7, 0x4b9bb7,
+            () -> ModStatusEffects.ZEPHYR_SPORES, () -> ModItems.ZEPHYR_SPORES_BOTTLE),
+    SUNLIGHT("sunlight", 0xf4bd52, 0xf4bd52,
+            () -> ModStatusEffects.SUNLIGHT_SPORES, () -> ModItems.SUNLIGHT_SPORES_BOTTLE),
+    ROSEITE("roseite", 0xce9db2, 0xce9db2,
+            () -> ModStatusEffects.ROSEITE_SPORES, () -> ModItems.ROSEITE_SPORES_BOTTLE),
+    MIDNIGHT("midnight", 0x111111, 0x111111,
+            () -> ModStatusEffects.MIDNIGHT_SPORES, () -> ModItems.MIDNIGHT_SPORES_BOTTLE);
 
     private static final float MAX_COLOR_VALUE = 255.0f;
     private final String name;
@@ -39,7 +50,7 @@ public enum AetherSporeType implements StringIdentifiable {
 
     public static int getBottleColor(ItemStack stack) {
         if (stack.getItem() instanceof SporeBottleItem sporeBottleItem) {
-            return sporeBottleItem.getSporeType().getParticleColor();
+            return sporeBottleItem.getSporeType().getColor();
         }
         return -1;
     }

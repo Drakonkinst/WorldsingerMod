@@ -32,6 +32,8 @@ import net.minecraft.util.Identifier;
 public final class ModItems {
 
     // Items
+
+    // Spore Buckets
     public static final Item DEAD_SPORES_BUCKET = ModItems.register("dead_spores_bucket",
             new AetherSporeBucketItem(ModBlocks.DEAD_SPORE_BLOCK,
                     SoundEvents.BLOCK_POWDER_SNOW_PLACE,
@@ -44,6 +46,8 @@ public final class ModItems {
                     new FabricItemSettings()
                             .recipeRemainder(Items.BUCKET)
                             .maxCount(1)));
+
+    // Spore Bottles
     public static final Item DEAD_SPORES_BOTTLE = ModItems.register("dead_spores_bottle",
             new SporeBottleItem(
                     AetherSporeType.DEAD, new FabricItemSettings()
@@ -52,6 +56,28 @@ public final class ModItems {
             new SporeBottleItem(
                     AetherSporeType.VERDANT, new FabricItemSettings()
                     .maxCount(Items.POTION.getMaxCount())));
+    public static final Item CRIMSON_SPORES_BOTTLE = ModItems.register("crimson_spores_bottle",
+            new SporeBottleItem(
+                    AetherSporeType.CRIMSON, new FabricItemSettings()
+                    .maxCount(Items.POTION.getMaxCount())));
+    public static final Item ZEPHYR_SPORES_BOTTLE = ModItems.register("zephyr_spores_bottle",
+            new SporeBottleItem(
+                    AetherSporeType.ZEPHYR, new FabricItemSettings()
+                    .maxCount(Items.POTION.getMaxCount())));
+    public static final Item SUNLIGHT_SPORES_BOTTLE = ModItems.register("sunlight_spores_bottle",
+            new SporeBottleItem(
+                    AetherSporeType.SUNLIGHT, new FabricItemSettings()
+                    .maxCount(Items.POTION.getMaxCount())));
+    public static final Item ROSEITE_SPORES_BOTTLE = ModItems.register("roseite_spores_bottle",
+            new SporeBottleItem(
+                    AetherSporeType.ROSEITE, new FabricItemSettings()
+                    .maxCount(Items.POTION.getMaxCount())));
+    public static final Item MIDNIGHT_SPORES_BOTTLE = ModItems.register("midnight_spores_bottle",
+            new SporeBottleItem(
+                    AetherSporeType.MIDNIGHT, new FabricItemSettings()
+                    .maxCount(Items.POTION.getMaxCount())));
+
+    // Spore Splash Bottle
     public static final Item DEAD_SPORES_SPLASH_BOTTLE = ModItems.register(
             "dead_spores_splash_bottle",
             new SplashSporeBottleItem(
@@ -64,6 +90,38 @@ public final class ModItems {
                     AetherSporeType.VERDANT, new FabricItemSettings()
                     .recipeRemainder(Items.GLASS_BOTTLE)
                     .maxCount(Items.SPLASH_POTION.getMaxCount())));
+    public static final Item CRIMSON_SPORES_SPLASH_BOTTLE = ModItems.register(
+            "crimson_spores_splash_bottle",
+            new SplashSporeBottleItem(
+                    AetherSporeType.CRIMSON, new FabricItemSettings()
+                    .recipeRemainder(Items.GLASS_BOTTLE)
+                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+    public static final Item ZEPHYR_SPORES_SPLASH_BOTTLE = ModItems.register(
+            "zephyr_spores_splash_bottle",
+            new SplashSporeBottleItem(
+                    AetherSporeType.ZEPHYR, new FabricItemSettings()
+                    .recipeRemainder(Items.GLASS_BOTTLE)
+                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+    public static final Item SUNLIGHT_SPORES_SPLASH_BOTTLE = ModItems.register(
+            "sunlight_spores_splash_bottle",
+            new SplashSporeBottleItem(
+                    AetherSporeType.SUNLIGHT, new FabricItemSettings()
+                    .recipeRemainder(Items.GLASS_BOTTLE)
+                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+    public static final Item ROSEITE_SPORES_SPLASH_BOTTLE = ModItems.register(
+            "roseite_spores_splash_bottle",
+            new SplashSporeBottleItem(
+                    AetherSporeType.ROSEITE, new FabricItemSettings()
+                    .recipeRemainder(Items.GLASS_BOTTLE)
+                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+    public static final Item MIDNIGHT_SPORES_SPLASH_BOTTLE = ModItems.register(
+            "midnight_spores_splash_bottle",
+            new SplashSporeBottleItem(
+                    AetherSporeType.MIDNIGHT, new FabricItemSettings()
+                    .recipeRemainder(Items.GLASS_BOTTLE)
+                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+
+
     public static final Item VERDANT_VINE = ModItems.register("verdant_vine",
             new Item(new FabricItemSettings().food(
                     new FoodComponent.Builder()
@@ -241,6 +299,16 @@ public final class ModItems {
             itemGroup.add(ModItems.VERDANT_SPORES_SPLASH_BOTTLE);
             itemGroup.add(ModItems.DEAD_SPORES_BOTTLE);
             itemGroup.add(ModItems.DEAD_SPORES_SPLASH_BOTTLE);
+            itemGroup.add(ModItems.CRIMSON_SPORES_BOTTLE);
+            itemGroup.add(ModItems.CRIMSON_SPORES_SPLASH_BOTTLE);
+            itemGroup.add(ModItems.ZEPHYR_SPORES_BOTTLE);
+            itemGroup.add(ModItems.ZEPHYR_SPORES_SPLASH_BOTTLE);
+            itemGroup.add(ModItems.SUNLIGHT_SPORES_BOTTLE);
+            itemGroup.add(ModItems.SUNLIGHT_SPORES_SPLASH_BOTTLE);
+            itemGroup.add(ModItems.ROSEITE_SPORES_BOTTLE);
+            itemGroup.add(ModItems.ROSEITE_SPORES_SPLASH_BOTTLE);
+            itemGroup.add(ModItems.MIDNIGHT_SPORES_BOTTLE);
+            itemGroup.add(ModItems.MIDNIGHT_SPORES_SPLASH_BOTTLE);
         });
     }
 

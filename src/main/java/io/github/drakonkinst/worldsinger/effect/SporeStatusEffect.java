@@ -32,7 +32,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
     }
 
     protected SporeStatusEffect(AetherSporeType aetherSporeType, float damage) {
-        super(StatusEffectCategory.HARMFUL, aetherSporeType.getColor());
+        super(StatusEffectCategory.HARMFUL, aetherSporeType.getParticleColor());
         this.aetherSporeType = aetherSporeType;
         this.damage = damage;
     }
