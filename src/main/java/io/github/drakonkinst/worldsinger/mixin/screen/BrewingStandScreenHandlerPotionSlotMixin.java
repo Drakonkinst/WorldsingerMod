@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.mixin.block;
+package io.github.drakonkinst.worldsinger.mixin.screen;
 
 import io.github.drakonkinst.worldsinger.mixin.accessor.BrewingRecipeRegistryAccessor;
 import net.minecraft.item.ItemStack;

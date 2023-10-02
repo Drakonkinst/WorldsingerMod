@@ -38,13 +38,16 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
     private static final BlockState WATER = Blocks.WATER.getDefaultState();
     private static final BlockState LAVA = Blocks.LAVA.getDefaultState();
     private static final BlockState EMERALD_SEA = ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState();
+    private static final BlockState CRIMSON_SEA = ModBlocks.CRIMSON_SPORE_SEA_BLOCK.getDefaultState();
 
-    public static BlockState getSporeSeaBlockAtPos(BlockState state, NoiseConfig noiseConfig, int x,
-            int y, int z) {
+    public static BlockState getSporeSeaBlockAtPos(NoiseConfig noiseConfig, int x, int y, int z) {
         DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
         NoiseRouter noiseRouter = noiseConfig.getNoiseRouter();
         double temperature = noiseRouter.temperature().sample(noisePos);
-        return EMERALD_SEA;
+        if (temperature <= 0.0f) {
+            return EMERALD_SEA;
+        }
+        return CRIMSON_SEA;
     }
 
     private static AquiferSampler.FluidLevelSampler createFluidLevelSampler() {
@@ -65,7 +68,7 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
             return state;
         }
 
-        return LumarChunkGenerator.getSporeSeaBlockAtPos(state, noiseConfig, x, y, z);
+        return LumarChunkGenerator.getSporeSeaBlockAtPos(noiseConfig, x, y, z);
     }
 
     @Override

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(World.class)
-public class WorldMixin {
+public abstract class WorldMixin {
 
     @ModifyReturnValue(method = "getRainGradient", at = @At("RETURN"))
     private float removeCustomDimensionRainGradient(float originalValue) {

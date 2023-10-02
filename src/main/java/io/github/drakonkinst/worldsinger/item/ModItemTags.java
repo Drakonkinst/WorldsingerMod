@@ -13,6 +13,7 @@ public final class ModItemTags {
             "flint_and_steel_variants");
     public static final TagKey<Item> HAS_STEEL = ModItemTags.of("has_steel");
     public static final TagKey<Item> HAS_IRON = ModItemTags.of("has_iron");
+    public static final TagKey<Item> BREWING_STAND_FUELS = ModItemTags.of("brewing_stand_fuels");
 
     public static final TagKey<Item> SILVER_INGOTS = ModItemTags.ofCommon("silver_ingots");
     public static final TagKey<Item> SHIELDS = ModItemTags.ofCommon("shields");
