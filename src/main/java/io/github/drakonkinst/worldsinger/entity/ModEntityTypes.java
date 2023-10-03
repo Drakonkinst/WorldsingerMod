@@ -32,6 +32,12 @@ public final class ModEntityTypes {
                     .dimensions(EntityDimensions.fixed(0.0f, 0.0f))
                     .trackRangeChunks(0)
                     .build());
+    public static final EntityType<CrimsonSporeGrowthEntity> CRIMSON_SPORE_GROWTH = register(
+            "crimson_spore_growth",
+            FabricEntityTypeBuilder.create(SpawnGroup.MISC, CrimsonSporeGrowthEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.0f, 0.0f))
+                    .trackRangeChunks(0)
+                    .build());
     public static final EntityType<ThrownSporeBottleEntity> THROWN_SPORE_BOTTLE = register(
             "spore_bottle",
             FabricEntityTypeBuilder.<ThrownSporeBottleEntity>create(SpawnGroup.MISC,
@@ -57,8 +63,7 @@ public final class ModEntityTypes {
             WorldAccess world,
             SpawnReason spawnReason, BlockPos pos, Random random) {
         DimensionType lumarDimension = world.getRegistryManager().get(RegistryKeys.DIMENSION_TYPE)
-                .get(
-                        ModDimensionTypes.LUMAR);
+                .get(ModDimensionTypes.LUMAR);
         if (lumarDimension != null && lumarDimension.equals(world.getDimension())) {
             return world.getBlockState(pos.down()).isIn(ModBlockTags.SEAGULLS_SPAWNABLE_ON)
                     && world.getBaseLightLevel(pos, 0) > 8;

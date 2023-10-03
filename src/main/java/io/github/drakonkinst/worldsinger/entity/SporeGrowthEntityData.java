@@ -16,7 +16,7 @@ public class SporeGrowthEntityData implements SporeGrowthComponent {
     private static final String NBT_KEY_ORIGIN_Z = "OriginZ";
     private static final String NBT_KEY_INITIAL_GROWTH = "InitialGrowth";
 
-    private final AbstractSporeGrowthEntity entity;
+    private final SporeGrowthEntity entity;
     private int waterRemaining;
     private int sporesRemaining;
     private short stage = 0;
@@ -24,7 +24,7 @@ public class SporeGrowthEntityData implements SporeGrowthComponent {
     private boolean initial;
     private BlockPos origin;
 
-    public SporeGrowthEntityData(AbstractSporeGrowthEntity entity) {
+    public SporeGrowthEntityData(SporeGrowthEntity entity) {
         this.entity = entity;
     }
 
@@ -128,7 +128,7 @@ public class SporeGrowthEntityData implements SporeGrowthComponent {
         ++age;
     }
 
-    public AbstractSporeGrowthEntity getEntity() {
+    public SporeGrowthEntity getEntity() {
         return entity;
     }
 }

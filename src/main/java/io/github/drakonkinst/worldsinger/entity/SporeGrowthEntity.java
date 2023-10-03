@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
-public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
+public abstract class SporeGrowthEntity extends MarkerEntity {
 
     private static final int INITIAL_GROWTH_SPEED = 3;
     private static final int DIRECTION_ARRAY_SIZE = 6;
@@ -58,10 +58,10 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
     protected Int3 lastDir = Int3.ZERO;
     private int placeAttempts = 0;
     private BlockPos lastPos = null;
-    private Vector3d currentForceDir = new Vector3d();
+    private final Vector3d currentForceDir = new Vector3d();
     private double currentForceMagnitude = 0.0;
 
-    public AbstractSporeGrowthEntity(EntityType<?> entityType,
+    public SporeGrowthEntity(EntityType<?> entityType,
             World world) {
         super(entityType, world);
         this.sporeGrowthData = ModComponents.SPORE_GROWTH.get(this);
@@ -143,7 +143,7 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         }
 
         if (playSound) {
-            AbstractSporeGrowthEntity.playPlaceSoundEffect(this.getWorld(), pos, state);
+            SporeGrowthEntity.playPlaceSoundEffect(this.getWorld(), pos, state);
         }
     }
 
@@ -321,9 +321,9 @@ public abstract class AbstractSporeGrowthEntity extends MarkerEntity {
         BlockPos pos = this.getBlockPos();
         BlockPos.Mutable mutable = pos.mutableCopy();
         World world = this.getWorld();
-        AbstractSporeGrowthEntity.resetCatalyzed(world, pos);
+        SporeGrowthEntity.resetCatalyzed(world, pos);
         for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            AbstractSporeGrowthEntity.resetCatalyzed(world, mutable.set(pos.offset(direction)));
+            SporeGrowthEntity.resetCatalyzed(world, mutable.set(pos.offset(direction)));
         }
     }
 

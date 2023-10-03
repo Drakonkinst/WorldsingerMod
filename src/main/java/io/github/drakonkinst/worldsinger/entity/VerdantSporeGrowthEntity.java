@@ -27,7 +27,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
+public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
 
     public static final int MAX_STAGE = 1;
 
@@ -45,8 +45,7 @@ public class VerdantSporeGrowthEntity extends AbstractSporeGrowthEntity {
     private static final int SPORE_WATER_THRESHOLD = 25;
     private static final int FORCE_MODIFIER_MULTIPLIER = 20;
 
-    public VerdantSporeGrowthEntity(EntityType<?> entityType,
-            World world) {
+    public VerdantSporeGrowthEntity(EntityType<?> entityType, World world) {
         super(entityType, world);
     }
 

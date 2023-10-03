@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.entity.AbstractSporeGrowthEntity;
+import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntity;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import net.minecraft.block.Block;
@@ -46,7 +46,7 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
                         .with(Properties.VERTICAL_DIRECTION, direction)
                         .with(ModProperties.CATALYZED, true);
                 world.setBlockState(outermostPos, newState);
-                AbstractSporeGrowthEntity.playPlaceSoundEffect(world, outermostPos, newState);
+                SporeGrowthEntity.playPlaceSoundEffect(world, outermostPos, newState);
 
                 if (++depth < MAX_DEPTH && random.nextInt(3) > 0) {
                     continue;
