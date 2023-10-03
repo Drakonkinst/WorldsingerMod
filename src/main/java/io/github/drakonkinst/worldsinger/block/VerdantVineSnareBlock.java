@@ -79,8 +79,8 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACE, FACING, Properties.PERSISTENT, Properties.WATERLOGGED);
         super.appendProperties(builder);
+        builder.add(FACE, FACING, Properties.PERSISTENT, Properties.WATERLOGGED);
     }
 
     @Override
@@ -103,7 +103,6 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
                     .with(Properties.WATERLOGGED,
                             ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(
                                     Fluids.WATER));
-            ;
         }
         return placementState;
     }

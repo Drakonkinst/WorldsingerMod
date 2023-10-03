@@ -1,0 +1,6 @@
+{
+  "parent": "worldsinger:block/crimson_spike",
+  "textures": {
+    "cross": "worldsinger:block/dead_crimson_spike_down_base"
+  }
+}

@@ -28,8 +28,8 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
 
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {
-        builder.add(ModProperties.CATALYZED);
         super.appendProperties(builder);
+        builder.add(ModProperties.CATALYZED);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
 
     @Override
     public boolean hasRandomTicks(BlockState state) {
-        return true;
+        return super.hasRandomTicks(state) || !state.get(ModProperties.CATALYZED);
     }
 
     @Override

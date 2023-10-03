@@ -1,0 +1,100 @@
+{
+  "variants": {
+    "thickness=base,facing=down": {
+      "model": "worldsinger:block/crimson_spike_down_base"
+    },
+    "thickness=base,facing=up": {
+      "model": "worldsinger:block/crimson_spike_up_base"
+    },
+    "thickness=base,facing=north": {
+      "model": "worldsinger:block/crimson_spike_up_base",
+      "x": 90
+    },
+    "thickness=base,facing=south": {
+      "model": "worldsinger:block/crimson_spike_down_base",
+      "x": 90
+    },
+    "thickness=base,facing=east": {
+      "model": "worldsinger:block/crimson_spike_up_base",
+      "x": 90,
+      "y": 90
+    },
+    "thickness=base,facing=west": {
+      "model": "worldsinger:block/crimson_spike_down_base",
+      "x": 90,
+      "y": 90
+    },
+    "thickness=frustum,facing=down": {
+      "model": "worldsinger:block/crimson_spike_down_frustum"
+    },
+    "thickness=frustum,facing=up": {
+      "model": "worldsinger:block/crimson_spike_up_frustum"
+    },
+    "thickness=frustum,facing=north": {
+      "model": "worldsinger:block/crimson_spike_up_frustum",
+      "x": 90
+    },
+    "thickness=frustum,facing=south": {
+      "model": "worldsinger:block/crimson_spike_down_frustum",
+      "x": 90
+    },
+    "thickness=frustum,facing=east": {
+      "model": "worldsinger:block/crimson_spike_up_frustum",
+      "x": 90,
+      "y": 90
+    },
+    "thickness=frustum,facing=west": {
+      "model": "worldsinger:block/crimson_spike_down_frustum",
+      "x": 90,
+      "y": 90
+    },
+    "thickness=middle,facing=down": {
+      "model": "worldsinger:block/crimson_spike_down_middle"
+    },
+    "thickness=middle,facing=up": {
+      "model": "worldsinger:block/crimson_spike_up_middle"
+    },
+    "thickness=middle,facing=north": {
+      "model": "worldsinger:block/crimson_spike_up_middle",
+      "x": 90
+    },
+    "thickness=middle,facing=south": {
+      "model": "worldsinger:block/crimson_spike_down_middle",
+      "x": 90
+    },
+    "thickness=middle,facing=east": {
+      "model": "worldsinger:block/crimson_spike_up_middle",
+      "x": 90,
+      "y": 90
+    },
+    "thickness=middle,facing=west": {
+      "model": "worldsinger:block/crimson_spike_down_middle",
+      "x": 90,
+      "y": 90
+    },
+    "thickness=tip,facing=down": {
+      "model": "worldsinger:block/crimson_spike_down_tip"
+    },
+    "thickness=tip,facing=up": {
+      "model": "worldsinger:block/crimson_spike_up_tip"
+    },
+    "thickness=tip,facing=north": {
+      "model": "worldsinger:block/crimson_spike_up_tip",
+      "x": 90
+    },
+    "thickness=tip,facing=south": {
+      "model": "worldsinger:block/crimson_spike_down_tip",
+      "x": 90
+    },
+    "thickness=tip,facing=east": {
+      "model": "worldsinger:block/crimson_spike_up_tip",
+      "x": 90,
+      "y": 90
+    },
+    "thickness=tip,facing=west": {
+      "model": "worldsinger:block/crimson_spike_down_tip",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

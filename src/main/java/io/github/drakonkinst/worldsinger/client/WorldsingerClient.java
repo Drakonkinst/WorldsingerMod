@@ -55,11 +55,13 @@ public class WorldsingerClient implements ClientModInitializer {
         // Register block render layer
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
                 ModBlocks.VERDANT_VINE_SNARE,
-                ModBlocks.TWISTING_VERDANT_VINES,
-                ModBlocks.TWISTING_VERDANT_VINES_PLANT,
                 ModBlocks.DEAD_VERDANT_VINE_SNARE,
+                ModBlocks.TWISTING_VERDANT_VINES,
                 ModBlocks.DEAD_TWISTING_VERDANT_VINES,
-                ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT
+                ModBlocks.TWISTING_VERDANT_VINES_PLANT,
+                ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
+                ModBlocks.CRIMSON_SPIKE,
+                ModBlocks.DEAD_CRIMSON_SPIKE
         );
 
         // Register particles

@@ -317,6 +317,9 @@ public final class ModItems {
             itemGroup.add(ModItems.ROSEITE_SPORES_SPLASH_BOTTLE);
             itemGroup.add(ModItems.MIDNIGHT_SPORES_BOTTLE);
             itemGroup.add(ModItems.MIDNIGHT_SPORES_SPLASH_BOTTLE);
+
+            itemGroup.add(ModBlocks.CRIMSON_SPIKE);
+            itemGroup.add(ModBlocks.DEAD_CRIMSON_SPIKE);
         });
     }
 

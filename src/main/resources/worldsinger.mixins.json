@@ -11,6 +11,7 @@
     "accessor.FlowableFluidInvoker",
     "accessor.LandPathNodeMakerInvoker",
     "accessor.SpawnRestrictionAccessor",
+    "block.AbstractBlockSettingsMixin",
     "block.AbstractBlockStateMixin",
     "block.BlockMixin",
     "block.BrewingStandBlockEntityMixin",

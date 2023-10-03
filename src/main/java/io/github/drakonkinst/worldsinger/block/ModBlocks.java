@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock.Offsetter;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ExperienceDroppingBlock;
@@ -88,6 +89,19 @@ public final class ModBlocks {
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), false);
+    public static final Block DEAD_CRIMSON_SPIKE = register("dead_crimson_spike",
+            new CrimsonSpikeBlock(
+                    ModBlocks.createSettingsWithCustomOffsetter(CrimsonSpikeBlock.getOffsetter())
+                            // Same strength as Pointed Dripstone
+                            // TODO: Change to be weaker
+                            .strength(1.5f, 3.0f)
+                            .solid()
+                            .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
+                            .ticksRandomly()
+                            .dynamicBounds()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .solidBlock(Blocks::never)
+            ), true);
     public static final Block DEAD_SPORE_CAULDRON = register("dead_spore_cauldron",
             new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
                     ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.DEAD
@@ -202,6 +216,19 @@ public final class ModBlocks {
             new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
                     ModCauldronBehaviors.CRIMSON_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.CRIMSON
             ), false);
+    public static final Block CRIMSON_SPIKE = register("crimson_spike",
+            new LivingCrimsonSpikeBlock(
+                    ModBlocks.createSettingsWithCustomOffsetter(CrimsonSpikeBlock.getOffsetter())
+                            // Same strength as Pointed Dripstone
+                            .strength(1.5f, 3.0f)
+                            .solid()
+                            .mapColor(MapColor.DARK_RED)
+                            .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
+                            .ticksRandomly()
+                            .dynamicBounds()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .solidBlock(Blocks::never)
+            ), true);
 
     // Other
     public static final Block SALTSTONE = register("saltstone",
@@ -293,6 +320,13 @@ public final class ModBlocks {
         }
 
         return Registry.register(Registries.BLOCK, blockId, block);
+    }
+
+    private static FabricBlockSettings createSettingsWithCustomOffsetter(Offsetter offsetter) {
+        FabricBlockSettings settings = FabricBlockSettings.create();
+        ((CustomBlockOffsetterAccess) settings).worldsinger$setCustomOffsetter(offsetter);
+        return settings;
+
     }
 
     public static void initialize() {}
