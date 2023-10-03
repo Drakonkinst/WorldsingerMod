@@ -1,8 +1,10 @@
 package io.github.drakonkinst.worldsinger.mixin.entity.ai;
 
+import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.LandPathNodeMakerInvoker;
 import io.github.drakonkinst.worldsinger.util.ModEnums;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.fluid.FluidState;
@@ -19,6 +21,12 @@ public abstract class LandPathNodeMakerMixin {
     @Inject(method = "getCommonNodeType", at = @At("TAIL"), cancellable = true)
     private static void addAetherSporeSeaNodeType(BlockView world, BlockPos pos,
             CallbackInfoReturnable<PathNodeType> cir) {
+        BlockState blockState = world.getBlockState(pos);
+        if (blockState.isIn(ModBlockTags.CRIMSON_SPIKES)) {
+            cir.setReturnValue(PathNodeType.DAMAGE_CAUTIOUS);
+            return;
+        }
+
         FluidState fluidState = world.getFluidState(pos);
         if (fluidState.isIn(ModFluidTags.AETHER_SPORES)) {
             cir.setReturnValue(ModEnums.PathNodeType.AETHER_SPORE_SEA);
