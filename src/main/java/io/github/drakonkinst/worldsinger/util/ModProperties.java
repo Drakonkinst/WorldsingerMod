@@ -9,7 +9,7 @@ public final class ModProperties {
 
     public static final FluidProperty FLUIDLOGGED = FluidProperty.of("fluidlogged");
     public static final BooleanProperty CATALYZED = BooleanProperty.of("catalyzed");
-    public static final EnumProperty<Thickness> THICKNESS_NO_MERGE = EnumProperty.of("thickness",
+    public static final EnumProperty<Thickness> DISCRETE_THICKNESS = EnumProperty.of("thickness",
             Thickness.class, thickness -> thickness != Thickness.TIP_MERGE);
 
     private ModProperties() {}

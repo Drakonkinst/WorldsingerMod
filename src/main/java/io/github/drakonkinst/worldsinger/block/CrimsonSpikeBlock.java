@@ -7,6 +7,7 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.enums.Thickness;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
@@ -47,18 +48,30 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
             TIP_OFFSET, TIP_HEIGHT);
     private static final VoxelShape TIP_SHAPE_WEST = createDirectionalShape(Direction.WEST,
             TIP_OFFSET, TIP_HEIGHT);
-    private static final VoxelShape TIP_COLLIDER_UP = createDirectionalShape(Direction.DOWN,
-            TIP_OFFSET, 16.0 - TIP_HEIGHT);
-    private static final VoxelShape TIP_COLLIDER_DOWN = createDirectionalShape(Direction.UP,
-            TIP_OFFSET, 16.0 - TIP_HEIGHT);
-    private static final VoxelShape TIP_COLLIDER_NORTH = createDirectionalShape(Direction.SOUTH,
-            TIP_OFFSET, 16.0 - TIP_HEIGHT);
-    private static final VoxelShape TIP_COLLIDER_SOUTH = createDirectionalShape(Direction.NORTH,
-            TIP_OFFSET, 16.0 - TIP_HEIGHT);
-    private static final VoxelShape TIP_COLLIDER_EAST = createDirectionalShape(Direction.WEST,
-            TIP_OFFSET, 16.0 - TIP_HEIGHT);
-    private static final VoxelShape TIP_COLLIDER_WEST = createDirectionalShape(Direction.EAST,
-            TIP_OFFSET, 16.0 - TIP_HEIGHT);
+    private static final VoxelShape TIP_SAFE_UP = createDirectionalShape(Direction.UP,
+            0.0, TIP_HEIGHT);
+    private static final VoxelShape TIP_SAFE_DOWN = createDirectionalShape(Direction.DOWN,
+            0.0, TIP_HEIGHT);
+    private static final VoxelShape TIP_SAFE_NORTH = createDirectionalShape(Direction.NORTH,
+            0.0, TIP_HEIGHT);
+    private static final VoxelShape TIP_SAFE_SOUTH = createDirectionalShape(Direction.SOUTH,
+            0.0, TIP_HEIGHT);
+    private static final VoxelShape TIP_SAFE_EAST = createDirectionalShape(Direction.EAST,
+            0.0, TIP_HEIGHT);
+    private static final VoxelShape TIP_SAFE_WEST = createDirectionalShape(Direction.WEST,
+            0.0, TIP_HEIGHT);
+    private static final VoxelShape TIP_DAMAGE_UP = createDirectionalShape(Direction.UP,
+            TIP_OFFSET, 16.0);
+    private static final VoxelShape TIP_DAMAGE_DOWN = createDirectionalShape(Direction.DOWN,
+            TIP_OFFSET, 16.0);
+    private static final VoxelShape TIP_DAMAGE_NORTH = createDirectionalShape(Direction.NORTH,
+            TIP_OFFSET, 16.0);
+    private static final VoxelShape TIP_DAMAGE_SOUTH = createDirectionalShape(Direction.SOUTH,
+            TIP_OFFSET, 16.0);
+    private static final VoxelShape TIP_DAMAGE_EAST = createDirectionalShape(Direction.EAST,
+            TIP_OFFSET, 16.0);
+    private static final VoxelShape TIP_DAMAGE_WEST = createDirectionalShape(Direction.WEST,
+            TIP_OFFSET, 16.0);
     private static final VoxelShape FRUSTUM_SHAPE_X = createAxisAlignedShape(Axis.X,
             FRUSTUM_OFFSET);
     private static final VoxelShape FRUSTUM_SHAPE_Y = createAxisAlignedShape(Axis.Y,
@@ -92,84 +105,83 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
         };
     }
 
-    private static VoxelShape getDamageCollisionShapeForDirection(Direction direction) {
+    private static VoxelShape getSafeShapeForDirection(Direction direction) {
+        VoxelShape shape;
         switch(direction) {
-            case DOWN -> {
-                return TIP_COLLIDER_DOWN;
-            }
-            case UP -> {
-                return TIP_COLLIDER_UP;
-            }
-            case NORTH -> {
-                return TIP_COLLIDER_NORTH;
-            }
-            case SOUTH -> {
-                return TIP_COLLIDER_SOUTH;
-            }
-            case WEST -> {
-                return TIP_COLLIDER_WEST;
-            }
-            default -> {
-                // EAST
-                return TIP_COLLIDER_EAST;
-            }
+            case DOWN -> shape = TIP_SAFE_DOWN;
+            case UP -> shape = TIP_SAFE_UP;
+            case NORTH -> shape = TIP_SAFE_NORTH;
+            case SOUTH -> shape = TIP_SAFE_SOUTH;
+            case WEST -> shape = TIP_SAFE_WEST;
+            default -> shape = TIP_SAFE_EAST;
         }
+        return shape;
+    }
+
+    private static VoxelShape getDamageShapeForDirection(Direction direction) {
+        VoxelShape shape;
+        switch(direction) {
+            case DOWN -> shape = TIP_DAMAGE_DOWN;
+            case UP -> shape = TIP_DAMAGE_UP;
+            case NORTH -> shape = TIP_DAMAGE_NORTH;
+            case SOUTH -> shape = TIP_DAMAGE_SOUTH;
+            case WEST -> shape = TIP_DAMAGE_WEST;
+            default -> shape = TIP_DAMAGE_EAST;
+        }
+        return shape;
+    }
+
+    private static VoxelShape getTipShapeForDirection(Direction direction) {
+        VoxelShape shape;
+        switch(direction) {
+            case DOWN -> shape = TIP_SHAPE_DOWN;
+            case UP -> shape = TIP_SHAPE_UP;
+            case NORTH -> shape = TIP_SHAPE_NORTH;
+            case SOUTH -> shape = TIP_SHAPE_SOUTH;
+            case WEST -> shape = TIP_SHAPE_WEST;
+            default -> shape = TIP_SHAPE_EAST;
+        }
+        return shape;
     }
 
     private static VoxelShape createDirectionalShape(Direction direction, double widthOffset,
             double height) {
+        VoxelShape shape;
         switch(direction) {
-            case UP -> {
-                return Block.createCuboidShape(widthOffset, 0.0, widthOffset, 16.0 - widthOffset,
-                        height, 16.0 - widthOffset);
-            }
-            case DOWN -> {
-                return Block.createCuboidShape(widthOffset, 16.0 - height, widthOffset,
-                        16.0 - widthOffset,
-                        16.0, 16.0 - widthOffset);
-            }
-            case NORTH -> {
-                return Block.createCuboidShape(widthOffset, widthOffset, 16.0 - height,
-                        16.0 - widthOffset, 16.0 - widthOffset, 16.0);
-            }
-            case SOUTH -> {
-                return Block.createCuboidShape(widthOffset, widthOffset, 0.0,
-                        16.0 - widthOffset, 16.0 - widthOffset, height);
-            }
-            case EAST -> {
-                return Block.createCuboidShape(0.0, widthOffset, widthOffset,
-                        height, 16.0 - widthOffset, 16.0 - widthOffset);
-            }
-            default -> {
-                // WEST
-                return Block.createCuboidShape(16.0 - height, widthOffset, widthOffset, 16.0,
-                        16.0 - widthOffset, 16.0 - widthOffset);
-            }
+            case UP -> shape = Block.createCuboidShape(widthOffset, 0.0, widthOffset,
+                    16.0 - widthOffset, height, 16.0 - widthOffset);
+            case DOWN -> shape = Block.createCuboidShape(widthOffset, 16.0 - height, widthOffset,
+                    16.0 - widthOffset, 16.0, 16.0 - widthOffset);
+            case NORTH -> shape = Block.createCuboidShape(widthOffset, widthOffset, 16.0 - height,
+                    16.0 - widthOffset, 16.0 - widthOffset, 16.0);
+            case SOUTH -> shape = Block.createCuboidShape(widthOffset, widthOffset, 0.0,
+                    16.0 - widthOffset, 16.0 - widthOffset, height);
+            case EAST -> shape = Block.createCuboidShape(0.0, widthOffset, widthOffset, height,
+                    16.0 - widthOffset, 16.0 - widthOffset);
+            default ->
+                    shape = Block.createCuboidShape(16.0 - height, widthOffset, widthOffset, 16.0,
+                            16.0 - widthOffset, 16.0 - widthOffset);
         }
+        return shape;
     }
 
     private static VoxelShape createAxisAlignedShape(Axis axis, double offset) {
+        VoxelShape shape;
         switch(axis) {
-            case Y -> {
-                return Block.createCuboidShape(offset, 0.0, offset, 16.0 - offset, 16.0,
-                        16.0 - offset);
-            }
-            case X -> {
-                return Block.createCuboidShape(0.0, offset, offset, 16.0, 16.0 - offset,
-                        16.0 - offset);
-            }
-            default -> {
-                // Z
-                return Block.createCuboidShape(offset, offset, 0.0, 16.0 - offset, 16.0 - offset,
-                        16.0);
-            }
+            case Y -> shape = Block.createCuboidShape(offset, 0.0, offset, 16.0 - offset, 16.0,
+                    16.0 - offset);
+            case X -> shape = Block.createCuboidShape(0.0, offset, offset, 16.0, 16.0 - offset,
+                    16.0 - offset);
+            default -> shape = Block.createCuboidShape(offset, offset, 0.0, 16.0 - offset,
+                    16.0 - offset, 16.0);
         }
+        return shape;
     }
 
     private static boolean isCrimsonSpikeFacingDirection(BlockState state,
             Direction direction) {
-        return (state.isOf(ModBlocks.CRIMSON_SPIKE) || state.isOf(ModBlocks.DEAD_CRIMSON_SPIKE))
-                && state.get(Properties.FACING) == direction;
+        return (state.isIn(ModBlockTags.CRIMSON_SPIKES)
+                && state.get(Properties.FACING) == direction);
     }
 
     private static boolean canPlaceAtWithDirection(WorldView world, BlockPos pos,
@@ -180,21 +192,22 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
                 || CrimsonSpikeBlock.isCrimsonSpikeFacingDirection(anchorState, direction);
     }
 
-    private static Thickness getThickness(WorldView world, BlockPos pos, Direction direction) {
-        Direction direction2 = direction.getOpposite();
-        BlockState blockState = world.getBlockState(pos.offset(direction));
-        if (CrimsonSpikeBlock.isCrimsonSpikeFacingDirection(blockState, direction2)) {
+    private static Thickness getThickness(WorldView world, BlockPos pos,
+            Direction attachDirection) {
+        Direction nextDirection = attachDirection.getOpposite();
+        BlockState blockState = world.getBlockState(pos.offset(attachDirection));
+        if (CrimsonSpikeBlock.isCrimsonSpikeFacingDirection(blockState, nextDirection)) {
             return Thickness.TIP;
         }
-        if (!CrimsonSpikeBlock.isCrimsonSpikeFacingDirection(blockState, direction)) {
+        if (!CrimsonSpikeBlock.isCrimsonSpikeFacingDirection(blockState, attachDirection)) {
             return Thickness.TIP;
         }
-        Thickness thickness = blockState.get(ModProperties.THICKNESS_NO_MERGE);
+        Thickness thickness = blockState.get(ModProperties.DISCRETE_THICKNESS);
         if (thickness == Thickness.TIP) {
             return Thickness.FRUSTUM;
         }
-        BlockState blockState2 = world.getBlockState(pos.offset(direction2));
-        if (!CrimsonSpikeBlock.isCrimsonSpikeFacingDirection(blockState2, direction)) {
+        BlockState blockState2 = world.getBlockState(pos.offset(nextDirection));
+        if (!CrimsonSpikeBlock.isCrimsonSpikeFacingDirection(blockState2, attachDirection)) {
             return Thickness.BASE;
         }
         return Thickness.MIDDLE;
@@ -218,7 +231,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
                 .with(Properties.FACING, Direction.UP)
                 .with(Properties.PERSISTENT, false)
                 .with(Properties.WATERLOGGED, false)
-                .with(ModProperties.THICKNESS_NO_MERGE, Thickness.TIP)
+                .with(ModProperties.DISCRETE_THICKNESS, Thickness.TIP)
         );
     }
 
@@ -248,7 +261,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
 
         return this.getDefaultState()
                 .with(Properties.FACING, placeDirection)
-                .with(ModProperties.THICKNESS_NO_MERGE, thickness)
+                .with(ModProperties.DISCRETE_THICKNESS, thickness)
                 .with(Properties.PERSISTENT, true)
                 .with(Properties.WATERLOGGED,
                         ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(
@@ -281,14 +294,14 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
             return state;
         }
         Thickness thickness = CrimsonSpikeBlock.getThickness(world, pos, attachDirection);
-        return state.with(ModProperties.THICKNESS_NO_MERGE, thickness);
+        return state.with(ModProperties.DISCRETE_THICKNESS, thickness);
     }
 
     @Override
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
         if (state.get(Properties.FACING) == Direction.UP
-                && state.get(ModProperties.THICKNESS_NO_MERGE) == Thickness.TIP) {
+                && state.get(ModProperties.DISCRETE_THICKNESS) == Thickness.TIP) {
             entity.handleFallDamage(fallDistance + 2.0f, 2.0f,
                     world.getDamageSources().stalagmite());
         } else {
@@ -298,20 +311,30 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        Thickness thickness = state.get(ModProperties.THICKNESS_NO_MERGE);
+        // Spikes do not destroy items
+        if (entity instanceof ItemEntity) {
+            return;
+        }
+
+        // Only spike tips can damage entities
+        Thickness thickness = state.get(ModProperties.DISCRETE_THICKNESS);
         if (thickness != Thickness.TIP) {
             return;
         }
-        // TODO: Is there a way to determine which face is being collided with?
-        // Currently damaging when it shouldn't
+
         Direction facingDirection = state.get(Properties.FACING);
         VoxelShape entityShape = VoxelShapes.cuboid(
                 entity.getBoundingBox().offset(-pos.getX(), -pos.getY(), -pos.getZ()));
-        VoxelShape damageCollisionShape = getDamageCollisionShapeForDirection(facingDirection);
-        // Worldsinger.LOGGER.info(facingDirection + " " + damageCollisionShape.toString());
-        if (VoxelShapes.matchesAnywhere(entityShape, damageCollisionShape, BooleanBiFunction.AND)) {
-            entity.damage(world.getDamageSources().cactus(), 1.0f);
+        VoxelShape safeShape = CrimsonSpikeBlock.getSafeShapeForDirection(
+                facingDirection);
+        VoxelShape damageShape = CrimsonSpikeBlock.getDamageShapeForDirection(facingDirection);
+
+        // Only damage if entity is at the tip of the spike, not the sides
+        if (VoxelShapes.matchesAnywhere(entityShape, safeShape, BooleanBiFunction.AND)
+                || !VoxelShapes.matchesAnywhere(entityShape, damageShape, BooleanBiFunction.AND)) {
+            return;
         }
+        entity.damage(world.getDamageSources().cactus(), 1.0f);
     }
 
     @Override
@@ -328,19 +351,12 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
             ShapeContext context) {
-        Thickness thickness = state.get(ModProperties.THICKNESS_NO_MERGE);
+        Thickness thickness = state.get(ModProperties.DISCRETE_THICKNESS);
         Direction direction = state.get(Properties.FACING);
         Axis axis = direction.getAxis();
         VoxelShape voxelShape;
         if (thickness == Thickness.TIP) {
-            switch(direction) {
-                case DOWN -> voxelShape = TIP_SHAPE_DOWN;
-                case NORTH -> voxelShape = TIP_SHAPE_NORTH;
-                case SOUTH -> voxelShape = TIP_SHAPE_SOUTH;
-                case WEST -> voxelShape = TIP_SHAPE_WEST;
-                case EAST -> voxelShape = TIP_SHAPE_EAST;
-                default -> voxelShape = TIP_SHAPE_UP;
-            }
+            voxelShape = CrimsonSpikeBlock.getTipShapeForDirection(direction);
         } else if (thickness == Thickness.FRUSTUM) {
             voxelShape = axis == Axis.Y ? FRUSTUM_SHAPE_Y
                     : axis == Axis.X ? FRUSTUM_SHAPE_X : FRUSTUM_SHAPE_Z;
@@ -376,7 +392,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
                 Properties.FACING,
                 Properties.PERSISTENT,
                 Properties.WATERLOGGED,
-                ModProperties.THICKNESS_NO_MERGE
+                ModProperties.DISCRETE_THICKNESS
         );
     }
 }
