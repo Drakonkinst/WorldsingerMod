@@ -240,8 +240,6 @@ public final class ModItems {
                     ModBlocks.DEEPSLATE_SILVER_ORE
             );
             itemGroup.addAfter(Items.WET_SPONGE,
-                    ModBlocks.VERDANT_SPORE_BLOCK,
-                    ModBlocks.DEAD_SPORE_BLOCK,
                     ModBlocks.VERDANT_VINE_BLOCK,
                     ModBlocks.VERDANT_VINE_BRANCH,
                     ModBlocks.VERDANT_VINE_SNARE,
@@ -320,6 +318,7 @@ public final class ModItems {
 
             itemGroup.add(ModBlocks.CRIMSON_SPIKE);
             itemGroup.add(ModBlocks.DEAD_CRIMSON_SPIKE);
+            itemGroup.add(ModBlocks.MAGMA_VENT);
         });
     }
 

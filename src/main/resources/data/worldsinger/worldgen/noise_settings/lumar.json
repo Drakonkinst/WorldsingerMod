@@ -592,7 +592,7 @@
                       "then_run": {
                         "type": "minecraft:block",
                         "result_state": {
-                          "Name": "minecraft:magma_block"
+                          "Name": "worldsinger:magma_vent"
                         }
                       }
                     },
@@ -657,7 +657,7 @@
           "then_run": {
             "type": "minecraft:block",
             "result_state": {
-              "Name": "minecraft:magma_block"
+              "Name": "worldsinger:magma_vent"
             }
           }
         }

@@ -15,6 +15,7 @@
     "block.AbstractBlockStateMixin",
     "block.BlockMixin",
     "block.BrewingStandBlockEntityMixin",
+    "block.BubbleColumnBlockMixin",
     "block.CandleCakeBlockMixin",
     "block.EntityShapeContextMixin",
     "block.FluidBlockMixin",

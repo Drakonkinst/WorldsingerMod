@@ -9,6 +9,7 @@ import net.minecraft.block.AbstractBlock.Offsetter;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ExperienceDroppingBlock;
+import net.minecraft.block.MagmaBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
@@ -40,7 +41,7 @@ public final class ModBlocks {
                             .strength(0.5f)
                             .mapColor(MapColor.GRAY)
                             .sounds(BlockSoundGroup.SAND)
-            ), true);
+            ), false);
     public static final Block DEAD_VERDANT_VINE_BLOCK = register("dead_verdant_vine_block",
             new VerdantVineBlock(
                     FabricBlockSettings.create()
@@ -130,7 +131,7 @@ public final class ModBlocks {
                                     .mapColor(MapColor.DARK_GREEN)
                                     .ticksRandomly()
                                     .sounds(BlockSoundGroup.SAND)
-                    ), true);
+                    ), false);
     public static final Block VERDANT_VINE_BLOCK = register("verdant_vine_block",
             new LivingVerdantVineBlock(
                     FabricBlockSettings.create()
@@ -211,7 +212,7 @@ public final class ModBlocks {
                                     .mapColor(MapColor.DARK_RED)
                                     .ticksRandomly()
                                     .sounds(BlockSoundGroup.SAND)
-                    ), true);
+                    ), false);
     public static final Block CRIMSON_SPORE_CAULDRON = register("crimson_spore_cauldron",
             new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
                     ModCauldronBehaviors.CRIMSON_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.CRIMSON
@@ -231,6 +232,14 @@ public final class ModBlocks {
             ), true);
 
     // Other
+    public static final Block MAGMA_VENT = register("magma_vent",
+            new MagmaBlock(FabricBlockSettings.create()
+                    .mapColor(MapColor.DEEPSLATE_GRAY)
+                    // Same strength as copper deepslate ore
+                    .strength(4.5f, 3.0f)
+                    .requiresTool()
+                    .allowsSpawning((state, world, pos, entityType) -> entityType.isFireImmune())),
+            true);
     public static final Block SALTSTONE = register("saltstone",
             new Block(FabricBlockSettings.create()
                     .requiresTool()
