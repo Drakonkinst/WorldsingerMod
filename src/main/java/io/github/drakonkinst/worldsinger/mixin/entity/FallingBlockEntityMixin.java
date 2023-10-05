@@ -3,14 +3,18 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 import io.github.drakonkinst.worldsinger.block.LivingAetherSporeBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SteelAnvilBlock;
+import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ConcretePowderBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,10 +30,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(FallingBlockEntity.class)
 public abstract class FallingBlockEntityMixin extends Entity {
 
-    @Shadow
-    private int fallHurtMax;
-    @Shadow
-    private float fallHurtAmount;
     @Unique
     private static final float BREAKING_FALL_DISTANCE = 16.0f;
 
@@ -71,6 +71,30 @@ public abstract class FallingBlockEntityMixin extends Entity {
         return objClass.isAssignableFrom(obj.getClass()) || obj instanceof LivingAetherSporeBlock;
     }
 
+    // Prevents falling blocks (except for aether spore blocks, which fluidize)
+    // from passing through sea blocks, regardless of seethe. This behavior makes
+    // solidifying the sea too easy.
+    @Inject(method = "tick", at = @At("RETURN"))
+    private void destroyIfInSporeSea(CallbackInfo ci) {
+        World world = this.getWorld();
+        if (!LumarSeethe.areSporesFluidized(world)) {
+            // Let normal fluid hitbox handle this
+            return;
+        }
+        if (this.getBlockState().isIn(ModBlockTags.AETHER_SPORE_BLOCKS)) {
+            return;
+        }
+        BlockPos blockPos = this.getBlockPos();
+        FluidState fluidState = world.getFluidState(blockPos);
+        if (fluidState.isIn(ModFluidTags.AETHER_SPORES) && fluidState.getLevel() >= 8
+                && fluidState.isStill()) {
+            this.discard();
+            if (this.dropItem) {
+                this.dropItem(this.block.getBlock());
+            }
+        }
+    }
+
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     private void addSteelAnvilHurtsEntities(NbtCompound nbt, CallbackInfo ci) {
         if (nbt.contains("HurtEntities", NbtElement.NUMBER_TYPE)) {
@@ -87,4 +111,13 @@ public abstract class FallingBlockEntityMixin extends Entity {
     private boolean destroyedOnLanding;
     @Shadow
     private BlockState block;
+    @Shadow
+    public boolean dropItem;
+    @Shadow
+    private int fallHurtMax;
+    @Shadow
+    private float fallHurtAmount;
+
+    @Shadow
+    public abstract BlockState getBlockState();
 }
