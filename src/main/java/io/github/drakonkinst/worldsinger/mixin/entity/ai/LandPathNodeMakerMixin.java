@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.entity.ai;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.LandPathNodeMakerInvoker;
 import io.github.drakonkinst.worldsinger.util.ModEnums;
@@ -25,11 +24,6 @@ public abstract class LandPathNodeMakerMixin {
         BlockState blockState = world.getBlockState(pos);
         if (blockState.isIn(ModBlockTags.CRIMSON_SPIKES)) {
             cir.setReturnValue(PathNodeType.DAMAGE_CAUTIOUS);
-            return;
-        }
-        
-        if (blockState.isOf(ModBlocks.MAGMA_VENT)) {
-            cir.setReturnValue(PathNodeType.DAMAGE_FIRE);
             return;
         }
 
