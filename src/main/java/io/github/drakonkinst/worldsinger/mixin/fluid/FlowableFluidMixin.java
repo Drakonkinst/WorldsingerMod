@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(FlowableFluid.class)
-public class FlowableFluidMixin {
+public abstract class FlowableFluidMixin {
 
     @Inject(method = "canFill", at = @At("HEAD"), cancellable = true)
     private void makeCanFillDataDriven(BlockView world, BlockPos pos, BlockState state, Fluid fluid,

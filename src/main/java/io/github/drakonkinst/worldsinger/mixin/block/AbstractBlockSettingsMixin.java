@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(AbstractBlock.Settings.class)
-public class AbstractBlockSettingsMixin implements CustomBlockOffsetterAccess {
+public abstract class AbstractBlockSettingsMixin implements CustomBlockOffsetterAccess {
 
     @Shadow
     Optional<Offsetter> offsetter;

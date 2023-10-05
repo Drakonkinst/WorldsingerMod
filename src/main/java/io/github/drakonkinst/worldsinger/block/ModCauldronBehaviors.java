@@ -24,10 +24,10 @@ public final class ModCauldronBehaviors {
 
     public static final CauldronBehavior FILL_WITH_DEAD_SPORES = new FillWithFluidCauldronBehavior(
             () -> ModBlocks.DEAD_SPORE_CAULDRON);
-    public static final CauldronBehavior FILL_WITH_VERDANT_SPORES = new FillWithFluidCauldronBehavior(
-            () -> ModBlocks.VERDANT_SPORE_CAULDRON);
-    public static final CauldronBehavior FILL_WITH_CRIMSON_SPORES = new FillWithFluidCauldronBehavior(
-            () -> ModBlocks.CRIMSON_SPORE_CAULDRON);
+    public static final CauldronBehavior FILL_WITH_VERDANT_SPORES = new FillWithSporeFluidCauldronBehavior(
+            () -> ModBlocks.VERDANT_SPORE_CAULDRON, () -> ModBlocks.DEAD_SPORE_CAULDRON);
+    public static final CauldronBehavior FILL_WITH_CRIMSON_SPORES = new FillWithSporeFluidCauldronBehavior(
+            () -> ModBlocks.CRIMSON_SPORE_CAULDRON, () -> ModBlocks.DEAD_SPORE_CAULDRON);
 
     private static final SoundEvent FILL_SPORE_BOTTLE_SOUND = SoundEvents.BLOCK_SAND_BREAK;
     private static final SoundEvent FILL_SPORE_BUCKET_SOUND = SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW;

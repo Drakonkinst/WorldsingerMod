@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.google.common.base.Suppliers;
 import java.util.function.Supplier;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,7 +19,7 @@ public class FillWithFluidCauldronBehavior implements CauldronBehavior {
     private final Supplier<Block> cauldronBlock;
 
     public FillWithFluidCauldronBehavior(Supplier<Block> cauldronBlock) {
-        this.cauldronBlock = cauldronBlock;
+        this.cauldronBlock = Suppliers.memoize(cauldronBlock::get);
     }
 
     @Override
