@@ -11,11 +11,8 @@ public final class SporeParticleSpawner {
     // TODO: Should tune these values later
     // Splashing when landing on block or in a fluid
     private static final double SPLASH_RADIUS_MULTIPLIER = 0.75;
-    private static final double SPLASH_HEIGHT_WIDTH_MULTIPLIER = 5.0 / 3.0;
-    private static final double SPLASH_HEIGHT_PER_BLOCK_WALKING = 0.05;
-    private static final double SPLASH_HEIGHT_PER_BLOCK_SNEAKING = 0.025;
-    private static final double SPLASH_HEIGHT_PER_BLOCK_SPRINTING = 0.1;
-    private static final double SPLASH_HEIGHT_DEV = 0.75;
+    private static final double SPLASH_HEIGHT_PER_BLOCK = 0.3;
+    private static final double SPLASH_HEIGHT_DEV = 0.5;
     private static final float SPLASH_PARTICLE_SIZE_MULTIPLIER = 5.0f / 3.0f;
     private static final int SPLASH_PARTICLE_COUNT_FLUID = 5;
     private static final int SPLASH_PARTICLE_COUNT_BLOCK = 10;
@@ -57,13 +54,8 @@ public final class SporeParticleSpawner {
 
     public static void spawnSplashParticles(ServerWorld world,
             AetherSporeType aetherSporeType, Entity entity, float fallDistance, boolean fluid) {
-        double multiplier = entity.isSneaking() ? SPLASH_HEIGHT_PER_BLOCK_SNEAKING
-                : entity.isSprinting() ? SPLASH_HEIGHT_PER_BLOCK_SPRINTING
-                        : SPLASH_HEIGHT_PER_BLOCK_WALKING;
-        double height =
-                SPLASH_HEIGHT_WIDTH_MULTIPLIER * entity.getWidth() + fallDistance * multiplier;
+        double height = fallDistance * SPLASH_HEIGHT_PER_BLOCK;
         int particleCount = fluid ? SPLASH_PARTICLE_COUNT_FLUID : SPLASH_PARTICLE_COUNT_BLOCK;
-
         SporeParticleManager.createRandomSporeParticlesForEntity(world, aetherSporeType, entity,
                 SPLASH_RADIUS_MULTIPLIER, 0.0, height, SPLASH_HEIGHT_DEV,
                 SPLASH_PARTICLE_SIZE_MULTIPLIER, particleCount);

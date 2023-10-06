@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.Map;
@@ -144,7 +145,7 @@ public abstract class LivingEntityMixin extends Entity {
             applySporeSeaEffects();
 
             // Also take suffocation damage, mainly for dead spores
-            this.damage(this.getDamageSources().drown(), 1.0f);
+            this.damage(ModDamageTypes.of(this.getWorld(), ModDamageTypes.DROWN_SPORE), 1.0f);
         }
     }
 

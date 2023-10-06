@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -303,7 +304,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
         if (state.get(Properties.FACING) == Direction.UP
                 && state.get(ModProperties.DISCRETE_THICKNESS) == Thickness.TIP) {
             entity.handleFallDamage(fallDistance + 2.0f, 2.0f,
-                    world.getDamageSources().stalagmite());
+                    ModDamageTypes.of(world, ModDamageTypes.SPIKE_FALL));
         } else {
             super.onLandedUpon(world, state, pos, entity, fallDistance);
         }
@@ -334,7 +335,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
                 || !VoxelShapes.matchesAnywhere(entityShape, damageShape, BooleanBiFunction.AND)) {
             return;
         }
-        entity.damage(world.getDamageSources().cactus(), 1.0f);
+        entity.damage(ModDamageTypes.of(world, ModDamageTypes.SPIKE), 1.0f);
     }
 
     @Override

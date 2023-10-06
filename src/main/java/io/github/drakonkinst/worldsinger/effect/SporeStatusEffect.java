@@ -6,14 +6,17 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
 import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -25,16 +28,20 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
     public static final float DEFAULT_DAMAGE = 15.0f;
     private static final int WATER_PER_ENTITY_BLOCK = 75;
     private final AetherSporeType aetherSporeType;
-    private final float damage;
+    private final RegistryKey<DamageType> damageType;
+    private final float damageAmount;
 
-    protected SporeStatusEffect(AetherSporeType aetherSporeType) {
-        this(aetherSporeType, DEFAULT_DAMAGE);
+    protected SporeStatusEffect(AetherSporeType aetherSporeType,
+            RegistryKey<DamageType> damageType) {
+        this(aetherSporeType, DEFAULT_DAMAGE, damageType);
     }
 
-    protected SporeStatusEffect(AetherSporeType aetherSporeType, float damage) {
+    protected SporeStatusEffect(AetherSporeType aetherSporeType, float damageAmount,
+            RegistryKey<DamageType> damageType) {
         super(StatusEffectCategory.HARMFUL, aetherSporeType.getParticleColor());
         this.aetherSporeType = aetherSporeType;
-        this.damage = damage;
+        this.damageAmount = damageAmount;
+        this.damageType = damageType;
     }
 
     // Fill entity's bounding box with snares
@@ -61,7 +68,8 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         if (!SporeParticleManager.sporesCanAffect(entity)) {
             return;
         }
-        boolean wasDamaged = entity.damage(entity.getDamageSources().drown(), damage);
+        boolean wasDamaged = entity.damage(ModDamageTypes.of(entity.getWorld(), damageType),
+                damageAmount);
         if (wasDamaged && entity.isDead()) {
             onDeathEffect(entity);
         }
