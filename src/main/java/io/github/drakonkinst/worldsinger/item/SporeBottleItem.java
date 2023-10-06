@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.item;
 
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
+import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.List;
@@ -25,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class SporeBottleItem extends PotionItem implements SporeEmitting {
 
+    private static final float SPORE_DEFAULT_DAMAGE = 4.0f;
+
     private final AetherSporeType sporeType;
 
     public SporeBottleItem(AetherSporeType sporeType, Settings settings) {
@@ -41,7 +44,8 @@ public class SporeBottleItem extends PotionItem implements SporeEmitting {
         if (!world.isClient) {
             StatusEffect statusEffect = sporeType.getStatusEffect();
             if (statusEffect == null) {
-                // TODO: Deal flat damage to entity
+                user.damage(ModDamageTypes.of(world, ModDamageTypes.DROWN_SPORE),
+                        SPORE_DEFAULT_DAMAGE);
             } else {
                 SporeParticleManager.applySporeEffect(user, statusEffect,
                         SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);

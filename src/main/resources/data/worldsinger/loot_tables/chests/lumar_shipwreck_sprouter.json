@@ -3,34 +3,10 @@
   "pools": [
     {
       "rolls": {
-        "min": 1,
-        "max": 3
+        "min": 3,
+        "max": 6
       },
       "entries": [
-        {
-          "type": "minecraft:item",
-          "weight": 100,
-          "name": "worldsinger:verdant_spores_bottle",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 3
-              }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 10,
-          "name": "worldsinger:verdant_spores_bucket"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 10,
-          "name": "minecraft:water_bucket"
-        },
         {
           "type": "minecraft:item",
           "weight": 250,
@@ -55,13 +31,94 @@
           ],
           "name": "minecraft:potion",
           "weight": 120
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:water"
+            }
+          ],
+          "name": "minecraft:splash_potion",
+          "weight": 90
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 100,
+          "name": "worldsinger:verdant_spores_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 75,
+          "name": "worldsinger:verdant_spores_splash_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 100,
+          "name": "worldsinger:crimson_spores_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 75,
+          "name": "worldsinger:crimson_spores_splash_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 150,
+          "name": "worldsinger:zephyr_spores_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 125,
+          "name": "worldsinger:zephyr_spores_splash_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 150,
+          "name": "worldsinger:sunlight_spores_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 125,
+          "name": "worldsinger:sunlight_spores_splash_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 100,
+          "name": "worldsinger:roseite_spores_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 75,
+          "name": "worldsinger:roseite_spores_splash_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "worldsinger:midnight_spores_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 7,
+          "name": "worldsinger:midnight_spores_splash_bottle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "minecraft:water_bucket"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "worldsinger:verdant_spores_bucket"
         }
       ]
     },
     {
       "rolls": {
-        "min": 1,
-        "max": 2
+        "min": 0,
+        "max": 1
       },
       "entries": [
         {
