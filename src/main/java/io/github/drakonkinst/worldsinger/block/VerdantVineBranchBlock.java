@@ -20,7 +20,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
-public class VerdantVineBranchBlock extends ConnectingBlock implements Waterloggable {
+public class VerdantVineBranchBlock extends ConnectingBlock implements Waterloggable,
+        SporeGrowthBlock {
 
     private static final float RADIUS = 0.25f;
     private static final BooleanProperty[] DIRECTION_PROPERTIES = {DOWN, UP, NORTH, EAST, SOUTH,
@@ -156,7 +157,7 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         super.randomTick(state, world, pos, random);
         // Decay over time
-        if (VerdantVineBlock.canDecay(world, pos, state, random)) {
+        if (SporeGrowthBlock.canDecay(world, pos, state, random)) {
             world.breakBlock(pos, true);
         }
     }

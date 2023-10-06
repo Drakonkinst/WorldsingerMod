@@ -51,8 +51,8 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
         for (BlockPos pos : BlockPosUtil.iterateBoundingBoxForEntity(entity)) {
             BlockState blockState = world.getBlockState(pos);
-            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW) && newBlockState.canPlaceAt(world,
-                    pos)) {
+            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW)
+                    && newBlockState.canPlaceAt(world, pos)) {
                 world.setBlockState(pos, newBlockState);
             }
         }

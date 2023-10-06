@@ -17,7 +17,7 @@ import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implements
-        SporeKillable, WaterReactiveBlock {
+        LivingSporeGrowthBlock {
 
     public static final int RECATALYZE_VALUE = 25;
 
@@ -26,6 +26,7 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
 
+    /* Start of code common to all LivingSporeGrowthBlocks */
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
@@ -40,35 +41,6 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
             placementState = placementState.with(ModProperties.CATALYZED, true);
         }
         return placementState;
-    }
-
-    @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        super.randomTick(state, world, pos, random);
-        if (!state.get(ModProperties.CATALYZED) && world.hasRain(pos.up())) {
-            this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
-        }
-    }
-
-    @Override
-    public boolean canReactToWater(BlockPos pos, BlockState state) {
-        return !state.get(ModProperties.CATALYZED);
-    }
-
-    @Override
-    public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
-            Random random) {
-        if (!this.canReactToWater(pos, state)) {
-            return false;
-        }
-
-        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-        Direction direction = VerdantVineSnareBlock.getDirection(state);
-        Int3 dir = new Int3(direction.getOffsetX(), direction.getOffsetY(),
-                direction.getOffsetZ());
-        SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
-                waterAmount, false, true, false, dir);
-        return true;
     }
 
     @Override
@@ -91,7 +63,32 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
     }
 
     @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        super.randomTick(state, world, pos, random);
+        if (!state.get(ModProperties.CATALYZED) && world.hasRain(pos.up())) {
+            this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
+        }
+    }
+    /* End of code common to all LivingSporeGrowthBlocks */
+
+    @Override
     public Block getDeadSporeBlock() {
         return ModBlocks.DEAD_VERDANT_VINE_SNARE;
+    }
+
+    @Override
+    public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
+            Random random) {
+        if (!this.canReactToWater(pos, state)) {
+            return false;
+        }
+
+        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
+        Direction direction = VerdantVineSnareBlock.getDirection(state);
+        Int3 dir = new Int3(direction.getOffsetX(), direction.getOffsetY(),
+                direction.getOffsetZ());
+        SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
+                waterAmount, false, true, false, dir);
+        return true;
     }
 }

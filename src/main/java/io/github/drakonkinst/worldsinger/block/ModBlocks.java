@@ -41,6 +41,10 @@ public final class ModBlocks {
                             .mapColor(MapColor.GRAY)
                             .sounds(BlockSoundGroup.SAND)
             ), false);
+    public static final Block DEAD_SPORE_CAULDRON = register("dead_spore_cauldron",
+            new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
+                    ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.DEAD
+            ), false);
     public static final Block DEAD_VERDANT_VINE_BLOCK = register("dead_verdant_vine_block",
             new VerdantVineBlock(
                     FabricBlockSettings.create()
@@ -102,10 +106,17 @@ public final class ModBlocks {
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
             ), true);
-    public static final Block DEAD_SPORE_CAULDRON = register("dead_spore_cauldron",
-            new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
-                    ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.DEAD
-            ), false);
+    public static final Block DEAD_CRIMSON_SNARE = register("dead_crimson_snare",
+            new CrimsonSnareBlock(
+                    FabricBlockSettings.create()
+                            // TODO: Change strength
+                            .strength(1.0f, 1.0f)
+                            .solid()
+                            .noCollision()
+                            .requiresTool()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .solidBlock(Blocks::never)
+            ), true);
 
     // Verdant Spores
     public static final Block VERDANT_SPORE_SEA_BLOCK = register("verdant_spore_sea_block",
@@ -131,6 +142,11 @@ public final class ModBlocks {
                                     .ticksRandomly()
                                     .sounds(BlockSoundGroup.SAND)
                     ), false);
+    public static final Block VERDANT_SPORE_CAULDRON = register("verdant_spore_cauldron",
+            new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)
+                    .ticksRandomly(),
+                    ModCauldronBehaviors.VERDANT_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.VERDANT
+            ), false);
     public static final Block VERDANT_VINE_BLOCK = register("verdant_vine_block",
             new LivingVerdantVineBlock(
                     FabricBlockSettings.create()
@@ -182,11 +198,6 @@ public final class ModBlocks {
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), false);
-    public static final Block VERDANT_SPORE_CAULDRON = register("verdant_spore_cauldron",
-            new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)
-                    .ticksRandomly(),
-                    ModCauldronBehaviors.VERDANT_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.VERDANT
-            ), false);
 
     // Crimson Spores
     public static final Block CRIMSON_SPORE_SEA_BLOCK = register("crimson_spore_sea_block",
@@ -226,6 +237,17 @@ public final class ModBlocks {
                             .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
                             .ticksRandomly()
                             .dynamicBounds()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .solidBlock(Blocks::never)
+            ), true);
+    public static final Block CRIMSON_SNARE = register("crimson_snare",
+            new LivingCrimsonSnareBlock(
+                    FabricBlockSettings.create()
+                            // TODO: Change strength
+                            .strength(1.0f, 1.0f)
+                            .solid()
+                            .noCollision()
+                            .requiresTool()
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
             ), true);

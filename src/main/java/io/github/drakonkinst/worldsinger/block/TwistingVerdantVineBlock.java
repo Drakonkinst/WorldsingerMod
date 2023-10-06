@@ -17,7 +17,7 @@ import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock implements
-        Waterloggable {
+        Waterloggable, SporeGrowthBlock {
 
     private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 15.0,
             12.0);
@@ -87,7 +87,7 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         super.randomTick(state, world, pos, random);
         // Decay over time
-        if (VerdantVineBlock.canDecay(world, pos, state, random)) {
+        if (SporeGrowthBlock.canDecay(world, pos, state, random)) {
             world.breakBlock(pos, true);
         }
     }

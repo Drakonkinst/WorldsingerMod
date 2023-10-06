@@ -61,7 +61,9 @@ public class WorldsingerClient implements ClientModInitializer {
                 ModBlocks.TWISTING_VERDANT_VINES_PLANT,
                 ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
                 ModBlocks.CRIMSON_SPIKE,
-                ModBlocks.DEAD_CRIMSON_SPIKE
+                ModBlocks.DEAD_CRIMSON_SPIKE,
+                ModBlocks.CRIMSON_SNARE,
+                ModBlocks.DEAD_CRIMSON_SNARE
         );
 
         // Register particles

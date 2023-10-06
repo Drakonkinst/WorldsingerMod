@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntity;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import net.minecraft.block.Block;
@@ -8,7 +7,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -16,47 +14,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock implements
-        LivingSporeGrowthBlock {
+public class LivingCrimsonSnareBlock extends CrimsonSnareBlock implements LivingSporeGrowthBlock {
 
-    private static final int MAX_DEPTH = 3;
+    public static final int RECATALYZE_VALUE = 25;
 
-    // Works for both bud and stem version
-    public static void growInSameDirection(World world, BlockPos pos, BlockState state,
-            Random random) {
-        if (!state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
-            return;
-        }
-        AbstractVerticalGrowthComponentBlock block = (AbstractVerticalGrowthComponentBlock) state.getBlock();
-        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-
-        Direction direction = state.get(Properties.VERTICAL_DIRECTION);
-        BlockPos.Mutable outermostPos = pos.mutableCopy();
-        BlockState outermostState;
-
-        int depth = 0;
-        while (true) {
-            do {
-                outermostPos.move(direction);
-                outermostState = world.getBlockState(outermostPos);
-            } while (block.isSamePlant(outermostState));
-
-            if (outermostState.isAir()) {
-                BlockState newState = ModBlocks.TWISTING_VERDANT_VINES.getDefaultState()
-                        .with(Properties.VERTICAL_DIRECTION, direction)
-                        .with(ModProperties.CATALYZED, true);
-                world.setBlockState(outermostPos, newState);
-                SporeGrowthEntity.playPlaceSoundEffect(world, outermostPos, newState);
-
-                if (++depth < MAX_DEPTH && random.nextInt(3) > 0) {
-                    continue;
-                }
-            }
-            break;
-        }
-    }
-
-    public LivingTwistingVerdantVineBlock(Settings settings) {
+    public LivingCrimsonSnareBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
@@ -108,7 +70,7 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
 
     @Override
     public Block getDeadSporeBlock() {
-        return ModBlocks.DEAD_TWISTING_VERDANT_VINES;
+        return ModBlocks.DEAD_CRIMSON_SNARE;
     }
 
     @Override
@@ -117,12 +79,10 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
         if (!this.canReactToWater(pos, state)) {
             return false;
         }
-        LivingTwistingVerdantVineBlock.growInSameDirection(world, pos, state, random);
-        return true;
-    }
 
-    @Override
-    protected Block getStem() {
-        return ModBlocks.TWISTING_VERDANT_VINES_PLANT;
+        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
+        // TODO
+
+        return true;
     }
 }

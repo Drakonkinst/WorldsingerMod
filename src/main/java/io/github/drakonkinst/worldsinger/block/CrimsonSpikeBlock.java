@@ -30,8 +30,9 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class CrimsonSpikeBlock extends Block implements Waterloggable {
+public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrowthBlock {
 
+    private static final float MOVEMENT_THRESHOLD = 0.0003f;
     private static final double TIP_OFFSET = 5.0;
     private static final double TIP_HEIGHT = 15.0;
     private static final double FRUSTUM_OFFSET = 4.0;
@@ -226,6 +227,20 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
         }
     }
 
+    public static boolean isMoving(Entity entity) {
+        boolean isMoving = entity.lastRenderX != entity.getX()
+                || entity.lastRenderY != entity.getY()
+                || entity.lastRenderZ != entity.getZ();
+        if (isMoving) {
+            double deltaX = Math.abs(entity.getX() - entity.lastRenderX);
+            double deltaY = Math.abs(entity.getY() - entity.lastRenderY);
+            double deltaZ = Math.abs(entity.getZ() - entity.lastRenderZ);
+            return deltaX >= MOVEMENT_THRESHOLD || deltaY >= MOVEMENT_THRESHOLD
+                    || deltaZ >= MOVEMENT_THRESHOLD;
+        }
+        return false;
+    }
+
     public CrimsonSpikeBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState()
@@ -265,7 +280,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
                 .with(ModProperties.DISCRETE_THICKNESS, thickness)
                 .with(Properties.PERSISTENT, true)
                 .with(Properties.WATERLOGGED,
-                        ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(
+                        world.getFluidState(pos).isOf(
                                 Fluids.WATER));
     }
 
@@ -299,6 +314,15 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
     }
 
     @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        super.randomTick(state, world, pos, random);
+        // Decay over time
+        if (SporeGrowthBlock.canDecay(world, pos, state, random)) {
+            world.breakBlock(pos, true);
+        }
+    }
+
+    @Override
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
         if (state.get(Properties.FACING) == Direction.UP
@@ -323,6 +347,10 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
             return;
         }
 
+        if (!CrimsonSpikeBlock.isMoving(entity)) {
+            return;
+        }
+
         Direction facingDirection = state.get(Properties.FACING);
         VoxelShape entityShape = VoxelShapes.cuboid(
                 entity.getBoundingBox().offset(-pos.getX(), -pos.getY(), -pos.getZ()));
@@ -335,7 +363,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
                 || !VoxelShapes.matchesAnywhere(entityShape, damageShape, BooleanBiFunction.AND)) {
             return;
         }
-        entity.damage(ModDamageTypes.of(world, ModDamageTypes.SPIKE), 1.0f);
+        entity.damage(ModDamageTypes.of(world, ModDamageTypes.SPIKE), 2.0f);
     }
 
     @Override
@@ -384,6 +412,11 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable {
     @Override
     public float getMaxHorizontalModelOffset() {
         return 0.125f;
+    }
+
+    @Override
+    public boolean hasRandomTicks(BlockState state) {
+        return !state.get(Properties.PERSISTENT);
     }
 
     @Override

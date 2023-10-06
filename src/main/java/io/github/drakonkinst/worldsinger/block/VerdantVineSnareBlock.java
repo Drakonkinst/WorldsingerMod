@@ -24,23 +24,22 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class VerdantVineSnareBlock extends WallMountedBlock implements Waterloggable {
+public class VerdantVineSnareBlock extends WallMountedBlock implements Waterloggable,
+        SporeGrowthBlock {
 
     private static final double MIN_VERTICAL = 0.0;
     private static final double MAX_VERTICAL = 16.0;
     private static final double MIN_HORIZONTAL = 2.0;
     private static final double MAX_HORIZONTAL = 14.0;
-    protected static final VoxelShape NORTH_SOUTH_SHAPE = Block.createCuboidShape(MIN_HORIZONTAL,
-            MIN_HORIZONTAL,
-            MIN_VERTICAL, MAX_HORIZONTAL, MAX_HORIZONTAL, MAX_VERTICAL);
-    protected static final VoxelShape EAST_WEST_SHAPE = Block.createCuboidShape(MIN_VERTICAL,
-            MIN_HORIZONTAL, MIN_HORIZONTAL,
+    protected static final VoxelShape NORTH_SOUTH_SHAPE = Block.createCuboidShape(
+            MIN_HORIZONTAL, MIN_HORIZONTAL, MIN_VERTICAL,
+            MAX_HORIZONTAL, MAX_HORIZONTAL, MAX_VERTICAL);
+    protected static final VoxelShape EAST_WEST_SHAPE = Block.createCuboidShape(
+            MIN_VERTICAL, MIN_HORIZONTAL, MIN_HORIZONTAL,
             MAX_VERTICAL, MAX_HORIZONTAL, MAX_HORIZONTAL);
-    protected static final VoxelShape FLOOR_CEILING_SHAPE = Block.createCuboidShape(MIN_HORIZONTAL,
-            MIN_VERTICAL,
-            MIN_HORIZONTAL, MAX_HORIZONTAL,
-            MAX_VERTICAL,
-            MAX_HORIZONTAL);
+    protected static final VoxelShape FLOOR_CEILING_SHAPE = Block.createCuboidShape(
+            MIN_HORIZONTAL, MIN_VERTICAL, MIN_HORIZONTAL,
+            MAX_HORIZONTAL, MAX_VERTICAL, MAX_HORIZONTAL);
 
     public VerdantVineSnareBlock(Settings settings) {
         super(settings);
@@ -62,6 +61,9 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
             return true;
         }
         BlockState attachedBlockState = world.getBlockState(pos.offset(attachDirection));
+        if (attachedBlockState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)) {
+            return true;
+        }
         if (attachedBlockState.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
             return true;
         }
@@ -116,7 +118,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         super.randomTick(state, world, pos, random);
         // Decay over time
-        if (VerdantVineBlock.canDecay(world, pos, state, random)) {
+        if (SporeGrowthBlock.canDecay(world, pos, state, random)) {
             world.breakBlock(pos, true);
         }
     }

@@ -19,7 +19,7 @@ import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingVerdantVineBlock extends VerdantVineBlock implements
-        SporeKillable, WaterReactiveBlock {
+        LivingSporeGrowthBlock {
 
     public static final int RECATALYZE_VALUE = 100;
 
@@ -41,6 +41,7 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
 
+    /* Start of code common to all LivingSporeGrowthBlocks */
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
@@ -55,32 +56,6 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
             placementState = placementState.with(ModProperties.CATALYZED, true);
         }
         return placementState;
-    }
-
-    @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        super.randomTick(state, world, pos, random);
-        if (!state.get(ModProperties.CATALYZED) && world.hasRain(pos.up())) {
-            this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
-        }
-    }
-
-    @Override
-    public boolean canReactToWater(BlockPos pos, BlockState state) {
-        return !state.get(ModProperties.CATALYZED);
-    }
-
-    @Override
-    public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
-            Random random) {
-        if (!this.canReactToWater(pos, state)) {
-            return false;
-        }
-
-        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-        SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
-                waterAmount, false, false, false);
-        return true;
     }
 
     @Override
@@ -100,6 +75,28 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
     @Override
     public boolean hasRandomTicks(BlockState state) {
         return super.hasRandomTicks(state) || !state.get(ModProperties.CATALYZED);
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        super.randomTick(state, world, pos, random);
+        if (!state.get(ModProperties.CATALYZED) && world.hasRain(pos.up())) {
+            this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
+        }
+    }
+    /* End of code common to all LivingSporeGrowthBlocks */
+
+    @Override
+    public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
+            Random random) {
+        if (!this.canReactToWater(pos, state)) {
+            return false;
+        }
+
+        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
+        SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
+                waterAmount, false, false, false);
+        return true;
     }
 
     @Override
