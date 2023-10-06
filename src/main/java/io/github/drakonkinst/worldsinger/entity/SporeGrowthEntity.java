@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MarkerEntity;
 import net.minecraft.particle.BlockStateParticleEffect;
@@ -45,6 +46,11 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
                 state.getSoundGroup().getPlaceSound(),
                 SoundCategory.BLOCKS, 1.0f, 0.8f + 0.4f * random.nextFloat(),
                 random.nextLong());
+    }
+
+    public static void breakBlockFromSporeGrowth(World world, BlockPos pos, Entity breakingEntity) {
+        boolean shouldDropLoot = random.nextInt(3) > 0;
+        world.breakBlock(pos, shouldDropLoot, breakingEntity);
     }
 
     private static void resetCatalyzed(World world, BlockPos pos) {
@@ -223,13 +229,11 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         BlockPos blockPos = this.getBlockPos();
         BlockState originalState = this.getWorld().getBlockState(blockPos);
         if (this.canBreakHere(originalState, state)) {
-            boolean shouldDropLoot = random.nextInt(3) > 0;
-            this.getWorld().breakBlock(blockPos, shouldDropLoot, this);
+            SporeGrowthEntity.breakBlockFromSporeGrowth(this.getWorld(), blockPos, this);
             return this.growBlock(state);
         } else if (this.canGrowHere(originalState, state)) {
             if (!originalState.isAir()) {
-                boolean shouldDropLoot = random.nextInt(3) > 0;
-                this.getWorld().breakBlock(blockPos, shouldDropLoot, this);
+                SporeGrowthEntity.breakBlockFromSporeGrowth(this.getWorld(), blockPos, this);
             }
             return this.growBlock(state);
         } else if (originalState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)) {

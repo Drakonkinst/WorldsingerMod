@@ -37,7 +37,12 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private static final Map<TagKey<Fluid>, StatusEffect> FLUID_TO_STATUS_EFFECT = ImmutableMap.of(
-            ModFluidTags.VERDANT_SPORES, ModStatusEffects.VERDANT_SPORES
+            ModFluidTags.VERDANT_SPORES, ModStatusEffects.VERDANT_SPORES,
+            ModFluidTags.CRIMSON_SPORES, ModStatusEffects.CRIMSON_SPORES,
+            ModFluidTags.ZEPHYR_SPORES, ModStatusEffects.ZEPHYR_SPORES,
+            ModFluidTags.SUNLIGHT_SPORES, ModStatusEffects.SUNLIGHT_SPORES,
+            ModFluidTags.ROSEITE_SPORES, ModStatusEffects.ROSEITE_SPORES,
+            ModFluidTags.MIDNIGHT_SPORES, ModStatusEffects.MIDNIGHT_SPORES
     );
 
     public LivingEntityMixin(EntityType<?> type, World world) {
