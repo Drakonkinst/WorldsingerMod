@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "spear_type=single": {
+      "model": "worldsinger:block/dead_crimson_spear_single"
+    },
+    "spear_type=lower": {
+      "model": "worldsinger:block/dead_crimson_spear_lower"
+    },
+    "spear_type=upper": {
+      "model": "worldsinger:block/dead_crimson_spear_upper"
+    }
+  }
+}

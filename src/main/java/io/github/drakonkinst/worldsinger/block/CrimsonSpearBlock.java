@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.block;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -14,10 +15,23 @@ import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class CrimsonSpearBlock extends Block implements Waterloggable, SporeGrowthBlock {
+
+    private static final double WIDTH = 3.0;
+    private static final VoxelShape SHAPE_SINGLE = Block.createCuboidShape(
+            WIDTH, 0.0, WIDTH,
+            16.0 - WIDTH, 16.0, 16.0 - WIDTH);
+    private static final VoxelShape SHAPE_LOWER = Block.createCuboidShape(
+            WIDTH, 0.0, WIDTH,
+            16.0 - WIDTH, 16.0, 16.0 - WIDTH);
+    private static final VoxelShape SHAPE_UPPER = Block.createCuboidShape(
+            WIDTH, 0.0, WIDTH,
+            16.0 - WIDTH, 15.0, 16.0 - WIDTH);
 
     public enum Type implements StringIdentifiable {
         SINGLE,
@@ -52,6 +66,16 @@ public class CrimsonSpearBlock extends Block implements Waterloggable, SporeGrow
                 neighborPos);
     }
 
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
+            ShapeContext context) {
+        return switch(state.get(ModProperties.CRIMSON_SPEAR_TYPE)) {
+            case SINGLE -> SHAPE_SINGLE;
+            case UPPER -> SHAPE_UPPER;
+            case LOWER -> SHAPE_LOWER;
+        };
+    }
+
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -84,6 +108,7 @@ public class CrimsonSpearBlock extends Block implements Waterloggable, SporeGrow
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
-        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED);
+        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED,
+                ModProperties.CRIMSON_SPEAR_TYPE);
     }
 }

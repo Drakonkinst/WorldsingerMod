@@ -39,6 +39,7 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
         Direction placeDirection = ctx.getSide();
         if (placeDirection != Direction.UP && placeDirection != Direction.DOWN) {
             // Default to up
+            // TODO: Make dynamic like PointedDripstoneBlock
             placeDirection = Direction.UP;
         }
 

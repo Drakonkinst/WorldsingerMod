@@ -117,6 +117,17 @@ public final class ModBlocks {
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
             ), true);
+    public static final Block DEAD_CRIMSON_SPEAR = register("dead_crimson_spear",
+            new CrimsonSpearBlock(
+                    FabricBlockSettings.create()
+                            // TODO: Change strength
+                            .strength(1.5f, 3.0f)
+                            .solid()
+                            .ticksRandomly()
+                            .dynamicBounds()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .solidBlock(Blocks::never)
+            ), true);
 
     // Verdant Spores
     public static final Block VERDANT_SPORE_SEA_BLOCK = register("verdant_spore_sea_block",
@@ -248,6 +259,17 @@ public final class ModBlocks {
                             .solid()
                             .noCollision()
                             .requiresTool()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .solidBlock(Blocks::never)
+            ), true);
+    public static final Block CRIMSON_SPEAR = register("crimson_spear",
+            new LivingCrimsonSpearBlock(
+                    FabricBlockSettings.create()
+                            // TODO: Change strength
+                            .strength(1.5f, 3.0f)
+                            .solid()
+                            .ticksRandomly()
+                            .dynamicBounds()
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
             ), true);

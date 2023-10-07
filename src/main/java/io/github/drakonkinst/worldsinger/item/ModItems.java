@@ -320,6 +320,8 @@ public final class ModItems {
             itemGroup.add(ModBlocks.DEAD_CRIMSON_SPIKE);
             itemGroup.add(ModBlocks.CRIMSON_SNARE);
             itemGroup.add(ModBlocks.DEAD_CRIMSON_SNARE);
+            itemGroup.add(ModBlocks.CRIMSON_SPEAR);
+            itemGroup.add(ModBlocks.DEAD_CRIMSON_SPEAR);
             itemGroup.add(ModBlocks.MAGMA_VENT);
         });
     }

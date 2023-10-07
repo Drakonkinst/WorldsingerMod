@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "worldsinger:block/crimson_spear_upper"
+  }
+}
