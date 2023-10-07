@@ -17,6 +17,7 @@
   "death.attack.drown_spore.player": "%s drowned in spores while trying to escape %s",
   "entity.worldsinger.verdant_spore_growth": "Verdant Spore Growth",
   "effect.worldsinger.verdant_spores": "Verdant Spores",
+  "effect.worldsinger.crimson_spores": "Crimson Spores",
   "itemGroup.worldsinger.worldsinger": "Worldsinger",
   "item.silver_lined": "Silver-Lined",
   "item.silver_durability": "Silver Durability: %s / %s",

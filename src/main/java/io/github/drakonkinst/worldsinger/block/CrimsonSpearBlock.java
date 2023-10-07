@@ -1,44 +1,45 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
-import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class CrimsonSnareBlock extends Block implements Waterloggable, SporeGrowthBlock {
+public class CrimsonSpearBlock extends Block implements Waterloggable, SporeGrowthBlock {
 
+    public enum Type implements StringIdentifiable {
+        SINGLE,
+        UPPER,
+        LOWER;
 
-    public CrimsonSnareBlock(Settings settings) {
+        public String toString() {
+            return this.asString();
+        }
+
+        @Override
+        public String asString() {
+            return this == UPPER ? "upper" : this == LOWER ? "lower" : "single";
+        }
+    }
+
+    public CrimsonSpearBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState()
                 .with(Properties.PERSISTENT, false)
-                .with(Properties.WATERLOGGED, false));
-    }
-
-    @Override
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        entity.slowMovement(state, new Vec3d(0.9, 0.9, 0.9));
-        if (world.isClient()) {
-            return;
-        }
-
-        if (CrimsonSpikeBlock.isMoving(entity)) {
-            entity.damage(ModDamageTypes.of(world, ModDamageTypes.SPIKE), 2.0f);
-        }
+                .with(Properties.WATERLOGGED, false)
+                .with(ModProperties.CRIMSON_SPEAR_TYPE, Type.SINGLE));
     }
 
     @Override

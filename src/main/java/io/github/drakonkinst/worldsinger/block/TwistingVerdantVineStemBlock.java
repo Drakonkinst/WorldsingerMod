@@ -55,7 +55,6 @@ public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBloc
                     .with(Properties.WATERLOGGED,
                             ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(
                                     Fluids.WATER));
-            ;
         }
         return placementState;
     }

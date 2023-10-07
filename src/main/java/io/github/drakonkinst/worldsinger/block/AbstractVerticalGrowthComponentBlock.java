@@ -38,7 +38,8 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
         // Can only grow up or down
         Direction placeDirection = ctx.getSide();
         if (placeDirection != Direction.UP && placeDirection != Direction.DOWN) {
-            return null;
+            // Default to up
+            placeDirection = Direction.UP;
         }
 
         BlockPos attachedBlockPos = ctx.getBlockPos().offset(placeDirection);

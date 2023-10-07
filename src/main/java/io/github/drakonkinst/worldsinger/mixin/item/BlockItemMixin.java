@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.item;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import net.minecraft.block.Block;
@@ -12,31 +13,34 @@ import net.minecraft.item.ItemPlacementContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin {
 
     // When placing into a fluid block, allow waterlogged
-    @Inject(method = "getPlacementState", at = @At(value = "RETURN"), cancellable = true)
-    private void injectCustomFluidPlacementState(ItemPlacementContext context,
-            CallbackInfoReturnable<BlockState> cir) {
-        BlockState placementState = this.getBlock().getPlacementState(context);
-        if (placementState == null || !placementState.contains(ModProperties.FLUIDLOGGED)) {
-            return;
+    @ModifyReturnValue(method = "getPlacementState", at = @At(value = "RETURN"))
+    private BlockState injectCustomFluidPlacementState(BlockState original,
+            ItemPlacementContext context) {
+        // Do not add fluid if not fluidloggable
+        if (original == null || !original.contains(ModProperties.FLUIDLOGGED)) {
+            return original;
         }
-        // Remove the fluid if double slabbed
-        if (placementState.getBlock() instanceof SlabBlock
-                && placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE) {
-            return;
+
+        // Do not add fluid if double slab
+        if (original.getBlock() instanceof SlabBlock
+                && original.get(SlabBlock.TYPE) == SlabType.DOUBLE) {
+            return original;
         }
 
         FluidState fluidState = context.getWorld().getFluidState(context.getBlockPos());
         int index = Fluidlogged.getFluidIndex(fluidState.getFluid());
-        if (index > -1) {
-            cir.setReturnValue(placementState.with(ModProperties.FLUIDLOGGED, index));
+        // Do not add fluid if unrecognized fluid
+        if (index < 0) {
+            return original;
         }
+
+        // Add fluid
+        return original.with(ModProperties.FLUIDLOGGED, index);
     }
 
     @Shadow
