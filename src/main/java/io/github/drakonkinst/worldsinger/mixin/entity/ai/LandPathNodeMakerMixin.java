@@ -22,7 +22,7 @@ public abstract class LandPathNodeMakerMixin {
     private static void addAetherSporeSeaNodeType(BlockView world, BlockPos pos,
             CallbackInfoReturnable<PathNodeType> cir) {
         BlockState blockState = world.getBlockState(pos);
-        if (blockState.isIn(ModBlockTags.CRIMSON_SPIKES)) {
+        if (blockState.isIn(ModBlockTags.CRIMSON_SPIKE)) {
             cir.setReturnValue(PathNodeType.DAMAGE_CAUTIOUS);
             return;
         }

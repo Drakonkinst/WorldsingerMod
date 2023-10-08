@@ -182,7 +182,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
 
     private static boolean isCrimsonSpikeFacingDirection(BlockState state,
             Direction direction) {
-        return (state.isIn(ModBlockTags.CRIMSON_SPIKES)
+        return (state.isIn(ModBlockTags.CRIMSON_SPIKE)
                 && state.get(Properties.FACING) == direction);
     }
 

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=lower": {
+      "model": "worldsinger:block/tall_crimson_spines_lower"
+    },
+    "half=upper": {
+      "model": "worldsinger:block/tall_crimson_spines_upper"
+    }
+  }
+}

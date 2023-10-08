@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.AbstractBlock.Offsetter;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -117,8 +118,8 @@ public final class ModBlocks {
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
             ), true);
-    public static final Block DEAD_CRIMSON_SPEAR = register("dead_crimson_spear",
-            new CrimsonSpearBlock(
+    public static final Block DEAD_TALL_CRIMSON_SPINES = register("dead_tall_crimson_spines",
+            new TallCrimsonSpinesBlock(
                     FabricBlockSettings.create()
                             // TODO: Change strength
                             .strength(1.5f, 3.0f)
@@ -126,6 +127,7 @@ public final class ModBlocks {
                             .ticksRandomly()
                             .dynamicBounds()
                             .pistonBehavior(PistonBehavior.DESTROY)
+                            .offset(AbstractBlock.OffsetType.XZ)
                             .solidBlock(Blocks::never)
             ), true);
 
@@ -262,14 +264,15 @@ public final class ModBlocks {
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
             ), true);
-    public static final Block CRIMSON_SPEAR = register("crimson_spear",
-            new LivingCrimsonSpearBlock(
+    public static final Block TALL_CRIMSON_SPINES = register("tall_crimson_spines",
+            new LivingTallCrimsonSpinesBlock(
                     FabricBlockSettings.create()
                             // TODO: Change strength
                             .strength(1.5f, 3.0f)
                             .solid()
                             .ticksRandomly()
                             .dynamicBounds()
+                            .offset(AbstractBlock.OffsetType.XZ)
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
             ), true);

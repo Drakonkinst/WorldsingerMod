@@ -154,7 +154,7 @@ public abstract class AbstractBlockStateMixin {
         }
     }
 
-    @Inject(method = "onStateReplaced", at = @At("HEAD"))
+    @Inject(method = "onStateReplaced", at = @At("TAIL"))
     private void addBlockPlaceBehaviors(World world, BlockPos pos, BlockState state, boolean moved,
             CallbackInfo ci) {
         checkSporeKillingBehavior(world, pos, state);
@@ -178,13 +178,9 @@ public abstract class AbstractBlockStateMixin {
 
     @Unique
     private void checkSporeKilledOnPlace(World world, BlockPos pos, BlockState state) {
-        if (!(state.getBlock() instanceof SporeKillable sporeKillable)) {
-            return;
-        }
-        if (SporeKillingManager.isSporeKillingBlockNearby(world, pos)) {
-            BlockState newBlockState = sporeKillable.getDeadSporeBlock()
-                    .getStateWithProperties(state);
-            world.setBlockState(pos, newBlockState);
+        if (state.getBlock() instanceof SporeKillable sporeKillable
+                && SporeKillingManager.isSporeKillingBlockNearby(world, pos)) {
+            sporeKillable.killSporeBlock(world, pos, state);
         }
     }
 }

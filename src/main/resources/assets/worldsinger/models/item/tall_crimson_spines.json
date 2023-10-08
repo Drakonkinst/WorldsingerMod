@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "worldsinger:block/dead_crimson_spear_single"
+    "layer0": "worldsinger:block/tall_crimson_spines_upper"
   }
 }

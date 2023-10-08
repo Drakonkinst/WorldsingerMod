@@ -4,9 +4,11 @@ import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -14,9 +16,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class LivingCrimsonSpearBlock extends CrimsonSpearBlock implements LivingSporeGrowthBlock {
+public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock implements
+        LivingSporeGrowthBlock {
 
-    public LivingCrimsonSpearBlock(Settings settings) {
+    public LivingTallCrimsonSpinesBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
@@ -68,7 +71,18 @@ public class LivingCrimsonSpearBlock extends CrimsonSpearBlock implements Living
 
     @Override
     public Block getDeadSporeBlock() {
-        return ModBlocks.DEAD_CRIMSON_SPEAR;
+        return ModBlocks.DEAD_TALL_CRIMSON_SPINES;
+    }
+
+    @Override
+    public void killSporeBlock(World world, BlockPos pos, BlockState state) {
+        BlockState newBlockState = this.getDeadSporeBlock()
+                .getStateWithProperties(state);
+        if (state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER) {
+            TallCrimsonSpinesBlock.placeAt(world, newBlockState, pos, Block.NOTIFY_ALL);
+        } else {
+            world.setBlockState(pos, newBlockState);
+        }
     }
 
     @Override
