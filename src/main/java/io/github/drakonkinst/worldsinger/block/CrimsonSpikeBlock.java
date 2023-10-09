@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -35,57 +36,18 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
     private static final float MOVEMENT_THRESHOLD = 0.0003f;
     private static final double TIP_OFFSET = 5.0;
     private static final double TIP_HEIGHT = 15.0;
-    private static final double FRUSTUM_OFFSET = 4.0;
-    private static final double MIDDLE_OFFSET = 3.0;
-    private static final double BASE_OFFSET = 2.0;
-    private static final VoxelShape TIP_SHAPE_UP = createDirectionalShape(Direction.UP,
-            TIP_OFFSET, TIP_HEIGHT);
-    private static final VoxelShape TIP_SHAPE_DOWN = createDirectionalShape(Direction.DOWN,
-            TIP_OFFSET, TIP_HEIGHT);
-    private static final VoxelShape TIP_SHAPE_NORTH = createDirectionalShape(Direction.NORTH,
-            TIP_OFFSET, TIP_HEIGHT);
-    private static final VoxelShape TIP_SHAPE_SOUTH = createDirectionalShape(Direction.SOUTH,
-            TIP_OFFSET, TIP_HEIGHT);
-    private static final VoxelShape TIP_SHAPE_EAST = createDirectionalShape(Direction.EAST,
-            TIP_OFFSET, TIP_HEIGHT);
-    private static final VoxelShape TIP_SHAPE_WEST = createDirectionalShape(Direction.WEST,
-            TIP_OFFSET, TIP_HEIGHT);
-    private static final VoxelShape TIP_SAFE_UP = createDirectionalShape(Direction.UP,
-            0.0, TIP_HEIGHT);
-    private static final VoxelShape TIP_SAFE_DOWN = createDirectionalShape(Direction.DOWN,
-            0.0, TIP_HEIGHT);
-    private static final VoxelShape TIP_SAFE_NORTH = createDirectionalShape(Direction.NORTH,
-            0.0, TIP_HEIGHT);
-    private static final VoxelShape TIP_SAFE_SOUTH = createDirectionalShape(Direction.SOUTH,
-            0.0, TIP_HEIGHT);
-    private static final VoxelShape TIP_SAFE_EAST = createDirectionalShape(Direction.EAST,
-            0.0, TIP_HEIGHT);
-    private static final VoxelShape TIP_SAFE_WEST = createDirectionalShape(Direction.WEST,
-            0.0, TIP_HEIGHT);
-    private static final VoxelShape TIP_DAMAGE_UP = createDirectionalShape(Direction.UP,
-            TIP_OFFSET, 16.0);
-    private static final VoxelShape TIP_DAMAGE_DOWN = createDirectionalShape(Direction.DOWN,
-            TIP_OFFSET, 16.0);
-    private static final VoxelShape TIP_DAMAGE_NORTH = createDirectionalShape(Direction.NORTH,
-            TIP_OFFSET, 16.0);
-    private static final VoxelShape TIP_DAMAGE_SOUTH = createDirectionalShape(Direction.SOUTH,
-            TIP_OFFSET, 16.0);
-    private static final VoxelShape TIP_DAMAGE_EAST = createDirectionalShape(Direction.EAST,
-            TIP_OFFSET, 16.0);
-    private static final VoxelShape TIP_DAMAGE_WEST = createDirectionalShape(Direction.WEST,
-            TIP_OFFSET, 16.0);
-    private static final VoxelShape FRUSTUM_SHAPE_X = createAxisAlignedShape(Axis.X,
-            FRUSTUM_OFFSET);
-    private static final VoxelShape FRUSTUM_SHAPE_Y = createAxisAlignedShape(Axis.Y,
-            FRUSTUM_OFFSET);
-    private static final VoxelShape FRUSTUM_SHAPE_Z = createAxisAlignedShape(Axis.Z,
-            FRUSTUM_OFFSET);
-    private static final VoxelShape MIDDLE_SHAPE_X = createAxisAlignedShape(Axis.X, MIDDLE_OFFSET);
-    private static final VoxelShape MIDDLE_SHAPE_Y = createAxisAlignedShape(Axis.Y, MIDDLE_OFFSET);
-    private static final VoxelShape MIDDLE_SHAPE_Z = createAxisAlignedShape(Axis.Z, MIDDLE_OFFSET);
-    private static final VoxelShape BASE_SHAPE_X = createAxisAlignedShape(Axis.X, BASE_OFFSET);
-    private static final VoxelShape BASE_SHAPE_Y = createAxisAlignedShape(Axis.Y, BASE_OFFSET);
-    private static final VoxelShape BASE_SHAPE_Z = createAxisAlignedShape(Axis.Z, BASE_OFFSET);
+    private static final VoxelShape[] TIP_SHAPES = VoxelShapeUtil.createDirectionAlignedShapes(
+            TIP_OFFSET, 0.0, TIP_HEIGHT);
+    private static final VoxelShape[] TIP_SAFE_SHAPES = VoxelShapeUtil.createDirectionAlignedShapes(
+            0.0, 0.0, TIP_HEIGHT);
+    private static final VoxelShape[] TIP_DAMAGE_SHAPES = VoxelShapeUtil.createDirectionAlignedShapes(
+            TIP_OFFSET, TIP_HEIGHT, 16.0);
+    private static final VoxelShape[] FRUSTUM_SHAPES = VoxelShapeUtil.createAxisAlignedShapes(
+            4.0, 0.0);
+    private static final VoxelShape[] MIDDLE_SHAPES = VoxelShapeUtil.createAxisAlignedShapes(
+            3.0, 0.0);
+    private static final VoxelShape[] BASE_SHAPES = VoxelShapeUtil.createAxisAlignedShapes(
+            2.0, 0.0);
 
     // Conditional XZ offsetter that acts normally when on Y-axis, and is disabled on other axes.
     public static Offsetter getOffsetter() {
@@ -105,79 +67,6 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
                     -maxOffset, maxOffset);
             return new Vec3d(xOffset, 0.0, zOffset);
         };
-    }
-
-    private static VoxelShape getSafeShapeForDirection(Direction direction) {
-        VoxelShape shape;
-        switch(direction) {
-            case DOWN -> shape = TIP_SAFE_DOWN;
-            case UP -> shape = TIP_SAFE_UP;
-            case NORTH -> shape = TIP_SAFE_NORTH;
-            case SOUTH -> shape = TIP_SAFE_SOUTH;
-            case WEST -> shape = TIP_SAFE_WEST;
-            default -> shape = TIP_SAFE_EAST;
-        }
-        return shape;
-    }
-
-    private static VoxelShape getDamageShapeForDirection(Direction direction) {
-        VoxelShape shape;
-        switch(direction) {
-            case DOWN -> shape = TIP_DAMAGE_DOWN;
-            case UP -> shape = TIP_DAMAGE_UP;
-            case NORTH -> shape = TIP_DAMAGE_NORTH;
-            case SOUTH -> shape = TIP_DAMAGE_SOUTH;
-            case WEST -> shape = TIP_DAMAGE_WEST;
-            default -> shape = TIP_DAMAGE_EAST;
-        }
-        return shape;
-    }
-
-    private static VoxelShape getTipShapeForDirection(Direction direction) {
-        VoxelShape shape;
-        switch(direction) {
-            case DOWN -> shape = TIP_SHAPE_DOWN;
-            case UP -> shape = TIP_SHAPE_UP;
-            case NORTH -> shape = TIP_SHAPE_NORTH;
-            case SOUTH -> shape = TIP_SHAPE_SOUTH;
-            case WEST -> shape = TIP_SHAPE_WEST;
-            default -> shape = TIP_SHAPE_EAST;
-        }
-        return shape;
-    }
-
-    private static VoxelShape createDirectionalShape(Direction direction, double widthOffset,
-            double height) {
-        VoxelShape shape;
-        switch(direction) {
-            case UP -> shape = Block.createCuboidShape(widthOffset, 0.0, widthOffset,
-                    16.0 - widthOffset, height, 16.0 - widthOffset);
-            case DOWN -> shape = Block.createCuboidShape(widthOffset, 16.0 - height, widthOffset,
-                    16.0 - widthOffset, 16.0, 16.0 - widthOffset);
-            case NORTH -> shape = Block.createCuboidShape(widthOffset, widthOffset, 16.0 - height,
-                    16.0 - widthOffset, 16.0 - widthOffset, 16.0);
-            case SOUTH -> shape = Block.createCuboidShape(widthOffset, widthOffset, 0.0,
-                    16.0 - widthOffset, 16.0 - widthOffset, height);
-            case EAST -> shape = Block.createCuboidShape(0.0, widthOffset, widthOffset, height,
-                    16.0 - widthOffset, 16.0 - widthOffset);
-            default ->
-                    shape = Block.createCuboidShape(16.0 - height, widthOffset, widthOffset, 16.0,
-                            16.0 - widthOffset, 16.0 - widthOffset);
-        }
-        return shape;
-    }
-
-    private static VoxelShape createAxisAlignedShape(Axis axis, double offset) {
-        VoxelShape shape;
-        switch(axis) {
-            case Y -> shape = Block.createCuboidShape(offset, 0.0, offset, 16.0 - offset, 16.0,
-                    16.0 - offset);
-            case X -> shape = Block.createCuboidShape(0.0, offset, offset, 16.0, 16.0 - offset,
-                    16.0 - offset);
-            default -> shape = Block.createCuboidShape(offset, offset, 0.0, 16.0 - offset,
-                    16.0 - offset, 16.0);
-        }
-        return shape;
     }
 
     private static boolean isCrimsonSpikeFacingDirection(BlockState state,
@@ -354,9 +243,8 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
         Direction facingDirection = state.get(Properties.FACING);
         VoxelShape entityShape = VoxelShapes.cuboid(
                 entity.getBoundingBox().offset(-pos.getX(), -pos.getY(), -pos.getZ()));
-        VoxelShape safeShape = CrimsonSpikeBlock.getSafeShapeForDirection(
-                facingDirection);
-        VoxelShape damageShape = CrimsonSpikeBlock.getDamageShapeForDirection(facingDirection);
+        VoxelShape safeShape = TIP_SAFE_SHAPES[facingDirection.ordinal()];
+        VoxelShape damageShape = TIP_DAMAGE_SHAPES[facingDirection.ordinal()];
 
         // Only damage if entity is at the tip of the spike, not the sides
         if (VoxelShapes.matchesAnywhere(entityShape, safeShape, BooleanBiFunction.AND)
@@ -385,17 +273,14 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
         Axis axis = direction.getAxis();
         VoxelShape voxelShape;
         if (thickness == Thickness.TIP) {
-            voxelShape = CrimsonSpikeBlock.getTipShapeForDirection(direction);
+            voxelShape = TIP_SHAPES[direction.ordinal()];
         } else if (thickness == Thickness.FRUSTUM) {
-            voxelShape = axis == Axis.Y ? FRUSTUM_SHAPE_Y
-                    : axis == Axis.X ? FRUSTUM_SHAPE_X : FRUSTUM_SHAPE_Z;
+            voxelShape = FRUSTUM_SHAPES[axis.ordinal()];
         } else if (thickness == Thickness.MIDDLE) {
-            voxelShape = axis == Axis.Y ? MIDDLE_SHAPE_Y
-                    : axis == Axis.X ? MIDDLE_SHAPE_X : MIDDLE_SHAPE_Z;
+            voxelShape = MIDDLE_SHAPES[axis.ordinal()];
         } else {
             // Base
-            voxelShape = axis == Axis.Y ? BASE_SHAPE_Y
-                    : axis == Axis.X ? BASE_SHAPE_X : BASE_SHAPE_Z;
+            voxelShape = BASE_SHAPES[axis.ordinal()];
         }
         if (axis == Axis.Y) {
             Vec3d modelOffset = state.getModelOffset(world, pos);

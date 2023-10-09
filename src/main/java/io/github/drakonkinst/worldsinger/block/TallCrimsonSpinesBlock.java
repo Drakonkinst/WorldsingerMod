@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -39,17 +40,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class TallCrimsonSpinesBlock extends Block implements Waterloggable, SporeGrowthBlock {
 
-    private static final double WIDTH = 3.0;
-    private static final VoxelShape SHAPE_LOWER = Block.createCuboidShape(
-            WIDTH, 0.0, WIDTH,
-            16.0 - WIDTH, 16.0, 16.0 - WIDTH);
-    private static final VoxelShape SHAPE_UPPER = Block.createCuboidShape(
-            WIDTH, 0.0, WIDTH,
-            16.0 - WIDTH, 15.0, 16.0 - WIDTH);
-    private static final VoxelShape DAMAGE_SHAPE = Block.createCuboidShape(WIDTH, 15.0, WIDTH,
-            16.0 - WIDTH, 16.0, 16.0 - WIDTH);
-    private static final VoxelShape SAFE_SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 15.0,
+    private static final double OFFSET = 3.0;
+    private static final VoxelShape SHAPE_LOWER = VoxelShapeUtil.createOffsetCuboid(OFFSET, 0.0);
+    private static final VoxelShape SHAPE_UPPER = VoxelShapeUtil.createUpwardsCuboid(OFFSET, 0.0,
+            15.0);
+    private static final VoxelShape DAMAGE_SHAPE = VoxelShapeUtil.createUpwardsCuboid(OFFSET, 15.0,
             16.0);
+    private static final VoxelShape SAFE_SHAPE = VoxelShapeUtil.createUpwardsCuboid(0.0, 0.0, 15.0);
 
     public static void placeAt(WorldAccess world, BlockState state, BlockPos pos, int flags) {
         BlockPos abovePos = pos.up();

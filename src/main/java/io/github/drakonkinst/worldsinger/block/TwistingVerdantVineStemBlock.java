@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
@@ -19,8 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBlock implements
         Waterloggable, SporeGrowthBlock {
 
-    private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 16.0,
-            12.0);
+    private static final VoxelShape SHAPE = VoxelShapeUtil.createOffsetCuboid(4.0, 0.0);
 
     public TwistingVerdantVineStemBlock(Settings settings) {
         super(settings, SHAPE);
