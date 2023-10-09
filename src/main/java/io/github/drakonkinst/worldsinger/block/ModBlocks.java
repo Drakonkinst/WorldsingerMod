@@ -118,6 +118,17 @@ public final class ModBlocks {
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
             ), true);
+    public static final Block DEAD_CRIMSON_SPINES = register("dead_crimson_spines",
+            new LivingCrimsonSpinesBlock(
+                    FabricBlockSettings.create()
+                            // TODO: Change strength
+                            .strength(1.0f, 1.0f)
+                            .solid()
+                            .nonOpaque()
+                            .ticksRandomly()
+                            .requiresTool()
+                            .pistonBehavior(PistonBehavior.DESTROY)
+            ), true);
     public static final Block DEAD_TALL_CRIMSON_SPINES = register("dead_tall_crimson_spines",
             new TallCrimsonSpinesBlock(
                     FabricBlockSettings.create()
@@ -263,6 +274,17 @@ public final class ModBlocks {
                             .requiresTool()
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
+            ), true);
+    public static final Block CRIMSON_SPINES = register("crimson_spines",
+            new LivingCrimsonSpinesBlock(
+                    FabricBlockSettings.create()
+                            // TODO: Change strength
+                            .strength(1.0f, 1.0f)
+                            .solid()
+                            .nonOpaque()
+                            .ticksRandomly()
+                            .requiresTool()
+                            .pistonBehavior(PistonBehavior.DESTROY)
             ), true);
     public static final Block TALL_CRIMSON_SPINES = register("tall_crimson_spines",
             new LivingTallCrimsonSpinesBlock(

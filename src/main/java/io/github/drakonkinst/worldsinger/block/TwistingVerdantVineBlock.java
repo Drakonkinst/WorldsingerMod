@@ -65,9 +65,7 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
         if (placementState != null) {
             placementState = placementState
                     .with(Properties.PERSISTENT, true)
-                    .with(Properties.WATERLOGGED,
-                            ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(
-                                    Fluids.WATER));
+                    .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()));
         }
         return placementState;
     }

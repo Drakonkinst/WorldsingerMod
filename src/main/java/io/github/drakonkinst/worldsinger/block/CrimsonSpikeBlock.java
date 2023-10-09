@@ -168,9 +168,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
                 .with(Properties.FACING, placeDirection)
                 .with(ModProperties.DISCRETE_THICKNESS, thickness)
                 .with(Properties.PERSISTENT, true)
-                .with(Properties.WATERLOGGED,
-                        world.getFluidState(pos).isOf(
-                                Fluids.WATER));
+                .with(Properties.WATERLOGGED, world.isWater(pos));
     }
 
     @Override

@@ -64,6 +64,8 @@ public class WorldsingerClient implements ClientModInitializer {
                 ModBlocks.DEAD_CRIMSON_SPIKE,
                 ModBlocks.CRIMSON_SNARE,
                 ModBlocks.DEAD_CRIMSON_SNARE,
+                ModBlocks.CRIMSON_SPINES,
+                ModBlocks.DEAD_CRIMSON_SPINES,
                 ModBlocks.TALL_CRIMSON_SPINES,
                 ModBlocks.DEAD_TALL_CRIMSON_SPINES
         );

@@ -9,7 +9,7 @@ import net.minecraft.client.item.ModelPredicateProviderRegistry;
 public final class ModModelPredicates {
 
     public static void register() {
-        registerModelPredicate("silver_lined", ((stack, world, entity, seed) -> {
+        ModModelPredicates.registerModelPredicate("silver_lined", ((stack, world, entity, seed) -> {
             SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(stack, null);
             if (silverItemData == null) {
                 return 0.0f;

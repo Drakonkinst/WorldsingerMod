@@ -56,8 +56,7 @@ public class CrimsonSnareBlock extends Block implements Waterloggable, SporeGrow
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.getDefaultState()
                 .with(Properties.PERSISTENT, true)
-                .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(
-                        Fluids.WATER));
+                .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()));
     }
 
     @Override

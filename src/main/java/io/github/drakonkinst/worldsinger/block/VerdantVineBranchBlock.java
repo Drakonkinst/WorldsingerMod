@@ -103,8 +103,7 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return this.withConnectionProperties(ctx.getWorld(), ctx.getBlockPos())
                 .with(Properties.PERSISTENT, true)
-                .with(Properties.WATERLOGGED,
-                        ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(Fluids.WATER));
+                .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()));
     }
 
     @Override
