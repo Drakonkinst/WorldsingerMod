@@ -1,10 +1,13 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
+import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
@@ -13,14 +16,16 @@ import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class CrimsonSnareBlock extends Block implements Waterloggable, SporeGrowthBlock {
 
+    private static final VoxelShape SHAPE = VoxelShapeUtil.createOffsetCuboid(1.0, 1.0);
 
     public CrimsonSnareBlock(Settings settings) {
         super(settings);
@@ -30,8 +35,18 @@ public class CrimsonSnareBlock extends Block implements Waterloggable, SporeGrow
     }
 
     @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
+            ShapeContext context) {
+        return SHAPE;
+    }
+
+    @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        entity.slowMovement(state, new Vec3d(0.9, 0.9, 0.9));
+        // Spikes do not destroy items
+        if (entity instanceof ItemEntity) {
+            return;
+        }
+
         if (world.isClient()) {
             return;
         }

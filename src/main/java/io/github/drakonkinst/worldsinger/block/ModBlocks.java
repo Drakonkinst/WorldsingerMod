@@ -94,6 +94,12 @@ public final class ModBlocks {
                             .ticksRandomly()
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), false);
+    public static final Block DEAD_CRIMSON_GROWTH = register("dead_crimson_growth",
+            new CrimsonGrowthBlock(FabricBlockSettings.create()
+                    // TODO
+                    .strength(1.0f)
+                    .solid()
+                    .ticksRandomly()), true);
     public static final Block DEAD_CRIMSON_SPIKE = register("dead_crimson_spike",
             new CrimsonSpikeBlock(
                     ModBlocks.createSettingsWithCustomOffsetter(CrimsonSpikeBlock.getOffsetter())
@@ -113,7 +119,6 @@ public final class ModBlocks {
                             // TODO: Change strength
                             .strength(1.0f, 1.0f)
                             .solid()
-                            .noCollision()
                             .requiresTool()
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
@@ -124,6 +129,7 @@ public final class ModBlocks {
                             // TODO: Change strength
                             .strength(1.0f, 1.0f)
                             .solid()
+                            .noCollision()
                             .nonOpaque()
                             .ticksRandomly()
                             .requiresTool()
@@ -251,6 +257,12 @@ public final class ModBlocks {
             new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
                     ModCauldronBehaviors.CRIMSON_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.CRIMSON
             ), false);
+    public static final Block CRIMSON_GROWTH = register("crimson_growth",
+            new LivingCrimsonGrowthBlock(FabricBlockSettings.create()
+                    // TODO
+                    .strength(1.0f)
+                    .solid()
+                    .ticksRandomly()), true);
     public static final Block CRIMSON_SPIKE = register("crimson_spike",
             new LivingCrimsonSpikeBlock(
                     ModBlocks.createSettingsWithCustomOffsetter(CrimsonSpikeBlock.getOffsetter())
@@ -270,7 +282,6 @@ public final class ModBlocks {
                             // TODO: Change strength
                             .strength(1.0f, 1.0f)
                             .solid()
-                            .noCollision()
                             .requiresTool()
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .solidBlock(Blocks::never)
@@ -281,6 +292,7 @@ public final class ModBlocks {
                             // TODO: Change strength
                             .strength(1.0f, 1.0f)
                             .solid()
+                            .noCollision()
                             .nonOpaque()
                             .ticksRandomly()
                             .requiresTool()

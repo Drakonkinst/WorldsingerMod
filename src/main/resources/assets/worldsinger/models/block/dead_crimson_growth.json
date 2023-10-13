@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "worldsinger:block/dead_crimson_growth"
+  }
+}

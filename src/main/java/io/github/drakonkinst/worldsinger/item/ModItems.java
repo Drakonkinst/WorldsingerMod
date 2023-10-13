@@ -316,12 +316,16 @@ public final class ModItems {
             itemGroup.add(ModItems.MIDNIGHT_SPORES_BOTTLE);
             itemGroup.add(ModItems.MIDNIGHT_SPORES_SPLASH_BOTTLE);
 
+            itemGroup.add(ModBlocks.CRIMSON_GROWTH);
             itemGroup.add(ModBlocks.CRIMSON_SPIKE);
-            itemGroup.add(ModBlocks.DEAD_CRIMSON_SPIKE);
             itemGroup.add(ModBlocks.CRIMSON_SNARE);
-            itemGroup.add(ModBlocks.DEAD_CRIMSON_SNARE);
             itemGroup.add(ModBlocks.TALL_CRIMSON_SPINES);
+            itemGroup.add(ModBlocks.CRIMSON_SPINES);
+            itemGroup.add(ModBlocks.DEAD_CRIMSON_GROWTH);
+            itemGroup.add(ModBlocks.DEAD_CRIMSON_SPIKE);
+            itemGroup.add(ModBlocks.DEAD_CRIMSON_SNARE);
             itemGroup.add(ModBlocks.DEAD_TALL_CRIMSON_SPINES);
+            itemGroup.add(ModBlocks.DEAD_CRIMSON_SPINES);
             itemGroup.add(ModBlocks.MAGMA_VENT);
         });
     }
