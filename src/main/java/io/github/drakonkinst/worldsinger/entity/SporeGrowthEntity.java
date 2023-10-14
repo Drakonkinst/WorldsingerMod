@@ -85,8 +85,11 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
     }
 
+    // lastDir is initialized at zero, but cannot become zero again.
     public void setLastDir(Int3 lastDir) {
-        this.lastDir = lastDir;
+        if (!lastDir.isZero()) {
+            this.lastDir = lastDir;
+        }
     }
 
     protected abstract BlockState getNextBlock();
@@ -107,6 +110,10 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
     protected abstract boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith);
 
     protected abstract boolean isGrowthBlock(BlockState state);
+
+    protected boolean shouldRecalculateForces() {
+        return true;
+    }
 
     @Override
     public void tick() {
@@ -159,16 +166,34 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
                 || placeAttempts >= MAX_PLACE_ATTEMPTS || sporeGrowthData.getWater() <= 0;
     }
 
+    protected boolean shouldDrainWater() {
+        int spores = sporeGrowthData.getSpores();
+        int water = sporeGrowthData.getWater();
+        if (water >= spores) {
+            return true;
+        }
+        if (water <= 0) {
+            return false;
+        }
+        // Want water to last as long as possible, so higher proportion of spores means lower chance
+        float chanceToCatalyze = (float) spores / water;
+        return random.nextFloat() < chanceToCatalyze;
+    }
+
     private void grow() {
         if (sporeGrowthData.isInitialGrowth()) {
             // Only recalculate forces once per tick, leading to less precision when moving quickly
-            this.recalculateForces();
+            if (this.shouldRecalculateForces()) {
+                this.recalculateForces();
+            }
             for (int i = 0; i < INITIAL_GROWTH_SPEED; ++i) {
                 this.doGrowStep();
             }
         } else {
             if ((sporeGrowthData.getAge() + this.getId()) % this.getUpdatePeriod() == 0) {
-                this.recalculateForces();
+                if (this.shouldRecalculateForces()) {
+                    this.recalculateForces();
+                }
                 this.doGrowStep();
             }
         }
@@ -255,12 +280,10 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
     private void shiftBlock(Int3 direction) {
         Vec3d pos = this.getPos();
         this.setPosition(pos.add(direction.x(), direction.y(), direction.z()));
-        if (!direction.isZero()) {
-            lastDir = direction;
-        }
+        this.setLastDir(direction);
     }
 
-    private Int3 getNextDirection(boolean allowPassthrough) {
+    protected Int3 getNextDirection(boolean allowPassthrough) {
         World world = this.getWorld();
         BlockPos pos = this.getBlockPos();
         Mutable mutable = new Mutable();

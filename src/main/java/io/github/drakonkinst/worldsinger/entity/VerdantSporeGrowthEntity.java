@@ -91,12 +91,6 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected int getWeight(World world, BlockPos pos, Int3 direction, boolean allowPassthrough) {
-        if (sporeGrowthData.getStage() == 3) {
-            if (direction.x() != 0 || direction.z() != 0) {
-                return 0;
-            }
-        }
-
         BlockState state = world.getBlockState(pos);
         int weight = 0;
 
@@ -242,20 +236,6 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         this.doGrowEffects(pos, state, cost, drainsWater, true, true);
         this.attemptPlaceDecorators();
         this.applySporeEffectToEntities(pos);
-    }
-
-    private boolean shouldDrainWater() {
-        int spores = sporeGrowthData.getSpores();
-        int water = sporeGrowthData.getWater();
-        if (water >= spores) {
-            return true;
-        }
-        if (water <= 0) {
-            return false;
-        }
-        // Want water to last as long as possible, so higher proportion of spores means lower chance
-        float chanceToCatalyze = (float) spores / water;
-        return random.nextFloat() < chanceToCatalyze;
     }
 
     private boolean attemptPlaceDecorators() {

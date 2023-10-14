@@ -34,9 +34,7 @@ public final class SporeGrowthSpawner {
         }
         entity.setPosition(pos);
         entity.setSporeData(spores, water, initialGrowth);
-        if (!lastDir.isZero()) {
-            entity.setLastDir(lastDir);
-        }
+        entity.setLastDir(lastDir);
         if (isSmall) {
             entity.setInitialStage(VerdantSporeGrowthEntity.MAX_STAGE);
         }

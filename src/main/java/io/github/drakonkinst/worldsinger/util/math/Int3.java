@@ -10,6 +10,7 @@ public record Int3(int x, int y, int z) {
     public static List<Int3> DIAGONAL_3D = Int3.generateDiagonal3d();
     public static List<Int3> CARDINAL_3D = Int3.generateCardinal3d();
     public static Int3 ZERO = new Int3(0, 0, 0);
+    public static Int3 UP = new Int3(0, 1, 0);
 
     private static List<Int3> generateDiagonal3d() {
         List<Int3> list = new ArrayList<>(3 * 3 * 3);
