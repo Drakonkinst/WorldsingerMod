@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.block.TallPlantBlock;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
@@ -50,9 +49,9 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
 
     public static void placeAt(WorldAccess world, BlockState state, BlockPos pos, int flags) {
         BlockPos abovePos = pos.up();
-        world.setBlockState(pos, TallPlantBlock.withWaterloggedState(world, pos,
+        world.setBlockState(pos, TallCrimsonSpinesBlock.withFluidState(world, pos,
                 state.with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER)), flags);
-        world.setBlockState(abovePos, TallPlantBlock.withWaterloggedState(world, abovePos,
+        world.setBlockState(abovePos, TallCrimsonSpinesBlock.withFluidState(world, abovePos,
                 state.with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER)), flags);
     }
 

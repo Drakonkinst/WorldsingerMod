@@ -278,6 +278,9 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
     }
 
     private void shiftBlock(Int3 direction) {
+        if (direction.isZero()) {
+            return;
+        }
         Vec3d pos = this.getPos();
         this.setPosition(pos.add(direction.x(), direction.y(), direction.z()));
         this.setLastDir(direction);

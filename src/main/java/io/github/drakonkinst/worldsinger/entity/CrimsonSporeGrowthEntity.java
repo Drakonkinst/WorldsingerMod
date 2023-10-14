@@ -3,17 +3,21 @@ package io.github.drakonkinst.worldsinger.entity;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.block.TallCrimsonSpinesBlock;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.joml.AxisAngle4f;
@@ -23,39 +27,22 @@ import org.joml.Vector3f;
 
 public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
 
-    public static final int MAX_STAGE = 1;
+    public static final int MAX_STAGE = 2;
 
     private static final int FORCE_MODIFIER_MULTIPLIER = 20;
-    private static final int FULL_BLOCK_COST = 10;
-    private static final int SPIKE_COST = 5;
+    private static final int FULL_BLOCK_COST = 15;
+    private static final int SPIKE_COST = 10;
+    private static final int TALL_SPINES_COST = 2;
+    private static final int SPINES_COST = 1;
     private static final float MIN_ROTATION = 10.0f * MathHelper.RADIANS_PER_DEGREE;
     private static final float MAX_ROTATION = 45.0f * MathHelper.RADIANS_PER_DEGREE;
     private static final int MAX_ATTEMPTS = 10;
     private static final float PARALLEL_THRESHOLD = 0.9f;
-
-    private Vector3f targetGrowthDirection = null;
-    private List<Int3> directionCandidates = null;
-
-    public CrimsonSporeGrowthEntity(EntityType<?> entityType, World world) {
-        super(entityType, world);
-    }
-
-    public void setTargetGrowthDirection(Vector3f direction) {
-        this.targetGrowthDirection = direction;
-        this.directionCandidates = new ArrayList<>(3);
-        if (targetGrowthDirection.x() != 0) {
-            directionCandidates.add(new Int3((int) Math.signum(targetGrowthDirection.x()), 0, 0));
-        }
-        if (targetGrowthDirection.y() != 0) {
-            directionCandidates.add(new Int3(0, (int) Math.signum(targetGrowthDirection.y()), 0));
-        }
-        if (targetGrowthDirection.z() != 0) {
-            directionCandidates.add(new Int3(0, 0, (int) Math.signum(targetGrowthDirection.z())));
-        }
-    }
+    private static final int NEXT_STAGE_WATER_THRESHOLD = 40;
+    private static final int NEXT_STAGE_SPORE_THRESHOLD = 75;
 
     // Using the given cardinal direction as a basis, rotate up to 45 degrees in yaw or pitch.
-    private Vector3f randomizeDirectionFromCardinalDirection(Int3 cardinalDirection) {
+    private static Vector3f randomizeDirectionFromCardinalDirection(Int3 cardinalDirection) {
         Vector3f direction = new Vector3f(cardinalDirection.x(), cardinalDirection.y(),
                 cardinalDirection.z());
         Vector3f randomUnitVector = generateRandomUnitVector(direction);
@@ -95,14 +82,66 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         return new Vector3f(unitX, unitY, unitZ).normalize();
     }
 
+    private Vector3f targetGrowthDirection = null;
+    private final List<Int3> directionCandidates = new ArrayList<>(3);
+    private Int3 primaryDirection = null;
+
+    public CrimsonSporeGrowthEntity(EntityType<?> entityType, World world) {
+        super(entityType, world);
+    }
+
+    private void resetTargetGrowthDirection() {
+        targetGrowthDirection = null;
+        directionCandidates.clear();
+        primaryDirection = null;
+    }
+
+    public void setTargetGrowthDirection(Vector3f direction) {
+        this.targetGrowthDirection = direction;
+
+        float deltaX = Math.abs(targetGrowthDirection.x());
+        float deltaY = Math.abs(targetGrowthDirection.y());
+        float deltaZ = Math.abs(targetGrowthDirection.z());
+
+        // Precompute direction candidates
+        directionCandidates.clear();
+        if (deltaX != 0) {
+            int signX = (int) Math.signum(targetGrowthDirection.x());
+            directionCandidates.add(new Int3(signX, 0, 0));
+        }
+        if (deltaY != 0) {
+            int signY = (int) Math.signum(targetGrowthDirection.y());
+            directionCandidates.add(new Int3(0, signY, 0));
+        }
+        if (deltaZ != 0) {
+            int signZ = (int) Math.signum(targetGrowthDirection.z());
+            directionCandidates.add(new Int3(0, 0, signZ));
+        }
+
+        if (deltaY >= deltaX && deltaY >= deltaZ) {
+            primaryDirection = targetGrowthDirection.y() > 0 ? Int3.UP : Int3.DOWN;
+        } else if (deltaX >= deltaY && deltaX >= deltaZ) {
+            primaryDirection = targetGrowthDirection.x() > 0 ? Int3.EAST : Int3.WEST;
+        } else {
+            primaryDirection = targetGrowthDirection.z() > 0 ? Int3.SOUTH : Int3.NORTH;
+        }
+    }
+
     @Override
     protected BlockState getNextBlock() {
         BlockState state = null;
-        if (sporeGrowthData.getStage() == 0) {
+        int stage = sporeGrowthData.getStage();
+        if (stage == 0) {
             state = ModBlocks.CRIMSON_GROWTH.getDefaultState();
-        } else if (sporeGrowthData.getStage() == 1) {
-            state = ModBlocks.CRIMSON_SPIKE.getDefaultState()
-                    .with(Properties.FACING, Direction.UP);
+        } else if (stage == 1) {
+            if (lastDir.equals(primaryDirection)) {
+                state = ModBlocks.CRIMSON_SPIKE.getDefaultState()
+                        .with(Properties.FACING, lastDir.toDirection(Direction.UP));
+            } else {
+                state = ModBlocks.CRIMSON_GROWTH.getDefaultState();
+            }
+        } else if (stage == 2) {
+            state = ModBlocks.CRIMSON_SNARE.getDefaultState();
         }
 
         if (state == null) {
@@ -120,43 +159,62 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         return state;
     }
 
+    // https://math.stackexchange.com/a/3757354
+    private float getDistanceSqToTargetDir(Vec3i origin, Vec3i pos) {
+        int originToCandidateX = pos.getX() - origin.getX();
+        int originToCandidateY = pos.getY() - origin.getY();
+        int originToCandidateZ = pos.getZ() - origin.getZ();
+        Vector3f originToCandidate = new Vector3f(originToCandidateX, originToCandidateY,
+                originToCandidateZ);
+        float av2 = originToCandidate.dot(originToCandidate);
+        float avd = originToCandidate.dot(targetGrowthDirection);
+        float distanceSq = av2 - avd * avd;
+        return distanceSq;
+    }
+
     @Override
     protected Int3 getNextDirection(boolean allowPassthrough) {
-        BlockPos pos = this.getBlockPos();
-        if (targetGrowthDirection == null) {
-            Vector3f nextDirection;
-            if (!lastDir.isZero()) {
-                nextDirection = this.randomizeDirectionFromCardinalDirection(lastDir);
-            } else {
-                nextDirection = this.randomizeDirectionFromCardinalDirection(Int3.UP);
-            }
-            this.setTargetGrowthDirection(nextDirection);
+        this.updateTargetGrowthDirection();
+        if (sporeGrowthData.getStage() == 0) {
+            return this.getNextDirectionForGrowthBlock(allowPassthrough);
+        } else if (sporeGrowthData.getStage() == 1) {
+            return this.getNextDirectionForSpikeBlock(allowPassthrough);
         }
+        return super.getNextDirection(allowPassthrough);
+    }
 
+    private void updateTargetGrowthDirection() {
+        if (targetGrowthDirection != null) {
+            return;
+        }
+        Vector3f nextDirection;
+        if (!lastDir.isZero()) {
+            nextDirection = CrimsonSporeGrowthEntity.randomizeDirectionFromCardinalDirection(
+                    lastDir);
+        } else {
+            nextDirection = CrimsonSporeGrowthEntity.randomizeDirectionFromCardinalDirection(
+                    Int3.UP);
+        }
+        this.setTargetGrowthDirection(nextDirection);
+    }
+
+    private Int3 getNextDirectionForGrowthBlock(boolean allowPassthrough) {
+        BlockPos currPos = this.getBlockPos();
         float minDistanceSq = Float.MAX_VALUE;
         int minDistanceIndex = -1;
         World world = this.getWorld();
         BlockPos origin = sporeGrowthData.getOrigin();
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.Mutable candidatePos = new BlockPos.Mutable();
         for (int i = 0; i < directionCandidates.size(); ++i) {
             Int3 direction = directionCandidates.get(i);
-            mutable.set(pos.getX() + direction.x(), pos.getY() + direction.y(),
-                    pos.getZ() + direction.z());
-            BlockState candidateState = world.getBlockState(mutable);
-            if (!this.canMoveThrough(candidateState, true)) {
+            candidatePos.set(currPos.getX() + direction.x(), currPos.getY() + direction.y(),
+                    currPos.getZ() + direction.z());
+            BlockState candidateState = world.getBlockState(candidatePos);
+            if (!this.canBreakOrGrow(candidateState, true)) {
                 continue;
             }
 
-            // https://math.stackexchange.com/a/3757354
-            int originToCandidateX = mutable.getX() - origin.getX();
-            int originToCandidateY = mutable.getY() - origin.getY();
-            int originToCandidateZ = mutable.getZ() - origin.getZ();
-            Vector3f originToCandidate = new Vector3f(originToCandidateX, originToCandidateY,
-                    originToCandidateZ);
-            float av2 = originToCandidate.dot(originToCandidate);
-            float avd = originToCandidate.dot(targetGrowthDirection);
-            float distanceSq = av2 - avd * avd;
-
+            float distanceSq = this.getDistanceSqToTargetDir(origin, candidatePos);
             if (distanceSq < minDistanceSq) {
                 minDistanceSq = distanceSq;
                 minDistanceIndex = i;
@@ -165,12 +223,25 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
 
         // Failed to find a valid direction, so just go randomly
         if (minDistanceIndex < 0) {
-            Worldsinger.LOGGER.info("FAIL");
-            targetGrowthDirection = null;
+            this.resetTargetGrowthDirection();
             return super.getNextDirection(allowPassthrough);
         }
 
         return directionCandidates.get(minDistanceIndex);
+    }
+
+    private Int3 getNextDirectionForSpikeBlock(boolean allowPassthrough) {
+        // If cannot go in primary direction, turn into a splinter by advancing the stage
+
+        BlockPos nextPos = this.getBlockPos()
+                .add(primaryDirection.x(), primaryDirection.y(), primaryDirection.z());
+        BlockState nextState = this.getWorld().getBlockState(nextPos);
+        if (this.canBreakOrGrow(nextState, allowPassthrough)) {
+            return primaryDirection;
+        } else {
+            sporeGrowthData.addStage(1);
+            return Int3.ZERO;
+        }
     }
 
     @Override
@@ -178,7 +249,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         return targetGrowthDirection == null;
     }
 
-    private boolean canMoveThrough(BlockState state, boolean allowPassthrough) {
+    private boolean canBreakOrGrow(BlockState state, boolean allowPassthrough) {
         return this.canBreakHere(state, null) || this.canGrowHere(state, null) || (
                 allowPassthrough && this.isGrowthBlock(state));
     }
@@ -188,7 +259,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         BlockState state = world.getBlockState(pos);
         int weight = 0;
 
-        if (this.canMoveThrough(state, allowPassthrough)) {
+        if (this.canBreakOrGrow(state, allowPassthrough)) {
             weight = 100;
         }
 
@@ -221,7 +292,15 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected void updateStage() {
-        // Do nothing, for now
+        if (sporeGrowthData.getStage() == 0) {
+            if (sporeGrowthData.getWater() < NEXT_STAGE_WATER_THRESHOLD) {
+                sporeGrowthData.addStage(1);
+            } else if (sporeGrowthData.getSpores() < NEXT_STAGE_SPORE_THRESHOLD
+                    && random.nextInt(3) == 0) {
+                sporeGrowthData.addStage(1);
+            }
+        }
+        // TODO: Split branches
     }
 
     @Override
@@ -231,20 +310,88 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected void onGrowBlock(BlockPos pos, BlockState state) {
-        int cost = state.isOf(ModBlocks.CRIMSON_GROWTH) ? FULL_BLOCK_COST : SPIKE_COST;
+        boolean isFullBlock = state.isOf(ModBlocks.CRIMSON_GROWTH);
+        int cost = isFullBlock ? FULL_BLOCK_COST : SPIKE_COST;
         boolean drainsWater = state.getOrEmpty(ModProperties.CATALYZED).orElse(false);
         this.doGrowEffects(pos, state, cost, drainsWater, true, true);
+
+        // Two attempts to place decorators for extra density
+        // Can only place on full blocks
+        if (isFullBlock) {
+            this.attemptPlaceDecorators();
+            this.attemptPlaceDecorators();
+        }
         // this.applySporeEffectToEntities(pos);
     }
 
-    @Override
-    protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
+    private boolean attemptPlaceDecorators() {
+        World world = this.getWorld();
+        if (sporeGrowthData.getSpores() <= 0 || random.nextInt(5) == 0) {
+            return false;
+        }
+        List<Direction> validDirections = new ArrayList<>(6);
+        BlockPos pos = this.getBlockPos();
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            mutable.set(pos.offset(direction));
+            if (this.canPlaceDecorator(world.getBlockState(mutable))) {
+                validDirections.add(direction);
+            }
+        }
+        if (!validDirections.isEmpty()) {
+            Direction direction = validDirections.get(random.nextInt(validDirections.size()));
+            this.placeDecorator(pos.offset(direction), direction);
+            return true;
+        }
+        return false;
+    }
+
+    private void placeDecorator(BlockPos pos, Direction direction) {
+        if (direction == Direction.UP && random.nextInt(3) == 0 && this.canPlaceDecorator(
+                this.getWorld().getBlockState(pos.up()))) {
+            this.placeTallSpines(pos);
+        } else {
+            this.placeSpines(pos, direction);
+        }
+    }
+
+    private void placeSpines(BlockPos pos, Direction direction) {
+        boolean shouldDrainWater = this.shouldDrainWater();
+        int fluidloggedIndex = Fluidlogged.getFluidIndex(
+                this.getWorld().getFluidState(pos).getFluid());
+        BlockState state = ModBlocks.CRIMSON_SPINES.getDefaultState()
+                .with(Properties.FACING, direction)
+                .with(ModProperties.CATALYZED, shouldDrainWater)
+                .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
+        this.placeBlockWithEffects(pos, state, SPINES_COST, shouldDrainWater,
+                false, true);
+    }
+
+    private void placeTallSpines(BlockPos pos) {
+        boolean shouldDrainWater = this.shouldDrainWater();
+        BlockState state = ModBlocks.TALL_CRIMSON_SPINES.getDefaultState()
+                .with(ModProperties.CATALYZED, shouldDrainWater);
+        // No need to check fluid state since this is handled in placeAt()
+        TallCrimsonSpinesBlock.placeAt(this.getWorld(), state, pos, Block.NOTIFY_ALL);
+        this.doGrowEffects(pos, state, TALL_SPINES_COST, shouldDrainWater, false, false);
+    }
+
+    private boolean canPlaceDecorator(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_GROW);
     }
 
     @Override
-    protected boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith) {
+    protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
         return state.isIn(ModBlockTags.SPORES_CAN_BREAK);
+    }
+
+    @Override
+    protected boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith) {
+        return state.isIn(ModBlockTags.SPORES_CAN_GROW)
+                || state.isIn(ModBlockTags.CRIMSON_SNARE)
+                || state.isIn(ModBlockTags.TALL_CRIMSON_SPINES)
+                || state.isIn(ModBlockTags.CRIMSON_SPINES)
+                || (sporeGrowthData.getStage() == 0 && state.isIn(ModBlockTags.CRIMSON_SPIKE));
     }
 
     @Override
