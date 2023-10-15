@@ -1,12 +1,15 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.util.math.Int3;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -81,8 +84,10 @@ public class LivingCrimsonSpikeBlock extends CrimsonSpikeBlock implements Living
         }
 
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-        // TODO
-
+        Direction facing = state.get(Properties.FACING);
+        Int3 dir = new Int3(facing.getOffsetX(), facing.getOffsetY(), facing.getOffsetZ());
+        SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
+                waterAmount, false, true, false, dir);
         return true;
     }
 }

@@ -78,8 +78,10 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
             int waterAmount = WaterReactionManager.absorbWater(world, blockPos);
             if (sporeType == AetherSporeType.VERDANT) {
                 SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
-                        true,
-                        true, false);
+                        true, true, false);
+            } else if (sporeType == AetherSporeType.CRIMSON) {
+                SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
+                        true, true, false);
             }
         } else if (blockState.isOf(Blocks.WATER_CAULDRON)) {
             int waterAmount =
@@ -92,11 +94,18 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
                 if (stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) || stateAbove.isIn(
                         ModBlockTags.SPORES_CAN_BREAK)) {
                     SporeGrowthSpawner.spawnVerdantSporeGrowth(world, posAbove.toCenterPos(),
-                            SPORE_AMOUNT,
-                            waterAmount, true,
-                            true, false);
+                            SPORE_AMOUNT, waterAmount, true, true, false);
+                }
+            } else if (sporeType == AetherSporeType.CRIMSON) {
+                BlockPos posAbove = blockPos.up();
+                BlockState stateAbove = world.getBlockState(posAbove);
+                if (stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) || stateAbove.isIn(
+                        ModBlockTags.SPORES_CAN_BREAK)) {
+                    SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, posAbove.toCenterPos(),
+                            SPORE_AMOUNT, waterAmount, true, true, false);
                 }
             }
+
         }
     }
 

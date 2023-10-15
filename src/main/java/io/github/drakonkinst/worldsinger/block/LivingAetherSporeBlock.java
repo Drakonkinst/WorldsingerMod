@@ -57,6 +57,9 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
         if (aetherSporeType == AetherSporeType.VERDANT) {
             SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
                     waterAmount, true, false, false);
+        } else if (aetherSporeType == AetherSporeType.CRIMSON) {
+            SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
+                    waterAmount, true, false, false);
         }
         return true;
     }

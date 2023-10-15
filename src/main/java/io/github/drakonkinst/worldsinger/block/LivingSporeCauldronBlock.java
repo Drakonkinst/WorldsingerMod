@@ -10,6 +10,7 @@ import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
@@ -51,10 +52,14 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
             return false;
         }
         world.setBlockState(pos, Blocks.CAULDRON.getStateWithProperties(state));
+        Vec3d spawnPos = posAbove.toCenterPos();
+        int catalyzeValue = CATALYZE_VALUE_PER_LEVEL * state.get(LEVEL);
         if (sporeType == AetherSporeType.VERDANT) {
-            SporeGrowthSpawner.spawnVerdantSporeGrowth(world, posAbove.toCenterPos(),
-                    CATALYZE_VALUE_PER_LEVEL * state.get(LEVEL),
-                    waterAmount, true, false, false);
+            SporeGrowthSpawner.spawnVerdantSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
+                    true, false, false);
+        } else if (sporeType == AetherSporeType.CRIMSON) {
+            SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
+                    true, false, false);
         }
         return true;
     }

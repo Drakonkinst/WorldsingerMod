@@ -1,9 +1,9 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -44,8 +44,8 @@ public abstract class CrimsonSporeFluid extends LivingAetherSporeFluid {
     @Override
     protected void doWaterReaction(World world, BlockPos pos, FluidState state, int sporeAmount,
             int waterAmount, Random random) {
-        // TODO
-        Worldsinger.LOGGER.info("Crimson spore water reaction");
+        SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), sporeAmount,
+                waterAmount, true, false, false);
     }
 
     public static class Flowing extends CrimsonSporeFluid {

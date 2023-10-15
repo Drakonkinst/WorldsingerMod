@@ -95,7 +95,8 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
                     entity.getWidth() * entity.getHeight() * WATER_PER_ENTITY_BLOCK);
             Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
                     ModFluidTags.CRIMSON_SPORES);
-            // TODO: Spawn spore growth
+            SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, startPos,
+                    LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false, false);
         }
     }
 

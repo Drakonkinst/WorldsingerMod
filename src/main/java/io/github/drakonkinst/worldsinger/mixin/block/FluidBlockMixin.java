@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.LivingAetherSporeFluid;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
@@ -42,17 +43,27 @@ public abstract class FluidBlockMixin {
     @Inject(method = "receiveNeighborFluids", at = @At("TAIL"), cancellable = true)
     private void addSporeFluidWaterInteraction(World world, BlockPos pos, BlockState state,
             CallbackInfoReturnable<Boolean> cir) {
-        if (!(fluid instanceof LivingAetherSporeFluid)) {
+        if (!(fluid instanceof LivingAetherSporeFluid sporeFluid)) {
             return;
         }
+
+        AetherSporeType sporeType = sporeFluid.getSporeType();
 
         for (Direction direction : FLOW_DIRECTIONS) {
             BlockPos neighborPos = pos.offset(direction.getOpposite());
             if (world.getFluidState(neighborPos).isIn(FluidTags.WATER)) {
                 WaterReactionManager.catalyzeAroundWater(world, neighborPos);
-                world.setBlockState(neighborPos,
-                        ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
-                                .with(ModProperties.CATALYZED, true));
+
+                if (sporeType == AetherSporeType.VERDANT) {
+                    world.setBlockState(neighborPos,
+                            ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
+                                    .with(ModProperties.CATALYZED, true));
+                } else if (sporeType == AetherSporeType.CRIMSON) {
+                    world.setBlockState(neighborPos,
+                            ModBlocks.CRIMSON_GROWTH.getDefaultState()
+                                    .with(ModProperties.CATALYZED, true));
+                }
+
                 cir.setReturnValue(false);
                 return;
             }

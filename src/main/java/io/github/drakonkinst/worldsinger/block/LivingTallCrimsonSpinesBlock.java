@@ -1,7 +1,9 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.util.math.Int3;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
@@ -18,6 +20,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock implements
         LivingSporeGrowthBlock {
+
+    public static final int RECATALYZE_VALUE = 75;
 
     public LivingTallCrimsonSpinesBlock(Settings settings) {
         super(settings);
@@ -93,7 +97,8 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
         }
 
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-        // TODO
+        SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
+                waterAmount, false, true, false, Int3.UP);
 
         return true;
     }

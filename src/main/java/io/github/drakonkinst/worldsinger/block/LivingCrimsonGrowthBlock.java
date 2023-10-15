@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -76,7 +77,8 @@ public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements Livi
         }
 
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-        // TODO
+        SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
+                waterAmount, false, false, false);
         return true;
     }
 

@@ -201,7 +201,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     private Int3 getNextDirectionForGrowthBlock(boolean allowPassthrough) {
         BlockPos currPos = this.getBlockPos();
         float minDistanceSq = Float.MAX_VALUE;
-        int minDistanceIndex = -1;
+        int minDistanceIndex = 0;
         World world = this.getWorld();
         BlockPos origin = sporeGrowthData.getOrigin();
         BlockPos.Mutable candidatePos = new BlockPos.Mutable();
@@ -209,11 +209,6 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
             Int3 direction = directionCandidates.get(i);
             candidatePos.set(currPos.getX() + direction.x(), currPos.getY() + direction.y(),
                     currPos.getZ() + direction.z());
-            BlockState candidateState = world.getBlockState(candidatePos);
-            if (!this.canBreakOrGrow(candidateState, true)) {
-                continue;
-            }
-
             float distanceSq = this.getDistanceSqToTargetDir(origin, candidatePos);
             if (distanceSq < minDistanceSq) {
                 minDistanceSq = distanceSq;
@@ -221,8 +216,13 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
             }
         }
 
+        Int3 minDistanceDirection = directionCandidates.get(minDistanceIndex);
+        BlockPos minDistancePos = currPos.add(minDistanceDirection.x(), minDistanceDirection.y(),
+                minDistanceDirection.z());
+        BlockState minDistanceState = world.getBlockState(minDistancePos);
+
         // Failed to find a valid direction, so just go randomly
-        if (minDistanceIndex < 0) {
+        if (!this.canBreakOrGrow(minDistanceState, true)) {
             this.resetTargetGrowthDirection();
             return super.getNextDirection(allowPassthrough);
         }
@@ -231,14 +231,13 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     private Int3 getNextDirectionForSpikeBlock(boolean allowPassthrough) {
-        // If cannot go in primary direction, turn into a splinter by advancing the stage
-
         BlockPos nextPos = this.getBlockPos()
                 .add(primaryDirection.x(), primaryDirection.y(), primaryDirection.z());
         BlockState nextState = this.getWorld().getBlockState(nextPos);
         if (this.canBreakOrGrow(nextState, allowPassthrough)) {
             return primaryDirection;
         } else {
+            // If entity cannot go in primary direction, turn into a splinter by advancing the stage
             sporeGrowthData.addStage(1);
             return Int3.ZERO;
         }
@@ -299,6 +298,9 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
                     && random.nextInt(3) == 0) {
                 sporeGrowthData.addStage(1);
             }
+        } else if (sporeGrowthData.getStage() == 2) {
+            // Add one beyond the max, effectively killing it
+            sporeGrowthData.addStage(1);
         }
         // TODO: Split branches
     }
@@ -391,7 +393,8 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
                 || state.isIn(ModBlockTags.CRIMSON_SNARE)
                 || state.isIn(ModBlockTags.TALL_CRIMSON_SPINES)
                 || state.isIn(ModBlockTags.CRIMSON_SPINES)
-                || (sporeGrowthData.getStage() == 0 && state.isIn(ModBlockTags.CRIMSON_SPIKE));
+                || (sporeGrowthData.getStage() == 0 && state.isIn(ModBlockTags.CRIMSON_SPIKE))
+                || (sporeGrowthData.getStage() == 2 && state.isIn(ModBlockTags.CRIMSON_SPIKE));
     }
 
     @Override
