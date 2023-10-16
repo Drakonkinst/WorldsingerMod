@@ -125,4 +125,17 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
     protected Block getStem() {
         return ModBlocks.TWISTING_VERDANT_VINES_PLANT;
     }
+
+    // Catalyze when waterlogged, common to all LivingSporeGrowthBlocks that implement Waterloggable
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState,
+            boolean moved) {
+        super.onStateReplaced(state, world, pos, newState, moved);
+        if (!state.isOf(newState.getBlock())) {
+            return;
+        }
+        if (!newState.get(ModProperties.CATALYZED) && newState.get(Properties.WATERLOGGED)) {
+            WaterReactionManager.catalyzeAroundWater(world, pos);
+        }
+    }
 }

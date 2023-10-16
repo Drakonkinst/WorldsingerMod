@@ -44,9 +44,9 @@ public abstract class MagmaBlockMixin extends Block {
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState,
             boolean moved) {
+        super.onStateReplaced(state, world, pos, newState, moved);
         BlockPos posAbove = pos.up();
         BlockState stateAbove = world.getBlockState(posAbove);
         AetherSporeFluidBlock.update(world, posAbove, stateAbove, newState);
-        super.onStateReplaced(state, world, pos, newState, moved);
     }
 }

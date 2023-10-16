@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -86,5 +87,18 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
     @Override
     protected Block getBud() {
         return ModBlocks.TWISTING_VERDANT_VINES;
+    }
+
+    // Catalyze when waterlogged, common to all LivingSporeGrowthBlocks that implement Waterloggable
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState,
+            boolean moved) {
+        super.onStateReplaced(state, world, pos, newState, moved);
+        if (!state.isOf(newState.getBlock())) {
+            return;
+        }
+        if (!newState.get(ModProperties.CATALYZED) && newState.get(Properties.WATERLOGGED)) {
+            WaterReactionManager.catalyzeAroundWater(world, pos);
+        }
     }
 }

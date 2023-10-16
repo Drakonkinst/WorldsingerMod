@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.world;
 import io.github.drakonkinst.worldsinger.block.WaterReactiveBlock;
 import io.github.drakonkinst.worldsinger.fluid.WaterReactiveFluid;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
+import io.github.drakonkinst.worldsinger.util.math.Int3;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -29,6 +30,9 @@ public final class WaterReactionManager {
     private static final int MAX_ITERATIONS = 129;
     private static final int MAX_DEPTH = 32;
 
+    private static final Int3[] SURROUNDING_AND_CENTER = {Int3.ZERO, Int3.UP, Int3.DOWN, Int3.NORTH,
+            Int3.SOUTH, Int3.EAST, Int3.WEST};
+
     private WaterReactionManager() {}
 
     public static void catalyzeAroundWater(World world, BlockPos waterPos) {
@@ -39,8 +43,8 @@ public final class WaterReactionManager {
 
         // Check for other blocks that can be catalyzed by this block
         List<Pair<BlockPos, WaterReactive>> neighborReactives = new ArrayList<>(6);
-        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            BlockPos neighborPos = waterPos.offset(direction);
+        for (Int3 direction : SURROUNDING_AND_CENTER) {
+            BlockPos neighborPos = waterPos.add(direction.x(), direction.y(), direction.z());
             BlockState neighborState = world.getBlockState(neighborPos);
             if (neighborState.getBlock() instanceof WaterReactiveBlock waterReactiveBlock
                     && waterReactiveBlock.canReactToWater(neighborPos, neighborState)) {
