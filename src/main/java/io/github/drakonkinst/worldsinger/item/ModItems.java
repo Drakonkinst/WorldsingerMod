@@ -127,7 +127,6 @@ public final class ModItems {
                     AetherSporeType.MIDNIGHT, new FabricItemSettings()
                     .maxCount(Items.SPLASH_POTION.getMaxCount())));
 
-
     public static final Item VERDANT_VINE = ModItems.register("verdant_vine",
             new Item(new FabricItemSettings().food(
                     new FoodComponent.Builder()
@@ -136,10 +135,14 @@ public final class ModItems {
                             .saturationModifier(0.3f)
                             .snack()
                             .build())));
+    public static final Item CRIMSON_SPINE = ModItems.register("crimson_spine",
+            new Item(new FabricItemSettings()));
     public static final Item SALT = ModItems.register("salt",
-            new SaltItem(new FabricItemSettings()));
+            new Item(new FabricItemSettings()));
+
+    // Silver
     public static final Item RAW_SILVER = ModItems.register("raw_silver",
-            new SaltItem(new FabricItemSettings()));
+            new Item(new FabricItemSettings()));
     public static final Item SILVER_INGOT = ModItems.register("silver_ingot",
             new Item(new FabricItemSettings()));
     public static final Item SILVER_NUGGET = ModItems.register("silver_nugget",
@@ -294,6 +297,8 @@ public final class ModItems {
             itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH);
             itemGroup.add(ModBlocks.VERDANT_VINE_SNARE);
             itemGroup.add(ModBlocks.TWISTING_VERDANT_VINES);
+            itemGroup.add(ModItems.VERDANT_VINE);
+            itemGroup.add(ModItems.CRIMSON_SPINE);
             itemGroup.add(ModItems.SALT);
             itemGroup.add(ModItems.SILVER_INGOT);
             itemGroup.add(ModItems.STEEL_INGOT);

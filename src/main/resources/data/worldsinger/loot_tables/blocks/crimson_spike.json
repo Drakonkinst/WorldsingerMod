@@ -10,7 +10,7 @@
           "children": [
             {
               "type": "minecraft:item",
-              "name": "worldsinger:verdant_vine_branch",
+              "name": "worldsinger:crimson_spike",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
@@ -29,7 +29,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "worldsinger:verdant_vine",
+              "name": "worldsinger:crimson_spine",
               "functions": [
                 {
                   "function": "minecraft:apply_bonus",
@@ -61,7 +61,7 @@
         },
         {
           "condition": "minecraft:block_state_property",
-          "block": "worldsinger:verdant_vine_branch",
+          "block": "worldsinger:crimson_spike",
           "properties": {
             "catalyzed": "true"
           }
@@ -69,5 +69,5 @@
       ]
     }
   ],
-  "random_sequence": "worldsinger:blocks/verdant_vine_branch"
+  "random_sequence": "worldsinger:blocks/crimson_spike"
 }
