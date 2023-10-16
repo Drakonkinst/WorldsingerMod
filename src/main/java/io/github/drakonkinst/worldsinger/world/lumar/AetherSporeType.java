@@ -32,6 +32,8 @@ public enum AetherSporeType implements StringIdentifiable {
     MIDNIGHT("midnight", 0x111111, 0x111111,
             () -> ModStatusEffects.MIDNIGHT_SPORES, () -> ModItems.MIDNIGHT_SPORES_BOTTLE);
 
+    public static final BasicCodec<AetherSporeType> CODEC = StringIdentifiable.createCodec(
+            AetherSporeType::values);
     private static final float MAX_COLOR_VALUE = 255.0f;
     private final String name;
     private final int color;
@@ -41,6 +43,7 @@ public enum AetherSporeType implements StringIdentifiable {
 
     AetherSporeType(String name, int color, int particleColor,
             Supplier<StatusEffect> statusEffect, Supplier<Item> bottledItem) {
+
         this.name = name;
         this.color = color;
         this.particleColor = particleColor;

@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
@@ -19,6 +20,8 @@ import org.jetbrains.annotations.Nullable;
 public class LivingVerdantVineBranchBlock extends VerdantVineBranchBlock implements
         LivingSporeGrowthBlock {
 
+    public static final MapCodec<LivingVerdantVineBranchBlock> CODEC = createCodec(
+            LivingVerdantVineBranchBlock::new);
     public static final int RECATALYZE_VALUE = 50;
 
     public LivingVerdantVineBranchBlock(Settings settings) {
@@ -100,5 +103,10 @@ public class LivingVerdantVineBranchBlock extends VerdantVineBranchBlock impleme
         if (!newState.get(ModProperties.CATALYZED) && newState.get(Properties.WATERLOGGED)) {
             WaterReactionManager.catalyzeAroundWater(world, pos);
         }
+    }
+
+    @Override
+    protected MapCodec<? extends LivingVerdantVineBranchBlock> getCodec() {
+        return CODEC;
     }
 }

@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 public class LivingVerdantVineBlock extends VerdantVineBlock implements
         LivingSporeGrowthBlock {
 
+    public static final MapCodec<LivingVerdantVineBlock> CODEC = createCodec(
+            LivingVerdantVineBlock::new);
     public static final int RECATALYZE_VALUE = 100;
 
     public static BlockPos getWaterNeighborPos(BlockView world, BlockPos pos) {
@@ -102,5 +105,10 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
     @Override
     public Block getDeadSporeBlock() {
         return ModBlocks.DEAD_VERDANT_VINE_BLOCK;
+    }
+
+    @Override
+    public MapCodec<? extends LivingVerdantVineBlock> getCodec() {
+        return CODEC;
     }
 }

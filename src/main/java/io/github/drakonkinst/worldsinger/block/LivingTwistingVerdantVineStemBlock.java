@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import net.minecraft.block.Block;
@@ -17,6 +18,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemBlock implements
         LivingSporeGrowthBlock {
+
+    public static final MapCodec<LivingTwistingVerdantVineStemBlock> CODEC = createCodec(
+            LivingTwistingVerdantVineStemBlock::new);
 
     public LivingTwistingVerdantVineStemBlock(Settings settings) {
         super(settings);
@@ -100,5 +104,10 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
         if (!newState.get(ModProperties.CATALYZED) && newState.get(Properties.WATERLOGGED)) {
             WaterReactionManager.catalyzeAroundWater(world, pos);
         }
+    }
+
+    @Override
+    protected MapCodec<? extends LivingTwistingVerdantVineStemBlock> getCodec() {
+        return CODEC;
     }
 }

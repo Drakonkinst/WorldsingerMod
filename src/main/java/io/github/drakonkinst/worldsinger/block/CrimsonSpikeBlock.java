@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
@@ -32,6 +33,8 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrowthBlock {
+
+    public static final MapCodec<CrimsonSpikeBlock> CODEC = createCodec(CrimsonSpikeBlock::new);
 
     private static final float MOVEMENT_THRESHOLD = 0.0003f;
     private static final double TIP_OFFSET = 5.0;
@@ -311,5 +314,10 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
                 Properties.WATERLOGGED,
                 ModProperties.DISCRETE_THICKNESS
         );
+    }
+
+    @Override
+    protected MapCodec<? extends CrimsonSpikeBlock> getCodec() {
+        return CODEC;
     }
 }

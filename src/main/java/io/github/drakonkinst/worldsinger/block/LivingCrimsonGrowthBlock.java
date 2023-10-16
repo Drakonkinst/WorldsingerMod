@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
@@ -17,6 +18,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements LivingSporeGrowthBlock {
 
+    public static final MapCodec<LivingCrimsonGrowthBlock> CODEC = createCodec(
+            LivingCrimsonGrowthBlock::new);
     public static final int RECATALYZE_VALUE = 100;
 
     public LivingCrimsonGrowthBlock(Settings settings) {
@@ -85,5 +88,10 @@ public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements Livi
     @Override
     public Block getDeadSporeBlock() {
         return ModBlocks.DEAD_CRIMSON_GROWTH;
+    }
+
+    @Override
+    protected MapCodec<? extends LivingCrimsonGrowthBlock> getCodec() {
+        return CODEC;
     }
 }

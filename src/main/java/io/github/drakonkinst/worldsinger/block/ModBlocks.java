@@ -17,6 +17,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.intprovider.ConstantIntProvider;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 public final class ModBlocks {
 
@@ -327,10 +329,11 @@ public final class ModBlocks {
                     .sounds(BlockSoundGroup.NETHERRACK)
             ), true);
     public static final Block SALTSTONE_SALT_ORE = register("saltstone_salt_ore",
-            new ExperienceDroppingBlock(FabricBlockSettings.create()
-                    .requiresTool()
-                    // Slightly easier to break than Nether Gold Ore
-                    .strength(2.5f, 3.0f)
+            new ExperienceDroppingBlock(UniformIntProvider.create(0, 2),
+                    FabricBlockSettings.create()
+                            .requiresTool()
+                            // Slightly easier to break than Nether Gold Ore
+                            .strength(2.5f, 3.0f)
             ), true);
     public static final Block SALT_BLOCK = register("salt_block", new Block(
             FabricBlockSettings.create()
@@ -340,13 +343,13 @@ public final class ModBlocks {
                     .sounds(BlockSoundGroup.CALCITE)
     ), true);
     public static final Block SILVER_ORE = register("silver_ore",
-            new ExperienceDroppingBlock(FabricBlockSettings.create()
+            new ExperienceDroppingBlock(ConstantIntProvider.create(0), FabricBlockSettings.create()
                     .requiresTool()
                     // Equal to Gold Ore
                     .strength(3.0f, 3.0f)
             ), true);
     public static final Block DEEPSLATE_SILVER_ORE = register("deepslate_silver_ore",
-            new ExperienceDroppingBlock(FabricBlockSettings.create()
+            new ExperienceDroppingBlock(ConstantIntProvider.create(0), FabricBlockSettings.create()
                     .requiresTool()
                     // Equal to Deepslate Gold Ore
                     .strength(4.5f, 3.0f)

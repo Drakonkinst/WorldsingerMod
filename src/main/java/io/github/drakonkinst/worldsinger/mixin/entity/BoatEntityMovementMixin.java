@@ -15,10 +15,10 @@ import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.BoatEntity.Location;
+import net.minecraft.entity.vehicle.VehicleEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -43,7 +43,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BoatEntity.class)
-public abstract class BoatEntityMovementMixin extends Entity {
+public abstract class BoatEntityMovementMixin extends VehicleEntity {
 
     @Unique
     private static final double MAX_FLUID_HEIGHT_TO_NOT_EMBED = 0.05;

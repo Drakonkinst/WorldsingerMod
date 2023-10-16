@@ -1,5 +1,7 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
@@ -29,6 +31,14 @@ import net.minecraft.world.WorldEvents;
 import org.jetbrains.annotations.Nullable;
 
 public class AetherSporeBlock extends FallingBlock implements FluidDrainable, SporeEmitting {
+
+    public static final MapCodec<AetherSporeBlock> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    AetherSporeType.CODEC.fieldOf("sporeType")
+                            .forGetter(AetherSporeBlock::getSporeType),
+                    Block.CODEC.fieldOf("block").forGetter(AetherSporeBlock::getFluidizedBlock),
+                    createSettingsCodec()
+            ).apply(instance, AetherSporeBlock::new));
 
     protected final AetherSporeType aetherSporeType;
     private final Block fluidizedBlock;
@@ -151,5 +161,10 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     @Override
     public AetherSporeType getSporeType() {
         return aetherSporeType;
+    }
+
+    @Override
+    protected MapCodec<? extends AetherSporeBlock> getCodec() {
+        return CODEC;
     }
 }

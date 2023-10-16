@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PillarBlock;
@@ -12,6 +13,8 @@ import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.Nullable;
 
 public class VerdantVineBlock extends PillarBlock implements SporeGrowthBlock {
+
+    public static final MapCodec<VerdantVineBlock> CODEC = createCodec(VerdantVineBlock::new);
 
     public VerdantVineBlock(Settings settings) {
         super(settings);
@@ -46,5 +49,10 @@ public class VerdantVineBlock extends PillarBlock implements SporeGrowthBlock {
         if (SporeGrowthBlock.canDecay(world, pos, state, random)) {
             world.breakBlock(pos, true);
         }
+    }
+
+    @Override
+    public MapCodec<? extends VerdantVineBlock> getCodec() {
+        return CODEC;
     }
 }

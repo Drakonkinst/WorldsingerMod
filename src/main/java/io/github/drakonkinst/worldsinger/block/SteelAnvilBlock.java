@@ -1,10 +1,14 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class SteelAnvilBlock extends AnvilBlock {
+
+    // Unused Codec
+    public static final MapCodec<SteelAnvilBlock> CODEC = createCodec(SteelAnvilBlock::new);
 
     public SteelAnvilBlock(Settings settings) {
         super(settings);
@@ -22,4 +26,9 @@ public class SteelAnvilBlock extends AnvilBlock {
         }
         return null;
     }
+
+    // @Override
+    // public MapCodec<AnvilBlock> getCodec() {
+    //     return CODEC;
+    // }
 }

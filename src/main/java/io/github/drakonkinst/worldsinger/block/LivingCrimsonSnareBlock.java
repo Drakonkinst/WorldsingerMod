@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
@@ -18,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class LivingCrimsonSnareBlock extends CrimsonSnareBlock implements LivingSporeGrowthBlock {
 
+    public static final MapCodec<LivingCrimsonSnareBlock> CODEC = createCodec(
+            LivingCrimsonSnareBlock::new);
     public static final int RECATALYZE_VALUE = 50;
 
     public LivingCrimsonSnareBlock(Settings settings) {
@@ -100,5 +103,10 @@ public class LivingCrimsonSnareBlock extends CrimsonSnareBlock implements Living
         if (!newState.get(ModProperties.CATALYZED) && newState.get(Properties.WATERLOGGED)) {
             WaterReactionManager.catalyzeAroundWater(world, pos);
         }
+    }
+
+    @Override
+    protected MapCodec<? extends LivingCrimsonSnareBlock> getCodec() {
+        return CODEC;
     }
 }

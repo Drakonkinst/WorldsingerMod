@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock implements
         LivingSporeGrowthBlock {
 
+    public static final MapCodec<LivingTallCrimsonSpinesBlock> CODEC = createCodec(
+            LivingTallCrimsonSpinesBlock::new);
     public static final int RECATALYZE_VALUE = 50;
 
     public LivingTallCrimsonSpinesBlock(Settings settings) {
@@ -114,5 +117,10 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
         if (!newState.get(ModProperties.CATALYZED) && newState.get(Properties.WATERLOGGED)) {
             WaterReactionManager.catalyzeAroundWater(world, pos);
         }
+    }
+
+    @Override
+    protected MapCodec<? extends LivingTallCrimsonSpinesBlock> getCodec() {
+        return CODEC;
     }
 }

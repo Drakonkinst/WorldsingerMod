@@ -1,27 +1,39 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
-import java.util.Map;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.cauldron.CauldronBehavior;
+import net.minecraft.block.cauldron.CauldronBehavior.CauldronBehaviorMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldView;
+import net.minecraft.world.biome.Biome.Precipitation;
 
 public class SporeCauldronBlock extends LeveledCauldronBlock implements SporeEmitting {
+
+    // Unused Codec
+    public static final MapCodec<SporeCauldronBlock> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                            LeveledCauldronBlock.createSettingsCodec(),
+                            CauldronBehavior.CODEC.fieldOf("interactions")
+                                    .forGetter(block -> block.behaviorMap),
+                            AetherSporeType.CODEC.fieldOf("sporeType").forGetter(
+                                    SporeCauldronBlock::getSporeType))
+                    .apply(instance, SporeCauldronBlock::new));
 
     protected final AetherSporeType sporeType;
 
     public SporeCauldronBlock(Settings settings,
-            Map<Item, CauldronBehavior> behaviorMap, AetherSporeType sporeType) {
-        super(settings, precipitation -> false, behaviorMap);
+            CauldronBehaviorMap behaviorMap, AetherSporeType sporeType) {
+        super(Precipitation.NONE, behaviorMap, settings);
         this.sporeType = sporeType;
     }
 
@@ -50,7 +62,7 @@ public class SporeCauldronBlock extends LeveledCauldronBlock implements SporeEmi
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state) {
         return Items.CAULDRON.getDefaultStack();
     }
 
@@ -58,4 +70,9 @@ public class SporeCauldronBlock extends LeveledCauldronBlock implements SporeEmi
     public AetherSporeType getSporeType() {
         return sporeType;
     }
+
+    // @Override
+    // public MapCodec<LeveledCauldronBlock> getCodec() {
+    //     return super.getCodec();
+    // }
 }

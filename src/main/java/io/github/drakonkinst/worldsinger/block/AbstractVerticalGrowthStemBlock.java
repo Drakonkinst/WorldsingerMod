@@ -6,8 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
 
 // Represents middle blocks of a vertical growth.
 public abstract class AbstractVerticalGrowthStemBlock extends
@@ -38,7 +38,7 @@ public abstract class AbstractVerticalGrowthStemBlock extends
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state) {
         return new ItemStack(this.getBud());
     }
 

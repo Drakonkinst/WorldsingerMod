@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,6 +20,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock implements
         Waterloggable, SporeGrowthBlock {
+
+    public static final MapCodec<TwistingVerdantVineBlock> CODEC = createCodec(
+            TwistingVerdantVineBlock::new);
 
     private static final VoxelShape SHAPE = VoxelShapeUtil.createUpwardsCuboid(4.0, 0.0, 15.0);
 
@@ -98,5 +102,10 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
                 neighborPos).with(Properties.PERSISTENT, state.get(Properties.PERSISTENT));
+    }
+
+    @Override
+    protected MapCodec<? extends TwistingVerdantVineBlock> getCodec() {
+        return CODEC;
     }
 }

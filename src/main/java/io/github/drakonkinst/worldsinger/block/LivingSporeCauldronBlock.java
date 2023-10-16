@@ -1,13 +1,15 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
-import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.cauldron.CauldronBehavior;
-import net.minecraft.item.Item;
+import net.minecraft.block.cauldron.CauldronBehavior.CauldronBehaviorMap;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -17,9 +19,18 @@ import net.minecraft.world.World;
 public class LivingSporeCauldronBlock extends SporeCauldronBlock implements SporeKillable,
         WaterReactiveBlock {
 
+    // Unused Codec
+    public static final MapCodec<LivingSporeCauldronBlock> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                            LeveledCauldronBlock.createSettingsCodec(),
+                            CauldronBehavior.CODEC.fieldOf("interactions")
+                                    .forGetter(block -> block.behaviorMap),
+                            AetherSporeType.CODEC.fieldOf("sporeType").forGetter(
+                                    LivingSporeCauldronBlock::getSporeType))
+                    .apply(instance, LivingSporeCauldronBlock::new));
     private static final int CATALYZE_VALUE_PER_LEVEL = 80;
 
-    public LivingSporeCauldronBlock(Settings settings, Map<Item, CauldronBehavior> behaviorMap,
+    public LivingSporeCauldronBlock(Settings settings, CauldronBehaviorMap behaviorMap,
             AetherSporeType sporeType) {
         super(settings, behaviorMap, sporeType);
     }

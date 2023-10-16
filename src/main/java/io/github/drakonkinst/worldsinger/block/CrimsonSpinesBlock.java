@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
@@ -31,7 +32,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGrowthBlock {
 
-    private static VoxelShape[] SHAPES = VoxelShapeUtil.createDirectionAlignedShapes(2.0, 0.0,
+    public static final MapCodec<CrimsonSpinesBlock> CODEC = createCodec(CrimsonSpinesBlock::new);
+    private static final VoxelShape[] SHAPES = VoxelShapeUtil.createDirectionAlignedShapes(2.0, 0.0,
             11.0);
 
     public CrimsonSpinesBlock(Settings settings) {
@@ -144,5 +146,10 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
                 neighborPos);
+    }
+
+    @Override
+    protected MapCodec<? extends CrimsonSpinesBlock> getCodec() {
+        return CODEC;
     }
 }

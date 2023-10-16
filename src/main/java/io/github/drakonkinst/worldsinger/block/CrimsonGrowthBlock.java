@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -11,6 +12,8 @@ import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.Nullable;
 
 public class CrimsonGrowthBlock extends Block implements SporeGrowthBlock {
+
+    public static final MapCodec<CrimsonGrowthBlock> CODEC = createCodec(CrimsonGrowthBlock::new);
 
     public CrimsonGrowthBlock(Settings settings) {
         super(settings);
@@ -45,5 +48,10 @@ public class CrimsonGrowthBlock extends Block implements SporeGrowthBlock {
         if (SporeGrowthBlock.canDecay(world, pos, state, random)) {
             world.breakBlock(pos, true);
         }
+    }
+
+    @Override
+    protected MapCodec<? extends CrimsonGrowthBlock> getCodec() {
+        return CODEC;
     }
 }

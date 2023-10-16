@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
@@ -38,6 +39,9 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 public class TallCrimsonSpinesBlock extends Block implements Waterloggable, SporeGrowthBlock {
+
+    public static final MapCodec<TallCrimsonSpinesBlock> CODEC = createCodec(
+            TallCrimsonSpinesBlock::new);
 
     private static final double OFFSET = 3.0;
     private static final VoxelShape SHAPE_LOWER = VoxelShapeUtil.createOffsetCuboid(OFFSET, 0.0);
@@ -168,7 +172,7 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         if (!world.isClient()) {
             if (player.isCreative()) {
                 // Destroy bottom half without dropping an item
@@ -194,7 +198,7 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
                 Block.dropStacks(state, world, pos, null, player, player.getMainHandStack());
             }
         }
-        super.onBreak(world, pos, state, player);
+        return super.onBreak(world, pos, state, player);
     }
 
     @Override
@@ -244,5 +248,10 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
         super.appendProperties(builder);
         builder.add(Properties.PERSISTENT, Properties.WATERLOGGED,
                 Properties.DOUBLE_BLOCK_HALF);
+    }
+
+    @Override
+    protected MapCodec<? extends TallCrimsonSpinesBlock> getCodec() {
+        return CODEC;
     }
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.cauldron.CauldronBehavior;
+import net.minecraft.block.cauldron.CauldronBehavior.CauldronBehaviorMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
@@ -18,9 +19,12 @@ import net.minecraft.world.event.GameEvent;
 
 public final class ModCauldronBehaviors {
 
-    public static final Map<Item, CauldronBehavior> DEAD_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
-    public static final Map<Item, CauldronBehavior> VERDANT_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
-    public static final Map<Item, CauldronBehavior> CRIMSON_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap();
+    public static final CauldronBehaviorMap DEAD_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap(
+            "dead_spores");
+    public static final CauldronBehaviorMap VERDANT_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap(
+            "verdant_spores");
+    public static final CauldronBehaviorMap CRIMSON_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap(
+            "crimson_spores");
 
     public static final CauldronBehavior FILL_WITH_DEAD_SPORES = new FillWithFluidCauldronBehavior(
             () -> ModBlocks.DEAD_SPORE_CAULDRON);
@@ -38,15 +42,21 @@ public final class ModCauldronBehaviors {
         ModCauldronBehaviors.registerExtraBucketBehavior(CauldronBehavior.LAVA_CAULDRON_BEHAVIOR);
         ModCauldronBehaviors.registerExtraBucketBehavior(
                 CauldronBehavior.POWDER_SNOW_CAULDRON_BEHAVIOR);
-        ModCauldronBehaviors.registerSporeBucket(DEAD_SPORE_CAULDRON_BEHAVIOR,
+        ModCauldronBehaviors.registerSporeBucket(ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR,
                 ModBlocks.DEAD_SPORE_CAULDRON,
                 ModItems.DEAD_SPORES_BUCKET, ModItems.DEAD_SPORES_BOTTLE);
-        ModCauldronBehaviors.registerSporeBucket(VERDANT_SPORE_CAULDRON_BEHAVIOR,
+        ModCauldronBehaviors.registerSporeBucket(
+                ModCauldronBehaviors.VERDANT_SPORE_CAULDRON_BEHAVIOR,
                 ModBlocks.VERDANT_SPORE_CAULDRON,
                 ModItems.VERDANT_SPORES_BUCKET, ModItems.VERDANT_SPORES_BOTTLE);
-        ModCauldronBehaviors.registerSporeBucket(CRIMSON_SPORE_CAULDRON_BEHAVIOR,
+        ModCauldronBehaviors.registerSporeBucket(
+                ModCauldronBehaviors.CRIMSON_SPORE_CAULDRON_BEHAVIOR,
                 ModBlocks.CRIMSON_SPORE_CAULDRON,
                 ModItems.CRIMSON_SPORES_BUCKET, ModItems.CRIMSON_SPORES_BOTTLE);
+    }
+
+    private static void registerExtraBucketBehavior(CauldronBehaviorMap behavior) {
+        ModCauldronBehaviors.registerExtraBucketBehavior(behavior.map());
     }
 
     private static void registerExtraBucketBehavior(Map<Item, CauldronBehavior> behavior) {
@@ -55,11 +65,17 @@ public final class ModCauldronBehaviors {
         behavior.put(ModItems.CRIMSON_SPORES_BUCKET, ModCauldronBehaviors.FILL_WITH_CRIMSON_SPORES);
     }
 
+    private static void registerSporeBucket(CauldronBehaviorMap behavior,
+            Block cauldronBlock, Item bucketItem, Item bottledItem) {
+        ModCauldronBehaviors.registerSporeBucket(behavior.map(), cauldronBlock, bucketItem,
+                bottledItem);
+    }
+
     private static void registerSporeBucket(Map<Item, CauldronBehavior> behavior,
             Block cauldronBlock, Item bucketItem, Item bottledItem) {
         CauldronBehavior.registerBucketBehavior(behavior);
         ModCauldronBehaviors.registerExtraBucketBehavior(behavior);
-        CauldronBehavior.EMPTY_CAULDRON_BEHAVIOR.put(bottledItem,
+        CauldronBehavior.EMPTY_CAULDRON_BEHAVIOR.map().put(bottledItem,
                 (state, world, pos, player, hand, stack) -> {
                     if (!world.isClient) {
                         Item item = stack.getItem();

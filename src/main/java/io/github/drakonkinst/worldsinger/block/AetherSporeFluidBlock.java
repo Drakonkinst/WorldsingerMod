@@ -1,8 +1,11 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.mixin.accessor.FluidBlockAccessor;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
@@ -28,6 +31,17 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
 public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
+
+    // Unused Codec
+    public static final MapCodec<AetherSporeFluidBlock> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    FluidBlockAccessor.worldsinger$getFluidCodec().fieldOf("fluid")
+                            .forGetter(
+                                    block -> block.fluid),
+                    AetherSporeType.CODEC.fieldOf("sporeType")
+                            .forGetter(AetherSporeFluidBlock::getSporeType),
+                    createSettingsCodec()
+            ).apply(instance, AetherSporeFluidBlock::new));
 
     protected final AetherSporeType aetherSporeType;
     private Block solidBlock = null;
@@ -214,4 +228,10 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
     public void setSolidBlock(Block block) {
         this.solidBlock = block;
     }
+
+    // Due to how FluidBlock is implemented, can't return the right type here.
+    // @Override
+    // public MapCodec<? extends AetherSporeFluidBlock> getCodec() {
+    //     return CODEC;
+    // }
 }

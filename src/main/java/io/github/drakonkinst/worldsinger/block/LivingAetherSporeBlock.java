@@ -1,5 +1,7 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
@@ -15,6 +17,15 @@ import net.minecraft.world.WorldAccess;
 
 public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKillable,
         WaterReactiveBlock {
+
+    public static final MapCodec<LivingAetherSporeBlock> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    AetherSporeType.CODEC.fieldOf("sporeType")
+                            .forGetter(LivingAetherSporeBlock::getSporeType),
+                    Block.CODEC.fieldOf("block")
+                            .forGetter(LivingAetherSporeBlock::getFluidizedBlock),
+                    createSettingsCodec()
+            ).apply(instance, LivingAetherSporeBlock::new));
 
     public static final int CATALYZE_VALUE = 250;
 
@@ -80,5 +91,10 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     @Override
     public Block getDeadSporeBlock() {
         return ModBlocks.DEAD_SPORE_BLOCK;
+    }
+
+    @Override
+    protected MapCodec<? extends LivingAetherSporeBlock> getCodec() {
+        return CODEC;
     }
 }

@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -22,6 +23,9 @@ import net.minecraft.world.WorldView;
 
 public class VerdantVineBranchBlock extends ConnectingBlock implements Waterloggable,
         SporeGrowthBlock {
+
+    public static final MapCodec<VerdantVineBranchBlock> CODEC = createCodec(
+            VerdantVineBranchBlock::new);
 
     private static final float RADIUS = 0.25f;
     private static final BooleanProperty[] DIRECTION_PROPERTIES = {DOWN, UP, NORTH, EAST, SOUTH,
@@ -159,5 +163,10 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
         if (SporeGrowthBlock.canDecay(world, pos, state, random)) {
             world.breakBlock(pos, true);
         }
+    }
+
+    @Override
+    protected MapCodec<? extends VerdantVineBranchBlock> getCodec() {
+        return CODEC;
     }
 }
