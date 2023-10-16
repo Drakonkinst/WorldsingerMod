@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock implements
         LivingSporeGrowthBlock {
 
-    public static final int RECATALYZE_VALUE = 75;
+    public static final int RECATALYZE_VALUE = 50;
 
     public LivingTallCrimsonSpinesBlock(Settings settings) {
         super(settings);

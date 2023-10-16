@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LivingCrimsonSnareBlock extends CrimsonSnareBlock implements LivingSporeGrowthBlock {
 
-    public static final int RECATALYZE_VALUE = 25;
+    public static final int RECATALYZE_VALUE = 50;
 
     public LivingCrimsonSnareBlock(Settings settings) {
         super(settings);

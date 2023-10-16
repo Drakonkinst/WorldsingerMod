@@ -39,7 +39,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     private static final int MAX_ATTEMPTS = 10;
     private static final float PARALLEL_THRESHOLD = 0.9f;
     private static final int NEXT_STAGE_WATER_THRESHOLD = 40;
-    private static final int NEXT_STAGE_SPORE_THRESHOLD = 75;
+    private static final int NEXT_STAGE_SPORE_THRESHOLD = 70;
 
     // Using the given cardinal direction as a basis, rotate up to 45 degrees in yaw or pitch.
     private static Vector3f randomizeDirectionFromCardinalDirection(Int3 cardinalDirection) {
@@ -384,7 +384,8 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
-        return state.isIn(ModBlockTags.SPORES_CAN_BREAK);
+        return state.isIn(ModBlockTags.SPORES_CAN_BREAK) || state.isIn(
+                ModBlockTags.ALL_VERDANT_VINES);
     }
 
     @Override
