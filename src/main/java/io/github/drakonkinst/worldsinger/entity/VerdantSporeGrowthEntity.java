@@ -344,11 +344,11 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         int spores = sporeGrowthData.getSpores();
 
         if (water > spores) {
-            return 2;
+            return 5;
         }
         if (water == spores) {
-            return 3;
+            return 7;
         }
-        return 4;
+        return 8;
     }
 }

@@ -8,6 +8,7 @@ import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.Block;
@@ -17,6 +18,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +42,9 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     private static final float PARALLEL_THRESHOLD = 0.9f;
     private static final int NEXT_STAGE_WATER_THRESHOLD = 40;
     private static final int NEXT_STAGE_SPORE_THRESHOLD = 70;
+    private static final int SPLIT_SPORE_MIN = 140;
+    private static final int SPLIT_WATER_MIN = 140;
+    private static final int SPLIT_AGE_MAX = 1;
 
     // Using the given cardinal direction as a basis, rotate up to 45 degrees in yaw or pitch.
     private static Vector3f randomizeDirectionFromCardinalDirection(Int3 cardinalDirection) {
@@ -281,12 +286,12 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         int spores = sporeGrowthData.getSpores();
 
         if (water > spores) {
-            return 2;
-        }
-        if (water == spores) {
             return 3;
         }
-        return 4;
+        if (water == spores) {
+            return 4;
+        }
+        return 5;
     }
 
     @Override
@@ -302,7 +307,25 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
             // Add one beyond the max, effectively killing it
             sporeGrowthData.addStage(1);
         }
-        // TODO: Split branches
+
+        // Split branches
+        if (sporeGrowthData.getSpores() >= SPLIT_SPORE_MIN
+                && sporeGrowthData.getWater() >= SPLIT_WATER_MIN
+                && sporeGrowthData.getAge() < SPLIT_AGE_MAX) {
+            this.createSplitBranch();
+        }
+    }
+
+    private void createSplitBranch() {
+        float proportion = 0.25f + random.nextFloat() * 0.25f;
+        int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
+        int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
+        Vec3d spawnPos = this.getBlockPos().toCenterPos();
+        SporeGrowthSpawner.spawnCrimsonSporeGrowth(this.getWorld(),
+                spawnPos, numSpores, numWater, sporeGrowthData.isInitialGrowth(),
+                sporeGrowthData.getStage() > 0, true, Int3.UP);
+        this.drainSpores(numSpores);
+        this.drainWater(numWater);
     }
 
     @Override
