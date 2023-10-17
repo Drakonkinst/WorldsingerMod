@@ -8,14 +8,18 @@ import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -346,7 +350,15 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
             this.attemptPlaceDecorators();
             this.attemptPlaceDecorators();
         }
-        // this.applySporeEffectToEntities(pos);
+
+        this.applySporeEffectToEntities(pos);
+    }
+
+    private void applySporeEffectToEntities(BlockPos pos) {
+        if (this.getWorld() instanceof ServerWorld world) {
+            SporeParticleManager.damageEntitiesInBox(world, AetherSporeType.CRIMSON,
+                    new Box(pos).expand(1.0), true);
+        }
     }
 
     private boolean attemptPlaceDecorators() {

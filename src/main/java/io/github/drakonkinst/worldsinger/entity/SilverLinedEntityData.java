@@ -6,7 +6,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.nbt.NbtCompound;
 
-// TODO: Not sure if this can apply to non-entities, so making it entity-specific for now
 public abstract class SilverLinedEntityData implements SilverLinedComponent {
 
     private static final String NBT_KEY = "SilverDurability";

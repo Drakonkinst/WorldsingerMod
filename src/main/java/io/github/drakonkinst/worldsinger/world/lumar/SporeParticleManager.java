@@ -124,7 +124,7 @@ public final class SporeParticleManager {
 
     public static void applySporeEffect(LivingEntity entity, StatusEffect statusEffect,
             int duration) {
-        entity.addStatusEffect(new StatusEffectInstance(statusEffect, duration, 0, true, false));
+        entity.addStatusEffect(new StatusEffectInstance(statusEffect, duration, 0, true, true));
     }
 
     private static void spawnVisualSporeParticles(ServerWorld world,
@@ -160,7 +160,7 @@ public final class SporeParticleManager {
         SporeParticleManager.damageEntitiesInBox(world, sporeType, box, false);
     }
 
-    private static void damageEntitiesInBox(ServerWorld world, AetherSporeType sporeType, Box box,
+    public static void damageEntitiesInBox(ServerWorld world, AetherSporeType sporeType, Box box,
             boolean useDistance) {
         if (sporeType == AetherSporeType.DEAD) {
             return;
@@ -184,7 +184,7 @@ public final class SporeParticleManager {
             if (useDistance) {
                 double distance = centerPos.distanceTo(entity.getPos());
                 duration = (int) Math.max(SPORE_EFFECT_DURATION_TICKS_MIN,
-                        duration - DISTANCE_MULTIPLIER * DISTANCE_MULTIPLIER);
+                        duration - distance * DISTANCE_MULTIPLIER);
             }
             applySporeEffect(entity, statusEffect,
                     duration);

@@ -36,7 +36,6 @@ public final class SporeKillingManager {
         int deadSporeFluidIndex = Fluidlogged.getFluidIndex(ModFluids.DEAD_SPORES);
 
         // Not sure if this is the right iteration method, but it works
-        // TODO: Add directional flags so that other blocks (aluminum) can block this effect)
         for (BlockPos currentPos : BlockPos.iterateOutwards(pos, radius, radius, radius)) {
             if (currentPos.equals(pos)) {
                 continue;
