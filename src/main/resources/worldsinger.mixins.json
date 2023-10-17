@@ -33,6 +33,7 @@
     "entity.FlyingEntityMixin",
     "entity.ItemEntityMixin",
     "entity.LivingEntityMixin",
+    "entity.MobEntityMixin",
     "entity.PersistentProjectileEntityMixin",
     "entity.PotionEntityMixin",
     "entity.ProjectileUtilMixin",

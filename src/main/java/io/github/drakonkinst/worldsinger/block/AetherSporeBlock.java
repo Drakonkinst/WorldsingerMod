@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -36,7 +37,8 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
             instance -> instance.group(
                     AetherSporeType.CODEC.fieldOf("sporeType")
                             .forGetter(AetherSporeBlock::getSporeType),
-                    Block.CODEC.fieldOf("block").forGetter(AetherSporeBlock::getFluidizedBlock),
+                    Registries.BLOCK.getCodec().fieldOf("block")
+                            .forGetter(AetherSporeBlock::getFluidizedBlock),
                     createSettingsCodec()
             ).apply(instance, AetherSporeBlock::new));
 

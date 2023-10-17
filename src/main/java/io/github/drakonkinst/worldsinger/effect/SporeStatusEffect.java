@@ -73,7 +73,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
             // Only spawn spore growth if in the spore sea
             if (!world.getFluidState(entity.getBlockPos()).isIn(ModFluidTags.VERDANT_SPORES)
-                    || !((SporeFluidEntityStateAccess) entity).worldsinger$isTouchingSporeSea()) {
+                    && !((SporeFluidEntityStateAccess) entity).worldsinger$isTouchingSporeSea()) {
                 return;
             }
 
@@ -88,7 +88,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
             // Only spawn spore growth if in the spore sea
             if (!world.getFluidState(entity.getBlockPos()).isIn(ModFluidTags.CRIMSON_SPORES)
-                    || !((SporeFluidEntityStateAccess) entity).worldsinger$isTouchingSporeSea()) {
+                    && !((SporeFluidEntityStateAccess) entity).worldsinger$isTouchingSporeSea()) {
                 return;
             }
             int waterAmount = MathHelper.ceil(
@@ -137,11 +137,10 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
             TagKey<Fluid> fluidTag) {
         BlockPos.Mutable mutable = entity.getBlockPos().mutableCopy();
 
-        do {
+        while (world.getFluidState(mutable).isIn(fluidTag)
+                && mutable.getY() < world.getTopY()) {
             mutable.move(Direction.UP);
         }
-        while (world.getFluidState(mutable).isIn(fluidTag)
-                && mutable.getY() < world.getTopY());
 
         if (world.getBlockState(mutable).isAir()) {
             // Found a good position, use it

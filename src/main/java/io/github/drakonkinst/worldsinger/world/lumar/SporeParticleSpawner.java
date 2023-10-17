@@ -22,7 +22,7 @@ public final class SporeParticleSpawner {
     // Sprinting on spores is dangerous
     private static final double FOOTSTEP_RADIUS_MULTIPLIER = 0.5;
     private static final double FOOTSTEP_HEIGHT_SPRINTING = 1.0;
-    private static final double FOOTSTEP_HEIGHT_WALKING = 0.5;
+    private static final double FOOTSTEP_HEIGHT_WALKING = 0.4;
     private static final double FOOTSTEP_HEIGHT_DEV = 1.0;
     private static final float FOOTSTEP_PARTICLE_SIZE_MULTIPLIER = 5.0f / 3.0f;
     private static final int FOOTSTEP_PARTICLE_COUNT = 5;
