@@ -56,9 +56,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
                 cardinalDirection.z());
         Vector3f randomUnitVector = generateRandomUnitVector(direction);
         Vector3f rotationAxis = randomUnitVector.cross(direction);
-        int rotationSign = random.nextInt(2) * 2 - 1;
-        float rotationAngle =
-                rotationSign * (random.nextFloat() * (MAX_ROTATION - MIN_ROTATION) + MIN_ROTATION);
+        float rotationAngle = random.nextFloat() * (MAX_ROTATION - MIN_ROTATION) + MIN_ROTATION;
         Quaternionfc rotation = new Quaternionf(
                 new AxisAngle4f(rotationAngle, rotationAxis.x(), rotationAxis.y(),
                         rotationAxis.z()));

@@ -28,41 +28,47 @@ public final class ModBlocks {
             new AetherSporeFluidBlock(ModFluids.DEAD_SPORES, AetherSporeType.DEAD,
                     FabricBlockSettings.create()
                             .strength(100.0f)
-                            .mapColor(MapColor.GRAY)
                             .replaceable()
                             .noCollision()
                             .pistonBehavior(PistonBehavior.DESTROY)
                             .dropsNothing()
                             .liquid()
+                            .mapColor(MapColor.GRAY)
                             .sounds(BlockSoundGroup.SAND)
             ), false);
     public static final Block DEAD_SPORE_BLOCK = register("dead_spore_block",
             new AetherSporeBlock(AetherSporeType.DEAD, ModBlocks.DEAD_SPORE_SEA_BLOCK,
                     FabricBlockSettings.create()
-                            // 0.5x strength of living version
+                            // Same as sand
                             .strength(0.5f)
                             .mapColor(MapColor.GRAY)
                             .sounds(BlockSoundGroup.SAND)
             ), false);
     public static final Block DEAD_SPORE_CAULDRON = register("dead_spore_cauldron",
             new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
-                    ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.DEAD
+                    ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR,
+                    AetherSporeType.DEAD
             ), false);
     public static final Block DEAD_VERDANT_VINE_BLOCK = register("dead_verdant_vine_block",
-            new VerdantVineBlock(
-                    FabricBlockSettings.create()
-                            // 0.5x strength of living version
-                            .strength(1.0f)
-                            .sounds(BlockSoundGroup.WOOD)
-                            .ticksRandomly()
+            new VerdantVineBlock(FabricBlockSettings.create()
+                    // 0.5x strength of living version
+                    .strength(1.0f)
+                    .requiresTool()
+                    .ticksRandomly()
+                    .mapColor(MapColor.LIGHT_GRAY)
+                    .sounds(BlockSoundGroup.WOOD)
             ), true);
     public static final Block DEAD_VERDANT_VINE_BRANCH = register("dead_verdant_vine_branch",
             new VerdantVineBranchBlock(
                     FabricBlockSettings.create()
                             // 0.5x strength of living version
                             .strength(0.4f)
+                            .solid()
+                            .requiresTool()
                             .nonOpaque()
                             .ticksRandomly()
+                            .mapColor(MapColor.LIGHT_GRAY)
+                            .sounds(BlockSoundGroup.WOOD)
             ), true);
     public static final Block DEAD_VERDANT_VINE_SNARE = register("dead_verdant_vine_snare",
             new VerdantVineSnareBlock(
@@ -73,6 +79,8 @@ public final class ModBlocks {
                             // 0.5x strength of living version
                             .strength(0.4f)
                             .ticksRandomly()
+                            .mapColor(MapColor.LIGHT_GRAY)
+                            .sounds(BlockSoundGroup.GRASS)
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), true);
     public static final Block DEAD_TWISTING_VERDANT_VINES = register("dead_twisting_verdant_vines",
@@ -81,8 +89,9 @@ public final class ModBlocks {
                             // 0.5x strength of living version
                             .strength(0.2f)
                             .noCollision()
-                            .sounds(BlockSoundGroup.WEEPING_VINES)
                             .ticksRandomly()
+                            .mapColor(MapColor.LIGHT_GRAY)
+                            .sounds(BlockSoundGroup.WEEPING_VINES)
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), true);
     public static final Block DEAD_TWISTING_VERDANT_VINES_PLANT = register(
@@ -92,235 +101,188 @@ public final class ModBlocks {
                             // 0.5x strength of living version
                             .strength(0.2f)
                             .noCollision()
-                            .sounds(BlockSoundGroup.WEEPING_VINES)
                             .ticksRandomly()
+                            .mapColor(MapColor.LIGHT_GRAY)
+                            .sounds(BlockSoundGroup.WEEPING_VINES)
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), false);
     public static final Block DEAD_CRIMSON_GROWTH = register("dead_crimson_growth",
             new CrimsonGrowthBlock(FabricBlockSettings.create()
-                    // TODO
-                    .strength(1.0f)
-                    .solid()
-                    .ticksRandomly()), true);
+                    // Same strength as coral block
+                    .strength(1.5f, 6.0f)
+                    .requiresTool()
+                    .ticksRandomly()
+                    .mapColor(MapColor.LIGHT_GRAY)
+                    .sounds(BlockSoundGroup.DRIPSTONE_BLOCK)
+            ), true);
     public static final Block DEAD_CRIMSON_SPIKE = register("dead_crimson_spike",
             new CrimsonSpikeBlock(
                     ModBlocks.createSettingsWithCustomOffsetter(CrimsonSpikeBlock.getOffsetter())
                             // Same strength as Pointed Dripstone
-                            // TODO: Change to be weaker
                             .strength(1.5f, 3.0f)
                             .solid()
-                            .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
                             .ticksRandomly()
                             .dynamicBounds()
-                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .requiresTool()
                             .solidBlock(Blocks::never)
+                            .mapColor(MapColor.LIGHT_GRAY)
+                            .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
+                            .pistonBehavior(PistonBehavior.DESTROY)
             ), true);
     public static final Block DEAD_CRIMSON_SNARE = register("dead_crimson_snare",
             new CrimsonSnareBlock(
                     FabricBlockSettings.create()
-                            // TODO: Change strength
-                            .strength(1.0f, 1.0f)
+                            // Same as Amethyst Bud
+                            .strength(1.5f)
                             .solid()
                             .requiresTool()
-                            .pistonBehavior(PistonBehavior.DESTROY)
-                            .solidBlock(Blocks::never)
-            ), true);
-    public static final Block DEAD_CRIMSON_SPINES = register("dead_crimson_spines",
-            new LivingCrimsonSpinesBlock(
-                    FabricBlockSettings.create()
-                            // TODO: Change strength
-                            .strength(1.0f, 1.0f)
-                            .solid()
-                            .noCollision()
-                            .nonOpaque()
-                            .ticksRandomly()
-                            .requiresTool()
+                            .mapColor(MapColor.LIGHT_GRAY)
+                            .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
                             .pistonBehavior(PistonBehavior.DESTROY)
             ), true);
     public static final Block DEAD_TALL_CRIMSON_SPINES = register("dead_tall_crimson_spines",
             new TallCrimsonSpinesBlock(
                     FabricBlockSettings.create()
-                            // TODO: Change strength
-                            .strength(1.5f, 3.0f)
+                            // Same as Amethyst Bud
+                            .strength(1.5f)
                             .solid()
                             .ticksRandomly()
                             .dynamicBounds()
-                            .pistonBehavior(PistonBehavior.DESTROY)
                             .offset(AbstractBlock.OffsetType.XZ)
-                            .solidBlock(Blocks::never)
+                            .mapColor(MapColor.LIGHT_GRAY)
+                            .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
+                            .pistonBehavior(PistonBehavior.DESTROY)
+            ), true);
+    public static final Block DEAD_CRIMSON_SPINES = register("dead_crimson_spines",
+            new LivingCrimsonSpinesBlock(
+                    FabricBlockSettings.create()
+                            // Same as Amethyst Bud
+                            .strength(1.5f)
+                            .solid()
+                            .noCollision()
+                            .ticksRandomly()
+                            .mapColor(MapColor.LIGHT_GRAY)
+                            .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
+                            .pistonBehavior(PistonBehavior.DESTROY)
             ), true);
 
     // Verdant Spores
     public static final Block VERDANT_SPORE_SEA_BLOCK = register("verdant_spore_sea_block",
             new LivingAetherSporeFluidBlock(ModFluids.VERDANT_SPORES, AetherSporeType.VERDANT,
-                    FabricBlockSettings.create()
-                            .strength(100.0f)
-                            .mapColor(MapColor.DARK_GREEN)
-                            .replaceable()
-                            .noCollision()
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_SEA_BLOCK)
                             .ticksRandomly()
-                            .pistonBehavior(PistonBehavior.DESTROY)
-                            .dropsNothing()
-                            .liquid()
-                            .sounds(BlockSoundGroup.SAND)
+                            .mapColor(MapColor.DARK_GREEN)
             ), false);
     public static final Block VERDANT_SPORE_BLOCK =
             register("verdant_spore_block",
                     new LivingAetherSporeBlock(AetherSporeType.VERDANT,
                             ModBlocks.VERDANT_SPORE_SEA_BLOCK,
-                            FabricBlockSettings.create()
-                                    .strength(0.5f)
-                                    .mapColor(MapColor.DARK_GREEN)
+                            FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
                                     .ticksRandomly()
-                                    .sounds(BlockSoundGroup.SAND)
+                                    .mapColor(MapColor.DARK_GREEN)
                     ), false);
     public static final Block VERDANT_SPORE_CAULDRON = register("verdant_spore_cauldron",
             new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)
                     .ticksRandomly(),
-                    ModCauldronBehaviors.VERDANT_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.VERDANT
+                    ModCauldronBehaviors.VERDANT_SPORE_CAULDRON_BEHAVIOR,
+                    AetherSporeType.VERDANT
             ), false);
     public static final Block VERDANT_VINE_BLOCK = register("verdant_vine_block",
-            new LivingVerdantVineBlock(
-                    FabricBlockSettings.create()
-                            // Same strength as log
-                            .strength(2.0f)
-                            .sounds(BlockSoundGroup.WOOD)
-                            .requiresTool()
-                            .ticksRandomly()
+            new LivingVerdantVineBlock(FabricBlockSettings.copyOf(ModBlocks.DEAD_VERDANT_VINE_BLOCK)
+                    // Same strength as log
+                    .strength(2.0f)
+                    .mapColor(MapColor.GREEN)
             ), true);
     public static final Block VERDANT_VINE_BRANCH = register(
             "verdant_vine_branch",
-            new LivingVerdantVineBranchBlock(
-                    FabricBlockSettings.create()
-                            // 2x the strength of Chorus Plant
-                            .strength(0.8f)
-                            .requiresTool()
-                            .nonOpaque()
-                            .ticksRandomly()
+            new LivingVerdantVineBranchBlock(FabricBlockSettings.copyOf(DEAD_VERDANT_VINE_BRANCH)
+                    // 2x the strength of Chorus Plant
+                    .strength(0.8f)
+                    .mapColor(MapColor.GREEN)
             ), true);
     public static final Block VERDANT_VINE_SNARE = register("verdant_vine_snare",
-            new LivingVerdantVineSnareBlock(
-                    FabricBlockSettings.create()
-                            .solid()
-                            .noCollision()
-                            .requiresTool()
-                            // Same strength as branch
-                            .strength(0.8f)
-                            .ticksRandomly()
-                            .pistonBehavior(PistonBehavior.DESTROY)
+            new LivingVerdantVineSnareBlock(FabricBlockSettings.copyOf(DEAD_VERDANT_VINE_SNARE)
+                    // Same strength as branch
+                    .strength(0.8f)
+                    .mapColor(MapColor.GREEN)
             ), true);
     public static final Block TWISTING_VERDANT_VINES = register("twisting_verdant_vines",
             new LivingTwistingVerdantVineBlock(
-                    FabricBlockSettings.create()
+                    FabricBlockSettings.copyOf(DEAD_TWISTING_VERDANT_VINES)
                             // Same strength as Ladder
                             .strength(0.4f)
-                            .noCollision()
-                            .sounds(BlockSoundGroup.WEEPING_VINES)
-                            .ticksRandomly()
-                            .pistonBehavior(PistonBehavior.DESTROY)),
-            true);
+                            .mapColor(MapColor.GREEN)
+            ), true);
     public static final Block TWISTING_VERDANT_VINES_PLANT = register(
             "twisting_verdant_vines_plant",
             new LivingTwistingVerdantVineStemBlock(
-                    FabricBlockSettings.create()
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT)
                             // Same strength as Twisting Verdant Vines
                             .strength(0.4f)
-                            .noCollision()
-                            .sounds(BlockSoundGroup.WEEPING_VINES)
-                            .ticksRandomly()
-                            .pistonBehavior(PistonBehavior.DESTROY)
+                            .mapColor(MapColor.GREEN)
             ), false);
 
     // Crimson Spores
     public static final Block CRIMSON_SPORE_SEA_BLOCK = register("crimson_spore_sea_block",
             new LivingAetherSporeFluidBlock(ModFluids.CRIMSON_SPORES, AetherSporeType.CRIMSON,
-                    FabricBlockSettings.create()
-                            .strength(100.0f)
-                            .mapColor(MapColor.DARK_RED)
-                            .replaceable()
-                            .noCollision()
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_SEA_BLOCK)
                             .ticksRandomly()
-                            .pistonBehavior(PistonBehavior.DESTROY)
-                            .dropsNothing()
-                            .liquid()
-                            .sounds(BlockSoundGroup.SAND)
+                            .mapColor(MapColor.DARK_RED)
             ), false);
     public static final Block CRIMSON_SPORE_BLOCK =
             register("crimson_spore_block",
                     new LivingAetherSporeBlock(AetherSporeType.CRIMSON,
                             ModBlocks.CRIMSON_SPORE_SEA_BLOCK,
-                            FabricBlockSettings.create()
-                                    .strength(0.5f)
-                                    .mapColor(MapColor.DARK_RED)
+                            FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
                                     .ticksRandomly()
-                                    .sounds(BlockSoundGroup.SAND)
+                                    .mapColor(MapColor.DARK_RED)
                     ), false);
     public static final Block CRIMSON_SPORE_CAULDRON = register("crimson_spore_cauldron",
-            new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
-                    ModCauldronBehaviors.CRIMSON_SPORE_CAULDRON_BEHAVIOR, AetherSporeType.CRIMSON
+            new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)
+                    .ticksRandomly(),
+                    ModCauldronBehaviors.CRIMSON_SPORE_CAULDRON_BEHAVIOR,
+                    AetherSporeType.CRIMSON
             ), false);
     public static final Block CRIMSON_GROWTH = register("crimson_growth",
-            new LivingCrimsonGrowthBlock(FabricBlockSettings.create()
-                    // TODO
-                    .strength(1.0f)
-                    .solid()
-                    .ticksRandomly()), true);
+            new LivingCrimsonGrowthBlock(FabricBlockSettings.copyOf(ModBlocks.DEAD_CRIMSON_GROWTH)
+                    // Double hardness, same resistance as dead version
+                    .strength(3.0f, 6.0f)
+                    .mapColor(MapColor.RED)
+            ), true);
     public static final Block CRIMSON_SPIKE = register("crimson_spike",
-            new LivingCrimsonSpikeBlock(
-                    ModBlocks.createSettingsWithCustomOffsetter(CrimsonSpikeBlock.getOffsetter())
-                            // Same strength as Pointed Dripstone
-                            .strength(1.5f, 3.0f)
-                            .solid()
-                            .mapColor(MapColor.DARK_RED)
-                            .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
-                            .ticksRandomly()
-                            .dynamicBounds()
-                            .pistonBehavior(PistonBehavior.DESTROY)
-                            .solidBlock(Blocks::never)
+            new LivingCrimsonSpikeBlock(FabricBlockSettings.copyOf(ModBlocks.DEAD_CRIMSON_SPIKE)
+                    // Double hardness, same resistance as dead version
+                    .strength(3.0f, 3.0f)
+                    .mapColor(MapColor.RED)
             ), true);
     public static final Block CRIMSON_SNARE = register("crimson_snare",
-            new LivingCrimsonSnareBlock(
-                    FabricBlockSettings.create()
-                            // TODO: Change strength
-                            .strength(1.0f, 1.0f)
-                            .solid()
-                            .requiresTool()
-                            .pistonBehavior(PistonBehavior.DESTROY)
-                            .solidBlock(Blocks::never)
-            ), true);
-    public static final Block CRIMSON_SPINES = register("crimson_spines",
-            new LivingCrimsonSpinesBlock(
-                    FabricBlockSettings.create()
-                            // TODO: Change strength
-                            .strength(1.0f, 1.0f)
-                            .solid()
-                            .noCollision()
-                            .nonOpaque()
-                            .ticksRandomly()
-                            .requiresTool()
-                            .pistonBehavior(PistonBehavior.DESTROY)
+            new LivingCrimsonSnareBlock(FabricBlockSettings.copyOf(ModBlocks.DEAD_CRIMSON_SNARE)
+                    // Slightly stronger than dead version
+                    .strength(2.0f)
+                    .mapColor(MapColor.RED)
             ), true);
     public static final Block TALL_CRIMSON_SPINES = register("tall_crimson_spines",
             new LivingTallCrimsonSpinesBlock(
-                    FabricBlockSettings.create()
-                            // TODO: Change strength
-                            .strength(1.5f, 3.0f)
-                            .solid()
-                            .ticksRandomly()
-                            .dynamicBounds()
-                            .offset(AbstractBlock.OffsetType.XZ)
-                            .pistonBehavior(PistonBehavior.DESTROY)
-                            .solidBlock(Blocks::never)
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_TALL_CRIMSON_SPINES)
+                            // Slightly stronger than dead version
+                            .strength(2.0f)
+                            .mapColor(MapColor.RED)
+            ), true);
+    public static final Block CRIMSON_SPINES = register("crimson_spines",
+            new LivingCrimsonSpinesBlock(FabricBlockSettings.copyOf(ModBlocks.DEAD_CRIMSON_SPINES)
+                    // Slightly stronger than dead version
+                    .strength(2.0f)
+                    .mapColor(MapColor.RED)
             ), true);
 
     // Other
     public static final Block MAGMA_VENT = register("magma_vent",
             new VentBlock(FabricBlockSettings.create()
-                    .mapColor(MapColor.DEEPSLATE_GRAY)
                     // Same strength as copper deepslate ore
                     .strength(4.5f, 3.0f)
-                    .requiresTool()),
-            true);
+                    .requiresTool()
+                    .mapColor(MapColor.DEEPSLATE_GRAY)
+            ), true);
     public static final Block SALTSTONE = register("saltstone",
             new Block(FabricBlockSettings.create()
                     .requiresTool()
@@ -334,6 +296,7 @@ public final class ModBlocks {
                             .requiresTool()
                             // Slightly easier to break than Nether Gold Ore
                             .strength(2.5f, 3.0f)
+                            .sounds(BlockSoundGroup.NETHERRACK)
             ), true);
     public static final Block SALT_BLOCK = register("salt_block", new Block(
             FabricBlockSettings.create()
@@ -353,6 +316,7 @@ public final class ModBlocks {
                     .requiresTool()
                     // Equal to Deepslate Gold Ore
                     .strength(4.5f, 3.0f)
+                    .sounds(BlockSoundGroup.DEEPSLATE)
             ), true);
     public static final Block SILVER_BLOCK = register("silver_block", new Block(
             FabricBlockSettings.create()
@@ -374,6 +338,7 @@ public final class ModBlocks {
                     .requiresTool()
                     // +1 strength of Iron Block, same blast resistance as End Stone
                     .strength(6.0f, 9.0f)
+                    .sounds(BlockSoundGroup.METAL)
     ), true);
     public static final Block STEEL_ANVIL = register("steel_anvil", new SteelAnvilBlock(
             FabricBlockSettings.create()
