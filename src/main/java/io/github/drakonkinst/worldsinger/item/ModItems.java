@@ -8,6 +8,7 @@ import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.block.Block;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.FlintAndSteelItem;
@@ -35,97 +36,52 @@ public final class ModItems {
 
     // Spore Buckets
     public static final Item DEAD_SPORES_BUCKET = ModItems.register("dead_spores_bucket",
-            new AetherSporeBucketItem(ModBlocks.DEAD_SPORE_BLOCK,
-                    SoundEvents.BLOCK_POWDER_SNOW_PLACE,
-                    new FabricItemSettings()
-                            .recipeRemainder(Items.BUCKET)
-                            .maxCount(1)));
-    public static final Item VERDANT_SPORES_BUCKET = ModItems.register(
-            "verdant_spores_bucket", new AetherSporeBucketItem(ModBlocks.VERDANT_SPORE_BLOCK,
-                    SoundEvents.BLOCK_POWDER_SNOW_PLACE,
-                    new FabricItemSettings()
-                            .recipeRemainder(Items.BUCKET)
-                            .maxCount(1)));
-    public static final Item CRIMSON_SPORES_BUCKET = ModItems.register(
-            "crimson_spores_bucket", new AetherSporeBucketItem(ModBlocks.CRIMSON_SPORE_BLOCK,
-                    SoundEvents.BLOCK_POWDER_SNOW_PLACE,
-                    new FabricItemSettings()
-                            .recipeRemainder(Items.BUCKET)
-                            .maxCount(1)));
+            createSporeBucketItem(ModBlocks.DEAD_SPORE_BLOCK));
+    public static final Item VERDANT_SPORES_BUCKET = ModItems.register("verdant_spores_bucket",
+            createSporeBucketItem(ModBlocks.VERDANT_SPORE_BLOCK));
+    public static final Item CRIMSON_SPORES_BUCKET = ModItems.register("crimson_spores_bucket",
+            createSporeBucketItem(ModBlocks.CRIMSON_SPORE_BLOCK));
+    public static final Item ZEPHYR_SPORES_BUCKET = ModItems.register("zephyr_spores_bucket",
+            createSporeBucketItem(ModBlocks.ZEPHYR_SPORE_BLOCK));
+    public static final Item SUNLIGHT_SPORES_BUCKET = ModItems.register("sunlight_spores_bucket",
+            createSporeBucketItem(ModBlocks.SUNLIGHT_SPORE_BLOCK));
 
     // Spore Bottles
     public static final Item DEAD_SPORES_BOTTLE = ModItems.register("dead_spores_bottle",
-            new SporeBottleItem(
-                    AetherSporeType.DEAD, new FabricItemSettings()
-                    .recipeRemainder(Items.GLASS_BOTTLE)
-                    .maxCount(Items.POTION.getMaxCount())));
+            createSporeBottleItem(AetherSporeType.DEAD));
     public static final Item VERDANT_SPORES_BOTTLE = ModItems.register("verdant_spores_bottle",
-            new SporeBottleItem(
-                    AetherSporeType.VERDANT, new FabricItemSettings()
-                    .recipeRemainder(Items.GLASS_BOTTLE)
-                    .maxCount(Items.POTION.getMaxCount())));
+            createSporeBottleItem(AetherSporeType.VERDANT));
     public static final Item CRIMSON_SPORES_BOTTLE = ModItems.register("crimson_spores_bottle",
-            new SporeBottleItem(
-                    AetherSporeType.CRIMSON, new FabricItemSettings()
-                    .recipeRemainder(Items.GLASS_BOTTLE)
-                    .maxCount(Items.POTION.getMaxCount())));
+            createSporeBottleItem(AetherSporeType.CRIMSON));
     public static final Item ZEPHYR_SPORES_BOTTLE = ModItems.register("zephyr_spores_bottle",
-            new SporeBottleItem(
-                    AetherSporeType.ZEPHYR, new FabricItemSettings()
-                    .recipeRemainder(Items.GLASS_BOTTLE)
-                    .maxCount(Items.POTION.getMaxCount())));
+            createSporeBottleItem(AetherSporeType.ZEPHYR));
     public static final Item SUNLIGHT_SPORES_BOTTLE = ModItems.register("sunlight_spores_bottle",
-            new SporeBottleItem(
-                    AetherSporeType.SUNLIGHT, new FabricItemSettings()
-                    .recipeRemainder(Items.GLASS_BOTTLE)
-                    .maxCount(Items.POTION.getMaxCount())));
+            createSporeBottleItem(AetherSporeType.SUNLIGHT));
     public static final Item ROSEITE_SPORES_BOTTLE = ModItems.register("roseite_spores_bottle",
-            new SporeBottleItem(
-                    AetherSporeType.ROSEITE, new FabricItemSettings()
-                    .recipeRemainder(Items.GLASS_BOTTLE)
-                    .maxCount(Items.POTION.getMaxCount())));
+            createSporeBottleItem(AetherSporeType.ROSEITE));
     public static final Item MIDNIGHT_SPORES_BOTTLE = ModItems.register("midnight_spores_bottle",
-            new SporeBottleItem(
-                    AetherSporeType.MIDNIGHT, new FabricItemSettings()
-                    .recipeRemainder(Items.GLASS_BOTTLE)
-                    .maxCount(Items.POTION.getMaxCount())));
-
-    // Spore Splash Bottle
+            createSporeBottleItem(AetherSporeType.MIDNIGHT));
     public static final Item DEAD_SPORES_SPLASH_BOTTLE = ModItems.register(
             "dead_spores_splash_bottle",
-            new SplashSporeBottleItem(
-                    AetherSporeType.DEAD, new FabricItemSettings()
-                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+            createSporeSplashBottleItem(AetherSporeType.DEAD));
     public static final Item VERDANT_SPORES_SPLASH_BOTTLE = ModItems.register(
             "verdant_spores_splash_bottle",
-            new SplashSporeBottleItem(
-                    AetherSporeType.VERDANT, new FabricItemSettings()
-                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+            createSporeSplashBottleItem(AetherSporeType.VERDANT));
     public static final Item CRIMSON_SPORES_SPLASH_BOTTLE = ModItems.register(
             "crimson_spores_splash_bottle",
-            new SplashSporeBottleItem(
-                    AetherSporeType.CRIMSON, new FabricItemSettings()
-                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+            createSporeSplashBottleItem(AetherSporeType.CRIMSON));
     public static final Item ZEPHYR_SPORES_SPLASH_BOTTLE = ModItems.register(
             "zephyr_spores_splash_bottle",
-            new SplashSporeBottleItem(
-                    AetherSporeType.ZEPHYR, new FabricItemSettings()
-                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+            createSporeSplashBottleItem(AetherSporeType.ZEPHYR));
     public static final Item SUNLIGHT_SPORES_SPLASH_BOTTLE = ModItems.register(
             "sunlight_spores_splash_bottle",
-            new SplashSporeBottleItem(
-                    AetherSporeType.SUNLIGHT, new FabricItemSettings()
-                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+            createSporeSplashBottleItem(AetherSporeType.SUNLIGHT));
     public static final Item ROSEITE_SPORES_SPLASH_BOTTLE = ModItems.register(
             "roseite_spores_splash_bottle",
-            new SplashSporeBottleItem(
-                    AetherSporeType.ROSEITE, new FabricItemSettings()
-                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+            createSporeSplashBottleItem(AetherSporeType.ROSEITE));
     public static final Item MIDNIGHT_SPORES_SPLASH_BOTTLE = ModItems.register(
             "midnight_spores_splash_bottle",
-            new SplashSporeBottleItem(
-                    AetherSporeType.MIDNIGHT, new FabricItemSettings()
-                    .maxCount(Items.SPLASH_POTION.getMaxCount())));
+            createSporeSplashBottleItem(AetherSporeType.MIDNIGHT));
 
     public static final Item VERDANT_VINE = ModItems.register("verdant_vine",
             new Item(new FabricItemSettings().food(
@@ -166,13 +122,15 @@ public final class ModItems {
     public static final Item STEEL_SWORD = ModItems.register("steel_sword", new SwordItem(
             ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
     public static final Item STEEL_PICKAXE = ModItems.register("steel_pickaxe", new PickaxeItem(
-            ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
+            ModToolMaterials.STEEL, 1, -2.8f, new FabricItemSettings()));
     public static final Item STEEL_AXE = ModItems.register("steel_axe", new AxeItem(
-            ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
+            ModToolMaterials.STEEL, 6.0f, -3.1f, new FabricItemSettings()));
     public static final Item STEEL_SHOVEL = ModItems.register("steel_shovel", new ShovelItem(
-            ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
+            ModToolMaterials.STEEL, 1.5f, -3.0f, new FabricItemSettings()));
     public static final Item STEEL_HOE = ModItems.register("steel_hoe", new HoeItem(
-            ModToolMaterials.STEEL, 3, -2.4f, new FabricItemSettings()));
+            ModToolMaterials.STEEL, -2, -1.0f, new FabricItemSettings()));
+
+    // Tools
     public static final Item QUARTZ_AND_STEEL = ModItems.register("quartz_and_steel",
             new FlintAndSteelItem(new FabricItemSettings().maxDamage(88)));
     public static final Item FLINT_AND_IRON = ModItems.register("flint_and_iron",
@@ -185,6 +143,27 @@ public final class ModItems {
             .icon(() -> new ItemStack(ModBlocks.VERDANT_VINE_SNARE))
             .displayName(Text.translatable("itemGroup.worldsinger.worldsinger"))
             .build();
+
+    private static Item createSporeBucketItem(Block sporeBlock) {
+        return new AetherSporeBucketItem(sporeBlock,
+                SoundEvents.BLOCK_POWDER_SNOW_PLACE,
+                new FabricItemSettings()
+                        .recipeRemainder(Items.BUCKET)
+                        .maxCount(1));
+    }
+
+    private static Item createSporeBottleItem(AetherSporeType sporeType) {
+        return new SporeBottleItem(
+                sporeType, new FabricItemSettings()
+                .recipeRemainder(Items.GLASS_BOTTLE)
+                .maxCount(Items.POTION.getMaxCount()));
+    }
+
+    private static Item createSporeSplashBottleItem(AetherSporeType sporeType) {
+        return new SplashSporeBottleItem(
+                sporeType, new FabricItemSettings()
+                .maxCount(Items.SPLASH_POTION.getMaxCount()));
+    }
 
     public static <T extends Item> T register(String id, T item) {
         Identifier itemId = Worldsinger.id(id);
@@ -291,6 +270,8 @@ public final class ModItems {
             // Only include the highlight items/blocks here
             itemGroup.add(ModItems.DEAD_SPORES_BUCKET);
             itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
+            itemGroup.add(ModItems.CRIMSON_SPORES_BUCKET);
+            itemGroup.add(ModItems.ZEPHYR_SPORES_BUCKET);
             itemGroup.add(ModItems.CRIMSON_SPORES_BUCKET);
 
             itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK);

@@ -26,6 +26,18 @@ public final class ModFluids {
     public static final FlowableFluid FLOWING_CRIMSON_SPORES = register("flowing_crimson_spores",
             new CrimsonSporeFluid.Flowing()
     );
+    public static final FlowableFluid ZEPHYR_SPORES = register("zephyr_spores",
+            new ZephyrSporeFluid.Still()
+    );
+    public static final FlowableFluid FLOWING_ZEPHYR_SPORES = register("flowing_zephyr_spores",
+            new ZephyrSporeFluid.Flowing()
+    );
+    public static final FlowableFluid SUNLIGHT_SPORES = register("sunlight_spores",
+            new SunlightSporeFluid.Still()
+    );
+    public static final FlowableFluid FLOWING_SUNLIGHT_SPORES = register("flowing_sunlight_spores",
+            new SunlightSporeFluid.Flowing()
+    );
 
     public static <T extends Fluid> T register(String id, T fluid) {
         return Registry.register(Registries.FLUID, Worldsinger.id(id), fluid);

@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "worldsinger:block/zephyr_spore_block"
+  }
+}

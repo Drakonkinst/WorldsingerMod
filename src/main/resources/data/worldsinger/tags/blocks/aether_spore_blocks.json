@@ -2,6 +2,8 @@
   "values": [
     "worldsinger:dead_spore_block",
     "worldsinger:verdant_spore_block",
-    "worldsinger:crimson_spore_block"
+    "worldsinger:crimson_spore_block",
+    "worldsinger:zephyr_spore_block",
+    "worldsinger:sunlight_spore_block"
   ]
 }

@@ -26,15 +26,7 @@ public final class ModBlocks {
     public static final Block DEAD_SPORE_SEA_BLOCK = register(
             "dead_spore_sea_block",
             new AetherSporeFluidBlock(ModFluids.DEAD_SPORES, AetherSporeType.DEAD,
-                    FabricBlockSettings.create()
-                            .strength(100.0f)
-                            .replaceable()
-                            .noCollision()
-                            .pistonBehavior(PistonBehavior.DESTROY)
-                            .dropsNothing()
-                            .liquid()
-                            .mapColor(MapColor.GRAY)
-                            .sounds(BlockSoundGroup.SAND)
+                    createSporeFluidSettings(false, MapColor.GRAY)
             ), false);
     public static final Block DEAD_SPORE_BLOCK = register("dead_spore_block",
             new AetherSporeBlock(AetherSporeType.DEAD, ModBlocks.DEAD_SPORE_SEA_BLOCK,
@@ -169,18 +161,15 @@ public final class ModBlocks {
     // Verdant Spores
     public static final Block VERDANT_SPORE_SEA_BLOCK = register("verdant_spore_sea_block",
             new LivingAetherSporeFluidBlock(ModFluids.VERDANT_SPORES, AetherSporeType.VERDANT,
-                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_SEA_BLOCK)
+                    createSporeFluidSettings(true, MapColor.DARK_GREEN)
+            ), false);
+    public static final Block VERDANT_SPORE_BLOCK = register("verdant_spore_block",
+            new LivingAetherSporeBlock(AetherSporeType.VERDANT,
+                    ModBlocks.VERDANT_SPORE_SEA_BLOCK,
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
                             .ticksRandomly()
                             .mapColor(MapColor.DARK_GREEN)
             ), false);
-    public static final Block VERDANT_SPORE_BLOCK =
-            register("verdant_spore_block",
-                    new LivingAetherSporeBlock(AetherSporeType.VERDANT,
-                            ModBlocks.VERDANT_SPORE_SEA_BLOCK,
-                            FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
-                                    .ticksRandomly()
-                                    .mapColor(MapColor.DARK_GREEN)
-                    ), false);
     public static final Block VERDANT_SPORE_CAULDRON = register("verdant_spore_cauldron",
             new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)
                     .ticksRandomly(),
@@ -225,18 +214,15 @@ public final class ModBlocks {
     // Crimson Spores
     public static final Block CRIMSON_SPORE_SEA_BLOCK = register("crimson_spore_sea_block",
             new LivingAetherSporeFluidBlock(ModFluids.CRIMSON_SPORES, AetherSporeType.CRIMSON,
-                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_SEA_BLOCK)
+                    createSporeFluidSettings(true, MapColor.DARK_RED)
+            ), false);
+    public static final Block CRIMSON_SPORE_BLOCK = register("crimson_spore_block",
+            new LivingAetherSporeBlock(AetherSporeType.CRIMSON,
+                    ModBlocks.CRIMSON_SPORE_SEA_BLOCK,
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
                             .ticksRandomly()
                             .mapColor(MapColor.DARK_RED)
             ), false);
-    public static final Block CRIMSON_SPORE_BLOCK =
-            register("crimson_spore_block",
-                    new LivingAetherSporeBlock(AetherSporeType.CRIMSON,
-                            ModBlocks.CRIMSON_SPORE_SEA_BLOCK,
-                            FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
-                                    .ticksRandomly()
-                                    .mapColor(MapColor.DARK_RED)
-                    ), false);
     public static final Block CRIMSON_SPORE_CAULDRON = register("crimson_spore_cauldron",
             new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)
                     .ticksRandomly(),
@@ -274,6 +260,44 @@ public final class ModBlocks {
                     .strength(2.0f)
                     .mapColor(MapColor.RED)
             ), true);
+
+    // Zephyr Spores
+    public static final Block ZEPHYR_SPORE_SEA_BLOCK = register("zephyr_spore_sea_block",
+            new LivingAetherSporeFluidBlock(ModFluids.ZEPHYR_SPORES, AetherSporeType.ZEPHYR,
+                    createSporeFluidSettings(true, MapColor.LIGHT_BLUE)
+            ), false);
+    public static final Block ZEPHYR_SPORE_BLOCK = register("zephyr_spore_block",
+            new LivingAetherSporeBlock(AetherSporeType.ZEPHYR,
+                    ModBlocks.ZEPHYR_SPORE_SEA_BLOCK,
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
+                            .ticksRandomly()
+                            .mapColor(MapColor.LIGHT_BLUE)
+            ), false);
+    public static final Block ZEPHYR_SPORE_CAULDRON = register("zephyr_spore_cauldron",
+            new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)
+                    .ticksRandomly(),
+                    ModCauldronBehaviors.ZEPHYR_SPORE_CAULDRON_BEHAVIOR,
+                    AetherSporeType.ZEPHYR
+            ), false);
+
+    // Sunlight Spores
+    public static final Block SUNLIGHT_SPORE_SEA_BLOCK = register("sunlight_spore_sea_block",
+            new LivingAetherSporeFluidBlock(ModFluids.SUNLIGHT_SPORES, AetherSporeType.SUNLIGHT,
+                    createSporeFluidSettings(true, MapColor.TERRACOTTA_YELLOW)
+            ), false);
+    public static final Block SUNLIGHT_SPORE_BLOCK = register("sunlight_spore_block",
+            new LivingAetherSporeBlock(AetherSporeType.SUNLIGHT,
+                    ModBlocks.SUNLIGHT_SPORE_SEA_BLOCK,
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
+                            .ticksRandomly()
+                            .mapColor(MapColor.TERRACOTTA_YELLOW)
+            ), false);
+    public static final Block SUNLIGHT_SPORE_CAULDRON = register("sunlight_spore_cauldron",
+            new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)
+                    .ticksRandomly(),
+                    ModCauldronBehaviors.SUNLIGHT_SPORE_CAULDRON_BEHAVIOR,
+                    AetherSporeType.SUNLIGHT
+            ), false);
 
     // Other
     public static final Block MAGMA_VENT = register("magma_vent",
@@ -382,7 +406,23 @@ public final class ModBlocks {
         FabricBlockSettings settings = FabricBlockSettings.create();
         ((CustomBlockOffsetterAccess) settings).worldsinger$setCustomOffsetter(offsetter);
         return settings;
+    }
 
+    private static FabricBlockSettings createSporeFluidSettings(boolean ticksRandomly,
+            MapColor color) {
+        FabricBlockSettings settings = FabricBlockSettings.create()
+                .strength(100.0f)
+                .replaceable()
+                .noCollision()
+                .dropsNothing()
+                .liquid()
+                .mapColor(color)
+                .pistonBehavior(PistonBehavior.DESTROY)
+                .sounds(BlockSoundGroup.SAND);
+        if (ticksRandomly) {
+            settings = settings.ticksRandomly();
+        }
+        return settings;
     }
 
     public static void initialize() {}

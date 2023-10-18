@@ -39,13 +39,21 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
     private static final BlockState LAVA = Blocks.LAVA.getDefaultState();
     private static final BlockState EMERALD_SEA = ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState();
     private static final BlockState CRIMSON_SEA = ModBlocks.CRIMSON_SPORE_SEA_BLOCK.getDefaultState();
+    private static final BlockState ZEPHYR_SEA = ModBlocks.ZEPHYR_SPORE_SEA_BLOCK.getDefaultState();
+    private static final BlockState SUNLIGHT_SEA = ModBlocks.SUNLIGHT_SPORE_SEA_BLOCK.getDefaultState();
 
     public static BlockState getSporeSeaBlockAtPos(NoiseConfig noiseConfig, int x, int y, int z) {
         DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
         NoiseRouter noiseRouter = noiseConfig.getNoiseRouter();
         double temperature = noiseRouter.temperature().sample(noisePos);
-        if (temperature <= 0.0f) {
+        if (temperature <= -0.25f) {
             return EMERALD_SEA;
+        }
+        if (temperature <= 0.0f) {
+            return ZEPHYR_SEA;
+        }
+        if (temperature <= 0.25) {
+            return SUNLIGHT_SEA;
         }
         return CRIMSON_SEA;
     }
