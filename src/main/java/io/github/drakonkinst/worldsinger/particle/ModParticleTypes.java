@@ -17,8 +17,7 @@ public class ModParticleTypes {
     private static <T extends ParticleEffect> ParticleType<T> register(String name,
             boolean alwaysShow, ParticleEffect.Factory<T> factory) {
 
-        return Registry.register(Registries.PARTICLE_TYPE,
-                Worldsinger.id(name),
+        return Registry.register(Registries.PARTICLE_TYPE, Worldsinger.id(name),
                 FabricParticleTypes.complex(alwaysShow, factory));
     }
 }
