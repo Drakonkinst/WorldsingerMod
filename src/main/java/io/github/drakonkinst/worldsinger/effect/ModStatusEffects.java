@@ -14,7 +14,7 @@ public final class ModStatusEffects {
     public static final StatusEffect CRIMSON_SPORES = register("crimson_spores",
             new SporeStatusEffect(AetherSporeType.CRIMSON, ModDamageTypes.CRIMSON_SPORE));
     public static final StatusEffect ZEPHYR_SPORES = register("zephyr_spores",
-            new SporeStatusEffect(AetherSporeType.ZEPHYR, ModDamageTypes.ZEPHYR_SPORE));
+            new SporeStatusEffect(AetherSporeType.ZEPHYR, 3.0f, ModDamageTypes.ZEPHYR_SPORE));
     public static final StatusEffect SUNLIGHT_SPORES = register("sunlight_spores",
             new SporeStatusEffect(AetherSporeType.SUNLIGHT, ModDamageTypes.SUNLIGHT_SPORE));
     public static final StatusEffect ROSEITE_SPORES = register("roseite_spores",

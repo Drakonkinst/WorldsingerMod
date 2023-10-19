@@ -298,6 +298,14 @@ public final class ModBlocks {
                     ModCauldronBehaviors.SUNLIGHT_SPORE_CAULDRON_BEHAVIOR,
                     AetherSporeType.SUNLIGHT
             ), false);
+    public static final Block SUNLIGHT = register("sunlight",
+            new SunlightBlock(FabricBlockSettings.create()
+                    .replaceable()
+                    .strength(-1.0f, 3600000.8f)
+                    .dropsNothing()
+                    .nonOpaque()
+                    .luminance(SunlightBlock.STATE_TO_LUMINANCE)
+            ), false);
 
     // Other
     public static final Block MAGMA_VENT = register("magma_vent",
