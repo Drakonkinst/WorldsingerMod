@@ -33,7 +33,7 @@ public abstract class DeadSporeFluid extends AetherSporeFluid {
 
     @Override
     protected BlockState toBlockState(FluidState fluidState) {
-        return ModBlocks.DEAD_SPORE_SEA_BLOCK.getDefaultState().with(Properties.LEVEL_15,
+        return ModBlocks.DEAD_SPORE_SEA.getDefaultState().with(Properties.LEVEL_15,
                 getBlockStateLevel(fluidState));
     }
 

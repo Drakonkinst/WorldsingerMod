@@ -28,31 +28,31 @@ public class WorldsingerClient implements ClientModInitializer {
                 ModFluids.FLOWING_VERDANT_SPORES,
                 new SimpleFluidRenderHandler(
                         Worldsinger.id("block/verdant_spore_block"),
-                        Worldsinger.id("block/verdant_spore_sea_block_flow")
+                        Worldsinger.id("block/verdant_spore_sea_flow")
                 ));
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.DEAD_SPORES,
                 ModFluids.FLOWING_DEAD_SPORES,
                 new SimpleFluidRenderHandler(
                         Worldsinger.id("block/dead_spore_block"),
-                        Worldsinger.id("block/dead_spore_sea_block_flow")
+                        Worldsinger.id("block/dead_spore_sea_flow")
                 ));
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.CRIMSON_SPORES,
                 ModFluids.FLOWING_CRIMSON_SPORES,
                 new SimpleFluidRenderHandler(
                         Worldsinger.id("block/crimson_spore_block"),
-                        Worldsinger.id("block/crimson_spore_sea_block_flow")
+                        Worldsinger.id("block/crimson_spore_sea_flow")
                 ));
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.ZEPHYR_SPORES,
                 ModFluids.FLOWING_ZEPHYR_SPORES,
                 new SimpleFluidRenderHandler(
                         Worldsinger.id("block/zephyr_spore_block"),
-                        Worldsinger.id("block/zephyr_spore_sea_block_flow")
+                        Worldsinger.id("block/zephyr_spore_sea_flow")
                 ));
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.SUNLIGHT_SPORES,
                 ModFluids.FLOWING_SUNLIGHT_SPORES,
                 new SimpleFluidRenderHandler(
                         Worldsinger.id("block/sunlight_spore_block"),
-                        Worldsinger.id("block/sunlight_spore_sea_block_flow")
+                        Worldsinger.id("block/sunlight_spore_sea_flow")
                 ));
 
         // Register fluid render layer as translucent (needed to make boats cull properly)

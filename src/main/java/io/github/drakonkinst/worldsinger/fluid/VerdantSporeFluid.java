@@ -37,7 +37,7 @@ public abstract class VerdantSporeFluid extends LivingAetherSporeFluid {
 
     @Override
     protected BlockState toBlockState(FluidState fluidState) {
-        return ModBlocks.VERDANT_SPORE_SEA_BLOCK.getDefaultState().with(Properties.LEVEL_15,
+        return ModBlocks.VERDANT_SPORE_SEA.getDefaultState().with(Properties.LEVEL_15,
                 getBlockStateLevel(fluidState));
     }
 

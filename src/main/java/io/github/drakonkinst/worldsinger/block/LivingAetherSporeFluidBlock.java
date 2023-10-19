@@ -40,6 +40,6 @@ public class LivingAetherSporeFluidBlock extends AetherSporeFluidBlock implement
 
     @Override
     public Block getDeadSporeBlock() {
-        return ModBlocks.DEAD_SPORE_SEA_BLOCK;
+        return ModBlocks.DEAD_SPORE_SEA;
     }
 }

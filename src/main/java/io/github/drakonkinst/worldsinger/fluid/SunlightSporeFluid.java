@@ -36,7 +36,7 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
 
     @Override
     protected BlockState toBlockState(FluidState fluidState) {
-        return ModBlocks.SUNLIGHT_SPORE_SEA_BLOCK.getDefaultState().with(Properties.LEVEL_15,
+        return ModBlocks.SUNLIGHT_SPORE_SEA.getDefaultState().with(Properties.LEVEL_15,
                 getBlockStateLevel(fluidState));
     }
 

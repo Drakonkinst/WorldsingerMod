@@ -37,7 +37,7 @@ public abstract class CrimsonSporeFluid extends LivingAetherSporeFluid {
 
     @Override
     protected BlockState toBlockState(FluidState fluidState) {
-        return ModBlocks.CRIMSON_SPORE_SEA_BLOCK.getDefaultState().with(Properties.LEVEL_15,
+        return ModBlocks.CRIMSON_SPORE_SEA.getDefaultState().with(Properties.LEVEL_15,
                 getBlockStateLevel(fluidState));
     }
 

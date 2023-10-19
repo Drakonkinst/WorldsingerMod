@@ -23,13 +23,13 @@ import net.minecraft.util.math.intprovider.UniformIntProvider;
 public final class ModBlocks {
 
     // Dead Spores
-    public static final Block DEAD_SPORE_SEA_BLOCK = register(
-            "dead_spore_sea_block",
+    public static final Block DEAD_SPORE_SEA = register(
+            "dead_spore_sea",
             new AetherSporeFluidBlock(ModFluids.DEAD_SPORES, AetherSporeType.DEAD,
                     createSporeFluidSettings(false, MapColor.GRAY)
             ), false);
     public static final Block DEAD_SPORE_BLOCK = register("dead_spore_block",
-            new AetherSporeBlock(AetherSporeType.DEAD, ModBlocks.DEAD_SPORE_SEA_BLOCK,
+            new AetherSporeBlock(AetherSporeType.DEAD, ModBlocks.DEAD_SPORE_SEA,
                     FabricBlockSettings.create()
                             // Same as sand
                             .strength(0.5f)
@@ -159,13 +159,13 @@ public final class ModBlocks {
             ), true);
 
     // Verdant Spores
-    public static final Block VERDANT_SPORE_SEA_BLOCK = register("verdant_spore_sea_block",
+    public static final Block VERDANT_SPORE_SEA = register("verdant_spore_sea",
             new LivingAetherSporeFluidBlock(ModFluids.VERDANT_SPORES, AetherSporeType.VERDANT,
                     createSporeFluidSettings(true, MapColor.DARK_GREEN)
             ), false);
     public static final Block VERDANT_SPORE_BLOCK = register("verdant_spore_block",
             new LivingAetherSporeBlock(AetherSporeType.VERDANT,
-                    ModBlocks.VERDANT_SPORE_SEA_BLOCK,
+                    ModBlocks.VERDANT_SPORE_SEA,
                     FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
                             .ticksRandomly()
                             .mapColor(MapColor.DARK_GREEN)
@@ -212,13 +212,13 @@ public final class ModBlocks {
             ), false);
 
     // Crimson Spores
-    public static final Block CRIMSON_SPORE_SEA_BLOCK = register("crimson_spore_sea_block",
+    public static final Block CRIMSON_SPORE_SEA = register("crimson_spore_sea",
             new LivingAetherSporeFluidBlock(ModFluids.CRIMSON_SPORES, AetherSporeType.CRIMSON,
                     createSporeFluidSettings(true, MapColor.DARK_RED)
             ), false);
     public static final Block CRIMSON_SPORE_BLOCK = register("crimson_spore_block",
             new LivingAetherSporeBlock(AetherSporeType.CRIMSON,
-                    ModBlocks.CRIMSON_SPORE_SEA_BLOCK,
+                    ModBlocks.CRIMSON_SPORE_SEA,
                     FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
                             .ticksRandomly()
                             .mapColor(MapColor.DARK_RED)
@@ -262,13 +262,13 @@ public final class ModBlocks {
             ), true);
 
     // Zephyr Spores
-    public static final Block ZEPHYR_SPORE_SEA_BLOCK = register("zephyr_spore_sea_block",
+    public static final Block ZEPHYR_SPORE_SEA = register("zephyr_spore_sea",
             new LivingAetherSporeFluidBlock(ModFluids.ZEPHYR_SPORES, AetherSporeType.ZEPHYR,
                     createSporeFluidSettings(true, MapColor.LIGHT_BLUE)
             ), false);
     public static final Block ZEPHYR_SPORE_BLOCK = register("zephyr_spore_block",
             new LivingAetherSporeBlock(AetherSporeType.ZEPHYR,
-                    ModBlocks.ZEPHYR_SPORE_SEA_BLOCK,
+                    ModBlocks.ZEPHYR_SPORE_SEA,
                     FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
                             .ticksRandomly()
                             .mapColor(MapColor.LIGHT_BLUE)
@@ -281,13 +281,13 @@ public final class ModBlocks {
             ), false);
 
     // Sunlight Spores
-    public static final Block SUNLIGHT_SPORE_SEA_BLOCK = register("sunlight_spore_sea_block",
+    public static final Block SUNLIGHT_SPORE_SEA = register("sunlight_spore_sea",
             new LivingAetherSporeFluidBlock(ModFluids.SUNLIGHT_SPORES, AetherSporeType.SUNLIGHT,
                     createSporeFluidSettings(true, MapColor.TERRACOTTA_YELLOW)
             ), false);
     public static final Block SUNLIGHT_SPORE_BLOCK = register("sunlight_spore_block",
             new LivingAetherSporeBlock(AetherSporeType.SUNLIGHT,
-                    ModBlocks.SUNLIGHT_SPORE_SEA_BLOCK,
+                    ModBlocks.SUNLIGHT_SPORE_SEA,
                     FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
                             .ticksRandomly()
                             .mapColor(MapColor.TERRACOTTA_YELLOW)

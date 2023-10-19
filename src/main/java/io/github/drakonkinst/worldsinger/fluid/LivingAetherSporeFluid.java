@@ -59,7 +59,7 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
             int offsetZ = random.nextInt(3) - 1;
 
             BlockPos blockPos = pos.add(offsetX, offsetY, offsetZ);
-            if (world.getBlockState(blockPos).isOf(ModBlocks.DEAD_SPORE_SEA_BLOCK)
+            if (world.getBlockState(blockPos).isOf(ModBlocks.DEAD_SPORE_SEA)
                     && world.getFluidState(blockPos).isStill()
                     && !SporeKillingManager.isSporeKillingBlockNearby(world, blockPos)) {
                 world.setBlockState(blockPos, blockState);
