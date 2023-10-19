@@ -10,6 +10,7 @@
     "minecraft:end_gateway",
     "minecraft:structure_void",
     "worldsinger:twisting_verdant_vines",
-    "worldsinger:twisting_verdant_vines_plant"
+    "worldsinger:twisting_verdant_vines_plant",
+    "worldsinger:sunlight"
   ]
 }

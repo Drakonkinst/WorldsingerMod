@@ -304,8 +304,11 @@ public final class ModBlocks {
                     .strength(-1.0f, 3600000.8f)
                     .dropsNothing()
                     .nonOpaque()
+                    .noCollision()
+                    .ticksRandomly()
+                    .noBlockBreakParticles()
                     .luminance(SunlightBlock.STATE_TO_LUMINANCE)
-            ), false);
+            ), true);
 
     // Other
     public static final Block MAGMA_VENT = register("magma_vent",

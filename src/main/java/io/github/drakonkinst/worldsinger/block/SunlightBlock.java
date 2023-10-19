@@ -4,7 +4,9 @@ import com.mojang.serialization.MapCodec;
 import java.util.function.ToIntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.Properties;
@@ -13,6 +15,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldView;
 
 public class SunlightBlock extends Block {
 
@@ -34,14 +37,35 @@ public class SunlightBlock extends Block {
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
             ShapeContext context) {
-        return VoxelShapes.empty();
+        return context.isHolding(ModBlocks.SUNLIGHT.asItem()) ? VoxelShapes.fullCube()
+                : VoxelShapes.empty();
+    }
+
+    @Override
+    public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
+        return VoxelShapes.fullCube();
+    }
+
+    @Override
+    public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
+        return 1.0f;
+    }
+
+    @Override
+    public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state) {
+        return this.asItem().getDefaultStack();
     }
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        super.randomTick(state, world, pos, random);
-        // TODO: Decay state
+        int level = state.get(Properties.LEVEL_15);
+        if (level > 0) {
+            world.setBlockState(pos, state.with(Properties.LEVEL_15, level - 1));
+        } else {
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+        }
     }
+
 
     public MapCodec<? extends SunlightBlock> getCodec() {
         return CODEC;

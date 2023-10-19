@@ -2,9 +2,11 @@ package io.github.drakonkinst.worldsinger.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -34,5 +36,13 @@ public abstract class FluidRendererMixin {
         }
         // Default behavior
         return original.call(instance, fluid);
+    }
+
+    @WrapOperation(method = "getFluidHeight(Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/fluid/Fluid;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)F", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isSolid()Z"))
+    private boolean fixSunlightBlockRendering(BlockState instance, Operation<Boolean> original) {
+        if (instance.isOf(ModBlocks.SUNLIGHT)) {
+            return true;
+        }
+        return original.call(instance);
     }
 }
