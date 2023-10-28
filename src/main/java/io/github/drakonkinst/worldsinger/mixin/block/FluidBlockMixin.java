@@ -54,6 +54,8 @@ public abstract class FluidBlockMixin {
             if (world.getFluidState(neighborPos).isIn(FluidTags.WATER)) {
                 WaterReactionManager.catalyzeAroundWater(world, neighborPos);
 
+                // Replace touching block with a different block if applicable, tends to help
+                // with limiting spread.
                 if (sporeType == AetherSporeType.VERDANT) {
                     world.setBlockState(neighborPos,
                             ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()

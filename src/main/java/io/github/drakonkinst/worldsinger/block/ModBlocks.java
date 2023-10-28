@@ -303,10 +303,9 @@ public final class ModBlocks {
                     .replaceable()
                     .strength(-1.0f, 3600000.8f)
                     .dropsNothing()
-                    .nonOpaque()
-                    .noCollision()
                     .ticksRandomly()
                     .noBlockBreakParticles()
+                    .solidBlock(Blocks::never)
                     .luminance(SunlightBlock.STATE_TO_LUMINANCE)
             ), true);
 

@@ -43,7 +43,9 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
     @Override
     protected void doWaterReaction(World world, BlockPos pos, FluidState state, int sporeAmount,
             int waterAmount, Random random) {
-        // TODO
+        // TODO: Create light and heat
+        // TODO: Should spread to multiple adjacent sunlight blocks
+        world.setBlockState(pos, ModBlocks.SUNLIGHT.getDefaultState());
     }
 
     public static class Flowing extends SunlightSporeFluid {
