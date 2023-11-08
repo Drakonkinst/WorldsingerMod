@@ -1,24 +1,26 @@
 package io.github.drakonkinst.worldsinger.mixin.client;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.client.CameraPosAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
-import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.util.ModEnums;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.BackgroundRenderer.FogData;
 import net.minecraft.client.render.BackgroundRenderer.FogType;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.CameraSubmersionType;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,65 +29,55 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BackgroundRenderer.class)
 public abstract class BackgroundRendererMixin {
 
+    @ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;getSubmersionType()Lnet/minecraft/client/render/CameraSubmersionType;", ordinal = 0))
+    private static CameraSubmersionType skipExpensiveCalculation(
+            CameraSubmersionType original) {
+        // Pretend to be lava, skipping the expensive default "else" calculation
+        if (original == ModEnums.CameraSubmersionType.SPORE_SEA) {
+            return CameraSubmersionType.LAVA;
+        }
+        return original;
+    }
+
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/BackgroundRenderer$StatusEffectFogModifier;"))
-    private static void injectCustomFluidColors(Camera camera, float tickDelta, ClientWorld world,
+    private static void correctCustomFluidColors(Camera camera, float tickDelta, ClientWorld world,
             int viewDistance, float skyDarkness, CallbackInfo ci) {
-        FluidState fluidState = getSubmersedFluidState(camera);
-        if (fluidState == null) {
+        CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
+
+        if (cameraSubmersionType != ModEnums.CameraSubmersionType.SPORE_SEA) {
             return;
         }
 
-        if (fluidState.isIn(ModFluidTags.AETHER_SPORES)) {
-            // This is equivalent to the much easier camera.getFocusedEntity().isSubmergedIn(ModFluidTags.AETHER_SPORES)
-            // But we need to know the fluid state anyways
-            if (fluidState.getFluid() instanceof AetherSporeFluid aetherSporeFluid) {
-                red = aetherSporeFluid.getFogRed();
-                green = aetherSporeFluid.getFogGreen();
-                blue = aetherSporeFluid.getFogBlue();
-            } else {
-                Worldsinger.LOGGER.error(
-                        "Expected fluid to be an instance of AetherSporeFluid since it is in the tag "
-                                + ModFluidTags.AETHER_SPORES.id().toString());
-            }
+        // Set color based on the specific spore fluid
+        CameraPosAccess cameraPos = (CameraPosAccess) camera;
+        BlockState blockState = cameraPos.worldsinger$getBlockState();
+
+        if (blockState.isOf(ModBlocks.SUNLIGHT)) {
+            // Use Sunlight Spore colors for Sunlight blocks
+            int color = AetherSporeType.SUNLIGHT.getColor();
+            red = AetherSporeType.getNormalizedRed(color);
+            green = AetherSporeType.getNormalizedGreen(color);
+            blue = AetherSporeType.getNormalizedBlue(color);
+            return;
+        }
+
+        FluidState fluidState = ((CameraPosAccess) camera).worldsinger$getSubmersedFluidState();
+        if (fluidState.getFluid() instanceof AetherSporeFluid aetherSporeFluid) {
+            red = aetherSporeFluid.getFogRed();
+            green = aetherSporeFluid.getFogGreen();
+            blue = aetherSporeFluid.getFogBlue();
+        } else {
+            Worldsinger.LOGGER.error(
+                    "Expected fluid to be an instance of AetherSporeFluid since Spore Sea submersion type is being used");
         }
     }
-
-    // This doesn't work for some reason, maybe an issue with LocalRef?
-    // @Inject(method = "applyFog", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/client/render/BackgroundRenderer$FogData;fogStart:F"))
-    // private static void injectCustomFluidFogSettings(Camera camera, FogType fogType,
-    //         float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci,
-    //         @Local LocalRef<FogData> fogDataRef) {
-    //     FluidState fluidState = getSubmersedFluidState(camera);
-    //     if (fluidState == null) {
-    //         return;
-    //     }
-    //
-    //     Entity entity = camera.getFocusedEntity();
-    //     if (fluidState.isIn(ModFluidTags.AETHER_SPORES)) {
-    //         FogData fogData = new FogData(fogType);
-    //         if (entity.isSpectator()) {
-    //             // Match spectator mode settings for other fluids
-    //             fogData.fogStart = -8.0f;
-    //             fogData.fogEnd = viewDistance * 0.5f;
-    //         } else {
-    //             fogData.fogStart = AetherSporeFluid.FOG_START;
-    //             fogData.fogEnd = AetherSporeFluid.FOG_END;
-    //         }
-    //         fogDataRef.set(fogData);
-    //     }
-    // }
 
     @Inject(method = "applyFog", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderFogStart(F)V"), cancellable = true)
     private static void injectCustomFluidFogSettings(Camera camera, FogType fogType,
             float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci) {
-        FluidState fluidState = getSubmersedFluidState(camera);
-        if (fluidState == null) {
-            return;
-        }
-
-        Entity entity = camera.getFocusedEntity();
-        if (fluidState.isIn(ModFluidTags.AETHER_SPORES)) {
+        if (camera.getSubmersionType() == ModEnums.CameraSubmersionType.SPORE_SEA) {
             FogData fogData = new FogData(fogType);
+            Entity entity = camera.getFocusedEntity();
             if (entity.isSpectator()) {
                 // Match spectator mode settings for other fluids
                 fogData.fogStart = -8.0f;
@@ -101,26 +93,6 @@ public abstract class BackgroundRendererMixin {
             RenderSystem.setShaderFogShape(fogData.fogShape);
             ci.cancel();
         }
-    }
-
-    @Unique
-    @Nullable
-    private static FluidState getSubmersedFluidState(Camera camera) {
-        if (!camera.isReady()) {
-            return null;
-        }
-
-        World cameraWorld = camera.getFocusedEntity().getWorld();
-        BlockPos cameraBlockPos = camera.getBlockPos();
-        FluidState fluidState = cameraWorld.getFluidState(cameraBlockPos);
-
-        float fluidHeight = fluidState.getHeight(cameraWorld, cameraBlockPos);
-        double yPos = camera.getPos().getY();
-        boolean submersedInFluid = yPos < cameraBlockPos.getY() + fluidHeight;
-        if (submersedInFluid) {
-            return fluidState;
-        }
-        return null;
     }
 
     @Shadow

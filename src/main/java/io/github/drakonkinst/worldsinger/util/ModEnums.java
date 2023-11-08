@@ -20,4 +20,11 @@ public final class ModEnums {
         public static final DimensionEffects.SkyType LUMAR = ClassTinkerers.getEnum(
                 DimensionEffects.SkyType.class, "LUMAR");
     }
+
+    @Environment(EnvType.CLIENT)
+    public static class CameraSubmersionType {
+
+        public static final net.minecraft.client.render.CameraSubmersionType SPORE_SEA = ClassTinkerers.getEnum(
+                net.minecraft.client.render.CameraSubmersionType.class, "SPORE_SEA");
+    }
 }

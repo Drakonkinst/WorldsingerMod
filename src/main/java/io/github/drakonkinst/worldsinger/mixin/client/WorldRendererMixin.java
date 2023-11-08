@@ -1,8 +1,10 @@
 package io.github.drakonkinst.worldsinger.mixin.client;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.util.ModEnums;
 import io.github.drakonkinst.worldsinger.util.ModEnums.SkyType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,6 +15,7 @@ import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.CameraSubmersionType;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -47,10 +50,19 @@ public abstract class WorldRendererMixin {
     @Unique
     private static final int MOON_TEXTURE_SECTIONS_X = 4;
 
+    @ModifyExpressionValue(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;getSubmersionType()Lnet/minecraft/client/render/CameraSubmersionType;"))
+    private CameraSubmersionType skipRenderingInSporeFluid(CameraSubmersionType original) {
+        // Treat spore sea camera like lava, so that it skips sky rendering when submerged
+        if (original == ModEnums.CameraSubmersionType.SPORE_SEA) {
+            return CameraSubmersionType.LAVA;
+        }
+        return original;
+    }
+
+
     @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/DimensionEffects;getSkyType()Lnet/minecraft/client/render/DimensionEffects$SkyType;"), cancellable = true)
     private void addLumarSky(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta,
             Camera camera, boolean thickFog, Runnable fogCallback, CallbackInfo ci) {
-        // TODO: Add custom camera submersion type?
         ClientWorld world = this.world;
         if (world == null) {
             return;

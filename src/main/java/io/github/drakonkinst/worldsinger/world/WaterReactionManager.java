@@ -36,6 +36,8 @@ public final class WaterReactionManager {
     private WaterReactionManager() {}
 
     public static void catalyzeAroundWater(World world, BlockPos waterPos) {
+        // TODO: Possibly collect nearby water reactive blocks/fluids during the draining process
+        // for more natural results
         int waterAmount = absorbWater(world, waterPos);
         if (waterAmount <= 0) {
             return;
@@ -83,6 +85,7 @@ public final class WaterReactionManager {
             }
             int waterAmount = absorbWaterAtBlock(world, pos);
             if (waterAmount <= 0) {
+                // TODO: Check if it's water-reactive?
                 continue;
             }
             totalWaterAmount += waterAmount;

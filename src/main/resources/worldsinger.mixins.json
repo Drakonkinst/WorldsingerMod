@@ -61,6 +61,7 @@
     "accessor.DimensionEffectsAccessor",
     "client.BackgroundRendererMixin",
     "client.BoatEntityRendererMixin",
+    "client.CameraMixin",
     "client.FluidRendererMixin",
     "client.ItemColorsMixin",
     "client.WorldRendererMixin"
