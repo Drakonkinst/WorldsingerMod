@@ -2,7 +2,6 @@ package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.item.ModItems;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import it.unimi.dsi.fastutil.ints.IntObjectImmutablePair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
@@ -53,7 +52,7 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
             int waterAmount, Random random) {
         // TODO: Create light and heat
         // TODO: Should spread to multiple adjacent sunlight blocks
-        
+
         // Number of blocks of Sunlight generated depends on amount of water
         int maxBlocks = waterAmount / 15;
 
@@ -98,7 +97,7 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
             }
 
             // Add neighbors
-            for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            for (Direction direction : Direction.shuffle(world.getRandom())) {
                 BlockPos neighborPos = nextPos.add(direction.getOffsetX(), direction.getOffsetY(),
                         direction.getOffsetZ());
                 long encodedNeighborPos = neighborPos.asLong();
