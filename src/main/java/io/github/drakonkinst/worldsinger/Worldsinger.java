@@ -10,6 +10,7 @@ import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
+import io.github.drakonkinst.worldsinger.registry.ModDispenserBehaviors;
 import io.github.drakonkinst.worldsinger.registry.ModPotions;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
@@ -37,7 +38,8 @@ public class Worldsinger implements ModInitializer {
         ModEntityTypes.initialize();
         ModCommands.initialize();
         ModPotions.register();
-        ModCauldronBehaviors.initialize();
+        ModCauldronBehaviors.register();
+        ModDispenserBehaviors.register();
         ModDimensionTypes.initialize();
         ModStructurePieceTypes.initialize();
         ModStructureTypes.initialize();

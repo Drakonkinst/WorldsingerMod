@@ -44,7 +44,7 @@ public final class ModCauldronBehaviors {
     private static final SoundEvent FILL_SPORE_BOTTLE_SOUND = SoundEvents.BLOCK_SAND_BREAK;
     private static final SoundEvent FILL_SPORE_BUCKET_SOUND = SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW;
 
-    public static void initialize() {
+    public static void register() {
         ModCauldronBehaviors.registerExtraBucketBehavior(CauldronBehavior.EMPTY_CAULDRON_BEHAVIOR);
         ModCauldronBehaviors.registerExtraBucketBehavior(CauldronBehavior.WATER_CAULDRON_BEHAVIOR);
         ModCauldronBehaviors.registerExtraBucketBehavior(CauldronBehavior.LAVA_CAULDRON_BEHAVIOR);

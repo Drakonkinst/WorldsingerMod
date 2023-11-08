@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.world.lumar;
 
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
@@ -14,6 +15,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.StringIdentifiable;
 
 public enum AetherSporeType implements StringIdentifiable {
@@ -104,6 +106,25 @@ public enum AetherSporeType implements StringIdentifiable {
 
     public Item getBottledItem() {
         return bottledItem.get();
+    }
+
+    public Item getBucketItem() {
+        if (this == AetherSporeType.DEAD) {
+            return ModItems.DEAD_SPORES_BUCKET;
+        } else if (this == AetherSporeType.VERDANT) {
+            return ModItems.VERDANT_SPORES_BUCKET;
+        } else if (this == AetherSporeType.CRIMSON) {
+            return ModItems.CRIMSON_SPORES_BUCKET;
+        } else if (this == AetherSporeType.ZEPHYR) {
+            return ModItems.ZEPHYR_SPORES_BUCKET;
+        } else if (this == AetherSporeType.SUNLIGHT) {
+            return ModItems.SUNLIGHT_SPORES_BUCKET;
+        }
+
+        Worldsinger.LOGGER.error(
+                "Unable to determine bucket item for aether spore type " + this.asString());
+        return Items.BUCKET;
+        // TODO: Implement remaining spore fluids
     }
 
     @Override

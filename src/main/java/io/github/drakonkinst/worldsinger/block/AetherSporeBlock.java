@@ -3,7 +3,6 @@ package io.github.drakonkinst.worldsinger.block;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.Worldsinger;
-import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import java.util.Optional;
@@ -110,7 +109,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         if (!world.isClient()) {
             world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, pos, Block.getRawIdFromState(state));
         }
-        return new ItemStack(ModItems.VERDANT_SPORES_BUCKET);
+        return aetherSporeType.getBucketItem().getDefaultStack();
     }
 
     @Override
