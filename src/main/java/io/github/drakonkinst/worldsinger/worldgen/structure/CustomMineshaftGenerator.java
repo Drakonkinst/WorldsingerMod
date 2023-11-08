@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.worldgen.structure;
 
 import com.google.common.collect.Lists;
 import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -780,7 +781,7 @@ public class CustomMineshaftGenerator {
                 int y, int z, int count) {
             BlockPos.Mutable mutable = this.offsetPos(x, y, z);
             int numNeighbors = 0;
-            for (Direction direction : Direction.values()) {
+            for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
                 mutable.move(direction);
                 if (box.contains(mutable) && world.getBlockState(mutable)
                         .isSideSolidFullSquare(world, mutable, direction.getOpposite())

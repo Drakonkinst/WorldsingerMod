@@ -3,7 +3,7 @@ package io.github.drakonkinst.worldsinger.mixin.worldgen;
 import io.github.drakonkinst.worldsinger.registry.ModLootTables;
 import io.github.drakonkinst.worldsinger.worldgen.dimension.ModDimensionTypes;
 import java.util.Map;
-import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.class_8934;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.structure.ShipwreckGenerator;
 import net.minecraft.util.Identifier;
@@ -34,7 +34,8 @@ public abstract class ShipwreckGeneratorPieceMixin {
                 .get(ModDimensionTypes.LUMAR))) {
             Identifier identifier = LUMAR_LOOT_TABLES.get(metadata);
             if (identifier != null) {
-                LootableContainerBlockEntity.setLootTable(world, random, pos.down(), identifier);
+                // LootableContainerBlockEntity.setLootTable(world, random, pos.down(), identifier);
+                class_8934.method_54868(world, random, pos.down(), identifier);
             }
             ci.cancel();
         }

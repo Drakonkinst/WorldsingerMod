@@ -25,13 +25,16 @@ public class SunlightBlock extends Block {
 
     public static final MapCodec<SunlightBlock> CODEC = createCodec(SunlightBlock::new);
     public static final ToIntFunction<BlockState> STATE_TO_LUMINANCE = (state) -> {
-        int level = state.get(ModProperties.LEVEL_5);
-        if (level == 0) {
-            return 5;
-        }
+        int level = state.get(ModProperties.SUNLIGHT_LEVEL);
         if (level == 1) {
-            return 10;
+            // Equal to Magma Block
+            return 3;
         }
+        if (level == 2) {
+            // Half luminance
+            return 8;
+        }
+        // Full luminance
         return 15;
     };
 
@@ -40,12 +43,12 @@ public class SunlightBlock extends Block {
     public SunlightBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState()
-                .with(ModProperties.LEVEL_5, 5));
+                .with(ModProperties.SUNLIGHT_LEVEL, 3));
     }
 
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {
-        builder.add(ModProperties.LEVEL_5);
+        builder.add(ModProperties.SUNLIGHT_LEVEL);
     }
 
     @Override
@@ -86,9 +89,9 @@ public class SunlightBlock extends Block {
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        int level = state.get(ModProperties.LEVEL_5);
-        if (level > 0) {
-            world.setBlockState(pos, state.with(ModProperties.LEVEL_5, level - 1));
+        int level = state.get(ModProperties.SUNLIGHT_LEVEL);
+        if (level > 1) {
+            world.setBlockState(pos, state.with(ModProperties.SUNLIGHT_LEVEL, level - 1));
         } else {
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }

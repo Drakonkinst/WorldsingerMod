@@ -9,7 +9,6 @@ public final class VoxelShapeUtil {
 
     public static final double MAX_VOXEL = 16.0;
     public static final Axis[] AXIS_VALUES = Axis.values();
-    public static final Direction[] DIRECTION_VALUES = Direction.values();
 
     public static VoxelShape createOffsetCuboid(double widthOffset, double heightOffset) {
         return VoxelShapeUtil.createUpwardsCuboid(widthOffset, heightOffset,
@@ -73,8 +72,8 @@ public final class VoxelShapeUtil {
 
     public static VoxelShape[] createDirectionAlignedShapes(double widthOffset, double minHeight,
             double maxHeight) {
-        VoxelShape[] shapes = new VoxelShape[DIRECTION_VALUES.length];
-        for (Direction direction : DIRECTION_VALUES) {
+        VoxelShape[] shapes = new VoxelShape[ModConstants.CARDINAL_DIRECTIONS.length];
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             int index = direction.ordinal();
             shapes[index] = VoxelShapeUtil.createDirectionAlignedShape(direction, widthOffset,
                     minHeight, maxHeight);

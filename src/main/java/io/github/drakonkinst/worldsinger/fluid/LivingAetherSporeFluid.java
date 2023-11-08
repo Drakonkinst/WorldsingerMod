@@ -87,18 +87,19 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
     @Override
     public boolean reactToWater(World world, BlockPos pos, FluidState fluidState, int waterAmount,
             Random random) {
+        // Water reaction
+        int sporeAmount = this.isStill(fluidState) ? CATALYZE_VALUE_STILL : CATALYZE_VALUE_FLOWING;
+        this.doWaterReaction(world, pos, fluidState, sporeAmount, waterAmount, random);
+
+        // Remove the spores
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
-        int sporeAmount = this.isStill(fluidState) ? CATALYZE_VALUE_STILL : CATALYZE_VALUE_FLOWING;
-
         if (block instanceof FluidDrainable fluidDrainable) {
             ItemStack itemStack = fluidDrainable.tryDrainFluid(null, world, pos, blockState);
             if (itemStack.isEmpty() && block instanceof FluidBlock) {
                 world.setBlockState(pos, Blocks.AIR.getDefaultState());
             }
         }
-
-        this.doWaterReaction(world, pos, fluidState, sporeAmount, waterAmount, random);
         return true;
     }
 }

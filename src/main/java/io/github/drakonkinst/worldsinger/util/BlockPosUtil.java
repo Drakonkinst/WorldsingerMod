@@ -46,7 +46,7 @@ public final class BlockPosUtil {
 
     public static boolean isOccluded(World world, Vec3d fromPos, Vec3d toPos,
             TagKey<Block> blockTag) {
-        for (Direction direction : Direction.values()) {
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             Vec3d vec3d3 = fromPos.offset(direction, 1.0E-5f);
             if (world.raycast(new BlockStateRaycastContext(vec3d3, toPos, state -> state.isIn(
                     blockTag))).getType() == HitResult.Type.BLOCK) {

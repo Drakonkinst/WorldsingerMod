@@ -12,7 +12,7 @@ public final class ModProperties {
     public static final BooleanProperty CATALYZED = BooleanProperty.of("catalyzed");
     public static final EnumProperty<Thickness> DISCRETE_THICKNESS = EnumProperty.of("thickness",
             Thickness.class, thickness -> thickness != Thickness.TIP_MERGE);
-    public static final IntProperty LEVEL_5 = IntProperty.of("level", 0, 5);
+    public static final IntProperty SUNLIGHT_LEVEL = IntProperty.of("level", 1, 3);
 
     private ModProperties() {}
 

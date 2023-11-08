@@ -272,7 +272,7 @@ public final class ModItems {
             itemGroup.add(ModItems.VERDANT_SPORES_BUCKET);
             itemGroup.add(ModItems.CRIMSON_SPORES_BUCKET);
             itemGroup.add(ModItems.ZEPHYR_SPORES_BUCKET);
-            itemGroup.add(ModItems.CRIMSON_SPORES_BUCKET);
+            itemGroup.add(ModItems.SUNLIGHT_SPORES_BUCKET);
 
             itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK);
             itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH);
