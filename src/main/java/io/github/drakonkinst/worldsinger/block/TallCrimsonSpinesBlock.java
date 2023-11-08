@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
@@ -163,8 +162,6 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
         BlockPos belowPos = pos.down();
         BlockState belowState = world.getBlockState(belowPos);
         if (state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
-            Worldsinger.LOGGER.info("A " + (belowState.isIn(ModBlockTags.TALL_CRIMSON_SPINES)
-                    && belowState.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER));
             return belowState.isIn(ModBlockTags.TALL_CRIMSON_SPINES)
                     && belowState.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER;
         }

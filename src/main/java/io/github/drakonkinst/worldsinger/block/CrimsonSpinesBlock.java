@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
 import net.minecraft.block.Block;
@@ -78,7 +77,6 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
     @Override
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
-        Worldsinger.LOGGER.info("FALL " + fallDistance);
         entity.handleFallDamage(fallDistance, 1.5f,
                 ModDamageTypes.of(world, ModDamageTypes.SPIKE_FALL));
     }

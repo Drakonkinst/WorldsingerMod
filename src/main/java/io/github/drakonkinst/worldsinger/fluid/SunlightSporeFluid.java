@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
@@ -54,11 +53,11 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
             int waterAmount, Random random) {
         // TODO: Create light and heat
         // TODO: Should spread to multiple adjacent sunlight blocks
+        
         // Number of blocks of Sunlight generated depends on amount of water
         int maxBlocks = waterAmount / 15;
-        // Always generate one block of Sunlight at the point of interaction
-        Worldsinger.LOGGER.info("BLOCKS: " + maxBlocks + " for WATER: " + waterAmount);
 
+        // Always generate one block of Sunlight at the point of interaction
         BlockState blockState = world.getBlockState(pos);
         if (blockState.isOf(ModBlocks.SUNLIGHT_SPORE_SEA) || blockState.isOf(
                 ModBlocks.SUNLIGHT_SPORE_BLOCK)) {
