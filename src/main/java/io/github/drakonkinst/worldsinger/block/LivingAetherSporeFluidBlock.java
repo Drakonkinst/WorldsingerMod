@@ -27,7 +27,7 @@ public class LivingAetherSporeFluidBlock extends AetherSporeFluidBlock implement
 
     public LivingAetherSporeFluidBlock(FlowableFluid fluid, AetherSporeType aetherSporeType,
             Settings settings) {
-        super(fluid, aetherSporeType, settings);
+        super(aetherSporeType, settings);
     }
 
     @Override

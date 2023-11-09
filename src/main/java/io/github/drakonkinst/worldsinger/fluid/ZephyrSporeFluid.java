@@ -41,7 +41,7 @@ public abstract class ZephyrSporeFluid extends LivingAetherSporeFluid {
     }
 
     @Override
-    protected void doWaterReaction(World world, BlockPos pos, FluidState state, int sporeAmount,
+    protected void doWaterReaction(World world, BlockPos pos, int sporeAmount,
             int waterAmount, Random random) {
         // TODO
     }

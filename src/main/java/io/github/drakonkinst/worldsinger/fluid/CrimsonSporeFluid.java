@@ -42,7 +42,7 @@ public abstract class CrimsonSporeFluid extends LivingAetherSporeFluid {
     }
 
     @Override
-    protected void doWaterReaction(World world, BlockPos pos, FluidState state, int sporeAmount,
+    protected void doWaterReaction(World world, BlockPos pos, int sporeAmount,
             int waterAmount, Random random) {
         SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), sporeAmount,
                 waterAmount, true, false, false);

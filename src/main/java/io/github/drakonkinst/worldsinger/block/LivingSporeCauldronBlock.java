@@ -65,6 +65,7 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
         world.setBlockState(pos, Blocks.CAULDRON.getStateWithProperties(state));
         Vec3d spawnPos = posAbove.toCenterPos();
         int catalyzeValue = CATALYZE_VALUE_PER_LEVEL * state.get(LEVEL);
+
         if (sporeType == AetherSporeType.VERDANT) {
             SporeGrowthSpawner.spawnVerdantSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
                     true, false, false);
@@ -72,6 +73,7 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
             SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
                     true, false, false);
         }
+        // TODO: Add other custom interactions
         return true;
     }
 }

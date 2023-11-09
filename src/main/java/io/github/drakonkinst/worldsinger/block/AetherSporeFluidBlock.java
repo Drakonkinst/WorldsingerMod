@@ -17,7 +17,6 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.server.world.ServerWorld;
@@ -41,14 +40,14 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
                     AetherSporeType.CODEC.fieldOf("sporeType")
                             .forGetter(AetherSporeFluidBlock::getSporeType),
                     createSettingsCodec()
-            ).apply(instance, AetherSporeFluidBlock::new));
+            ).apply(instance, (fluid1, sporeType, settings1) -> new AetherSporeFluidBlock(sporeType,
+                    settings1)));
 
     protected final AetherSporeType aetherSporeType;
-    private Block solidBlock = null;
 
-    public AetherSporeFluidBlock(FlowableFluid fluid, AetherSporeType sporeType,
+    public AetherSporeFluidBlock(AetherSporeType sporeType,
             Settings settings) {
-        super(fluid, settings);
+        super(sporeType.getFluid(), settings);
         this.aetherSporeType = sporeType;
     }
 
@@ -222,11 +221,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
     }
 
     public Block getSolidBlock() {
-        return solidBlock;
-    }
-
-    public void setSolidBlock(Block block) {
-        this.solidBlock = block;
+        return this.aetherSporeType.getSolidBlock();
     }
 
     // Due to how FluidBlock is implemented, can't return the right type here.

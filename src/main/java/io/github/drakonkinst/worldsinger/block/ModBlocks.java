@@ -25,11 +25,11 @@ public final class ModBlocks {
     // Dead Spores
     public static final Block DEAD_SPORE_SEA = register(
             "dead_spore_sea",
-            new AetherSporeFluidBlock(ModFluids.DEAD_SPORES, AetherSporeType.DEAD,
+            new AetherSporeFluidBlock(AetherSporeType.DEAD,
                     createSporeFluidSettings(false, MapColor.GRAY)
             ), false);
     public static final Block DEAD_SPORE_BLOCK = register("dead_spore_block",
-            new AetherSporeBlock(AetherSporeType.DEAD, ModBlocks.DEAD_SPORE_SEA,
+            new AetherSporeBlock(AetherSporeType.DEAD,
                     FabricBlockSettings.create()
                             // Same as sand
                             .strength(0.5f)

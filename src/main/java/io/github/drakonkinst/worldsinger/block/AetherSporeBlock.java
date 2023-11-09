@@ -2,7 +2,6 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import java.util.Optional;
@@ -39,22 +38,15 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
                     Registries.BLOCK.getCodec().fieldOf("block")
                             .forGetter(AetherSporeBlock::getFluidizedBlock),
                     createSettingsCodec()
-            ).apply(instance, AetherSporeBlock::new));
+            ).apply(instance,
+                    (sporeType, fluidizedBlock1, settings1) -> new AetherSporeBlock(sporeType,
+                            settings1)));
 
     protected final AetherSporeType aetherSporeType;
-    private final Block fluidizedBlock;
 
-    public AetherSporeBlock(AetherSporeType sporeType, Block fluidizedBlock, Settings settings) {
+    public AetherSporeBlock(AetherSporeType sporeType, Settings settings) {
         super(settings);
         this.aetherSporeType = sporeType;
-        this.fluidizedBlock = fluidizedBlock;
-
-        if (this.fluidizedBlock instanceof AetherSporeFluidBlock aetherSporeFluidBlock) {
-            aetherSporeFluidBlock.setSolidBlock(this);
-        } else {
-            Worldsinger.LOGGER.error("Expected fluidized block for " + this.getClass().getName() +
-                    " to be an instance of AetherSporeFluidBlock");
-        }
     }
 
     @Override
@@ -68,7 +60,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
 
         if (AetherSporeFluidBlock.shouldFluidize(world.getBlockState(pos.down()))) {
             // If it should immediately become a liquid, do not spawn particles
-            world.setBlockState(pos, this.fluidizedBlock.getDefaultState());
+            world.setBlockState(pos, this.getFluidizedBlock().getDefaultState());
         } else if (world instanceof ServerWorld serverWorld) {
             // Spawn particles based on fall distance
             int fallDistance = fallingBlockEntity.getFallingBlockPos().getY() - pos.getY();
@@ -96,7 +88,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         BlockState fluidizedSource = blockView.getBlockState(blockPos.down());
         if (AetherSporeFluidBlock.shouldFluidize(fluidizedSource)) {
             // Become a fluid immediately if it should be fluidized
-            return this.fluidizedBlock.getDefaultState();
+            return this.getFluidizedBlock().getDefaultState();
         }
         return super.getPlacementState(ctx);
     }
@@ -145,7 +137,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     }
 
     public Block getFluidizedBlock() {
-        return fluidizedBlock;
+        return aetherSporeType.getFluidBlock();
     }
 
     @Override
