@@ -88,11 +88,9 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
             BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (world instanceof World realWorld) {
-            BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
-            if (waterNeighborPos != null) {
-                WaterReactionManager.catalyzeAroundWater(realWorld, waterNeighborPos);
-            }
+        BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
+        if (waterNeighborPos != null) {
+            world.scheduleBlockTick(pos, this, 1);
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
                 neighborPos);

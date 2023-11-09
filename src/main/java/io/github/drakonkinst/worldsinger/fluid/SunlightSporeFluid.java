@@ -10,6 +10,8 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FluidDrainable;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -34,7 +36,7 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
         // Always generate one block of Sunlight at the point of interaction
         BlockState blockState = world.getBlockState(startPos);
         if (blockState.isOf(ModBlocks.SUNLIGHT_SPORE_SEA) || blockState.isOf(
-                ModBlocks.SUNLIGHT_SPORE_BLOCK)) {
+                ModBlocks.SUNLIGHT_SPORE_BLOCK) || blockState.isOf(Blocks.AIR)) {
             // Not a waterlogged block
             world.setBlockState(startPos, ModBlocks.SUNLIGHT.getDefaultState());
             maxBlocks -= 1;
@@ -59,6 +61,9 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
                 // Replace with Sunlight
                 world.setBlockState(nextPos, ModBlocks.SUNLIGHT.getDefaultState());
                 numBlocksChanged++;
+            } else if (state.getFluidState().isOf(ModFluids.SUNLIGHT_SPORES)
+                    && state.getBlock() instanceof FluidDrainable fluidDrainable) {
+                fluidDrainable.tryDrainFluid(null, world, nextPos, state);
             } else if (!canSunlightPassThrough(state)) {
                 continue;
             }

@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
@@ -88,7 +87,6 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
     @Override
     public boolean reactToWater(World world, BlockPos pos, FluidState fluidState, int waterAmount,
             Random random) {
-        Worldsinger.LOGGER.info("DO WATER REACTION");
         // Water reaction
         int sporeAmount = this.isStill(fluidState) ? CATALYZE_VALUE_STILL : CATALYZE_VALUE_FLOWING;
         this.doWaterReaction(world, pos, sporeAmount, waterAmount, random);
