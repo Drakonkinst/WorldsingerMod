@@ -2,8 +2,8 @@ package io.github.drakonkinst.worldsinger.item;
 
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -28,9 +28,9 @@ public class SporeBottleItem extends PotionItem implements SporeEmitting {
 
     private static final float SPORE_DEFAULT_DAMAGE = 4.0f;
 
-    private final AetherSporeType sporeType;
+    private final SporeType sporeType;
 
-    public SporeBottleItem(AetherSporeType sporeType, Settings settings) {
+    public SporeBottleItem(SporeType sporeType, Settings settings) {
         super(settings);
         this.sporeType = sporeType;
     }
@@ -69,7 +69,7 @@ public class SporeBottleItem extends PotionItem implements SporeEmitting {
         return stack;
     }
 
-    public AetherSporeType getSporeType() {
+    public SporeType getSporeType() {
         return sporeType;
     }
 

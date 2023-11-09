@@ -7,6 +7,7 @@ import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -59,7 +60,7 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
             SporeParticleSpawner.spawnSplashPotionParticles(serverWorld, this.getSporeType(), pos);
         }
 
-        AetherSporeType sporeType = this.getSporeType();
+        SporeType sporeType = this.getSporeType();
         if (sporeType != AetherSporeType.DEAD) {
             this.handleLivingSporeBehavior(world, sporeType, pos);
         }
@@ -71,7 +72,7 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
         this.discard();
     }
 
-    private void handleLivingSporeBehavior(World world, AetherSporeType sporeType, Vec3d pos) {
+    private void handleLivingSporeBehavior(World world, SporeType sporeType, Vec3d pos) {
         BlockPos blockPos = this.getBlockPos();
         BlockState blockState = world.getBlockState(blockPos);
         if (world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
@@ -83,6 +84,7 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
                 SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
                         true, true, false);
             }
+            // TODO: Add remaining spore behavior
         } else if (blockState.isOf(Blocks.WATER_CAULDRON)) {
             int waterAmount =
                     WATER_AMOUNT_PER_LEVEL * blockState.get(LeveledCauldronBlock.LEVEL);
@@ -109,7 +111,7 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
         }
     }
 
-    private AetherSporeType getSporeType() {
+    private SporeType getSporeType() {
         ItemStack stack = this.getStack();
         if (stack.getItem() instanceof SporeBottleItem sporeBottleItem) {
             return sporeBottleItem.getSporeType();

@@ -27,8 +27,8 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
     public static final int CATALYZE_VALUE_STILL = 250;
     public static final int CATALYZE_VALUE_FLOWING = 25;
 
-    public LivingAetherSporeFluid(AetherSporeType aetherSporeType) {
-        super(aetherSporeType);
+    public LivingAetherSporeFluid(AetherSporeType sporeType) {
+        super(sporeType);
     }
 
     protected abstract void doWaterReaction(World world, BlockPos pos, int sporeAmount,

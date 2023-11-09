@@ -44,7 +44,7 @@ public final class SporeParticleManager {
 
     // Create a cloud of spore particles at the given location
     // minY is the bottom of the particle cloud, not the center, for better ease of use.
-    public static void createSporeParticles(ServerWorld world, AetherSporeType sporeType, double x,
+    public static void createSporeParticles(ServerWorld world, SporeType sporeType, double x,
             double minY, double z, double radius, double height, float particleSize,
             int particleCountPerBlock, boolean useDistance) {
 
@@ -81,7 +81,7 @@ public final class SporeParticleManager {
                 useDistance);
     }
 
-    public static void createRandomSporeParticles(ServerWorld world, AetherSporeType sporeType,
+    public static void createRandomSporeParticles(ServerWorld world, SporeType sporeType,
             Vec3d pos, double baseRadius, double radiusDev, double baseHeight,
             double heightDev, float particleSize, int particleCountPerBlock, boolean useDistance) {
         double radius = baseRadius;
@@ -100,7 +100,7 @@ public final class SporeParticleManager {
     }
 
     public static void createRandomSporeParticlesForEntity(ServerWorld world,
-            AetherSporeType sporeType, Entity entity, double radiusWidthMultiplier,
+            SporeType sporeType, Entity entity, double radiusWidthMultiplier,
             double radiusDev, double heightMean, double heightDev,
             float particleSizeWidthMultiplier, int particleCountPerBlock) {
         float particleSize = entity.getWidth() * particleSizeWidthMultiplier;
@@ -111,7 +111,7 @@ public final class SporeParticleManager {
 
 
     // These are client-side and have no effect
-    public static void spawnDisplayParticles(World world, AetherSporeType sporeType, double x,
+    public static void spawnDisplayParticles(World world, SporeType sporeType, double x,
             double y, double z, float particleSize) {
         if (SporeKillingManager.isSporeKillingBlockNearby(world, BlockPos.ofFloored(x, y, z))
                 || SporeKillingManager.checkNearbyEntities(world, new Vec3d(x, y, z))) {
@@ -128,7 +128,7 @@ public final class SporeParticleManager {
     }
 
     private static void spawnVisualSporeParticles(ServerWorld world,
-            AetherSporeType sporeType,
+            SporeType sporeType,
             double x, double minY, double z, double radius, double height,
             float particleSize, int count) {
         // Spawn particle
@@ -147,20 +147,20 @@ public final class SporeParticleManager {
         world.spawnParticles(particleEffect, x, y, z, count, radius, deltaY, radius, 0.0);
     }
 
-    private static void damageEntities(ServerWorld world, AetherSporeType sporeType,
+    private static void damageEntities(ServerWorld world, SporeType sporeType,
             double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
             boolean useDistance) {
         Box box = new Box(minX, minY, minZ, maxX, maxY, maxZ);
         SporeParticleManager.damageEntitiesInBox(world, sporeType, box, useDistance);
     }
 
-    public static void damageEntitiesInBlock(ServerWorld world, AetherSporeType sporeType,
+    public static void damageEntitiesInBlock(ServerWorld world, SporeType sporeType,
             BlockPos pos) {
         Box box = new Box(pos);
         SporeParticleManager.damageEntitiesInBox(world, sporeType, box, false);
     }
 
-    public static void damageEntitiesInBox(ServerWorld world, AetherSporeType sporeType, Box box,
+    public static void damageEntitiesInBox(ServerWorld world, SporeType sporeType, Box box,
             boolean useDistance) {
         if (sporeType == AetherSporeType.DEAD) {
             return;
@@ -203,11 +203,15 @@ public final class SporeParticleManager {
     }
 
     private static SporeDustParticleEffect getCachedSporeParticleEffect(
-            AetherSporeType sporeType, float size) {
-        int key = hashTwoInts(sporeType.ordinal(),
-                (int) Math.floor(size * CACHED_SIZE_PRECISION));
-        return cachedDustParticleEffects.computeIfAbsent(key,
-                k -> createDustParticleEffect(sporeType, size));
+            SporeType sporeType, float size) {
+        if (sporeType instanceof AetherSporeType aetherSporeType) {
+            int key = hashTwoInts(aetherSporeType.ordinal(),
+                    (int) Math.floor(size * CACHED_SIZE_PRECISION));
+            return cachedDustParticleEffects.computeIfAbsent(key,
+                    k -> createDustParticleEffect(aetherSporeType, size));
+        }
+        return createDustParticleEffect(sporeType, size);
+
     }
 
     // https://stackoverflow.com/a/13871379
@@ -215,7 +219,7 @@ public final class SporeParticleManager {
         return (a + b) * (a + b + 1) / 2 + a;
     }
 
-    private static SporeDustParticleEffect createDustParticleEffect(AetherSporeType sporeType,
+    private static SporeDustParticleEffect createDustParticleEffect(SporeType sporeType,
             float size) {
         // Make size follow the cached size precision to prevent unintentional imprecision
         size = ((int) (size * CACHED_SIZE_PRECISION)) / CACHED_SIZE_PRECISION;

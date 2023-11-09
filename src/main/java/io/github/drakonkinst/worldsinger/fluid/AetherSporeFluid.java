@@ -34,16 +34,16 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
     // Water uses the value 0.014, and lava uses 0.007 in the Nether and 0.0023 otherwise
     public static final double FLUID_SPEED = 0.012;
 
-    private final AetherSporeType aetherSporeType;
+    private final AetherSporeType sporeType;
     private final float fogRed;
     private final float fogGreen;
     private final float fogBlue;
 
-    public AetherSporeFluid(AetherSporeType aetherSporeType) {
+    public AetherSporeFluid(AetherSporeType sporeType) {
         super();
-        this.aetherSporeType = aetherSporeType;
+        this.sporeType = sporeType;
 
-        int color = aetherSporeType.getColor();
+        int color = sporeType.getColor();
         this.fogRed = AetherSporeType.getNormalizedRed(color);
         this.fogGreen = AetherSporeType.getNormalizedGreen(color);
         this.fogBlue = AetherSporeType.getNormalizedBlue(color);
@@ -85,7 +85,7 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
                 double spawnX = (double) pos.getX() + random.nextDouble();
                 double spawnY = (double) pos.getY() + 1.0 + random.nextDouble();
                 double spawnZ = (double) pos.getZ() + random.nextDouble();
-                SporeParticleManager.spawnDisplayParticles(world, aetherSporeType, spawnX,
+                SporeParticleManager.spawnDisplayParticles(world, sporeType, spawnX,
                         spawnY, spawnZ, 1f);
             }
             if (random.nextInt(200) == 0) {
@@ -192,6 +192,6 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
     }
 
     public AetherSporeType getSporeType() {
-        return aetherSporeType;
+        return sporeType;
     }
 }

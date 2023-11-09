@@ -88,7 +88,7 @@ public enum AetherSporeType implements SporeType {
         return -1;
     }
 
-    public static Optional<AetherSporeType> getSporeTypeFromBlock(BlockState state) {
+    public static Optional<SporeType> getSporeTypeFromBlock(BlockState state) {
         Block block = state.getBlock();
         if (block instanceof SporeEmitting sporeEmittingBlock) {
             return Optional.of(sporeEmittingBlock.getSporeType());
@@ -96,7 +96,7 @@ public enum AetherSporeType implements SporeType {
         return Optional.empty();
     }
 
-    public static Optional<AetherSporeType> getFirstSporeTypeFromFluid(Collection<Fluid> fluids) {
+    public static Optional<SporeType> getFirstSporeTypeFromFluid(Collection<Fluid> fluids) {
         for (Fluid fluid : fluids) {
             if (fluid instanceof AetherSporeFluid aetherSporeFluid) {
                 return Optional.of(aetherSporeFluid.getSporeType());

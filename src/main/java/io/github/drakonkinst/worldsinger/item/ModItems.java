@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.material.ModArmorMaterials;
 import io.github.drakonkinst.worldsinger.material.ModToolMaterials;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -152,14 +153,14 @@ public final class ModItems {
                         .maxCount(1));
     }
 
-    private static Item createSporeBottleItem(AetherSporeType sporeType) {
+    private static Item createSporeBottleItem(SporeType sporeType) {
         return new SporeBottleItem(
                 sporeType, new FabricItemSettings()
                 .recipeRemainder(Items.GLASS_BOTTLE)
                 .maxCount(Items.POTION.getMaxCount()));
     }
 
-    private static Item createSporeSplashBottleItem(AetherSporeType sporeType) {
+    private static Item createSporeSplashBottleItem(SporeType sporeType) {
         return new SplashSporeBottleItem(
                 sporeType, new FabricItemSettings()
                 .maxCount(Items.SPLASH_POTION.getMaxCount()));

@@ -6,6 +6,8 @@ import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.item.Item;
 import net.minecraft.util.StringIdentifiable;
 
+// This isn't really usable without AetherSporeType since it interferes with Codecs, but figured
+// I'd leave it here, so it can be used where it can.
 public interface SporeType extends StringIdentifiable {
 
     int getColor();

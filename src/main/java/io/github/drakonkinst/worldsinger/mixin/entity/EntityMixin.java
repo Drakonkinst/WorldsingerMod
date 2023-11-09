@@ -11,6 +11,7 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import java.util.Optional;
 import java.util.Set;
@@ -41,7 +42,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
         if (this.updateMovementInFluid(ModFluidTags.AETHER_SPORES, AetherSporeFluid.FLUID_SPEED)) {
             if (!this.isTouchingSporeSea) {
                 if (this.getWorld() instanceof ServerWorld serverWorld) {
-                    Optional<AetherSporeType> optionalSporeType = AetherSporeType.getFirstSporeTypeFromFluid(
+                    Optional<SporeType> optionalSporeType = AetherSporeType.getFirstSporeTypeFromFluid(
                             getAllTouchingFluids());
                     optionalSporeType.ifPresent(
                             sporeType -> SporeParticleSpawner.spawnSplashParticles(serverWorld,
@@ -89,7 +90,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
             BlockState steppingBlock = this.getSteppingBlockState();
             if (steppingBlock.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS) || steppingBlock.isIn(
                     ModBlockTags.AETHER_SPORE_BLOCKS)) {
-                Optional<AetherSporeType> aetherSporeType = AetherSporeType.getSporeTypeFromBlock(
+                Optional<SporeType> aetherSporeType = AetherSporeType.getSporeTypeFromBlock(
                         steppingBlock);
                 if (aetherSporeType.isEmpty()) {
                     Worldsinger.LOGGER.error(

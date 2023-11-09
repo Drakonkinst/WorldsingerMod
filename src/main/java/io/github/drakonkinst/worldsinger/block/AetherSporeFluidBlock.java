@@ -43,12 +43,12 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
             ).apply(instance, (fluid1, sporeType, settings1) -> new AetherSporeFluidBlock(sporeType,
                     settings1)));
 
-    protected final AetherSporeType aetherSporeType;
+    protected final AetherSporeType sporeType;
 
     public AetherSporeFluidBlock(AetherSporeType sporeType,
             Settings settings) {
         super(sporeType.getFluid(), settings);
-        this.aetherSporeType = sporeType;
+        this.sporeType = sporeType;
     }
 
     // Returns whether a block should fluidize based on fluidizeSource, which is
@@ -182,7 +182,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
             float fallDistance) {
         // Spawn splash particles upon landing (during stilling)
         if (fallDistance > 0.25f && world instanceof ServerWorld serverWorld) {
-            SporeParticleSpawner.spawnSplashParticles(serverWorld, aetherSporeType, entity,
+            SporeParticleSpawner.spawnSplashParticles(serverWorld, sporeType, entity,
                     fallDistance, false);
         }
         super.onLandedUpon(world, state, pos, entity, fallDistance);
@@ -193,7 +193,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
             ProjectileEntity projectile) {
         // Spawn projectile particles upon landing (during stilling)
         if (world instanceof ServerWorld serverWorld) {
-            SporeParticleSpawner.spawnProjectileParticles(serverWorld, aetherSporeType,
+            SporeParticleSpawner.spawnProjectileParticles(serverWorld, sporeType,
                     projectile.getPos());
         }
         super.onProjectileHit(world, state, hit, projectile);
@@ -217,11 +217,11 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
     }
 
     public AetherSporeType getSporeType() {
-        return aetherSporeType;
+        return sporeType;
     }
 
     public Block getSolidBlock() {
-        return this.aetherSporeType.getSolidBlock();
+        return this.sporeType.getSolidBlock();
     }
 
     // Due to how FluidBlock is implemented, can't return the right type here.

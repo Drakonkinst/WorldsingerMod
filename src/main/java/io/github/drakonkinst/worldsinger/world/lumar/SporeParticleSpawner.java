@@ -53,15 +53,15 @@ public final class SporeParticleSpawner {
     private static final int SPLASH_POTION_PARTICLE_COUNT = 10;
 
     public static void spawnSplashParticles(ServerWorld world,
-            AetherSporeType aetherSporeType, Entity entity, float fallDistance, boolean fluid) {
+            SporeType sporeType, Entity entity, float fallDistance, boolean fluid) {
         double height = fallDistance * SPLASH_HEIGHT_PER_BLOCK;
         int particleCount = fluid ? SPLASH_PARTICLE_COUNT_FLUID : SPLASH_PARTICLE_COUNT_BLOCK;
-        SporeParticleManager.createRandomSporeParticlesForEntity(world, aetherSporeType, entity,
+        SporeParticleManager.createRandomSporeParticlesForEntity(world, sporeType, entity,
                 SPLASH_RADIUS_MULTIPLIER, 0.0, height, SPLASH_HEIGHT_DEV,
                 SPLASH_PARTICLE_SIZE_MULTIPLIER, particleCount);
     }
 
-    public static void spawnFootstepParticles(ServerWorld world, AetherSporeType sporeType,
+    public static void spawnFootstepParticles(ServerWorld world, SporeType sporeType,
             Entity entity) {
         double height;
         int particleCount = FOOTSTEP_PARTICLE_COUNT;
@@ -76,21 +76,21 @@ public final class SporeParticleSpawner {
                 FOOTSTEP_PARTICLE_SIZE_MULTIPLIER, particleCount);
     }
 
-    public static void spawnProjectileParticles(ServerWorld world, AetherSporeType sporeType,
+    public static void spawnProjectileParticles(ServerWorld world, SporeType sporeType,
             Vec3d pos) {
         SporeParticleManager.createRandomSporeParticles(world, sporeType, pos,
                 PROJECTILE_RADIUS, 0.0, PROJECTILE_HEIGHT, 0.0, PROJECTILE_PARTICLE_SIZE,
                 PROJECTILE_PARTICLE_COUNT, false);
     }
 
-    public static void spawnRowingParticles(ServerWorld world, AetherSporeType sporeType,
+    public static void spawnRowingParticles(ServerWorld world, SporeType sporeType,
             Vec3d pos) {
         SporeParticleManager.createRandomSporeParticles(world, sporeType, pos, ROWING_RADIUS,
                 ROWING_RADIUS_DEV, ROWING_HEIGHT, ROWING_HEIGHT_DEV, ROWING_PARTICLE_SIZE,
                 ROWING_PARTICLE_COUNT, false);
     }
 
-    public static void spawnBlockParticles(ServerWorld world, AetherSporeType sporeType,
+    public static void spawnBlockParticles(ServerWorld world, SporeType sporeType,
             BlockPos blockPos, double blockRadius, double heightMultiplier) {
         double x = blockPos.getX() + BLOCK_HALF_WIDTH;
         double y = blockPos.getY();
@@ -100,7 +100,7 @@ public final class SporeParticleSpawner {
                 BLOCK_PARTICLE_COUNT, false);
     }
 
-    public static void spawnSplashPotionParticles(ServerWorld world, AetherSporeType sporeType,
+    public static void spawnSplashPotionParticles(ServerWorld world, SporeType sporeType,
             Vec3d pos) {
         Vec3d centerPos = new Vec3d(pos.getX(), pos.getY() - SPLASH_POTION_HEIGHT * 0.5,
                 pos.getZ());
