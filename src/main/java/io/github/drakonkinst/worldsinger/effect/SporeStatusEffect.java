@@ -30,19 +30,19 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
     public static final float DEFAULT_DAMAGE = 15.0f;
     private static final int WATER_PER_ENTITY_BLOCK = 75;
-    private final AetherSporeType aetherSporeType;
+    private final AetherSporeType sporeType;
     private final RegistryKey<DamageType> damageType;
     private final float damageAmount;
 
-    protected SporeStatusEffect(AetherSporeType aetherSporeType,
+    protected SporeStatusEffect(AetherSporeType sporeType,
             RegistryKey<DamageType> damageType) {
-        this(aetherSporeType, DEFAULT_DAMAGE, damageType);
+        this(sporeType, DEFAULT_DAMAGE, damageType);
     }
 
-    protected SporeStatusEffect(AetherSporeType aetherSporeType, float damageAmount,
+    protected SporeStatusEffect(AetherSporeType sporeType, float damageAmount,
             RegistryKey<DamageType> damageType) {
-        super(StatusEffectCategory.HARMFUL, aetherSporeType.getParticleColor());
-        this.aetherSporeType = aetherSporeType;
+        super(StatusEffectCategory.HARMFUL, sporeType.getParticleColor());
+        this.sporeType = sporeType;
         this.damageAmount = damageAmount;
         this.damageType = damageType;
     }
@@ -58,6 +58,15 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         if (!SporeParticleManager.sporesCanAffect(entity)) {
             return;
         }
+
+        if (sporeType == AetherSporeType.SUNLIGHT) {
+            if (!entity.isFireImmune()) {
+                entity.setOnFireFor(15);
+            }
+            // TODO: Do we want to play lava sound on damage?
+            entity.setFireTicks(entity.getFireTicks() + 1);
+        }
+
         boolean wasDamaged = entity.damage(ModDamageTypes.of(entity.getWorld(), damageType),
                 damageAmount);
         if (wasDamaged && entity.isDead()) {
@@ -67,7 +76,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
     private void onDeathEffect(LivingEntity entity) {
         World world = entity.getWorld();
-        if (aetherSporeType == AetherSporeType.VERDANT) {
+        if (sporeType == AetherSporeType.VERDANT) {
             // Fill with snare blocks
             this.growVerdantSpores(world, entity);
 
@@ -83,7 +92,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
                     ModFluidTags.VERDANT_SPORES);
             SporeGrowthSpawner.spawnVerdantSporeGrowth(world, startPos,
                     LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false, false);
-        } else if (aetherSporeType == AetherSporeType.CRIMSON) {
+        } else if (sporeType == AetherSporeType.CRIMSON) {
             this.growCrimsonSpores(world, entity);
 
             // Only spawn spore growth if in the spore sea
@@ -152,6 +161,6 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
     }
 
     public AetherSporeType getSporeType() {
-        return aetherSporeType;
+        return sporeType;
     }
 }
