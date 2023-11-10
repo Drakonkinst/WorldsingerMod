@@ -206,7 +206,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
 
         // If ShapeContext implements WorldShapeContext, use it to make the block solid
         // during stillings (mainly for entities). Otherwise, assume it is transparent.
-        if (fluidState.isStill() && context instanceof WorldShapeContext shapeContext) {
+        if (fluidState.isStill() && context instanceof WorldShapeContextAccess shapeContext) {
             World realWorld = shapeContext.worldsinger$getWorld();
             if (realWorld != null && !LumarSeethe.areSporesFluidized(realWorld)) {
                 return FluidShapes.VOXEL_SHAPES[fluidState.getLevel()];

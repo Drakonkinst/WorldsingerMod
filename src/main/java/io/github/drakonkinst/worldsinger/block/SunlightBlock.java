@@ -10,6 +10,7 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -38,7 +39,7 @@ public class SunlightBlock extends Block {
         return 15;
     };
 
-    private static final float DAMAGE_PER_TICK = 1.0f;
+    private static final float DAMAGE_PER_TICK = 4.0f;
 
     public SunlightBlock(Settings settings) {
         super(settings);
@@ -99,13 +100,18 @@ public class SunlightBlock extends Block {
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+        // Same damage and SFX as lava
         if (!entity.isFireImmune()) {
-            entity.setFireTicks(entity.getFireTicks() + 1);
-            if (entity.getFireTicks() == 0) {
-                entity.setOnFireFor(8);
-            }
+            entity.setOnFireFor(15);
         }
-        entity.damage(world.getDamageSources().inFire(), DAMAGE_PER_TICK);
+
+        // TODO: Can change damage type to Sunlight-specific one
+        if (entity.damage(world.getDamageSources().inFire(), DAMAGE_PER_TICK)) {
+            entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f,
+                    2.0f + world.getRandom().nextFloat() * 0.4f);
+        }
+
+        // Slows you like a liquid
         entity.slowMovement(state, new Vec3d(0.5, 0.8, 0.5));
         super.onEntityCollision(state, world, pos, entity);
     }

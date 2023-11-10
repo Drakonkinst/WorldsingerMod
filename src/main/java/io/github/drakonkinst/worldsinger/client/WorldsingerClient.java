@@ -1,18 +1,16 @@
 package io.github.drakonkinst.worldsinger.client;
 
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.client.dimension.ModDimensionEffects;
+import io.github.drakonkinst.worldsinger.client.registry.ModFluidRenderers;
+import io.github.drakonkinst.worldsinger.client.registry.ModModelPredicates;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
-import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
-import io.github.drakonkinst.worldsinger.worldgen.dimension.ModDimensionEffects;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
@@ -24,50 +22,7 @@ public class WorldsingerClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         // Register fluids
-        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.VERDANT_SPORES,
-                ModFluids.FLOWING_VERDANT_SPORES,
-                new SimpleFluidRenderHandler(
-                        Worldsinger.id("block/verdant_spore_block"),
-                        Worldsinger.id("block/verdant_spore_sea_flow")
-                ));
-        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.DEAD_SPORES,
-                ModFluids.FLOWING_DEAD_SPORES,
-                new SimpleFluidRenderHandler(
-                        Worldsinger.id("block/dead_spore_block"),
-                        Worldsinger.id("block/dead_spore_sea_flow")
-                ));
-        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.CRIMSON_SPORES,
-                ModFluids.FLOWING_CRIMSON_SPORES,
-                new SimpleFluidRenderHandler(
-                        Worldsinger.id("block/crimson_spore_block"),
-                        Worldsinger.id("block/crimson_spore_sea_flow")
-                ));
-        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.ZEPHYR_SPORES,
-                ModFluids.FLOWING_ZEPHYR_SPORES,
-                new SimpleFluidRenderHandler(
-                        Worldsinger.id("block/zephyr_spore_block"),
-                        Worldsinger.id("block/zephyr_spore_sea_flow")
-                ));
-        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.SUNLIGHT_SPORES,
-                ModFluids.FLOWING_SUNLIGHT_SPORES,
-                new SimpleFluidRenderHandler(
-                        Worldsinger.id("block/sunlight_spore_block"),
-                        Worldsinger.id("block/sunlight_spore_sea_flow")
-                ));
-
-        // Register fluid render layer as translucent (needed to make boats cull properly)
-        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(),
-                ModFluids.VERDANT_SPORES,
-                ModFluids.FLOWING_VERDANT_SPORES,
-                ModFluids.DEAD_SPORES,
-                ModFluids.FLOWING_DEAD_SPORES,
-                ModFluids.CRIMSON_SPORES,
-                ModFluids.FLOWING_CRIMSON_SPORES,
-                ModFluids.ZEPHYR_SPORES,
-                ModFluids.FLOWING_ZEPHYR_SPORES,
-                ModFluids.SUNLIGHT_SPORES,
-                ModFluids.FLOWING_SUNLIGHT_SPORES
-        );
+        ModFluidRenderers.register();
 
         // Register block render layer
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
@@ -96,7 +51,8 @@ public class WorldsingerClient implements ClientModInitializer {
                 FlyingItemEntityRenderer::new);
 
         ModModelPredicates.register();
-
         ModDimensionEffects.initialize();
     }
+
+
 }

@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.worldgen.lumar;
+package io.github.drakonkinst.worldsinger.client.dimension;
 
 import io.github.drakonkinst.worldsinger.util.ModEnums;
 import net.fabricmc.api.EnvType;
