@@ -5,14 +5,12 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,7 +33,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements SporeFluidEntityStateAccess {
+public abstract class EntityMixin {
+
+    @Unique
+    private boolean isTouchingSporeSea = false;
 
     @ModifyReturnValue(method = "updateWaterState", at = @At("RETURN"))
     private boolean allowCustomFluidToPushEntity(boolean isTouchingAnyFluid) {
@@ -57,6 +58,7 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
         } else {
             this.isTouchingSporeSea = false;
         }
+        // TODO: Sunlight fluid logic
         return isTouchingAnyFluid;
     }
 
@@ -103,24 +105,11 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
         }
     }
 
-    @Override
-    public boolean worldsinger$isTouchingSporeSea() {
-        return !this.firstUpdate && this.fluidHeight.getDouble(ModFluidTags.AETHER_SPORES) > 0.0;
-    }
-
-    @Override
-    public boolean worldsinger$isInSporeSea() {
-        return !this.firstUpdate && this.isSubmergedIn(ModFluidTags.AETHER_SPORES);
-    }
-
     @Shadow
     public abstract boolean updateMovementInFluid(TagKey<Fluid> tag, double speed);
 
     @Shadow
     public abstract void extinguish();
-
-    @Shadow
-    public abstract boolean isSubmergedIn(TagKey<Fluid> fluidTag);
 
     @Shadow
     @Deprecated
@@ -146,11 +135,4 @@ public abstract class EntityMixin implements SporeFluidEntityStateAccess {
 
     @Shadow
     public float fallDistance;
-    @Shadow
-    protected boolean firstUpdate;
-    @Shadow
-    protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
-    @Unique
-    private boolean isTouchingSporeSea = false;
-
 }

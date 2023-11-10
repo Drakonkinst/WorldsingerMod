@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.mixin.entity.ai;
 
-import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.entity.ai.goal.SwimGoal;
@@ -26,9 +25,7 @@ public abstract class SwimGoalMixin {
         if (!LumarSeethe.areSporesFluidized(world)) {
             return;
         }
-        if (((SporeFluidEntityStateAccess) this.mob).worldsinger$isTouchingSporeSea()
-                && this.mob.getFluidHeight(
-                ModFluidTags.AETHER_SPORES) > this.mob.getSwimHeight()) {
+        if (this.mob.getFluidHeight(ModFluidTags.AETHER_SPORES) > this.mob.getSwimHeight()) {
             cir.setReturnValue(true);
         }
     }

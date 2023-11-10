@@ -8,6 +8,7 @@
     "accessor.BrewingRecipeRegistryAccessor",
     "accessor.BrewingStandBlockEntityAccessor",
     "accessor.ChunkNoiseSamplerInvoker",
+    "accessor.EntityAccessor",
     "accessor.FlowableFluidInvoker",
     "accessor.FluidBlockAccessor",
     "accessor.LandPathNodeMakerInvoker",

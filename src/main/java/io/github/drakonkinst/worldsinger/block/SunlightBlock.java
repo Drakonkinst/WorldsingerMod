@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
+import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.function.ToIntFunction;
 import net.minecraft.block.Block;
@@ -8,6 +9,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
@@ -22,7 +25,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 
-public class SunlightBlock extends Block {
+public class SunlightBlock extends StillFluidBlock {
 
     public static final MapCodec<SunlightBlock> CODEC = createCodec(SunlightBlock::new);
     public static final ToIntFunction<BlockState> STATE_TO_LUMINANCE = (state) -> {
@@ -42,14 +45,21 @@ public class SunlightBlock extends Block {
     private static final float DAMAGE_PER_TICK = 4.0f;
 
     public SunlightBlock(Settings settings) {
-        super(settings);
+        super(ModFluids.SUNLIGHT, settings);
         this.setDefaultState(this.getDefaultState()
                 .with(ModProperties.SUNLIGHT_LEVEL, 3));
     }
 
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(ModProperties.SUNLIGHT_LEVEL);
+    }
+
+    @Override
+    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos,
+            NavigationType type) {
+        return false;
     }
 
     @Override
@@ -90,6 +100,8 @@ public class SunlightBlock extends Block {
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        state.getFluidState().onRandomTick(world, pos, random);
+
         int level = state.get(ModProperties.SUNLIGHT_LEVEL);
         if (level > 1) {
             world.setBlockState(pos, state.with(ModProperties.SUNLIGHT_LEVEL, level - 1));
@@ -106,7 +118,7 @@ public class SunlightBlock extends Block {
         }
 
         // TODO: Can change damage type to Sunlight-specific one
-        if (entity.damage(world.getDamageSources().inFire(), DAMAGE_PER_TICK)) {
+        if (entity.damage(world.getDamageSources().lava(), DAMAGE_PER_TICK)) {
             entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f,
                     2.0f + world.getRandom().nextFloat() * 0.4f);
         }
@@ -114,6 +126,12 @@ public class SunlightBlock extends Block {
         // Slows you like a liquid
         entity.slowMovement(state, new Vec3d(0.5, 0.8, 0.5));
         super.onEntityCollision(state, world, pos, entity);
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        int sunlightLevel = state.get(ModProperties.SUNLIGHT_LEVEL);
+        return super.getFluidState(state).with(ModProperties.SUNLIGHT_LEVEL, sunlightLevel);
     }
 
     public MapCodec<? extends SunlightBlock> getCodec() {

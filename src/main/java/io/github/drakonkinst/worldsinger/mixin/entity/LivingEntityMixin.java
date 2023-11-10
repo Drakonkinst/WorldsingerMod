@@ -3,10 +3,10 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 import com.google.common.collect.ImmutableMap;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
-import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
+import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.Map;
@@ -73,7 +73,7 @@ public abstract class LivingEntityMixin extends Entity {
                 return;
             }
             // Vanilla fluids are handled in the method already, so just worry about custom ones
-            if (((SporeFluidEntityStateAccess) this).worldsinger$isTouchingSporeSea()) {
+            if (EntityUtil.isTouchingSporeSea(this)) {
                 FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
                 double maxFluidHeight = this.getFluidHeight(ModFluidTags.AETHER_SPORES);
                 double swimHeight = this.getSwimHeight();
@@ -87,13 +87,14 @@ public abstract class LivingEntityMixin extends Entity {
                     this.swimUpward(ModFluidTags.AETHER_SPORES);
                 }
             }
+            // TODO: Sunlight fluid logic
         }
     }
 
     @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isFallFlying()Z"), cancellable = true)
     private void injectCustomFluidPhysics(Vec3d movementInput, CallbackInfo ci) {
-        if (((SporeFluidEntityStateAccess) this).worldsinger$isTouchingSporeSea()
-                && this.shouldSwimInFluids()) {
+        // TODO: Sunlight fluid logic
+        if (EntityUtil.isTouchingSporeSea(this) && this.shouldSwimInFluids()) {
             boolean isFalling = this.getVelocity().y <= 0.0;
             double gravity = 0.08;
             if (isFalling && this.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
@@ -142,7 +143,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Unique
     private void checkSporeSeaEffects() {
-        if (((SporeFluidEntityStateAccess) this).worldsinger$isInSporeSea()) {
+        if (EntityUtil.isSubmergedInSporeSea(this)) {
             if ((LivingEntity) (Object) this instanceof PlayerEntity playerEntity
                     && (playerEntity.isCreative() || playerEntity.isSpectator())) {
                 return;

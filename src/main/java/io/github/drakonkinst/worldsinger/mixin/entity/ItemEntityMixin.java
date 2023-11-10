@@ -2,8 +2,8 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -16,9 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity {
-
-    @Unique
-    private static final double GRAVITY = -0.04;
 
     @Unique
     private static final float HEIGHT_OFFSET = 1.0f / 9.0f;
@@ -51,12 +48,13 @@ public abstract class ItemEntityMixin extends Entity {
     @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ItemEntity;hasNoGravity()Z"))
     private boolean injectCustomFluidCheck(ItemEntity instance, Operation<Boolean> original) {
         double height = this.getStandingEyeHeight() - HEIGHT_OFFSET;
-        if (((SporeFluidEntityStateAccess) this).worldsinger$isInSporeSea() && this.getFluidHeight(
+        if (EntityUtil.isSubmergedInSporeSea(this) && this.getFluidHeight(
                 ModFluidTags.AETHER_SPORES) > height) {
             this.applySporeSeaBuoyancy();
             // Skip original gravity
             return true;
         }
+        // TODO: Apply sunlight fluid buoyancy
         return original.call(instance);
     }
 

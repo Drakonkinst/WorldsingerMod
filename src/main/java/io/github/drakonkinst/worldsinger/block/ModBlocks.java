@@ -300,13 +300,15 @@ public final class ModBlocks {
             ), false);
     public static final Block SUNLIGHT = register("sunlight",
             new SunlightBlock(FabricBlockSettings.create()
-                    .replaceable()
-                    .strength(-1.0f, 3600000.8f)
+                    .strength(100.0f)
+                    .noCollision()
                     .dropsNothing()
+                    .liquid()
+                    .replaceable()
                     .ticksRandomly()
-                    .noBlockBreakParticles()
-                    .solidBlock(Blocks::never)
                     .luminance(SunlightBlock.STATE_TO_LUMINANCE)
+                    .mapColor(MapColor.YELLOW)
+                    .pistonBehavior(PistonBehavior.DESTROY)
             ), true);
 
     // Other

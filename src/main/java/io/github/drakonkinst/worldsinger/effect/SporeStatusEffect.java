@@ -4,11 +4,11 @@ import io.github.drakonkinst.worldsinger.block.LivingAetherSporeBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
-import io.github.drakonkinst.worldsinger.entity.SporeFluidEntityStateAccess;
 import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntity;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
+import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
@@ -82,7 +82,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
             // Only spawn spore growth if in the spore sea
             if (!world.getFluidState(entity.getBlockPos()).isIn(ModFluidTags.VERDANT_SPORES)
-                    && !((SporeFluidEntityStateAccess) entity).worldsinger$isTouchingSporeSea()) {
+                    && !EntityUtil.isSubmergedInSporeSea(entity)) {
                 return;
             }
 
@@ -97,7 +97,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
             // Only spawn spore growth if in the spore sea
             if (!world.getFluidState(entity.getBlockPos()).isIn(ModFluidTags.CRIMSON_SPORES)
-                    && !((SporeFluidEntityStateAccess) entity).worldsinger$isTouchingSporeSea()) {
+                    && !EntityUtil.isTouchingSporeSea(entity)) {
                 return;
             }
             int waterAmount = MathHelper.ceil(
