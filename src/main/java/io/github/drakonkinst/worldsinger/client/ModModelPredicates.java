@@ -21,7 +21,6 @@ public final class ModModelPredicates {
     // Note: Unlike vanilla model predicates, you must specify the mod ID namespace for these
     private static void registerModelPredicate(String id, ClampedModelPredicateProvider provider) {
         ModelPredicateProviderRegistry.register(Worldsinger.id(id), provider);
-
     }
 
     private ModModelPredicates() {}

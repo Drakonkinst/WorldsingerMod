@@ -32,8 +32,7 @@ public interface WaterloggableMixin {
             BlockState state, Fluid fluid, CallbackInfoReturnable<Boolean> cir) {
         if (state.contains(ModProperties.FLUIDLOGGED)) {
             cir.setReturnValue(state.get(ModProperties.FLUIDLOGGED) == 0
-                    && !state.get(Properties.WATERLOGGED)
-                    && (fluid.equals(Fluids.WATER) ||
+                    && !state.get(Properties.WATERLOGGED) && (fluid.equals(Fluids.WATER) ||
                     Fluidlogged.WATERLOGGABLE_FLUIDS.contains(Registries.FLUID.getId(fluid))));
         } else {
             cir.setReturnValue(!state.get(Properties.WATERLOGGED) && (fluid.equals(Fluids.WATER)));
@@ -78,9 +77,8 @@ public interface WaterloggableMixin {
     private void tryDrainAnyFluid(@Nullable PlayerEntity player, WorldAccess world, BlockPos pos,
             BlockState state,
             CallbackInfoReturnable<ItemStack> cir) {
-        if (state.get(Properties.WATERLOGGED) ||
-                (state.contains(ModProperties.FLUIDLOGGED)
-                        && state.get(ModProperties.FLUIDLOGGED) > 0)) {
+        if (state.get(Properties.WATERLOGGED) || (state.contains(ModProperties.FLUIDLOGGED)
+                && state.get(ModProperties.FLUIDLOGGED) > 0)) {
             Fluid fluid = Fluidlogged.getFluid(state);
             if (state.get(Properties.WATERLOGGED)) {
                 fluid = Fluids.WATER;

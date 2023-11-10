@@ -23,8 +23,7 @@ public abstract class ShapeCacheMixin {
             BlockView world, BlockPos pos, ShapeContext context) {
         return instance.getCollisionShape(
                 state.contains(ModProperties.FLUIDLOGGED)
-                        ? state.with(ModProperties.FLUIDLOGGED, 0)
-                        : state,
+                        ? state.with(ModProperties.FLUIDLOGGED, 0) : state,
                 world, pos, context
         );
     }

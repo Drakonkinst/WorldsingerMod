@@ -25,6 +25,7 @@ import net.minecraft.world.WorldView;
 
 public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmitting {
 
+    public static final int MAX_LEVEL = 8;
     public static final float FOG_START = 0.25f;
     public static final float FOG_END = 2.0f;
     public static final float HORIZONTAL_DRAG_MULTIPLIER = 0.7f;
@@ -148,7 +149,7 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
         if (!aboveFluidState.isEmpty() && aboveFluidState.getFluid() instanceof AetherSporeFluid
                 && ((FlowableFluidInvoker) this).worldsinger$receivesFlow(Direction.UP, world, pos,
                 state, posAbove, stateAbove)) {
-            return this.getFlowing(8, true);
+            return this.getFlowing(AetherSporeFluid.MAX_LEVEL, true);
         }
         int updatedFluidLevel = maxNeighboringFluidLevel - this.getLevelDecreasePerBlock(world);
         if (updatedFluidLevel <= 0) {

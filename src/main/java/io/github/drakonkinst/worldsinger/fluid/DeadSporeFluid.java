@@ -60,7 +60,7 @@ public abstract class DeadSporeFluid extends AetherSporeFluid {
 
         @Override
         public int getLevel(FluidState fluidState) {
-            return 8;
+            return AetherSporeFluid.MAX_LEVEL;
         }
 
         @Override

@@ -5,8 +5,10 @@ import net.minecraft.util.shape.VoxelShape;
 
 public final class FluidShapes {
 
-    private static final int FLUID_LEVEL_MAX = 9;
     public static final VoxelShape[] VOXEL_SHAPES = initVoxelShapes();
+
+    // Levels 1-8, and 0 for none
+    private static final int FLUID_LEVEL_MAX = 9;
 
     private static VoxelShape[] initVoxelShapes() {
         VoxelShape[] voxelShapes = new VoxelShape[FLUID_LEVEL_MAX];
