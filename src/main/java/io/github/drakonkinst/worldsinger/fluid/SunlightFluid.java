@@ -110,4 +110,9 @@ public class SunlightFluid extends StillFluid {
         }
         return world.getBlockState(pos).isBurnable();
     }
+
+    @Override
+    protected boolean hasRandomTicks() {
+        return true;
+    }
 }
