@@ -8,8 +8,8 @@ import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.BlockState;
@@ -203,7 +203,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
         int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
-        SporeGrowthSpawner.spawnVerdantSporeGrowth(this.getWorld(),
+        VerdantSporeManager.spawnVerdantSporeGrowth(this.getWorld(),
                 spawnPos, numSpores, numWater,
                 sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true);
         this.drainSpores(numSpores);

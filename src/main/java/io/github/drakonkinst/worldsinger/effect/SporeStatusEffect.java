@@ -10,8 +10,9 @@ import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
@@ -95,7 +96,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
                     entity.getWidth() * entity.getHeight() * WATER_PER_ENTITY_BLOCK);
             Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
                     ModFluidTags.VERDANT_SPORES);
-            SporeGrowthSpawner.spawnVerdantSporeGrowth(world, startPos,
+            VerdantSporeManager.spawnVerdantSporeGrowth(world, startPos,
                     LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false, false);
         } else if (sporeType == AetherSporeType.CRIMSON) {
             this.growCrimsonSpores(world, entity);
@@ -109,7 +110,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
                     entity.getWidth() * entity.getHeight() * WATER_PER_ENTITY_BLOCK);
             Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
                     ModFluidTags.CRIMSON_SPORES);
-            SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, startPos,
+            CrimsonSporeManager.spawnCrimsonSporeGrowth(world, startPos,
                     LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false, false);
         }
     }

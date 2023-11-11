@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -89,7 +89,7 @@ public class LivingCrimsonSpinesBlock extends CrimsonSpinesBlock implements Livi
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
         Direction facing = state.get(Properties.FACING);
         Int3 dir = new Int3(facing.getOffsetX(), facing.getOffsetY(), facing.getOffsetZ());
-        SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
+        CrimsonSporeManager.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
                 waterAmount, false, true, false, dir);
         return true;
     }

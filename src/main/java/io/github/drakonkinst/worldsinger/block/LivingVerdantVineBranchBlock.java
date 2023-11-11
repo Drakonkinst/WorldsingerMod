@@ -3,7 +3,7 @@ package io.github.drakonkinst.worldsinger.block;
 import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -87,7 +87,7 @@ public class LivingVerdantVineBranchBlock extends VerdantVineBranchBlock impleme
         }
 
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-        SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
+        VerdantSporeManager.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
                 waterAmount, false, true, false);
         return true;
     }

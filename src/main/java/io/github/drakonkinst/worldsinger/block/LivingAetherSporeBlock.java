@@ -2,11 +2,12 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.drakonkinst.worldsinger.fluid.SunlightSporeFluid;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
+import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
@@ -73,13 +74,13 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
             Random random) {
         world.removeBlock(pos, false);
         if (aetherSporeType == AetherSporeType.VERDANT) {
-            SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
+            VerdantSporeManager.spawnVerdantSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
                     waterAmount, true, false, false);
         } else if (aetherSporeType == AetherSporeType.CRIMSON) {
-            SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
+            CrimsonSporeManager.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
                     waterAmount, true, false, false);
         } else if (aetherSporeType == AetherSporeType.SUNLIGHT) {
-            SunlightSporeFluid.spreadSunlightBlocks(world, pos, waterAmount, random);
+            SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random);
         }
         // TODO: Add remaining spore logic
         return true;

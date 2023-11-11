@@ -3,7 +3,8 @@ package io.github.drakonkinst.worldsinger.block;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
+import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -67,10 +68,10 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
         int catalyzeValue = CATALYZE_VALUE_PER_LEVEL * state.get(LEVEL);
 
         if (sporeType == AetherSporeType.VERDANT) {
-            SporeGrowthSpawner.spawnVerdantSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
+            VerdantSporeManager.spawnVerdantSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
                     true, false, false);
         } else if (sporeType == AetherSporeType.CRIMSON) {
-            SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
+            CrimsonSporeManager.spawnCrimsonSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
                     true, false, false);
         }
         // TODO: Add other custom interactions

@@ -5,9 +5,10 @@ import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.item.SporeBottleItem;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -77,10 +78,10 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
         if (world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
             int waterAmount = WaterReactionManager.absorbWater(world, blockPos);
             if (sporeType == AetherSporeType.VERDANT) {
-                SporeGrowthSpawner.spawnVerdantSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
+                VerdantSporeManager.spawnVerdantSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
                         true, true, false);
             } else if (sporeType == AetherSporeType.CRIMSON) {
-                SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
+                CrimsonSporeManager.spawnCrimsonSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
                         true, true, false);
             }
             // TODO: Add remaining spore behavior
@@ -94,7 +95,7 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
                 BlockState stateAbove = world.getBlockState(posAbove);
                 if (stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) || stateAbove.isIn(
                         ModBlockTags.SPORES_CAN_BREAK)) {
-                    SporeGrowthSpawner.spawnVerdantSporeGrowth(world, posAbove.toCenterPos(),
+                    VerdantSporeManager.spawnVerdantSporeGrowth(world, posAbove.toCenterPos(),
                             SPORE_AMOUNT, waterAmount, true, true, false);
                 }
             } else if (sporeType == AetherSporeType.CRIMSON) {
@@ -102,7 +103,7 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
                 BlockState stateAbove = world.getBlockState(posAbove);
                 if (stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) || stateAbove.isIn(
                         ModBlockTags.SPORES_CAN_BREAK)) {
-                    SporeGrowthSpawner.spawnCrimsonSporeGrowth(world, posAbove.toCenterPos(),
+                    CrimsonSporeManager.spawnCrimsonSporeGrowth(world, posAbove.toCenterPos(),
                             SPORE_AMOUNT, waterAmount, true, true, false);
                 }
             }

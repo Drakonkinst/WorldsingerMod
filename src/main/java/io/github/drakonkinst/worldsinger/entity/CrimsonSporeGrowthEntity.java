@@ -9,7 +9,7 @@ import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeGrowthSpawner;
+import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -323,7 +323,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
         int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
-        SporeGrowthSpawner.spawnCrimsonSporeGrowth(this.getWorld(),
+        CrimsonSporeManager.spawnCrimsonSporeGrowth(this.getWorld(),
                 spawnPos, numSpores, numWater, sporeGrowthData.isInitialGrowth(),
                 sporeGrowthData.getStage() > 0, true, Int3.UP);
         this.drainSpores(numSpores);
