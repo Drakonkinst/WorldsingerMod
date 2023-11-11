@@ -21,6 +21,7 @@
     "block.CandleCakeBlockMixin",
     "block.EntityShapeContextMixin",
     "block.FluidBlockMixin",
+    "block.FurnaceFuelMixin",
     "block.LilyPadBlockMixin",
     "block.MagmaBlockMixin",
     "block.ShapeCacheMixin",
