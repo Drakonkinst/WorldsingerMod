@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -61,7 +62,12 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         if (AetherSporeFluidBlock.shouldFluidize(world.getBlockState(pos.down()))) {
             // If it should immediately become a liquid, do not spawn particles
             world.setBlockState(pos, this.getFluidizedBlock().getDefaultState());
-        } else if (world instanceof ServerWorld serverWorld) {
+            return;
+        }
+
+        // Only spawn particles server-side when not submerged in a fluid
+        if (world instanceof ServerWorld serverWorld && world.getFluidState(pos)
+                .isOf(Fluids.EMPTY)) {
             // Spawn particles based on fall distance
             int fallDistance = fallingBlockEntity.getFallingBlockPos().getY() - pos.getY();
             if (fallDistance >= 4) {
@@ -76,7 +82,8 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
 
     @Override
     public void onDestroyedOnLanding(World world, BlockPos pos, FallingBlockEntity entity) {
-        if (world instanceof ServerWorld serverWorld) {
+        if (world instanceof ServerWorld serverWorld && world.getFluidState(pos)
+                .isOf(Fluids.EMPTY)) {
             SporeParticleSpawner.spawnBlockParticles(serverWorld, aetherSporeType, pos, 2.5, 0.45);
         }
     }
