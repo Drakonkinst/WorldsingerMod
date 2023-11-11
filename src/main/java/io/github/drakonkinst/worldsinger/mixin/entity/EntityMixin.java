@@ -36,12 +36,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EntityMixin {
 
     @Unique
-    private boolean isTouchingSporeSea = false;
+    private boolean wasTouchingSporeSea = false;
 
     @ModifyReturnValue(method = "updateWaterState", at = @At("RETURN"))
     private boolean allowCustomFluidToPushEntity(boolean isTouchingAnyFluid) {
+        // All custom fluid logic should run every time this is called, no early returns.
+
         if (this.updateMovementInFluid(ModFluidTags.AETHER_SPORES, AetherSporeFluid.FLUID_SPEED)) {
-            if (!this.isTouchingSporeSea) {
+            if (!this.wasTouchingSporeSea) {
+                // Just entered spore sea
+                // This needs to run server-side since particles are not just client-side.
                 if (this.getWorld() instanceof ServerWorld serverWorld) {
                     Optional<SporeType> optionalSporeType = AetherSporeType.getFirstSporeTypeFromFluid(
                             getAllTouchingFluids());
@@ -53,12 +57,19 @@ public abstract class EntityMixin {
             }
             this.fallDistance = 0.0f;
             isTouchingAnyFluid = true;
-            this.isTouchingSporeSea = true;
+            this.wasTouchingSporeSea = true;
             this.extinguish();
         } else {
-            this.isTouchingSporeSea = false;
+            this.wasTouchingSporeSea = false;
         }
-        // TODO: Sunlight fluid logic
+
+        // Sunlight fluid is still and does not push entities, but necessary to update
+        // fluidHeight trackers and other logic
+        if (this.updateMovementInFluid(ModFluidTags.SUNLIGHT, 0)) {
+            this.fallDistance = 0.0f;
+            isTouchingAnyFluid = true;
+        }
+
         return isTouchingAnyFluid;
     }
 

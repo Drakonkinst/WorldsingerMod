@@ -20,6 +20,10 @@ import net.minecraft.world.WorldView;
 
 public class SunlightFluid extends StillFluid {
 
+    // Same fluid properties as lava
+    public static final float HORIZONTAL_DRAG_MULTIPLIER = 0.5f;
+    public static final float VERTICAL_DRAG_MULTIPLIER = 0.8f;
+
     @Override
     protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
         super.appendProperties(builder);

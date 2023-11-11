@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.fluid.SunlightFluid;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
@@ -21,6 +22,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -69,38 +71,49 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "tickMovement", at = @At("RETURN"))
     private void allowCustomFluidSwimming(CallbackInfo ci) {
         if (this.jumping && this.shouldSwimInFluids()) {
-            if (this.isOnGround()) {
-                return;
-            }
-            // Vanilla fluids are handled in the method already, so just worry about custom ones
-            if (EntityUtil.isTouchingSporeSea(this)) {
-                FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
-                double maxFluidHeight = this.getFluidHeight(ModFluidTags.AETHER_SPORES);
-                double swimHeight = this.getSwimHeight();
+            double swimHeight = this.getSwimHeight();
+            FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
 
-                // During stillings, this block does not act like a liquid and can climb out at any height
-                boolean canSwim =
-                        maxFluidHeight > swimHeight || (maxFluidHeight > 0.0 && this.canWalkOnFluid(
-                                fluidState));
-                if (canSwim) {
-                    // Swimming in liquid is the same velocity regardless of liquid, unless we decide to override the swimUpward function
-                    this.swimUpward(ModFluidTags.AETHER_SPORES);
-                }
+            // Swimming in liquid is the same velocity regardless of liquid, unless we decide to override the swimUpward function
+            // Prevent swimUpwards() from being called more than once if in multiple distinct fluids
+            if (this.canSwimUpwards(FluidTags.WATER, swimHeight, fluidState)
+                    || this.canSwimUpwards(FluidTags.LAVA, swimHeight, fluidState)) {
+                // Do nothing, already swimming upwards
+            } else if (this.canSwimUpwards(ModFluidTags.AETHER_SPORES, swimHeight, fluidState)) {
+                this.swimUpward(ModFluidTags.AETHER_SPORES);
+            } else if (this.canSwimUpwards(ModFluidTags.SUNLIGHT, swimHeight, fluidState)) {
+                this.swimUpward(ModFluidTags.SUNLIGHT);
             }
-            // TODO: Sunlight fluid logic
         }
+    }
+
+    private boolean canSwimUpwards(TagKey<Fluid> fluidTag, double swimHeight,
+            FluidState fluidState) {
+        double fluidHeight = this.getFluidHeight(fluidTag);
+        if (fluidHeight > 0.0) {
+            // During stillings, spore fluids do not act like a fluid and can climb out at any height
+            boolean canSwim =
+                    !this.isOnGround() || fluidHeight > swimHeight || this.canWalkOnFluid(
+                            fluidState);
+            return canSwim;
+        }
+        return false;
     }
 
     @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isFallFlying()Z"), cancellable = true)
     private void injectCustomFluidPhysics(Vec3d movementInput, CallbackInfo ci) {
-        // TODO: Sunlight fluid logic
-        if (EntityUtil.isTouchingSporeSea(this) && this.shouldSwimInFluids()) {
+        FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
+
+        if (!this.shouldSwimInFluids()) {
+            return;
+        }
+
+        if (EntityUtil.isTouchingSporeSea(this)) {
             boolean isFalling = this.getVelocity().y <= 0.0;
             double gravity = 0.08;
             if (isFalling && this.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
                 gravity = 0.01;
             }
-            FluidState fluidState = this.getWorld().getFluidState(this.getBlockPos());
             float horizontalMovementMultiplier = AetherSporeFluid.HORIZONTAL_DRAG_MULTIPLIER;
             float verticalMovementMultiplier = AetherSporeFluid.VERTICAL_DRAG_MULTIPLIER;
             if (this.canWalkOnFluid(fluidState)) {
@@ -111,34 +124,56 @@ public abstract class LivingEntityMixin extends Entity {
                 movementInput = new Vec3d(0.0, movementInput.getY(), 0.0);
             }
 
-            double currYPos = this.getY();
-            this.updateVelocity(0.02f, movementInput);
-            this.move(MovementType.SELF, this.getVelocity());
-            Vec3d vec3d = this.getVelocity();
-
-            if (this.horizontalCollision && this.isClimbing()) {
-                vec3d = new Vec3d(vec3d.x, 0.2, vec3d.z);
+            this.applyFluidPhysics(movementInput, horizontalMovementMultiplier,
+                    verticalMovementMultiplier, gravity, isFalling);
+            ci.cancel();
+        } else if (EntityUtil.isTouchingFluid(this, ModFluidTags.SUNLIGHT)
+                && !this.canWalkOnFluid(fluidState)) {
+            boolean isFalling = this.getVelocity().y <= 0.0;
+            double gravity = 0.08;
+            if (isFalling && this.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
+                gravity = 0.01;
             }
 
-            this.setVelocity(
-                    vec3d.multiply(horizontalMovementMultiplier, verticalMovementMultiplier,
-                            horizontalMovementMultiplier));
-            vec3d = this.applyFluidMovingSpeed(gravity, isFalling, this.getVelocity());
-            this.setVelocity(vec3d);
+            float horizontalMovementMultiplier = SunlightFluid.HORIZONTAL_DRAG_MULTIPLIER;
+            float verticalMovementMultiplier = SunlightFluid.VERTICAL_DRAG_MULTIPLIER;
 
-            // Apply gravity
-            if (!this.hasNoGravity()) {
-                this.setVelocity(this.getVelocity().add(0.0, -gravity / 4.0, 0.0));
-            }
-            if (this.horizontalCollision && this.doesNotCollide(vec3d.x,
-                    vec3d.y + (double) 0.6f - this.getY() + currYPos, vec3d.z)) {
-                this.setVelocity(vec3d.x, 0.3f, vec3d.z);
-            }
-
-            // Remainder of method
-            updateLimbs(this instanceof Flutterer);
+            this.applyFluidPhysics(movementInput, horizontalMovementMultiplier,
+                    verticalMovementMultiplier, gravity, isFalling);
             ci.cancel();
         }
+    }
+
+    @Unique
+    private void applyFluidPhysics(Vec3d movementInput, float horizontalMovementMultiplier,
+            float verticalMovementMultiplier, double gravity, boolean isFalling) {
+        double currYPos = this.getY();
+        this.updateVelocity(0.02f, movementInput);
+        this.move(MovementType.SELF, this.getVelocity());
+        Vec3d vec3d = this.getVelocity();
+
+        if (this.horizontalCollision && this.isClimbing()) {
+            vec3d = new Vec3d(vec3d.x, 0.2, vec3d.z);
+        }
+
+        this.setVelocity(
+                vec3d.multiply(horizontalMovementMultiplier, verticalMovementMultiplier,
+                        horizontalMovementMultiplier));
+        vec3d = this.applyFluidMovingSpeed(gravity, isFalling, this.getVelocity());
+        this.setVelocity(vec3d);
+
+        // Apply gravity
+        if (!this.hasNoGravity()) {
+            this.setVelocity(this.getVelocity().add(0.0, -gravity / 4.0, 0.0));
+        }
+
+        if (this.horizontalCollision && this.doesNotCollide(vec3d.x,
+                vec3d.y + (double) 0.6f - this.getY() + currYPos, vec3d.z)) {
+            this.setVelocity(vec3d.x, 0.3f, vec3d.z);
+        }
+
+        // Remainder of method
+        updateLimbs(this instanceof Flutterer);
     }
 
     @Unique
