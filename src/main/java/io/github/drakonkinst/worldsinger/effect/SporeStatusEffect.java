@@ -20,6 +20,7 @@ import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -63,12 +64,16 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
             if (!entity.isFireImmune()) {
                 entity.setOnFireFor(15);
             }
-            // TODO: Do we want to play lava sound on damage?
             entity.setFireTicks(entity.getFireTicks() + 1);
         }
 
         boolean wasDamaged = entity.damage(ModDamageTypes.of(entity.getWorld(), damageType),
                 damageAmount);
+        if (wasDamaged && sporeType == AetherSporeType.SUNLIGHT) {
+            // Play lava damage sound
+            entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f,
+                    2.0f + entity.getWorld().getRandom().nextFloat() * 0.4f);
+        }
         if (wasDamaged && entity.isDead()) {
             onDeathEffect(entity);
         }

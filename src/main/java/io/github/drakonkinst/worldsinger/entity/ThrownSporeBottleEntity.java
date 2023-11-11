@@ -26,7 +26,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-// TODO: Add dispenser logic
 public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingItemEntity {
 
     private static final int SPORE_AMOUNT = 75;
