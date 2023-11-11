@@ -7,22 +7,17 @@ import java.util.function.ToIntFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
 
 public class SunlightBlock extends StillFluidBlock {
 
@@ -61,40 +56,32 @@ public class SunlightBlock extends StillFluidBlock {
         return false;
     }
 
-    @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
-            ShapeContext context) {
-        return context.isHolding(ModBlocks.SUNLIGHT.asItem()) ? VoxelShapes.fullCube()
-                : VoxelShapes.empty();
-    }
-
-    @Override
-    public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos,
-            ShapeContext context) {
-        return VoxelShapes.empty();
-    }
-
-    @Override
-    public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
-        return VoxelShapes.empty();
-    }
+    // @Override
+    // public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
+    //         ShapeContext context) {
+    //     return context.isHolding(ModBlocks.SUNLIGHT.asItem()) ? VoxelShapes.fullCube()
+    //             : VoxelShapes.empty();
+    // }
+    //
+    // @Override
+    // public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos,
+    //         ShapeContext context) {
+    //     return VoxelShapes.empty();
+    // }
+    //
+    // @Override
+    // public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
+    //     return VoxelShapes.empty();
+    // }
 
     @Override
     public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
-        if (stateFrom.isOf(this)) {
-            return true;
-        }
-        return super.isSideInvisible(state, stateFrom, direction);
+        return stateFrom.isOf(this);
     }
 
     @Override
     public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
         return 1.0f;
-    }
-
-    @Override
-    public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state) {
-        return this.asItem().getDefaultStack();
     }
 
     @Override
@@ -122,8 +109,6 @@ public class SunlightBlock extends StillFluidBlock {
                     2.0f + world.getRandom().nextFloat() * 0.4f);
         }
 
-        // Slows you like a liquid
-        // entity.slowMovement(state, new Vec3d(0.5, 0.8, 0.5));
         super.onEntityCollision(state, world, pos, entity);
     }
 

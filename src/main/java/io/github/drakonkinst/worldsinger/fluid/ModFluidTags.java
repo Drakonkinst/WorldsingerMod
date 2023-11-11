@@ -17,6 +17,8 @@ public final class ModFluidTags {
     public static final TagKey<Fluid> MIDNIGHT_SPORES = ModFluidTags.of("midnight_spores");
     public static final TagKey<Fluid> DEAD_SPORES = ModFluidTags.of("dead_spores");
     public static final TagKey<Fluid> SUNLIGHT = ModFluidTags.of("sunlight");
+    public static final TagKey<Fluid> AETHER_SPORES_OR_SUNLIGHT = ModFluidTags.of(
+            "aether_spores_or_sunlight");
 
     private ModFluidTags() {}
 

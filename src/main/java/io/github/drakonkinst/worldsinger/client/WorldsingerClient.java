@@ -2,7 +2,7 @@ package io.github.drakonkinst.worldsinger.client;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.client.dimension.ModDimensionEffects;
-import io.github.drakonkinst.worldsinger.client.registry.ModFluidRenderers;
+import io.github.drakonkinst.worldsinger.client.fluid.ModFluidRenderers;
 import io.github.drakonkinst.worldsinger.client.registry.ModModelPredicates;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;

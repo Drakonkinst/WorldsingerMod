@@ -309,7 +309,7 @@ public final class ModBlocks {
                     .luminance(SunlightBlock.STATE_TO_LUMINANCE)
                     .mapColor(MapColor.YELLOW)
                     .pistonBehavior(PistonBehavior.DESTROY)
-            ), true);
+            ), false);
 
     // Other
     public static final Block MAGMA_VENT = register("magma_vent",

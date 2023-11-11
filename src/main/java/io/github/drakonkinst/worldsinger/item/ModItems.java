@@ -288,10 +288,10 @@ public final class ModItems {
             itemGroup.add(ModBlocks.SILVER_BLOCK);
             itemGroup.add(ModBlocks.STEEL_BLOCK);
 
-            itemGroup.add(ModItems.VERDANT_SPORES_BOTTLE);
-            itemGroup.add(ModItems.VERDANT_SPORES_SPLASH_BOTTLE);
             itemGroup.add(ModItems.DEAD_SPORES_BOTTLE);
             itemGroup.add(ModItems.DEAD_SPORES_SPLASH_BOTTLE);
+            itemGroup.add(ModItems.VERDANT_SPORES_BOTTLE);
+            itemGroup.add(ModItems.VERDANT_SPORES_SPLASH_BOTTLE);
             itemGroup.add(ModItems.CRIMSON_SPORES_BOTTLE);
             itemGroup.add(ModItems.CRIMSON_SPORES_SPLASH_BOTTLE);
             itemGroup.add(ModItems.ZEPHYR_SPORES_BOTTLE);

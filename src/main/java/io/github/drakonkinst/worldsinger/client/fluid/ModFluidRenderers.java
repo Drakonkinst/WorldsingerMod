@@ -1,8 +1,7 @@
-package io.github.drakonkinst.worldsinger.client.registry;
+package io.github.drakonkinst.worldsinger.client.fluid;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
-import io.github.drakonkinst.worldsinger.fluid.SingleFluidRenderHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -25,7 +24,7 @@ public final class ModFluidRenderers {
                 "block/zephyr_spore_block", "block/zephyr_spore_sea_flow");
         registerFluidRenderer(ModFluids.SUNLIGHT_SPORES, ModFluids.FLOWING_SUNLIGHT_SPORES,
                 "block/sunlight_spore_block", "block/sunlight_spore_sea_flow");
-        registerFluidRenderer(ModFluids.SUNLIGHT, "block/sunlight");
+        registerFluidRenderer(ModFluids.SUNLIGHT, "block/sunlight", false);
     }
 
     private static void registerFluidRenderer(Fluid still, Fluid flow, String stillTexturePath,
@@ -41,10 +40,10 @@ public final class ModFluidRenderers {
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), still, flow);
     }
 
-    private static void registerFluidRenderer(Fluid fluid, String texturePath) {
+    private static void registerFluidRenderer(Fluid fluid, String texturePath, boolean shaded) {
         // Register render handler
         FluidRenderHandlerRegistry.INSTANCE.register(fluid,
-                new SingleFluidRenderHandler(Worldsinger.id(texturePath)));
+                new StillFluidRenderHandler(Worldsinger.id(texturePath), shaded));
     }
 
     private ModFluidRenderers() {}

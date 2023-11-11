@@ -29,7 +29,8 @@ public class ExtendedRaycastContext extends RaycastContext {
     }
 
     public enum ExtendedFluidHandling {
-        SPORE_SEA(state -> state.isIn(ModFluidTags.AETHER_SPORES) && state.isStill());
+        // Also includes Sunlight blocks for gameplay cohesion
+        SPORE_SEA(state -> state.isIn(ModFluidTags.AETHER_SPORES_OR_SUNLIGHT) && state.isStill());
 
         private final Predicate<FluidState> predicate;
 
