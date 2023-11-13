@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.fluid;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
@@ -75,8 +76,17 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
             if (neighborState.isIn(FluidTags.WATER)) {
                 if (state.getBlock() instanceof FluidBlock && world instanceof World realWorld) {
                     WaterReactionManager.catalyzeAroundWater(realWorld, pos);
-                    world.setBlockState(pos, ModBlocks.VERDANT_VINE_BLOCK.getDefaultState().with(
-                            ModProperties.CATALYZED, true), Block.NOTIFY_ALL);
+                    SporeType sporeType = this.getSporeType();
+                    if (sporeType == AetherSporeType.VERDANT) {
+                        world.setBlockState(pos,
+                                ModBlocks.VERDANT_VINE_BLOCK.getDefaultState().with(
+                                        ModProperties.CATALYZED, true), Block.NOTIFY_ALL);
+                    } else if (sporeType == AetherSporeType.CRIMSON) {
+                        world.setBlockState(pos, ModBlocks.CRIMSON_GROWTH.getDefaultState().with(
+                                ModProperties.CATALYZED, true), Block.NOTIFY_ALL);
+                    }
+                    // TODO: Other spores?
+
                     return;
                 }
             }

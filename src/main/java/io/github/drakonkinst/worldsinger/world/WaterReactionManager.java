@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -26,7 +27,7 @@ public final class WaterReactionManager {
 
     private static final int WATER_AMOUNT_STILL = 250;
     private static final int WATER_AMOUNT_FLOWING = 25;
-    private static final int MAX_WATER_AMOUNT = 1500;
+    private static final int MAX_WATER_AMOUNT = 2500;
     private static final int MAX_ITERATIONS = 129;
     private static final int MAX_DEPTH = 32;
 
@@ -38,7 +39,7 @@ public final class WaterReactionManager {
     public static void catalyzeAroundWater(World world, BlockPos waterPos) {
         // TODO: Possibly collect nearby water reactive blocks/fluids during the draining process
         // for more natural results
-        int waterAmount = absorbWater(world, waterPos);
+        int waterAmount = WaterReactionManager.absorbWater(world, waterPos);
         if (waterAmount <= 0) {
             return;
         }
@@ -70,7 +71,7 @@ public final class WaterReactionManager {
     }
 
     public static int absorbWater(World world, BlockPos centerPos) {
-        ArrayDeque<IntObjectPair<BlockPos>> queue = new ArrayDeque<>();
+        Queue<IntObjectPair<BlockPos>> queue = new ArrayDeque<>();
         LongOpenHashSet visited = new LongOpenHashSet();
         queue.add(IntObjectPair.of(0, centerPos));
         int numIterations = 0;
@@ -83,7 +84,7 @@ public final class WaterReactionManager {
             if (!visited.add(posId)) {
                 continue;
             }
-            int waterAmount = absorbWaterAtBlock(world, pos);
+            int waterAmount = WaterReactionManager.absorbWaterAtBlock(world, pos);
             if (waterAmount <= 0) {
                 // TODO: Check if it's water-reactive?
                 continue;
