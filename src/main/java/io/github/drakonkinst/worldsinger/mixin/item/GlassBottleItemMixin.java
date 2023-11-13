@@ -5,7 +5,7 @@ import io.github.drakonkinst.worldsinger.block.AetherSporeBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -78,8 +78,8 @@ public abstract class GlassBottleItemMixin extends Item {
 
     @Unique
     private void fillWithSporeBottle(World world, PlayerEntity user, ItemStack itemStack,
-            BlockPos blockPos,
-            AetherSporeType sporeType, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
+            BlockPos blockPos, SporeType sporeType,
+            CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
         world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundEvents.BLOCK_SAND_BREAK,
                 SoundCategory.NEUTRAL, 1.0f, 1.0f);
         world.emitGameEvent(user, GameEvent.FLUID_PICKUP, blockPos);

@@ -194,7 +194,7 @@ public final class SporeParticleManager {
         // Retrieve status effect
         StatusEffect statusEffect = sporeType.getStatusEffect();
         if (statusEffect == null) {
-            Worldsinger.LOGGER.error("AetherSporeType does not have associated status effect: "
+            Worldsinger.LOGGER.error("SporeType does not have associated status effect: "
                     + sporeType.asString());
             return;
         }

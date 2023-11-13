@@ -3,9 +3,9 @@ package io.github.drakonkinst.worldsinger.fluid;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -27,7 +27,7 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
     public static final int CATALYZE_VALUE_STILL = 250;
     public static final int CATALYZE_VALUE_FLOWING = 25;
 
-    public LivingAetherSporeFluid(AetherSporeType sporeType) {
+    public LivingAetherSporeFluid(SporeType sporeType) {
         super(sporeType);
     }
 

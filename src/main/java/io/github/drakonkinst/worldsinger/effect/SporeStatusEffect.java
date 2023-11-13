@@ -12,6 +12,7 @@ import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -32,16 +33,15 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
     public static final float DEFAULT_DAMAGE = 15.0f;
     private static final int WATER_PER_ENTITY_BLOCK = 75;
-    private final AetherSporeType sporeType;
+    private final SporeType sporeType;
     private final RegistryKey<DamageType> damageType;
     private final float damageAmount;
 
-    protected SporeStatusEffect(AetherSporeType sporeType,
-            RegistryKey<DamageType> damageType) {
+    protected SporeStatusEffect(SporeType sporeType, RegistryKey<DamageType> damageType) {
         this(sporeType, DEFAULT_DAMAGE, damageType);
     }
 
-    protected SporeStatusEffect(AetherSporeType sporeType, float damageAmount,
+    protected SporeStatusEffect(SporeType sporeType, float damageAmount,
             RegistryKey<DamageType> damageType) {
         super(StatusEffectCategory.HARMFUL, sporeType.getParticleColor());
         this.sporeType = sporeType;
@@ -166,7 +166,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         }
     }
 
-    public AetherSporeType getSporeType() {
+    public SporeType getSporeType() {
         return sporeType;
     }
 }

@@ -3,9 +3,10 @@ package io.github.drakonkinst.worldsinger.fluid;
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
 import io.github.drakonkinst.worldsinger.mixin.accessor.FlowableFluidInvoker;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.util.ColorUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -35,19 +36,19 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
     // Water uses the value 0.014, and lava uses 0.007 in the Nether and 0.0023 otherwise
     public static final double FLUID_SPEED = 0.012;
 
-    private final AetherSporeType sporeType;
+    private final SporeType sporeType;
     private final float fogRed;
     private final float fogGreen;
     private final float fogBlue;
 
-    public AetherSporeFluid(AetherSporeType sporeType) {
+    public AetherSporeFluid(SporeType sporeType) {
         super();
         this.sporeType = sporeType;
 
         int color = sporeType.getColor();
-        this.fogRed = AetherSporeType.getNormalizedRed(color);
-        this.fogGreen = AetherSporeType.getNormalizedGreen(color);
-        this.fogBlue = AetherSporeType.getNormalizedBlue(color);
+        this.fogRed = ColorUtil.getNormalizedRed(color);
+        this.fogGreen = ColorUtil.getNormalizedGreen(color);
+        this.fogBlue = ColorUtil.getNormalizedBlue(color);
     }
 
     @Override
@@ -192,7 +193,7 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
         return fogBlue;
     }
 
-    public AetherSporeType getSporeType() {
+    public SporeType getSporeType() {
         return sporeType;
     }
 }

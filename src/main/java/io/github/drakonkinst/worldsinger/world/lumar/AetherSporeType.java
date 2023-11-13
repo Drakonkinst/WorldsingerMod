@@ -54,7 +54,7 @@ public enum AetherSporeType implements SporeType {
 
     public static final BasicCodec<AetherSporeType> CODEC = StringIdentifiable.createCodec(
             AetherSporeType::values);
-    private static final float MAX_COLOR_VALUE = 255.0f;
+
     private final String name;
     private final int color;
     private final int particleColor;
@@ -103,21 +103,6 @@ public enum AetherSporeType implements SporeType {
             }
         }
         return Optional.empty();
-    }
-
-    public static float getNormalizedRed(int color) {
-        int red = (color >> 16) & 0xFF;
-        return red / MAX_COLOR_VALUE;
-    }
-
-    public static float getNormalizedGreen(int color) {
-        int green = (color >> 8) & 0xFF;
-        return green / MAX_COLOR_VALUE;
-    }
-
-    public static float getNormalizedBlue(int color) {
-        int blue = color & 0xFF;
-        return blue / MAX_COLOR_VALUE;
     }
 
     @Override

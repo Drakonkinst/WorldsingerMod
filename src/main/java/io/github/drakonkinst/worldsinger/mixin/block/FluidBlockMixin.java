@@ -7,6 +7,7 @@ import io.github.drakonkinst.worldsinger.fluid.LivingAetherSporeFluid;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
@@ -39,7 +40,7 @@ public abstract class FluidBlockMixin {
             return;
         }
 
-        AetherSporeType sporeType = sporeFluid.getSporeType();
+        SporeType sporeType = sporeFluid.getSporeType();
 
         for (Direction direction : FLOW_DIRECTIONS) {
             BlockPos neighborPos = pos.offset(direction.getOpposite());
