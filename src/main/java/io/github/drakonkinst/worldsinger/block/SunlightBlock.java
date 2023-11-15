@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.block;
 import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.function.ToIntFunction;
 import net.minecraft.block.Block;
@@ -38,6 +39,18 @@ public class SunlightBlock extends StillFluidBlock {
     };
 
     private static final float DAMAGE_PER_TICK = 4.0f;
+
+    private static boolean isTouchingAnyWater(World world, BlockPos pos) {
+        BlockPos.Mutable neighborPos = new BlockPos.Mutable();
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            neighborPos.set(pos.add(direction.getOffsetX(), direction.getOffsetY(),
+                    direction.getOffsetZ()));
+            if (world.isWater(neighborPos)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public SunlightBlock(Settings settings) {
         super(ModFluids.SUNLIGHT, settings);
@@ -92,7 +105,8 @@ public class SunlightBlock extends StillFluidBlock {
         int level = state.get(ModProperties.SUNLIGHT_LEVEL);
         if (level > 1) {
             world.setBlockState(pos, state.with(ModProperties.SUNLIGHT_LEVEL, level - 1));
-        } else {
+        } else if (!SunlightBlock.isTouchingAnyWater(world, pos)) {
+            // Will not decay fully if touching water, to halt unnecessary re-catalyzation
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
     }

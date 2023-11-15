@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import com.google.common.base.Suppliers;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import java.util.function.Supplier;
 import net.minecraft.block.Block;
@@ -9,7 +10,6 @@ import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +21,7 @@ public class FillWithSporeFluidCauldronBehavior extends FillWithFluidCauldronBeh
 
     public FillWithSporeFluidCauldronBehavior(Supplier<Block> cauldronBlock,
             Supplier<Block> deadSporeCauldronBlock) {
-        super(cauldronBlock);
+        super(cauldronBlock, ModSoundEvents.ITEM_BUCKET_EMPTY_AETHER_SPORE);
         this.deadSporeCauldronBlock = Suppliers.memoize(deadSporeCauldronBlock::get);
     }
 
@@ -31,7 +31,7 @@ public class FillWithSporeFluidCauldronBehavior extends FillWithFluidCauldronBeh
         if (SporeKillingManager.isSporeKillingBlockNearby(world, pos)) {
             return CauldronBehavior.fillCauldron(world, pos, player, hand, stack,
                     deadSporeCauldronBlock.get().getDefaultState()
-                            .with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY);
+                            .with(LeveledCauldronBlock.LEVEL, 3), fillCauldronSound);
         }
         return super.interact(state, world, pos, player, hand, stack);
     }

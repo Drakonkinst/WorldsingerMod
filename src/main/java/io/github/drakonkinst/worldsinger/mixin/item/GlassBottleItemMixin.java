@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.block.AetherSporeBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,7 +14,6 @@ import net.minecraft.item.GlassBottleItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -80,7 +80,8 @@ public abstract class GlassBottleItemMixin extends Item {
     private void fillWithSporeBottle(World world, PlayerEntity user, ItemStack itemStack,
             BlockPos blockPos, SporeType sporeType,
             CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
-        world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundEvents.BLOCK_SAND_BREAK,
+        world.playSound(user, user.getX(), user.getY(), user.getZ(),
+                ModSoundEvents.ITEM_BOTTLE_FILL_AETHER_SPORE,
                 SoundCategory.NEUTRAL, 1.0f, 1.0f);
         world.emitGameEvent(user, GameEvent.FLUID_PICKUP, blockPos);
         cir.setReturnValue(TypedActionResult.success(

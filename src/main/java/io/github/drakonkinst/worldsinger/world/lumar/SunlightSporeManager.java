@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.world.lumar;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import it.unimi.dsi.fastutil.ints.IntObjectImmutablePair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -17,7 +18,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.Direction;
@@ -62,29 +62,30 @@ public final class SunlightSporeManager {
         LongSet blocksProcessed = new LongOpenHashSet();
         Mutable mutable = new Mutable();
         Mutable mutableDown = new Mutable();
-        MutableBoolean anyExtinguished = new MutableBoolean();
+        MutableBoolean anyEvaporated = new MutableBoolean();
 
         for (BlockPos pos : affectedBlocks) {
             if (blocksProcessed.size() >= MAX_BLOCKS_PROCESSED) {
                 break;
             }
             SunlightSporeManager.doReactionEffectsForBlock(world, pos, blocksProcessed, mutable,
-                    mutableDown, anyExtinguished, random);
+                    mutableDown, anyEvaporated, random);
         }
-        if (anyExtinguished.booleanValue()) {
-            world.playSound(null, originPos, SoundEvents.BLOCK_FIRE_EXTINGUISH,
+        if (anyEvaporated.booleanValue()) {
+            world.playSound(null, originPos, ModSoundEvents.BLOCK_SUNLIGHT_EVAPORATE,
                     SoundCategory.BLOCKS, 1.0f,
                     (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
         }
 
-        world.playSound(null, originPos, SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.BLOCKS,
+        world.playSound(null, originPos, ModSoundEvents.BLOCK_SUNLIGHT_SPORE_BLOCK_CATALYZE,
+                SoundCategory.BLOCKS,
                 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
         Worldsinger.LOGGER.info(blocksProcessed.size() + " blocks processed");
     }
 
     private static void doReactionEffectsForBlock(World world, BlockPos centerPos,
             LongSet blocksProcessed, Mutable mutable, Mutable mutableDown,
-            MutableBoolean anyExtinguished, Random random) {
+            MutableBoolean anyEvaporated, Random random) {
         blocksProcessed.add(centerPos.asLong());
         for (int offsetX = -EFFECT_RADIUS; offsetX <= EFFECT_RADIUS; ++offsetX) {
             for (int offsetY = -EFFECT_RADIUS; offsetY <= EFFECT_RADIUS; ++offsetY) {
@@ -95,7 +96,7 @@ public final class SunlightSporeManager {
                         continue;
                     }
                     mutableDown.set(mutable).move(0, -1, 0);
-                    SunlightSporeManager.processBlock(world, mutable, mutableDown, anyExtinguished,
+                    SunlightSporeManager.processBlock(world, mutable, mutableDown, anyEvaporated,
                             random);
                 }
             }
@@ -103,13 +104,13 @@ public final class SunlightSporeManager {
     }
 
     private static void processBlock(World world, BlockPos mutable, BlockPos mutableDown,
-            MutableBoolean anyExtinguished, Random random) {
+            MutableBoolean anyEvaporated, Random random) {
         BlockState state = world.getBlockState(mutable);
         if (state.getBlock() instanceof FluidDrainable fluidDrainable && state.getFluidState()
                 .isOf(Fluids.WATER)) {
             // Evaporate water
             fluidDrainable.tryDrainFluid(null, world, mutable, state);
-            anyExtinguished.setTrue();
+            anyEvaporated.setTrue();
         }
 
         if (random.nextInt(3) == 0 && state.isAir() && world.getBlockState(mutableDown)

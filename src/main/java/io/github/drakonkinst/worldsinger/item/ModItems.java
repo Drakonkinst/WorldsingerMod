@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.material.ModArmorMaterials;
 import io.github.drakonkinst.worldsinger.material.ModToolMaterials;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -27,7 +28,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -147,7 +147,7 @@ public final class ModItems {
 
     private static Item createSporeBucketItem(Block sporeBlock) {
         return new AetherSporeBucketItem(sporeBlock,
-                SoundEvents.BLOCK_POWDER_SNOW_PLACE,
+                ModSoundEvents.BLOCK_SPORE_BLOCK_PLACE,
                 new FabricItemSettings()
                         .recipeRemainder(Items.BUCKET)
                         .maxCount(1));

@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.item.ModItems;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -31,7 +32,7 @@ public final class ModCauldronBehaviors {
             "sunlight_spores");
 
     public static final CauldronBehavior FILL_WITH_DEAD_SPORES = new FillWithFluidCauldronBehavior(
-            () -> ModBlocks.DEAD_SPORE_CAULDRON);
+            () -> ModBlocks.DEAD_SPORE_CAULDRON, ModSoundEvents.ITEM_BUCKET_EMPTY_AETHER_SPORE);
     public static final CauldronBehavior FILL_WITH_VERDANT_SPORES = new FillWithSporeFluidCauldronBehavior(
             () -> ModBlocks.VERDANT_SPORE_CAULDRON, () -> ModBlocks.DEAD_SPORE_CAULDRON);
     public static final CauldronBehavior FILL_WITH_CRIMSON_SPORES = new FillWithSporeFluidCauldronBehavior(

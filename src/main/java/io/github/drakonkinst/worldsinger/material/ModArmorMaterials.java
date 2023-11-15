@@ -2,15 +2,15 @@ package io.github.drakonkinst.worldsinger.material;
 
 import com.google.common.base.Suppliers;
 import io.github.drakonkinst.worldsinger.item.ModItems;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import java.util.function.Supplier;
 import net.minecraft.item.ArmorItem.Type;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 
 public enum ModArmorMaterials implements ArmorMaterial {
-    STEEL("steel", 20, new int[]{2, 5, 6, 2}, 11, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 1.0f, 0.0f,
+    STEEL("steel", 20, new int[]{2, 5, 6, 2}, 11, ModSoundEvents.ITEM_ARMOR_EQUIP_STEEL, 1.0f, 0.0f,
             () -> Ingredient.ofItems(ModItems.STEEL_INGOT));
 
     private static final int[] BASE_DURABILITY = {13, 15, 16, 11};
