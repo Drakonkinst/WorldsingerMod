@@ -8,6 +8,7 @@ import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
@@ -22,7 +23,6 @@ import net.minecraft.entity.vehicle.VehicleEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -155,8 +155,7 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
     @Inject(method = "getPaddleSoundEvent", at = @At("HEAD"), cancellable = true)
     private void addSporeSeaPaddleSound(CallbackInfoReturnable<SoundEvent> cir) {
         if (this.inSporeSea) {
-            // TODO: Temp sound
-            cir.setReturnValue(SoundEvents.BLOCK_SAND_BREAK);
+            cir.setReturnValue(ModSoundEvents.ENTITY_BOAT_PADDLE_SPORE_SEA);
         }
     }
 

@@ -26,7 +26,8 @@ public abstract class AbstractVerticalGrowthBudBlock extends AbstractVerticalGro
         }
 
         // If the same plant, no longer outermost block so turn into a stem
-        if (direction == growthDirection && (this.isSamePlant(neighborState))) {
+        if (direction == growthDirection && (this.isSamePlantWithDirection(neighborState,
+                state.get(VERTICAL_DIRECTION)))) {
             return this.getStem().getStateWithProperties(state);
         }
 

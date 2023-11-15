@@ -68,7 +68,8 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
             entity.setFireTicks(entity.getFireTicks() + 1);
         }
 
-        boolean wasDamaged = entity.damage(ModDamageTypes.of(entity.getWorld(), damageType),
+        boolean wasDamaged = entity.damage(
+                ModDamageTypes.createSource(entity.getWorld(), damageType),
                 damageAmount);
         if (wasDamaged && sporeType == AetherSporeType.SUNLIGHT) {
             // Play lava damage sound

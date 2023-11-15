@@ -84,7 +84,7 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
                 CrimsonSporeManager.spawnCrimsonSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
                         true, true, false);
             }
-            // TODO: Add remaining spore behavior
+            // TODO: Add remaining spore logic
         } else if (blockState.isOf(Blocks.WATER_CAULDRON)) {
             int waterAmount =
                     WATER_AMOUNT_PER_LEVEL * blockState.get(LeveledCauldronBlock.LEVEL);

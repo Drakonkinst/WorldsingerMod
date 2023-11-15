@@ -38,7 +38,7 @@ public final class ModFluids {
     public static final FlowableFluid FLOWING_SUNLIGHT_SPORES = register("flowing_sunlight_spores",
             new SunlightSporeFluid.Flowing()
     );
-    public static final Fluid SUNLIGHT = register("sunlight", new SunlightFluid());
+    public static final StillFluid SUNLIGHT = register("sunlight", new SunlightFluid());
 
     public static <T extends Fluid> T register(String id, T fluid) {
         return Registry.register(Registries.FLUID, Worldsinger.id(id), fluid);

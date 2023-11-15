@@ -3,10 +3,12 @@ package io.github.drakonkinst.worldsinger.fluid;
 import io.github.drakonkinst.worldsinger.block.AetherSporeFluidBlock;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
 import io.github.drakonkinst.worldsinger.mixin.accessor.FlowableFluidInvoker;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.util.ColorUtil;
 import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
+import java.util.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -15,7 +17,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -91,7 +93,8 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
                         spawnY, spawnZ, 1f);
             }
             if (random.nextInt(200) == 0) {
-                world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_LAVA_AMBIENT,
+                world.playSound(pos.getX(), pos.getY(), pos.getZ(),
+                        ModSoundEvents.BLOCK_SPORE_SEA_AMBIENT,
                         SoundCategory.BLOCKS, 0.2f + random.nextFloat() * 0.2f,
                         0.9f + random.nextFloat() * 0.15f, false);
             }
@@ -157,6 +160,11 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
             return Fluids.EMPTY.getDefaultState();
         }
         return this.getFlowing(updatedFluidLevel, false);
+    }
+
+    @Override
+    public Optional<SoundEvent> getBucketFillSound() {
+        return Optional.of(ModSoundEvents.ITEM_BUCKET_FILL_AETHER_SPORE);
     }
 
     @Override

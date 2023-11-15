@@ -85,7 +85,8 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
                         world.setBlockState(pos, ModBlocks.CRIMSON_GROWTH.getDefaultState().with(
                                 ModProperties.CATALYZED, true), Block.NOTIFY_ALL);
                     }
-                    // TODO: Other spores?
+                    // TODO: Add remaining spore logic
+                    // Not sure if other spores will all have a block for this, specifically Zephyr (probably just Air?)
 
                     return;
                 }

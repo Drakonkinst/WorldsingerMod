@@ -54,7 +54,7 @@ public class CrimsonSnareBlock extends Block implements Waterloggable, SporeGrow
         }
 
         if (CrimsonSpikeBlock.isMoving(entity)) {
-            entity.damage(ModDamageTypes.of(world, ModDamageTypes.SPIKE), 2.0f);
+            entity.damage(ModDamageTypes.createSource(world, ModDamageTypes.SPIKE), 2.0f);
         }
     }
 

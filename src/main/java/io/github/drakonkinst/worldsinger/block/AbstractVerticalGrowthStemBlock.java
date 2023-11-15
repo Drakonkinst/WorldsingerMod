@@ -29,7 +29,8 @@ public abstract class AbstractVerticalGrowthStemBlock extends
         }
 
         // If now topmost, turn into bud
-        if (direction == growthDirection && !this.isSamePlant(neighborState)) {
+        if (direction == growthDirection && !this.isSamePlantWithDirection(neighborState,
+                state.get(VERTICAL_DIRECTION))) {
             return this.getBud().getStateWithProperties(state);
         }
 

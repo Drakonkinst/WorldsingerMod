@@ -1,6 +1,10 @@
 package io.github.drakonkinst.worldsinger.block;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.drakonkinst.worldsinger.fluid.StillFluid;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -12,10 +16,10 @@ import net.minecraft.block.FluidDrainable;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContextParameterSet;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.state.property.IntProperty;
@@ -32,15 +36,24 @@ import org.jetbrains.annotations.Nullable;
 public class StillFluidBlock extends Block implements FluidDrainable {
 
     public static final IntProperty LEVEL = Properties.LEVEL_15;
-    protected final Fluid fluid;
+    protected final StillFluid fluid;
 
-    public MapCodec<? extends StillFluidBlock> getCodec() {
-        // TODO
-        return null;
-        // return CODEC;
-    }
+    private static final Codec<StillFluid> FLUID_CODEC = Registries.FLUID.getCodec()
+            .comapFlatMap(fluid -> {
+                DataResult<StillFluid> dataResult;
+                if (fluid instanceof StillFluid stillFluid) {
+                    dataResult = DataResult.success(stillFluid);
+                } else {
+                    dataResult = DataResult.error(() -> "Not a flowing fluid: " + fluid);
+                }
+                return dataResult;
+            }, fluid -> fluid);
+    public static final MapCodec<StillFluidBlock> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    (FLUID_CODEC.fieldOf("fluid")).forGetter(block -> block.fluid),
+                    StillFluidBlock.createSettingsCodec()).apply(instance, StillFluidBlock::new));
 
-    public StillFluidBlock(Fluid fluid, AbstractBlock.Settings settings) {
+    public StillFluidBlock(StillFluid fluid, AbstractBlock.Settings settings) {
         super(settings);
         this.fluid = fluid;
         this.setDefaultState(this.stateManager.getDefaultState());
@@ -109,5 +122,9 @@ public class StillFluidBlock extends Block implements FluidDrainable {
     @Override
     public Optional<SoundEvent> getBucketFillSound() {
         return this.fluid.getBucketFillSound();
+    }
+
+    public MapCodec<? extends StillFluidBlock> getCodec() {
+        return CODEC;
     }
 }

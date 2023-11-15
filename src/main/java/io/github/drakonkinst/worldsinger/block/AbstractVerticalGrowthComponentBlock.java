@@ -13,6 +13,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,21 +37,51 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         // Can only grow up or down
-        Direction placeDirection = ctx.getSide();
-        if (placeDirection != Direction.UP && placeDirection != Direction.DOWN) {
-            // Default to up
-            // TODO: Make dynamic like PointedDripstoneBlock
-            placeDirection = Direction.UP;
+        Direction verticalAimDirection = ctx.getVerticalPlayerLookDirection().getOpposite();
+        World world = ctx.getWorld();
+        BlockPos blockPos = ctx.getBlockPos();
+        Direction placeDirection = this.getDirectionToPlaceAt(world, blockPos,
+                verticalAimDirection);
+        if (placeDirection == null) {
+            return null;
         }
 
         BlockPos attachedBlockPos = ctx.getBlockPos().offset(placeDirection);
         BlockState attachedBlockState = ctx.getWorld().getBlockState(attachedBlockPos);
-        if (isSamePlant(attachedBlockState)) {
+        if (this.isSamePlant(attachedBlockState)) {
             // Is the outermost block, use the plant block
             return this.getStem().getDefaultState().with(VERTICAL_DIRECTION, placeDirection);
         }
         // Use the stem block (only one available as an item)
         return this.getDefaultState().with(VERTICAL_DIRECTION, placeDirection);
+    }
+
+    @Nullable
+    private Direction getDirectionToPlaceAt(WorldView world, BlockPos pos,
+            Direction direction) {
+        if (direction != Direction.UP && direction != Direction.DOWN) {
+            return null;
+        }
+
+        Direction placeDirection = null;
+        if (this.canPlaceAtWithDirection(world, pos, direction)) {
+            placeDirection = direction;
+        } else if (this.canPlaceAtWithDirection(world, pos, direction.getOpposite())) {
+            placeDirection = direction.getOpposite();
+        }
+        return placeDirection;
+    }
+
+    private boolean canPlaceAtWithDirection(WorldView world, BlockPos pos,
+            Direction direction) {
+        BlockPos supportingBlockPos = pos.offset(direction.getOpposite());
+        BlockState supportingBlockState = world.getBlockState(supportingBlockPos);
+        return supportingBlockState.isSideSolidFullSquare(world, supportingBlockPos, direction)
+                || this.isSamePlantWithDirection(supportingBlockState, direction);
+    }
+
+    protected boolean isSamePlantWithDirection(BlockState state, Direction direction) {
+        return this.isSamePlant(state) && state.get(VERTICAL_DIRECTION) == direction;
     }
 
     @Override

@@ -4,13 +4,13 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
 import io.github.drakonkinst.worldsinger.item.ModItemTags;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.world.SilverLined;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.VehicleEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -40,8 +40,7 @@ public abstract class BoatEntitySilverMixin extends VehicleEntity {
             silverData.setSilverDurability(
                     silverData.getSilverDurability() + SILVER_REPAIR_AMOUNT);
             float pitch = 1.0f + (this.random.nextFloat() - this.random.nextFloat()) * 0.2f;
-            // TODO: Temp sound
-            this.playSound(SoundEvents.ENTITY_IRON_GOLEM_REPAIR, 1.0f, pitch);
+            this.playSound(ModSoundEvents.ENTITY_BOAT_LINE_SILVER, 1.0f, pitch);
             if (!player.getAbilities().creativeMode) {
                 itemStack.decrement(1);
             }

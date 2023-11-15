@@ -218,7 +218,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
         if (state.get(Properties.FACING) == Direction.UP
                 && state.get(ModProperties.DISCRETE_THICKNESS) == Thickness.TIP) {
             entity.handleFallDamage(fallDistance + 2.0f, 2.0f,
-                    ModDamageTypes.of(world, ModDamageTypes.SPIKE_FALL));
+                    ModDamageTypes.createSource(world, ModDamageTypes.SPIKE_FALL));
         } else {
             super.onLandedUpon(world, state, pos, entity, fallDistance);
         }
@@ -252,7 +252,7 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
                 || !VoxelShapes.matchesAnywhere(entityShape, damageShape, BooleanBiFunction.AND)) {
             return;
         }
-        entity.damage(ModDamageTypes.of(world, ModDamageTypes.SPIKE), 2.0f);
+        entity.damage(ModDamageTypes.createSource(world, ModDamageTypes.SPIKE), 2.0f);
     }
 
     @Override

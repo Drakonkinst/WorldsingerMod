@@ -171,9 +171,7 @@ public abstract class AbstractBlockStateMixin {
         if (radius <= 0) {
             return;
         }
-        if (SporeKillingManager.killNearbySpores(world, pos, radius) > 0) {
-            // TODO: Play some kind of effect
-        }
+        SporeKillingManager.killNearbySpores(world, pos, radius);
     }
 
     @Unique

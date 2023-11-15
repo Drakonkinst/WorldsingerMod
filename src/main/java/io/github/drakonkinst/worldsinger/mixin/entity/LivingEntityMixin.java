@@ -54,7 +54,6 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "canWalkOnFluid", at = @At("HEAD"), cancellable = true)
     private void allowWalkingOnSporesDuringRain(FluidState state,
             CallbackInfoReturnable<Boolean> cir) {
-        // TODO: Not sure if this should be only still blocks or all blocks
         if (state.isIn(ModFluidTags.STILL_AETHER_SPORES)) {
             World world = this.getWorld();
             if (!LumarSeethe.areSporesFluidized(world)) {
@@ -186,7 +185,8 @@ public abstract class LivingEntityMixin extends Entity {
             applySporeSeaEffects();
 
             // Also take suffocation damage, mainly for dead spores
-            this.damage(ModDamageTypes.of(this.getWorld(), ModDamageTypes.DROWN_SPORE), 1.0f);
+            this.damage(ModDamageTypes.createSource(this.getWorld(), ModDamageTypes.DROWN_SPORE),
+                    1.0f);
         }
     }
 

@@ -74,7 +74,7 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
             CrimsonSporeManager.spawnCrimsonSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
                     true, false, false);
         }
-        // TODO: Add other custom interactions
+        // TODO: Add remaining spore logic
         return true;
     }
 }

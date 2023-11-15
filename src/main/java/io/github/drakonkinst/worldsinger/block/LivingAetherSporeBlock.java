@@ -50,7 +50,7 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
             } else if (aetherSporeType == AetherSporeType.SUNLIGHT) {
                 world.setBlockState(pos, ModBlocks.SUNLIGHT.getDefaultState());
             }
-            // TODO: Add remaining spore interactions
+            // TODO: Add remaining spore logic
             return;
         }
         super.scheduledTick(state, world, pos, random);

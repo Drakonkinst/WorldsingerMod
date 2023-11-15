@@ -44,7 +44,7 @@ public class SporeBottleItem extends PotionItem implements SporeEmitting {
         if (!world.isClient) {
             StatusEffect statusEffect = sporeType.getStatusEffect();
             if (statusEffect == null) {
-                user.damage(ModDamageTypes.of(world, ModDamageTypes.DROWN_SPORE),
+                user.damage(ModDamageTypes.createSource(world, ModDamageTypes.DROWN_SPORE),
                         SPORE_DEFAULT_DAMAGE);
             } else {
                 SporeParticleManager.applySporeEffect(user, statusEffect,

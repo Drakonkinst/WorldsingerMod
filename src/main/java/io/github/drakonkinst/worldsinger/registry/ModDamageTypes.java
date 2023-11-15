@@ -5,6 +5,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 public final class ModDamageTypes {
@@ -21,11 +22,19 @@ public final class ModDamageTypes {
     public static final RegistryKey<DamageType> SPIKE_FALL = ModDamageTypes.of("spike_fall");
     public static final RegistryKey<DamageType> DROWN_SPORE = ModDamageTypes.of("drown_spore");
 
+    // TODO: Create custom damage type
+    public static final RegistryKey<DamageType> SUNLIGHT = ModDamageTypes.of(
+            new Identifier("lava"));
+
     private static RegistryKey<DamageType> of(String id) {
-        return RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Worldsinger.id(id));
+        return ModDamageTypes.of(Worldsinger.id(id));
     }
 
-    public static DamageSource of(World world, RegistryKey<DamageType> key) {
+    private static RegistryKey<DamageType> of(Identifier id) {
+        return RegistryKey.of(RegistryKeys.DAMAGE_TYPE, id);
+    }
+
+    public static DamageSource createSource(World world, RegistryKey<DamageType> key) {
         return new DamageSource(
                 world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).entryOf(key));
     }

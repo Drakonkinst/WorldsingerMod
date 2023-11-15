@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.fluid.SunlightFluid;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
@@ -40,7 +41,11 @@ public abstract class FlyingEntityMixin extends MobEntity {
             this.updateLimbs(false);
             ci.cancel();
         } else if (EntityUtil.isTouchingFluid(this, ModFluidTags.SUNLIGHT)) {
-            // TODO: Apply sunlight fluid buoyancy
+            this.updateVelocity(0.02f, movementInput);
+            this.move(MovementType.SELF, this.getVelocity());
+            this.setVelocity(this.getVelocity().multiply(SunlightFluid.HORIZONTAL_DRAG_MULTIPLIER));
+            this.updateLimbs(false);
+            ci.cancel();
         }
     }
 }

@@ -130,7 +130,7 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
                 || !VoxelShapes.matchesAnywhere(entityShape, DAMAGE_SHAPE, BooleanBiFunction.AND)) {
             return;
         }
-        entity.damage(ModDamageTypes.of(world, ModDamageTypes.SPIKE), 2.0f);
+        entity.damage(ModDamageTypes.createSource(world, ModDamageTypes.SPIKE), 2.0f);
     }
 
     @Nullable
@@ -209,7 +209,7 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
             float fallDistance) {
         if (state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
             entity.handleFallDamage(fallDistance + 1.0f, 1.5f,
-                    ModDamageTypes.of(world, ModDamageTypes.SPIKE_FALL));
+                    ModDamageTypes.createSource(world, ModDamageTypes.SPIKE_FALL));
         } else {
             super.onLandedUpon(world, state, pos, entity, fallDistance);
         }

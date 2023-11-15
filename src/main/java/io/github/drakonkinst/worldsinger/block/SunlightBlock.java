@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
+import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.function.ToIntFunction;
 import net.minecraft.block.Block;
@@ -103,8 +104,8 @@ public class SunlightBlock extends StillFluidBlock {
             entity.setOnFireFor(15);
         }
 
-        // TODO: Can change damage type to Sunlight-specific one
-        if (entity.damage(world.getDamageSources().lava(), DAMAGE_PER_TICK)) {
+        if (entity.damage(ModDamageTypes.createSource(world, ModDamageTypes.SUNLIGHT),
+                DAMAGE_PER_TICK)) {
             entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f,
                     2.0f + world.getRandom().nextFloat() * 0.4f);
         }

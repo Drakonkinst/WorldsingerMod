@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import java.util.Optional;
@@ -20,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -149,8 +149,7 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
 
     @Override
     public Optional<SoundEvent> getBucketFillSound() {
-        // TODO: Change to unique sound
-        return Optional.of(SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW);
+        return Optional.of(ModSoundEvents.ITEM_BUCKET_FILL_AETHER_SPORE);
     }
 
     @Override

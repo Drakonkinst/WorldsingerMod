@@ -41,12 +41,12 @@ public enum AetherSporeType implements SporeType {
             () -> ModItems.SUNLIGHT_SPORES_BOTTLE, () -> ModItems.SUNLIGHT_SPORES_BUCKET,
             () -> ModFluids.SUNLIGHT_SPORES,
             () -> ModBlocks.SUNLIGHT_SPORE_SEA, () -> ModBlocks.SUNLIGHT_SPORE_BLOCK),
-    // TODO
+    // TODO Implement Roseite
     ROSEITE("roseite", 0xce9db2, 0xce9db2, () -> ModStatusEffects.ROSEITE_SPORES,
             () -> ModItems.ROSEITE_SPORES_BOTTLE, () -> null,
             () -> null,
             () -> null, () -> null),
-    // TODO
+    // TODO Implement Midnight
     MIDNIGHT("midnight", 0x111111, 0x111111, () -> ModStatusEffects.MIDNIGHT_SPORES,
             () -> ModItems.MIDNIGHT_SPORES_BOTTLE, () -> null,
             () -> null,

@@ -12,7 +12,6 @@ public class LumarDimensionEffects extends DimensionEffects {
     private static final float CLOUD_HEIGHT = 384.0f;
 
     public LumarDimensionEffects() {
-        // TODO: What does alternateSkyColor do?
         super(CLOUD_HEIGHT, true, ModEnums.SkyType.LUMAR, false, false);
     }
 

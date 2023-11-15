@@ -62,7 +62,7 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
         if (entity.fallDistance > entity.getSafeFallDistance()) {
             // Not safe to land
             entity.handleFallDamage(entity.fallDistance, 1.5f,
-                    ModDamageTypes.of(world, ModDamageTypes.SPIKE_FALL));
+                    ModDamageTypes.createSource(world, ModDamageTypes.SPIKE_FALL));
             entity.onLanding();
         } else if (CrimsonSpikeBlock.isMoving(entity)) {
             // Slow and damage normally
@@ -70,7 +70,7 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
             if (world.isClient()) {
                 return;
             }
-            entity.damage(ModDamageTypes.of(world, ModDamageTypes.SPIKE), 2.0f);
+            entity.damage(ModDamageTypes.createSource(world, ModDamageTypes.SPIKE), 2.0f);
         }
     }
 
@@ -78,7 +78,7 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
         entity.handleFallDamage(fallDistance, 1.5f,
-                ModDamageTypes.of(world, ModDamageTypes.SPIKE_FALL));
+                ModDamageTypes.createSource(world, ModDamageTypes.SPIKE_FALL));
     }
 
     @Override

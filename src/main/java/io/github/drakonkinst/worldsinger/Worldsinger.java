@@ -12,6 +12,7 @@ import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.registry.ModDispenserBehaviors;
 import io.github.drakonkinst.worldsinger.registry.ModPotions;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.worldgen.dimension.ModDimensionTypes;
@@ -32,6 +33,7 @@ public class Worldsinger implements ModInitializer {
 
         ModProperties.initialize();
         ModParticleTypes.initialize();
+        ModSoundEvents.initialize();
         ModFluids.initialize();
         ModBlocks.initialize();
         ModItems.initialize();

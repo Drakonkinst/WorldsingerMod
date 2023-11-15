@@ -11,11 +11,15 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity {
+
+    @Shadow
+    protected abstract void applyLavaBuoyancy();
 
     @Unique
     private static final float HEIGHT_OFFSET = 1.0f / 9.0f;
@@ -54,7 +58,13 @@ public abstract class ItemEntityMixin extends Entity {
             // Skip original gravity
             return true;
         }
-        // TODO: Apply sunlight fluid buoyancy
+
+        if (EntityUtil.isSubmergedInFluid(this, ModFluidTags.SUNLIGHT) && this.getFluidHeight(
+                ModFluidTags.SUNLIGHT) > height) {
+            // Identical to lava buoyancy
+            this.applyLavaBuoyancy();
+            return true;
+        }
         return original.call(instance);
     }
 

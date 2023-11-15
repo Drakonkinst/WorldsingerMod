@@ -53,7 +53,7 @@ public final class SunlightSporeManager {
 
         // Guaranteed to set entities on fire within a certain radius of the origin
         // Maybe with some knockback?
-        // TODO
+        // TODO Also add particle effects!
         // world.getEntitiesByClass()
     }
 
