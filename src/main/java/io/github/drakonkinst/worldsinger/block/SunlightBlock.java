@@ -70,24 +70,6 @@ public class SunlightBlock extends StillFluidBlock {
         return false;
     }
 
-    // @Override
-    // public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
-    //         ShapeContext context) {
-    //     return context.isHolding(ModBlocks.SUNLIGHT.asItem()) ? VoxelShapes.fullCube()
-    //             : VoxelShapes.empty();
-    // }
-    //
-    // @Override
-    // public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos,
-    //         ShapeContext context) {
-    //     return VoxelShapes.empty();
-    // }
-    //
-    // @Override
-    // public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
-    //     return VoxelShapes.empty();
-    // }
-
     @Override
     public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
         return stateFrom.isOf(this);
