@@ -44,7 +44,7 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
     @Override
     protected void doWaterReaction(World world, BlockPos pos, int sporeAmount,
             int waterAmount, Random random) {
-        SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random);
+        SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random, true, 0);
     }
 
     public static class Flowing extends SunlightSporeFluid {

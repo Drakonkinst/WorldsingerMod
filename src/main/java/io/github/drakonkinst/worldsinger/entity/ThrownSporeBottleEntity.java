@@ -8,6 +8,7 @@ import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -83,6 +84,9 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
             } else if (sporeType == AetherSporeType.CRIMSON) {
                 CrimsonSporeManager.spawnCrimsonSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
                         true, true, false);
+            } else if (sporeType == AetherSporeType.SUNLIGHT) {
+                SunlightSporeManager.doSunlightSporeReaction(world, blockPos, waterAmount, random,
+                        false, 0);
             }
             // TODO: Add remaining spore logic
         } else if (blockState.isOf(Blocks.WATER_CAULDRON)) {
@@ -106,7 +110,11 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
                     CrimsonSporeManager.spawnCrimsonSporeGrowth(world, posAbove.toCenterPos(),
                             SPORE_AMOUNT, waterAmount, true, true, false);
                 }
+            } else if (sporeType == AetherSporeType.SUNLIGHT) {
+                SunlightSporeManager.doSunlightSporeReaction(world, blockPos, waterAmount, random,
+                        false, 0);
             }
+            // TODO: Add remaining spore logic
 
         }
     }

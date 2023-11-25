@@ -80,7 +80,7 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
             CrimsonSporeManager.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
                     waterAmount, true, false, false);
         } else if (aetherSporeType == AetherSporeType.SUNLIGHT) {
-            SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random);
+            SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random, true, 0);
         }
         // TODO: Add remaining spore logic
         return true;

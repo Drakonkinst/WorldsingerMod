@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.mixin.entity.ai;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.LandPathNodeMakerInvoker;
 import io.github.drakonkinst.worldsinger.util.ModEnums;
@@ -20,10 +21,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LandPathNodeMaker.class)
 public abstract class LandPathNodeMakerMixin extends PathNodeMaker {
 
-    @ModifyReturnValue(method = "getCommonNodeType", at = @At("TAIL"))
-    private static PathNodeType addAetherSporeSeaNodeType(PathNodeType original, BlockView world,
+    @ModifyReturnValue(method = "getCommonNodeType", at = @At("RETURN"))
+    private static PathNodeType addModBlocksNodeTypes(PathNodeType original, BlockView world,
             BlockPos pos) {
         BlockState state = world.getBlockState(pos);
+
+        if (state.isOf(ModBlocks.SUNLIGHT)) {
+            return PathNodeType.LAVA;
+        }
 
         if (state.isIn(ModBlockTags.CRIMSON_SPIKE)
                 || state.isIn(ModBlockTags.TALL_CRIMSON_SPINES)

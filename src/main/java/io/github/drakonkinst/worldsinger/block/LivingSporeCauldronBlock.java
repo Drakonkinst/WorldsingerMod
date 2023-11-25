@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
+import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -73,6 +74,9 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
         } else if (sporeType == AetherSporeType.CRIMSON) {
             CrimsonSporeManager.spawnCrimsonSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
                     true, false, false);
+        } else if (sporeType == AetherSporeType.SUNLIGHT) {
+            SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random,
+                    false, 2);
         }
         // TODO: Add remaining spore logic
         return true;

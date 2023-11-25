@@ -68,37 +68,34 @@ public class SunlightFluid extends StillFluid {
                 }
                 BlockState blockState = world.getBlockState(currentPos);
                 if (blockState.isAir()) {
-                    if (!this.canLightFire(world, currentPos)) {
-                        continue;
+                    if (this.canLightFire(world, currentPos)) {
+                        world.setBlockState(currentPos,
+                                AbstractFireBlock.getState(world, currentPos));
+                        return;
                     }
-                    world.setBlockState(currentPos, AbstractFireBlock.getState(world, currentPos));
+                } else if (blockState.blocksMovement()) {
                     return;
                 }
-                if (!blockState.blocksMovement()) {
-                    continue;
-                }
-                return;
             }
         } else {
             for (int i = 0; i < 3; ++i) {
-                BlockPos blockPos2 = pos.add(random.nextInt(3) - 1, 0, random.nextInt(3) - 1);
-                if (!world.canSetBlock(blockPos2)) {
+                BlockPos candidatePos = pos.add(random.nextInt(3) - 1, 0, random.nextInt(3) - 1);
+                if (!world.canSetBlock(candidatePos)) {
                     return;
                 }
-                if (!world.isAir(blockPos2.up()) || !this.hasBurnableBlock(world, blockPos2)) {
-                    continue;
+                BlockPos abovePos = candidatePos.up();
+                if (world.isAir(abovePos) && this.hasBurnableBlock(world, candidatePos)) {
+                    world.setBlockState(abovePos, AbstractFireBlock.getState(world, candidatePos));
                 }
-                world.setBlockState(blockPos2.up(), AbstractFireBlock.getState(world, blockPos2));
             }
         }
     }
 
     private boolean canLightFire(WorldView world, BlockPos pos) {
         for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            if (!this.hasBurnableBlock(world, pos.offset(direction))) {
-                continue;
+            if (this.hasBurnableBlock(world, pos.offset(direction))) {
+                return true;
             }
-            return true;
         }
         return false;
     }

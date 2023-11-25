@@ -3,6 +3,8 @@
   "death.attack.verdant_spore.player": "%s grew vines out of their eyes while trying to escape %s",
   "death.attack.crimson_spore": "%s turned into a pincushion",
   "death.attack.crimson_spore.player": "%s turned into a pincushion while trying to escape %s",
+  "death.attack.sunlight_spore": "%s was incinerated",
+  "death.attack.sunlight_spore.player": "%s was incinerated while trying to escape %s",
   "death.attack.zephyr_spore": "%s collapsed from the inside",
   "death.attack.zephyr_spore.player": "%s imploded while trying to escape %s",
   "death.attack.roseite_spore": "%s turned into crystals",

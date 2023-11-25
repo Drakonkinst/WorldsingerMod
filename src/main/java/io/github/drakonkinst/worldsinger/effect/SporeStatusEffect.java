@@ -13,6 +13,7 @@ import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
+import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -83,18 +84,20 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
     private void onDeathEffect(LivingEntity entity) {
         World world = entity.getWorld();
+        BlockPos pos = entity.getBlockPos();
+        int waterAmount = MathHelper.ceil(
+                entity.getWidth() * entity.getHeight() * WATER_PER_ENTITY_BLOCK);
+
         if (sporeType == AetherSporeType.VERDANT) {
             // Fill with snare blocks
             this.growVerdantSpores(world, entity);
 
             // Only spawn spore growth if in the spore sea
-            if (!world.getFluidState(entity.getBlockPos()).isIn(ModFluidTags.VERDANT_SPORES)
+            if (!world.getFluidState(pos).isIn(ModFluidTags.VERDANT_SPORES)
                     && !EntityUtil.isSubmergedInSporeSea(entity)) {
                 return;
             }
 
-            int waterAmount = MathHelper.ceil(
-                    entity.getWidth() * entity.getHeight() * WATER_PER_ENTITY_BLOCK);
             Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
                     ModFluidTags.VERDANT_SPORES);
             VerdantSporeManager.spawnVerdantSporeGrowth(world, startPos,
@@ -103,17 +106,20 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
             this.growCrimsonSpores(world, entity);
 
             // Only spawn spore growth if in the spore sea
-            if (!world.getFluidState(entity.getBlockPos()).isIn(ModFluidTags.CRIMSON_SPORES)
+            if (!world.getFluidState(pos).isIn(ModFluidTags.CRIMSON_SPORES)
                     && !EntityUtil.isTouchingSporeSea(entity)) {
                 return;
             }
-            int waterAmount = MathHelper.ceil(
-                    entity.getWidth() * entity.getHeight() * WATER_PER_ENTITY_BLOCK);
+
             Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
                     ModFluidTags.CRIMSON_SPORES);
             CrimsonSporeManager.spawnCrimsonSporeGrowth(world, startPos,
                     LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false, false);
+        } else if (sporeType == AetherSporeType.SUNLIGHT) {
+            SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, world.getRandom(),
+                    false, 0);
         }
+        // TODO: Add remaining spore logic
     }
 
     // Fill entity's bounding box with Verdant Vine Snare

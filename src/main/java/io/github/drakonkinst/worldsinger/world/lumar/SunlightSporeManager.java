@@ -10,17 +10,23 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidDrainable;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -31,30 +37,58 @@ public final class SunlightSporeManager {
     private static final int MAX_BLOCKS_AFFECTED = 65;
     private static final int WATER_PER_BLOCK = 12;
     private static final int EFFECT_RADIUS = 2;
+    private static final int MIN_FIRE_WAVE_RADIUS = 2;
+    private static final int MAX_FIRE_WAVE_RADIUS = 7;
+    private static final int FIRE_WAVE_RADIUS_DIVISOR = 10;
     private static final int MAX_BLOCKS_PROCESSED = 1000;
 
     // Create light and heat
     public static void doSunlightSporeReaction(World world, BlockPos pos, int waterAmount,
-            Random random) {
+            Random random, boolean shouldSpreadSunlightBlocks, int fireWaveRadiusBonus) {
         // Number of blocks of Sunlight generated depends on amount of water
-        int numBlocks = waterAmount / WATER_PER_BLOCK;
-        if (numBlocks < 0) {
+        int maxBlocks = Math.min(waterAmount / WATER_PER_BLOCK, MAX_BLOCKS_AFFECTED);
+        if (maxBlocks <= 0) {
             return;
         }
 
-        int maxBlocks = Math.min(numBlocks, MAX_BLOCKS_AFFECTED);
-        Set<BlockPos> affectedBlocks = SunlightSporeManager.spreadSunlightBlocks(world, pos,
-                maxBlocks, random);
+        int fireWaveRadius = MIN_FIRE_WAVE_RADIUS + fireWaveRadiusBonus;
 
-        // Set blocks on fire, evaporate water, deal damage
-        if (!affectedBlocks.isEmpty()) {
-            SunlightSporeManager.doReactionEffects(world, pos, affectedBlocks, random);
+        if (shouldSpreadSunlightBlocks) {
+            Set<BlockPos> affectedBlocks = SunlightSporeManager.spreadSunlightBlocks(world, pos,
+                    maxBlocks, random);
+
+            // Set blocks on fire, evaporate water, deal damage
+            if (!affectedBlocks.isEmpty()) {
+                SunlightSporeManager.doReactionEffects(world, pos, affectedBlocks, random);
+            }
+
+            fireWaveRadius += affectedBlocks.size() / FIRE_WAVE_RADIUS_DIVISOR;
         }
 
-        // Guaranteed to set entities on fire within a certain radius of the origin
-        // Maybe with some knockback?
-        // TODO Also add particle effects!
-        // world.getEntitiesByClass()
+        fireWaveRadius = Math.min(fireWaveRadius, MAX_FIRE_WAVE_RADIUS);
+        SunlightSporeManager.doFireExplosion(world, pos, fireWaveRadius);
+
+        // Show particles
+        if (world instanceof ServerWorld serverWorld) {
+            Vec3d center = pos.toCenterPos();
+            serverWorld.spawnParticles(ParticleTypes.FLAME, center.getX(), center.getY(),
+                    center.getZ(), 25, 0.0, 0.0, 0.0, 0.25);
+        }
+
+        // Play sound
+        world.playSound(null, pos, ModSoundEvents.BLOCK_SUNLIGHT_SPORE_BLOCK_CATALYZE,
+                SoundCategory.BLOCKS, 1.0f,
+                (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
+    }
+
+    private static void doFireExplosion(World world, BlockPos pos, int radius) {
+        Box box = new Box(pos).expand(radius);
+        List<LivingEntity> affectedEntities = world.getNonSpectatingEntities(LivingEntity.class,
+                box);
+        for (LivingEntity entity : affectedEntities) {
+            entity.damage(entity.getDamageSources().inFire(), 3.0f);
+            entity.setOnFireFor(5);
+        }
     }
 
     private static void doReactionEffects(World world, BlockPos originPos,
@@ -77,9 +111,6 @@ public final class SunlightSporeManager {
                     (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
         }
 
-        world.playSound(null, originPos, ModSoundEvents.BLOCK_SUNLIGHT_SPORE_BLOCK_CATALYZE,
-                SoundCategory.BLOCKS,
-                1.0f, (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
         Worldsinger.LOGGER.info(blocksProcessed.size() + " blocks processed");
     }
 
@@ -129,7 +160,8 @@ public final class SunlightSporeManager {
 
         // Always generate one block of Sunlight at the point of interaction
         BlockState blockState = world.getBlockState(startPos);
-        if (blockState.isOf(ModBlocks.SUNLIGHT_SPORE_SEA) || blockState.isOf(
+        if (blockState.isOf(ModBlocks.SUNLIGHT_SPORE_SEA)
+                || blockState.isOf(
                 ModBlocks.SUNLIGHT_SPORE_BLOCK) || blockState.isOf(Blocks.AIR)) {
             // Not a waterlogged block
             world.setBlockState(startPos, ModBlocks.SUNLIGHT.getDefaultState());

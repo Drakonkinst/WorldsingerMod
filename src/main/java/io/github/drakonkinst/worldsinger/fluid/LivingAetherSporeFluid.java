@@ -84,6 +84,9 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
                     } else if (sporeType == AetherSporeType.CRIMSON) {
                         world.setBlockState(pos, ModBlocks.CRIMSON_GROWTH.getDefaultState().with(
                                 ModProperties.CATALYZED, true), Block.NOTIFY_ALL);
+                    } else if (sporeType == AetherSporeType.SUNLIGHT) {
+                        world.setBlockState(pos, ModBlocks.SUNLIGHT.getDefaultState(),
+                                Block.NOTIFY_ALL);
                     }
                     // TODO: Add remaining spore logic
                     // Not sure if other spores will all have a block for this, specifically Zephyr (probably just Air?)
