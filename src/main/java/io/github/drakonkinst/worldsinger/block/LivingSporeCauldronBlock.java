@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
+import io.github.drakonkinst.worldsinger.world.lumar.ZephyrSporeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -77,6 +78,9 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
         } else if (sporeType == AetherSporeType.SUNLIGHT) {
             SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random,
                     false, 2);
+        } else if (sporeType == AetherSporeType.ZEPHYR) {
+            ZephyrSporeManager.doZephyrSporeReaction(world, spawnPos, catalyzeValue, waterAmount,
+                    random);
         }
         // TODO: Add remaining spore logic
         return true;

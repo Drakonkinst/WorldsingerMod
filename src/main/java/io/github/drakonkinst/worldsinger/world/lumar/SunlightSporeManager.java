@@ -43,10 +43,10 @@ public final class SunlightSporeManager {
     private static final int MAX_BLOCKS_PROCESSED = 1000;
 
     // Create light and heat
-    public static void doSunlightSporeReaction(World world, BlockPos pos, int waterAmount,
+    public static void doSunlightSporeReaction(World world, BlockPos pos, int water,
             Random random, boolean shouldSpreadSunlightBlocks, int fireWaveRadiusBonus) {
         // Number of blocks of Sunlight generated depends on amount of water
-        int maxBlocks = Math.min(waterAmount / WATER_PER_BLOCK, MAX_BLOCKS_AFFECTED);
+        int maxBlocks = Math.min(water / WATER_PER_BLOCK, MAX_BLOCKS_AFFECTED);
         if (maxBlocks <= 0) {
             return;
         }

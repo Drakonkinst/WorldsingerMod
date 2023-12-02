@@ -20,6 +20,7 @@ public final class ModSoundEvents {
     public static final SoundEvent BLOCK_SUNLIGHT_SPORE_BLOCK_CATALYZE = SoundEvents.ITEM_FIRECHARGE_USE;
     public static final SoundEvent ENTITY_BOAT_PADDLE_SPORE_SEA = SoundEvents.BLOCK_SAND_BREAK;
     public static final SoundEvent ENTITY_BOAT_LINE_SILVER = SoundEvents.ENTITY_IRON_GOLEM_REPAIR;
+    public static final SoundEvent BLOCK_ZEPHYR_SEA_CATALYZE = SoundEvents.ENTITY_GENERIC_WIND_BURST;
 
     public static void initialize() {}
 

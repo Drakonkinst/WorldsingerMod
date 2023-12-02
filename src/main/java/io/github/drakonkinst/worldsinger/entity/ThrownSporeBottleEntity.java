@@ -10,6 +10,7 @@ import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
+import io.github.drakonkinst.worldsinger.world.lumar.ZephyrSporeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -87,6 +88,9 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
             } else if (sporeType == AetherSporeType.SUNLIGHT) {
                 SunlightSporeManager.doSunlightSporeReaction(world, blockPos, waterAmount, random,
                         false, 0);
+            } else if (sporeType == AetherSporeType.ZEPHYR) {
+                ZephyrSporeManager.doZephyrSporeReaction(world, pos, SPORE_AMOUNT, waterAmount,
+                        random);
             }
             // TODO: Add remaining spore logic
         } else if (blockState.isOf(Blocks.WATER_CAULDRON)) {
@@ -113,6 +117,9 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
             } else if (sporeType == AetherSporeType.SUNLIGHT) {
                 SunlightSporeManager.doSunlightSporeReaction(world, blockPos, waterAmount, random,
                         false, 0);
+            } else if (sporeType == AetherSporeType.ZEPHYR) {
+                ZephyrSporeManager.doZephyrSporeReaction(world, pos, SPORE_AMOUNT, waterAmount,
+                        random);
             }
             // TODO: Add remaining spore logic
 

@@ -8,8 +8,10 @@ import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
+import io.github.drakonkinst.worldsinger.world.lumar.ZephyrSporeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -49,6 +51,8 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
                         .with(ModProperties.CATALYZED, true));
             } else if (aetherSporeType == AetherSporeType.SUNLIGHT) {
                 world.setBlockState(pos, ModBlocks.SUNLIGHT.getDefaultState());
+            } else if (aetherSporeType == AetherSporeType.ZEPHYR) {
+                world.setBlockState(pos, Blocks.AIR.getDefaultState());
             }
             // TODO: Add remaining spore logic
             return;
@@ -81,6 +85,9 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
                     waterAmount, true, false, false);
         } else if (aetherSporeType == AetherSporeType.SUNLIGHT) {
             SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random, true, 0);
+        } else if (aetherSporeType == AetherSporeType.ZEPHYR) {
+            ZephyrSporeManager.doZephyrSporeReaction(world, pos.toCenterPos(), CATALYZE_VALUE,
+                    waterAmount, random);
         }
         // TODO: Add remaining spore logic
         return true;

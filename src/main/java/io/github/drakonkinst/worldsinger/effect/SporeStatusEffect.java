@@ -15,6 +15,7 @@ import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
 import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
 import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
+import io.github.drakonkinst.worldsinger.world.lumar.ZephyrSporeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
@@ -118,6 +119,11 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         } else if (sporeType == AetherSporeType.SUNLIGHT) {
             SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, world.getRandom(),
                     false, 0);
+        } else if (sporeType == AetherSporeType.ZEPHYR) {
+            Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
+                    ModFluidTags.ZEPHYR_SPORES);
+            ZephyrSporeManager.doZephyrSporeReaction(world, startPos,
+                    LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, world.getRandom());
         }
         // TODO: Add remaining spore logic
     }
