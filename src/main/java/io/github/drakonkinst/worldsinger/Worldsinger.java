@@ -35,6 +35,9 @@ public class Worldsinger implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Initializing Worldsinger...");
 
+        DataTables.initializeServer();
+        Fluidlogged.initialize();
+
         ModProperties.initialize();
         ModParticleTypes.initialize();
         ModSoundEvents.initialize();
@@ -50,8 +53,6 @@ public class Worldsinger implements ModInitializer {
         ModStructurePieceTypes.initialize();
         ModStructureTypes.initialize();
 
-        Fluidlogged.initialize();
-        DataTables.initialize();
         ModApi.initialize();
     }
 }

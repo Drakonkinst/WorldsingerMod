@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.client.dimension.ModDimensionEffects;
 import io.github.drakonkinst.worldsinger.client.fluid.ModFluidRenderers;
 import io.github.drakonkinst.worldsinger.client.registry.ModModelPredicates;
+import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import net.fabricmc.api.ClientModInitializer;
@@ -21,6 +22,8 @@ public class WorldsingerClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
+        DataTables.initializeClient();
+        
         // Register fluids
         ModFluidRenderers.register();
 

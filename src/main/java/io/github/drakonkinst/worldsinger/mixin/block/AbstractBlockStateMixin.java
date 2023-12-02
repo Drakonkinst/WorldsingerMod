@@ -12,6 +12,7 @@ import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockAccessor;
 import io.github.drakonkinst.worldsinger.mixin.accessor.AbstractBlockSettingsAccessor;
+import io.github.drakonkinst.worldsinger.registry.ModDataTables;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.function.ToIntFunction;
 import net.minecraft.block.AbstractBlock;
@@ -165,7 +166,7 @@ public abstract class AbstractBlockStateMixin {
         if (!state.isIn(ModBlockTags.KILLS_SPORES)) {
             return;
         }
-        DataTable dataTable = DataTables.get(DataTables.SPORE_KILLING_RADIUS);
+        DataTable dataTable = DataTables.get(ModDataTables.SPORE_KILLING_RADIUS);
         int radius = dataTable.getIntForBlock(state);
         if (radius <= 0) {
             return;

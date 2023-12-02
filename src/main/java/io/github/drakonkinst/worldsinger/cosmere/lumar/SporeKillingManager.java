@@ -9,6 +9,7 @@ import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
+import io.github.drakonkinst.worldsinger.registry.ModDataTables;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.List;
@@ -78,7 +79,7 @@ public final class SporeKillingManager {
     }
 
     public static boolean isSporeKillingBlockNearby(World world, BlockPos pos) {
-        DataTable dataTable = DataTables.get(DataTables.SPORE_KILLING_RADIUS);
+        DataTable dataTable = DataTables.get(ModDataTables.SPORE_KILLING_RADIUS);
         for (BlockPos currentPos : BlockPos.iterateOutwards(pos, MAX_BLOCK_RADIUS, MAX_BLOCK_RADIUS,
                 MAX_BLOCK_RADIUS)) {
             BlockState blockState = world.getBlockState(currentPos);
@@ -134,7 +135,7 @@ public final class SporeKillingManager {
 
     public static boolean isSporeKillingBlockNearbyForRange(World world, int minX, int minY,
             int minZ, int maxX, int maxY, int maxZ) {
-        DataTable dataTable = DataTables.get(DataTables.SPORE_KILLING_RADIUS);
+        DataTable dataTable = DataTables.get(ModDataTables.SPORE_KILLING_RADIUS);
 
         int searchMinX = minX - MAX_BLOCK_RADIUS;
         int searchMinY = minY - MAX_BLOCK_RADIUS;

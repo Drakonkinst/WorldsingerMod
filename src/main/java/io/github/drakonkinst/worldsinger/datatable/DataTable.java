@@ -1,15 +1,40 @@
 package io.github.drakonkinst.worldsinger.datatable;
 
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 public class DataTable {
+
+    public static void writePacket(DataTable table, PacketByteBuf buf) {
+        buf.writeEnumConstant(table.type);
+        buf.writeVarInt(table.entryTable.defaultReturnValue());
+        buf.writeVarInt(table.entryTable.size());
+        table.entryTable.forEach((key, value) -> {
+            buf.writeIdentifier(key);
+            buf.writeVarInt(value);
+        });
+    }
+
+    public static DataTable fromPacket(PacketByteBuf buf) {
+        DataTableType type = buf.readEnumConstant(DataTableType.class);
+        int defaultValue = buf.readVarInt();
+        int size = buf.readVarInt();
+        Object2IntMap<Identifier> entryTable = new Object2IntArrayMap<>();
+        for (int i = 0; i < size; ++i) {
+            Identifier key = buf.readIdentifier();
+            int value = buf.readVarInt();
+            entryTable.put(key, value);
+        }
+        return new DataTable(type, defaultValue, entryTable, null);
+    }
 
     private final DataTableType type;
     private final Object2IntMap<Identifier> entryTable;

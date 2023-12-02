@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.cosmere.MetalQueryManager;
 import io.github.drakonkinst.worldsinger.datatable.DataTable;
 import io.github.drakonkinst.worldsinger.datatable.DataTables;
+import io.github.drakonkinst.worldsinger.registry.ModDataTables;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
 import java.util.List;
@@ -30,7 +31,7 @@ public final class SporeGrowthMovement {
     }
 
     private static void calcBlockExternalForce(World world, BlockPos pos, Vector3d force) {
-        DataTable metalContentTable = DataTables.get(DataTables.BLOCK_METAL_CONTENT);
+        DataTable metalContentTable = DataTables.get(ModDataTables.BLOCK_METAL_CONTENT);
 
         int minX = pos.getX() - MAX_SEARCH_RADIUS;
         int minY = pos.getY() - MAX_SEARCH_RADIUS;
@@ -83,8 +84,8 @@ public final class SporeGrowthMovement {
     }
 
     private static void calcEntityExternalForce(World world, BlockPos pos, Vector3d force) {
-        DataTable metalContentTable = DataTables.get(DataTables.ENTITY_METAL_CONTENT);
-        DataTable armorMetalContentTable = DataTables.get(DataTables.ARMOR_METAL_CONTENT);
+        DataTable metalContentTable = DataTables.get(ModDataTables.ENTITY_METAL_CONTENT);
+        DataTable armorMetalContentTable = DataTables.get(ModDataTables.ARMOR_METAL_CONTENT);
         Box box = BoxUtil.createBoxAroundBlock(pos, MAX_SEARCH_RADIUS);
         double forceX = 0;
         double forceY = 0;

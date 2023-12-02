@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Position;
 import net.minecraft.world.World;
 
-public class ModDispenserBehaviors {
+public final class ModDispenserBehaviors {
 
     private static final ItemDispenserBehavior DEFAULT_ITEM_BEHAVIOR = new ItemDispenserBehavior();
     private static final ItemDispenserBehavior FLUID_BUCKET_BEHAVIOR = new ItemDispenserBehavior() {
@@ -74,4 +74,6 @@ public class ModDispenserBehaviors {
                 SPLASH_POTION_BEHAVIOR);
         DispenserBlock.registerBehavior(ModItems.MIDNIGHT_SPORES_BOTTLE, SPLASH_POTION_BEHAVIOR);
     }
+
+    private ModDispenserBehaviors() {}
 }

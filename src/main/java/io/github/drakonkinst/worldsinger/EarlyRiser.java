@@ -10,13 +10,14 @@ public class EarlyRiser implements Runnable {
 
     @Override
     public void run() {
+        switch(FabricLoader.getInstance().getEnvironmentType()) {
+            case CLIENT -> loadClient();
+            case SERVER -> loadServer();
+        }
+    }
+
+    private static void loadClient() {
         MappingResolver remapper = FabricLoader.getInstance().getMappingResolver();
-
-        String pathNodeTypeEnum = remapper.mapClassName(INTERMEDIARY, "net.minecraft.class_7");
-        ClassTinkerers.enumBuilder(pathNodeTypeEnum, float.class)
-                .addEnum("AETHER_SPORE_SEA", -1.0f)
-                .build();
-
         String skyTypeEnum = remapper.mapClassName(INTERMEDIARY,
                 "net.minecraft.class_5294$class_5401");
         ClassTinkerers.enumBuilder(skyTypeEnum).addEnum("LUMAR").build();
@@ -24,5 +25,13 @@ public class EarlyRiser implements Runnable {
         String cameraSubmersionTypeEnum = remapper.mapClassName(INTERMEDIARY,
                 "net.minecraft.class_5636");
         ClassTinkerers.enumBuilder(cameraSubmersionTypeEnum).addEnum("SPORE_SEA").build();
+    }
+
+    private static void loadServer() {
+        MappingResolver remapper = FabricLoader.getInstance().getMappingResolver();
+        String pathNodeTypeEnum = remapper.mapClassName(INTERMEDIARY, "net.minecraft.class_7");
+        ClassTinkerers.enumBuilder(pathNodeTypeEnum, float.class)
+                .addEnum("AETHER_SPORE_SEA", -1.0f)
+                .build();
     }
 }
