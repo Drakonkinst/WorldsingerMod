@@ -9,7 +9,9 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
+import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
@@ -66,21 +69,37 @@ public class ZephyrSpores extends AetherSpores {
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
         float power = Math.min(spores, water) * SPORE_TO_POWER_MULTIPLIER + random.nextFloat();
-        Worldsinger.LOGGER.info("spores = " + spores + ", water = " + water + " base_value = " + (
-                Math.min(spores, water) * SPORE_TO_POWER_MULTIPLIER) + ", power = " + power);
-        int numAffectedEntities = this.explode(world, pos, power, KNOCKBACK_MULTIPLIER);
-        Worldsinger.LOGGER.info("Hit " + numAffectedEntities + " entities");
+        // Push the explosion to the top of the block, so that it is not obstructed by itself
+        Vec3d centerPos = new Vec3d(pos.getX(), Math.ceil(pos.getY()), pos.getZ());
+        ZephyrSpores.explode(world, centerPos, power, KNOCKBACK_MULTIPLIER);
     }
 
-    // Too inefficient to use actual Explosions, so we'll need our own solution
-    private int explode(World world, Vec3d centerPos, float radius,
+    // Too inefficient to use actual Explosions since they spend a lot of time calculating blocks,
+    // so we'll need our own solution
+    public static void explode(World world, Vec3d centerPos, float radius,
             float globalKnockbackMultiplier) {
         world.emitGameEvent(null, GameEvent.EXPLODE, centerPos);
         Box box = BoxUtil.createBoxAroundPos(centerPos, radius);
         List<Entity> entities = world.getEntitiesByClass(Entity.class, box,
                 EntityPredicates.EXCEPT_SPECTATOR);
 
-        int numAffectedEntities = 0;
+        // Just grab all blocks in radius
+        BlockPos centerBlockPos = BlockPosUtil.toBlockPos(centerPos);
+        int blockRadius = Math.min(8, MathHelper.floor(radius));
+        Worldsinger.LOGGER.info("BLOCK RADIUS = " + blockRadius);
+        List<BlockPos> affectedBlocks = new ObjectArrayList<>();
+        if (blockRadius > 0) {
+            for (BlockPos currPos : BlockPos.iterate(centerBlockPos.getX() - blockRadius,
+                    centerBlockPos.getY() - blockRadius, centerBlockPos.getZ() - blockRadius,
+                    centerBlockPos.getX() + blockRadius, centerBlockPos.getY() + blockRadius,
+                    centerBlockPos.getZ() + blockRadius)) {
+                if (!world.getBlockState(currPos).isAir()) {
+                    affectedBlocks.add(new BlockPos(currPos));
+                }
+            }
+        }
+        Worldsinger.LOGGER.info(affectedBlocks.size() + " blocks affected");
+
         Map<PlayerEntity, Vec3d> affectedPlayers = Maps.newHashMap();
         for (Entity entity : entities) {
             if (entity.isImmuneToExplosion(null)) {
@@ -119,10 +138,29 @@ public class ZephyrSpores extends AetherSpores {
                     !playerEntity.isCreative() || !playerEntity.getAbilities().flying)) {
                 affectedPlayers.put(playerEntity, forceVector);
             }
-
-            numAffectedEntities += 1;
         }
 
+        // Affect world
+        // TODO: Will particles still appear on dedicated server?
+        // Create dummy explosion object to be sent to blocks
+        Explosion explosion = new Explosion(world, null, centerPos.getX(), centerPos.getY(),
+                centerPos.getZ(), radius * 0.5f, affectedBlocks,
+                Explosion.DestructionType.TRIGGER_BLOCK, ParticleTypes.GUST,
+                ParticleTypes.GUST_EMITTER, ModSoundEvents.BLOCK_ZEPHYR_SEA_CATALYZE);
+        Worldsinger.LOGGER.info(explosion.getDestructionType().toString());
+        world.getProfiler().push("explosion_blocks");
+        boolean first = true;
+        for (BlockPos blockPos : affectedBlocks) {
+            if (first) {
+                Worldsinger.LOGGER.info(blockPos.toString());
+                first = false;
+            }
+            world.getBlockState(blockPos)
+                    .onExploded(world, blockPos, explosion, (stack, pos) -> {});
+        }
+        world.getProfiler().pop();
+
+        // Send packet to players
         if (!world.isClient() && world instanceof ServerWorld serverWorld) {
             for (ServerPlayerEntity player : serverWorld.getPlayers()) {
                 if (player.squaredDistanceTo(centerPos) < MAX_DISTANCE * MAX_DISTANCE) {
@@ -136,7 +174,14 @@ public class ZephyrSpores extends AetherSpores {
                 }
             }
         }
-        return numAffectedEntities;
+    }
+
+    private static void affectBlocks() {
+
+    }
+
+    private static void sendToPlayers() {
+
     }
 
     @Override
