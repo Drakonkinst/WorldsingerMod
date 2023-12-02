@@ -28,8 +28,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AetherSpores {
 
     public static final Map<String, AetherSpores> AETHER_SPORE_MAP = new Object2ObjectArrayMap<>();
-    public static final Codec<AetherSpores> CODEC = Codecs.idChecked(
-            AetherSpores::getName, AETHER_SPORE_MAP::get);
+    public static final Codec<AetherSpores> CODEC = Codecs.idChecked(AetherSpores::getName,
+            AETHER_SPORE_MAP::get);
 
     public static int getBottleColor(ItemStack stack) {
         if (stack.getItem() instanceof SporeBottleItem sporeBottleItem) {
@@ -37,6 +37,8 @@ public abstract class AetherSpores {
         }
         return -1;
     }
+
+    public abstract int getColor();
 
     public static Optional<AetherSpores> getSporeTypeFromBlock(BlockState state) {
         Block block = state.getBlock();
@@ -46,8 +48,7 @@ public abstract class AetherSpores {
         return Optional.empty();
     }
 
-    public static Optional<AetherSpores> getFirstSporeTypeFromFluid(
-            Collection<Fluid> fluids) {
+    public static Optional<AetherSpores> getFirstSporeTypeFromFluid(Collection<Fluid> fluids) {
         for (Fluid fluid : fluids) {
             if (fluid instanceof AetherSporeFluid aetherSporeFluid) {
                 return Optional.of(aetherSporeFluid.getSporeType());
@@ -60,46 +61,10 @@ public abstract class AetherSpores {
         AETHER_SPORE_MAP.put(this.getName(), this);
     }
 
-    public final void doReaction(World world, BlockPos pos, int spores, int water,
-            Random random) {
-        this.doReaction(world, pos.toCenterPos(), spores, water, random);
-    }
-
-    public abstract void doReaction(World world, Vec3d pos, int spores, int water, Random random);
-
-    // By default, act as normal
-    public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
-            int water, Random random) {
-        this.doReaction(world, fluidContainerPos, spores, water, random);
-    }
-
-    // By default, act as normal
-    public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,
-            Random random, boolean affectingFluidContainer) {
-        this.doReaction(world, pos, spores, water, random);
-    }
+    public abstract String getName();
 
     public abstract void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos,
             int water);
-
-    // Do a little hack to move spore growth position to the topmost block
-    protected Vec3d getTopmostSeaPosForEntity(World world, LivingEntity entity,
-            TagKey<Fluid> fluidTag) {
-        BlockPos.Mutable mutable = entity.getBlockPos().mutableCopy();
-
-        while (world.getFluidState(mutable).isIn(fluidTag)
-                && mutable.getY() < world.getTopY()) {
-            mutable.move(Direction.UP);
-        }
-
-        if (world.getBlockState(mutable).isAir()) {
-            // Found a good position, use it
-            return mutable.move(Direction.DOWN).toCenterPos();
-        } else {
-            // Use original position
-            return entity.getPos();
-        }
-    }
 
     public abstract Item getBottledItem();
 
@@ -114,13 +79,27 @@ public abstract class AetherSpores {
     @Nullable
     public abstract StatusEffect getStatusEffect();
 
-    public abstract int getColor();
-
     public abstract int getParticleColor();
 
-    public abstract String getName();
-
     public abstract int getId();
+
+    // By default, act as normal
+    public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
+            int water, Random random) {
+        this.doReaction(world, fluidContainerPos, spores, water, random);
+    }
+
+    public final void doReaction(World world, BlockPos pos, int spores, int water, Random random) {
+        this.doReaction(world, pos.toCenterPos(), spores, water, random);
+    }
+
+    public abstract void doReaction(World world, Vec3d pos, int spores, int water, Random random);
+
+    // By default, act as normal
+    public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,
+            Random random, boolean affectingFluidContainer) {
+        this.doReaction(world, pos, spores, water, random);
+    }
 
     @Nullable
     public BlockState getFluidCollisionState() {
@@ -129,5 +108,23 @@ public abstract class AetherSpores {
 
     public boolean isDead() {
         return false;
+    }
+
+    // Do a little hack to move spore growth position to the topmost block
+    protected Vec3d getTopmostSeaPosForEntity(World world, LivingEntity entity,
+            TagKey<Fluid> fluidTag) {
+        BlockPos.Mutable mutable = entity.getBlockPos().mutableCopy();
+
+        while (world.getFluidState(mutable).isIn(fluidTag) && mutable.getY() < world.getTopY()) {
+            mutable.move(Direction.UP);
+        }
+
+        if (world.getBlockState(mutable).isAir()) {
+            // Found a good position, use it
+            return mutable.move(Direction.DOWN).toCenterPos();
+        } else {
+            // Use original position
+            return entity.getPos();
+        }
     }
 }

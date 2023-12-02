@@ -37,30 +37,6 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
     @Unique
     private static final int INGREDIENT_SLOT = 3;
 
-    protected BrewingStandBlockEntityMixin(
-            BlockEntityType<?> blockEntityType, BlockPos blockPos,
-            BlockState blockState) {
-        super(blockEntityType, blockPos, blockState);
-    }
-
-    @Inject(method = "isValid", at = @At("RETURN"), cancellable = true)
-    private void allowCustomPotionsAndFuels(int slot, ItemStack stack,
-            CallbackInfoReturnable<Boolean> cir) {
-        if (slot == 4) {
-            cir.setReturnValue(cir.getReturnValue() || stack.isIn(ModItemTags.BREWING_STAND_FUELS));
-            return;
-        }
-        if (slot == 3 || !this.getStack(slot).isEmpty()) {
-            return;
-        }
-        for (Ingredient ingredient : BrewingRecipeRegistryAccessor.worldsinger$getPotionTypes()) {
-            if (ingredient.test(stack)) {
-                cir.setReturnValue(true);
-                return;
-            }
-        }
-    }
-
     @Inject(method = "tick", at = @At("HEAD"))
     private static void consumeCustomFuels(World world, BlockPos pos, BlockState state,
             BrewingStandBlockEntity blockEntity, CallbackInfo ci) {
@@ -107,6 +83,29 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
         }
         slots.set(INGREDIENT_SLOT, itemStack);
         world.syncWorldEvent(WorldEvents.BREWING_STAND_BREWS, pos, 0);
+    }
+
+    protected BrewingStandBlockEntityMixin(BlockEntityType<?> blockEntityType, BlockPos blockPos,
+            BlockState blockState) {
+        super(blockEntityType, blockPos, blockState);
+    }
+
+    @Inject(method = "isValid", at = @At("RETURN"), cancellable = true)
+    private void allowCustomPotionsAndFuels(int slot, ItemStack stack,
+            CallbackInfoReturnable<Boolean> cir) {
+        if (slot == 4) {
+            cir.setReturnValue(cir.getReturnValue() || stack.isIn(ModItemTags.BREWING_STAND_FUELS));
+            return;
+        }
+        if (slot == 3 || !this.getStack(slot).isEmpty()) {
+            return;
+        }
+        for (Ingredient ingredient : BrewingRecipeRegistryAccessor.worldsinger$getPotionTypes()) {
+            if (ingredient.test(stack)) {
+                cir.setReturnValue(true);
+                return;
+            }
+        }
     }
 
     @Shadow

@@ -36,8 +36,6 @@ import org.jetbrains.annotations.Nullable;
 public class StillFluidBlock extends Block implements FluidDrainable {
 
     public static final IntProperty LEVEL = Properties.LEVEL_15;
-    protected final StillFluid fluid;
-
     private static final Codec<StillFluid> FLUID_CODEC = Registries.FLUID.getCodec()
             .comapFlatMap(fluid -> {
                 DataResult<StillFluid> dataResult;
@@ -52,6 +50,7 @@ public class StillFluidBlock extends Block implements FluidDrainable {
             instance -> instance.group(
                     (FLUID_CODEC.fieldOf("fluid")).forGetter(block -> block.fluid),
                     StillFluidBlock.createSettingsCodec()).apply(instance, StillFluidBlock::new));
+    protected final StillFluid fluid;
 
     public StillFluidBlock(StillFluid fluid, AbstractBlock.Settings settings) {
         super(settings);

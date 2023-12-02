@@ -28,13 +28,6 @@ public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements Livi
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
 
-    /* Start of code common to all LivingSporeGrowthBlocks */
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModProperties.CATALYZED);
-    }
-
     @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -71,7 +64,6 @@ public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements Livi
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
-    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
@@ -82,14 +74,22 @@ public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements Livi
 
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
         CrimsonSpores.getInstance()
-                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
-                        waterAmount, false, false, false, Int3.ZERO);
+                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE, waterAmount, false,
+                        false, false, Int3.ZERO);
         return true;
     }
+    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public Block getDeadSporeBlock() {
         return ModBlocks.DEAD_CRIMSON_GROWTH;
+    }
+
+    /* Start of code common to all LivingSporeGrowthBlocks */
+    @Override
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModProperties.CATALYZED);
     }
 
     @Override

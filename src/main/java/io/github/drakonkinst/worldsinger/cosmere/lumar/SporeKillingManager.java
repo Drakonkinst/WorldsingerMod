@@ -28,8 +28,6 @@ public final class SporeKillingManager {
     public static final int MAX_BLOCK_RADIUS = 5;
     public static final double BOAT_RADIUS = 2.0;
 
-    private SporeKillingManager() {}
-
     public static int killNearbySpores(World world, BlockPos pos, int radius) {
         int numKilled = 0;
         radius = Math.min(radius, MAX_BLOCK_RADIUS);
@@ -74,10 +72,15 @@ public final class SporeKillingManager {
         return numKilled;
     }
 
+    public static BlockState convertToDeadVariant(SporeKillable sporeKillable,
+            BlockState blockState) {
+        return sporeKillable.getDeadSporeBlock().getStateWithProperties(blockState);
+    }
+
     public static boolean isSporeKillingBlockNearby(World world, BlockPos pos) {
         DataTable dataTable = DataTables.get(DataTables.SPORE_KILLING_RADIUS);
-        for (BlockPos currentPos : BlockPos.iterateOutwards(pos, MAX_BLOCK_RADIUS,
-                MAX_BLOCK_RADIUS, MAX_BLOCK_RADIUS)) {
+        for (BlockPos currentPos : BlockPos.iterateOutwards(pos, MAX_BLOCK_RADIUS, MAX_BLOCK_RADIUS,
+                MAX_BLOCK_RADIUS)) {
             BlockState blockState = world.getBlockState(currentPos);
             if (!blockState.isIn(ModBlockTags.KILLS_SPORES)) {
                 continue;
@@ -101,18 +104,10 @@ public final class SporeKillingManager {
         return checkNearbyEntitiesInBox(world, box);
     }
 
-    public static boolean checkNearbyEntitiesForRange(World world, double minX, double minY,
-            double minZ, double maxX, double maxY, double maxZ) {
-        Box box = new Box(minX, minY, minZ, maxX, maxY, maxZ);
-        box = box.expand(BOAT_RADIUS);
-        return checkNearbyEntitiesInBox(world, box);
-    }
-
     private static boolean checkNearbyEntitiesInBox(World world, Box box) {
         List<BoatEntity> entitiesInRange = world.getEntitiesByClass(BoatEntity.class, box,
                 boatEntity -> {
-                    SilverLinedComponent silverData = ModComponents.SILVER_LINED.get(
-                            boatEntity);
+                    SilverLinedComponent silverData = ModComponents.SILVER_LINED.get(boatEntity);
                     boolean hasSilver = silverData.getSilverDurability() > 0;
                     if (hasSilver) {
                         silverData.setSilverDurability(silverData.getSilverDurability() - 1);
@@ -123,11 +118,18 @@ public final class SporeKillingManager {
         return !entitiesInRange.isEmpty();
     }
 
+    public static boolean checkNearbyEntitiesForRange(World world, double minX, double minY,
+            double minZ, double maxX, double maxY, double maxZ) {
+        Box box = new Box(minX, minY, minZ, maxX, maxY, maxZ);
+        box = box.expand(BOAT_RADIUS);
+        return checkNearbyEntitiesInBox(world, box);
+    }
+
     public static boolean isSporeKillingBlockNearbyForRange(World world, double minX, double minY,
             double minZ, double maxX, double maxY, double maxZ) {
-        return isSporeKillingBlockNearbyForRange(world,
-                MathHelper.floor(minX), MathHelper.floor(minY), MathHelper.floor(minZ),
-                MathHelper.ceil(maxX), MathHelper.ceil(maxY), MathHelper.ceil(maxZ));
+        return isSporeKillingBlockNearbyForRange(world, MathHelper.floor(minX),
+                MathHelper.floor(minY), MathHelper.floor(minZ), MathHelper.ceil(maxX),
+                MathHelper.ceil(maxY), MathHelper.ceil(maxZ));
     }
 
     public static boolean isSporeKillingBlockNearbyForRange(World world, int minX, int minY,
@@ -149,9 +151,8 @@ public final class SporeKillingManager {
                 continue;
             }
 
-            SporeKillingManager.calcClosestPointOnCuboid(searchPos.getX(),
-                    searchPos.getY(), searchPos.getZ(), minX, minY, minZ, maxX, maxY, maxZ,
-                    closestPos);
+            SporeKillingManager.calcClosestPointOnCuboid(searchPos.getX(), searchPos.getY(),
+                    searchPos.getZ(), minX, minY, minZ, maxX, maxY, maxZ, closestPos);
             int distance = BlockPosUtil.getDistance(searchPos, closestPos);
             if (dataTable.getIntForBlock(blockState) < distance) {
                 continue;
@@ -165,12 +166,16 @@ public final class SporeKillingManager {
         return false;
     }
 
-    private static void calcClosestPointOnCuboid(int x, int y, int z, int minX, int minY,
-            int minZ, int maxX, int maxY, int maxZ, BlockPos.Mutable mutable) {
+    private static void calcClosestPointOnCuboid(int x, int y, int z, int minX, int minY, int minZ,
+            int maxX, int maxY, int maxZ, BlockPos.Mutable mutable) {
         int closestX = clamp(x, minX, maxX);
         int closestY = clamp(y, minY, maxY);
         int closestZ = clamp(z, minZ, maxZ);
         mutable.set(closestX, closestY, closestZ);
+    }
+
+    private static int clamp(int value, int min, int max) {
+        return Math.max(Math.min(value, max), min);
     }
 
     private static int getDistanceBetweenPointAndCube(int x, int y, int z, int minX, int minY,
@@ -181,12 +186,5 @@ public final class SporeKillingManager {
         return BlockPosUtil.getDistance(x, y, z, closestX, closestY, closestZ);
     }
 
-    private static int clamp(int value, int min, int max) {
-        return Math.max(Math.min(value, max), min);
-    }
-
-    public static BlockState convertToDeadVariant(SporeKillable sporeKillable,
-            BlockState blockState) {
-        return sporeKillable.getDeadSporeBlock().getStateWithProperties(blockState);
-    }
+    private SporeKillingManager() {}
 }

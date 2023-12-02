@@ -30,13 +30,6 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
 
-    /* Start of code common to all LivingSporeGrowthBlocks */
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModProperties.CATALYZED);
-    }
-
     @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -73,12 +66,6 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
-    /* End of code common to all LivingSporeGrowthBlocks */
-
-    @Override
-    public Block getDeadSporeBlock() {
-        return ModBlocks.DEAD_VERDANT_VINE_SNARE;
-    }
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
@@ -89,11 +76,17 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
 
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
         Direction direction = VerdantVineSnareBlock.getDirection(state);
-        Int3 dir = new Int3(direction.getOffsetX(), direction.getOffsetY(),
-                direction.getOffsetZ());
-        VerdantSpores.getInstance().spawnSporeGrowth(world, pos.toCenterPos(),
-                RECATALYZE_VALUE, waterAmount, false, true, false, dir);
+        Int3 dir = new Int3(direction.getOffsetX(), direction.getOffsetY(), direction.getOffsetZ());
+        VerdantSpores.getInstance()
+                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE, waterAmount, false,
+                        true, false, dir);
         return true;
+    }
+    /* End of code common to all LivingSporeGrowthBlocks */
+
+    @Override
+    public Block getDeadSporeBlock() {
+        return ModBlocks.DEAD_VERDANT_VINE_SNARE;
     }
 
     // Catalyze when waterlogged, common to all LivingSporeGrowthBlocks that implement Waterloggable
@@ -107,6 +100,13 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
         if (!newState.get(ModProperties.CATALYZED) && newState.get(Properties.WATERLOGGED)) {
             WaterReactionManager.catalyzeAroundWater(world, pos);
         }
+    }
+
+    /* Start of code common to all LivingSporeGrowthBlocks */
+    @Override
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModProperties.CATALYZED);
     }
 
     @Override

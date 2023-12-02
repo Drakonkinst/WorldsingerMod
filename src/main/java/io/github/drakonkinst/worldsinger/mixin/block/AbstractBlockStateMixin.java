@@ -43,9 +43,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class AbstractBlockStateMixin {
 
     @Shadow
-    protected abstract BlockState asBlockState();
-
-    @Shadow
     public abstract Block getBlock();
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/function/ToIntFunction;applyAsInt(Ljava/lang/Object;)I"))
@@ -75,9 +72,12 @@ public abstract class AbstractBlockStateMixin {
         }
     }
 
+    @Shadow
+    protected abstract BlockState asBlockState();
+
     @ModifyReturnValue(method =
-            "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
-                    "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At("RETURN"))
+            "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;"
+                    + "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At("RETURN"))
     private VoxelShape fixFluidloggedCollisionShape(VoxelShape originalShape, BlockView world,
             BlockPos pos, ShapeContext context) {
         FluidState fluidState = world.getFluidState(pos);
@@ -88,8 +88,8 @@ public abstract class AbstractBlockStateMixin {
 
         VoxelShape shape = FluidShapes.VOXEL_SHAPES[level];
         VoxelShape shapeBelow = FluidShapes.VOXEL_SHAPES[level - 1];
-        if (context.isAbove(shapeBelow, pos, true)
-                && context.canWalkOnFluid(world.getFluidState(pos.up()), fluidState)) {
+        if (context.isAbove(shapeBelow, pos, true) && context.canWalkOnFluid(
+                world.getFluidState(pos.up()), fluidState)) {
             return VoxelShapes.union(originalShape, shape);
         }
         return originalShape;
@@ -125,11 +125,11 @@ public abstract class AbstractBlockStateMixin {
     }
 
     @WrapOperation(method =
-            "getOutlineShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
-                    "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/block/Block;getOutlineShape(Lnet/minecraft/block/BlockState;" +
-                    "Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;" +
-                    "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
+            "getOutlineShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;"
+                    + "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At(value = "INVOKE", target =
+            "Lnet/minecraft/block/Block;getOutlineShape(Lnet/minecraft/block/BlockState;"
+                    + "Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;"
+                    + "Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;"))
     private VoxelShape injectCustomFluidOutlineShape(Block instance, BlockState state,
             BlockView world, BlockPos pos, ShapeContext context, Operation<VoxelShape> original) {
         if (state.contains(ModProperties.FLUIDLOGGED)) {
@@ -141,10 +141,9 @@ public abstract class AbstractBlockStateMixin {
     }
 
     @WrapOperation(method = "getSidesShape", at = @At(value = "INVOKE", target =
-            "Lnet/minecraft/block/Block;getSidesShape" +
-                    "(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)"
-                    +
-                    "Lnet/minecraft/util/shape/VoxelShape;"))
+            "Lnet/minecraft/block/Block;getSidesShape"
+                    + "(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)"
+                    + "Lnet/minecraft/util/shape/VoxelShape;"))
     private VoxelShape injectCustomFluidSidesShape(Block instance, BlockState state,
             BlockView world, BlockPos pos, Operation<VoxelShape> original) {
         if (state.contains(ModProperties.FLUIDLOGGED)) {

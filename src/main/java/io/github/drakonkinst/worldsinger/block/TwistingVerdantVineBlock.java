@@ -21,45 +21,14 @@ import org.jetbrains.annotations.Nullable;
 public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock implements
         Waterloggable, SporeGrowthBlock {
 
+    private static final VoxelShape SHAPE = VoxelShapeUtil.createUpwardsCuboid(4.0, 0.0, 15.0);
     public static final MapCodec<TwistingVerdantVineBlock> CODEC = createCodec(
             TwistingVerdantVineBlock::new);
 
-    private static final VoxelShape SHAPE = VoxelShapeUtil.createUpwardsCuboid(4.0, 0.0, 15.0);
-
     public TwistingVerdantVineBlock(Settings settings) {
         super(settings, SHAPE);
-        this.setDefaultState(this.getDefaultState()
-                .with(Properties.PERSISTENT, false)
+        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false)
                 .with(Properties.WATERLOGGED, false));
-    }
-
-    public static boolean canAttach(BlockState state, BlockState attachCandidate) {
-        // Can attach to other branches
-        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
-            return true;
-        }
-        // Can attach to a snare block if direction matches
-        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
-            return VerdantVineSnareBlock.getDirection(attachCandidate)
-                    == AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
-        }
-        return false;
-    }
-
-    @Override
-    protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
-        return TwistingVerdantVineBlock.canAttach(state, attachCandidate);
-    }
-
-    @Override
-    protected Block getStem() {
-        return ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT;
-    }
-
-    @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED);
-        super.appendProperties(builder);
     }
 
     @Override
@@ -67,8 +36,7 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
-            placementState = placementState
-                    .with(Properties.PERSISTENT, true)
+            placementState = placementState.with(Properties.PERSISTENT, true)
                     .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()));
         }
         return placementState;
@@ -102,6 +70,35 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
                 neighborPos).with(Properties.PERSISTENT, state.get(Properties.PERSISTENT));
+    }
+
+    @Override
+    protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
+        return TwistingVerdantVineBlock.canAttach(state, attachCandidate);
+    }
+
+    public static boolean canAttach(BlockState state, BlockState attachCandidate) {
+        // Can attach to other branches
+        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
+            return true;
+        }
+        // Can attach to a snare block if direction matches
+        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
+            return VerdantVineSnareBlock.getDirection(attachCandidate)
+                    == AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
+        }
+        return false;
+    }
+
+    @Override
+    protected Block getStem() {
+        return ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT;
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED);
+        super.appendProperties(builder);
     }
 
     @Override

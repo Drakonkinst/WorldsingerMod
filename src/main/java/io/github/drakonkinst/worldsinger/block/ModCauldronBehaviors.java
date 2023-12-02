@@ -51,35 +51,35 @@ public final class ModCauldronBehaviors {
         ModCauldronBehaviors.registerExtraBucketBehavior(CauldronBehavior.LAVA_CAULDRON_BEHAVIOR);
         ModCauldronBehaviors.registerExtraBucketBehavior(
                 CauldronBehavior.POWDER_SNOW_CAULDRON_BEHAVIOR);
-        ModCauldronBehaviors.registerSporeBucket(
-                ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR,
-                ModBlocks.DEAD_SPORE_CAULDRON,
-                ModItems.DEAD_SPORES_BUCKET,
+        ModCauldronBehaviors.registerSporeBucket(ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR,
+                ModBlocks.DEAD_SPORE_CAULDRON, ModItems.DEAD_SPORES_BUCKET,
                 ModItems.DEAD_SPORES_BOTTLE);
         ModCauldronBehaviors.registerSporeBucket(
                 ModCauldronBehaviors.VERDANT_SPORE_CAULDRON_BEHAVIOR,
-                ModBlocks.VERDANT_SPORE_CAULDRON,
-                ModItems.VERDANT_SPORES_BUCKET,
+                ModBlocks.VERDANT_SPORE_CAULDRON, ModItems.VERDANT_SPORES_BUCKET,
                 ModItems.VERDANT_SPORES_BOTTLE);
         ModCauldronBehaviors.registerSporeBucket(
                 ModCauldronBehaviors.CRIMSON_SPORE_CAULDRON_BEHAVIOR,
-                ModBlocks.CRIMSON_SPORE_CAULDRON,
-                ModItems.CRIMSON_SPORES_BUCKET,
+                ModBlocks.CRIMSON_SPORE_CAULDRON, ModItems.CRIMSON_SPORES_BUCKET,
                 ModItems.CRIMSON_SPORES_BOTTLE);
         ModCauldronBehaviors.registerSporeBucket(
                 ModCauldronBehaviors.ZEPHYR_SPORE_CAULDRON_BEHAVIOR,
-                ModBlocks.ZEPHYR_SPORE_CAULDRON,
-                ModItems.ZEPHYR_SPORES_BUCKET,
+                ModBlocks.ZEPHYR_SPORE_CAULDRON, ModItems.ZEPHYR_SPORES_BUCKET,
                 ModItems.ZEPHYR_SPORES_BOTTLE);
         ModCauldronBehaviors.registerSporeBucket(
                 ModCauldronBehaviors.SUNLIGHT_SPORE_CAULDRON_BEHAVIOR,
-                ModBlocks.SUNLIGHT_SPORE_CAULDRON,
-                ModItems.SUNLIGHT_SPORES_BUCKET,
+                ModBlocks.SUNLIGHT_SPORE_CAULDRON, ModItems.SUNLIGHT_SPORES_BUCKET,
                 ModItems.SUNLIGHT_SPORES_BOTTLE);
     }
 
     private static void registerExtraBucketBehavior(CauldronBehaviorMap behavior) {
         ModCauldronBehaviors.registerExtraBucketBehavior(behavior.map());
+    }
+
+    private static void registerSporeBucket(CauldronBehaviorMap behavior, Block cauldronBlock,
+            Item bucketItem, Item bottledItem) {
+        ModCauldronBehaviors.registerSporeBucket(behavior.map(), cauldronBlock, bucketItem,
+                bottledItem);
     }
 
     private static void registerExtraBucketBehavior(Map<Item, CauldronBehavior> behavior) {
@@ -91,18 +91,12 @@ public final class ModCauldronBehaviors {
                 ModCauldronBehaviors.FILL_WITH_SUNLIGHT_SPORES);
     }
 
-    private static void registerSporeBucket(CauldronBehaviorMap behavior,
-            Block cauldronBlock, Item bucketItem, Item bottledItem) {
-        ModCauldronBehaviors.registerSporeBucket(behavior.map(), cauldronBlock, bucketItem,
-                bottledItem);
-    }
-
     private static void registerSporeBucket(Map<Item, CauldronBehavior> behavior,
             Block cauldronBlock, Item bucketItem, Item bottledItem) {
         CauldronBehavior.registerBucketBehavior(behavior);
         ModCauldronBehaviors.registerExtraBucketBehavior(behavior);
-        CauldronBehavior.EMPTY_CAULDRON_BEHAVIOR.map().put(bottledItem,
-                (state, world, pos, player, hand, stack) -> {
+        CauldronBehavior.EMPTY_CAULDRON_BEHAVIOR.map()
+                .put(bottledItem, (state, world, pos, player, hand, stack) -> {
                     if (!world.isClient) {
                         Item item = stack.getItem();
                         player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player,
@@ -110,8 +104,8 @@ public final class ModCauldronBehaviors {
                         player.incrementStat(Stats.USE_CAULDRON);
                         player.incrementStat(Stats.USED.getOrCreateStat(item));
                         world.setBlockState(pos, cauldronBlock.getDefaultState());
-                        world.playSound(null, pos, FILL_SPORE_BOTTLE_SOUND,
-                                SoundCategory.BLOCKS, 1.0f, 1.0f);
+                        world.playSound(null, pos, FILL_SPORE_BOTTLE_SOUND, SoundCategory.BLOCKS,
+                                1.0f, 1.0f);
                         world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
                     }
                     return ActionResult.success(world.isClient);
@@ -119,23 +113,22 @@ public final class ModCauldronBehaviors {
         behavior.put(Items.BUCKET,
                 (state, world, pos, player, hand, stack) -> CauldronBehavior.emptyCauldron(state,
                         world, pos, player, hand, stack, new ItemStack(bucketItem),
-                        statex -> statex.get(
-                                LeveledCauldronBlock.LEVEL) == 3, FILL_SPORE_BUCKET_SOUND));
-        behavior.put(Items.GLASS_BOTTLE,
-                (state, world, pos, player, hand, stack) -> {
-                    if (!world.isClient) {
-                        Item item = stack.getItem();
-                        player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player,
-                                bottledItem.getDefaultStack()));
-                        player.incrementStat(Stats.USE_CAULDRON);
-                        player.incrementStat(Stats.USED.getOrCreateStat(item));
-                        LeveledCauldronBlock.decrementFluidLevel(state, world, pos);
-                        world.playSound(null, pos, FILL_SPORE_BOTTLE_SOUND,
-                                SoundCategory.BLOCKS, 1.0f, 1.0f);
-                        world.emitGameEvent(null, GameEvent.FLUID_PICKUP, pos);
-                    }
-                    return ActionResult.success(world.isClient);
-                });
+                        statex -> statex.get(LeveledCauldronBlock.LEVEL) == 3,
+                        FILL_SPORE_BUCKET_SOUND));
+        behavior.put(Items.GLASS_BOTTLE, (state, world, pos, player, hand, stack) -> {
+            if (!world.isClient) {
+                Item item = stack.getItem();
+                player.setStackInHand(hand,
+                        ItemUsage.exchangeStack(stack, player, bottledItem.getDefaultStack()));
+                player.incrementStat(Stats.USE_CAULDRON);
+                player.incrementStat(Stats.USED.getOrCreateStat(item));
+                LeveledCauldronBlock.decrementFluidLevel(state, world, pos);
+                world.playSound(null, pos, FILL_SPORE_BOTTLE_SOUND, SoundCategory.BLOCKS, 1.0f,
+                        1.0f);
+                world.emitGameEvent(null, GameEvent.FLUID_PICKUP, pos);
+            }
+            return ActionResult.success(world.isClient);
+        });
         behavior.put(bottledItem, (state, world, pos, player, hand, stack) -> {
             if (state.get(LeveledCauldronBlock.LEVEL) == 3) {
                 return ActionResult.PASS;
@@ -146,8 +139,8 @@ public final class ModCauldronBehaviors {
                 player.incrementStat(Stats.USE_CAULDRON);
                 player.incrementStat(Stats.USED.getOrCreateStat(stack.getItem()));
                 world.setBlockState(pos, state.cycle(LeveledCauldronBlock.LEVEL));
-                world.playSound(null, pos, FILL_SPORE_BOTTLE_SOUND, SoundCategory.BLOCKS,
-                        1.0f, 1.0f);
+                world.playSound(null, pos, FILL_SPORE_BOTTLE_SOUND, SoundCategory.BLOCKS, 1.0f,
+                        1.0f);
                 world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
             return ActionResult.success(world.isClient);

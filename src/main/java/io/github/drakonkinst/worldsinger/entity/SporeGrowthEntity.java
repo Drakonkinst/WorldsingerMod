@@ -33,42 +33,20 @@ import org.joml.Vector3d;
 
 public abstract class SporeGrowthEntity extends MarkerEntity {
 
+    protected static final Random random = Random.create();
     private static final int INITIAL_GROWTH_SPEED = 3;
     private static final int DIRECTION_ARRAY_SIZE = 6;
     private static final int MAX_PLACE_ATTEMPTS = 3;
     private static final int MAX_AGE = 20 * 5;
     private static final int SPORE_DRAIN_NEAR_SPORE_KILLABLE = 50;
-    protected static final Random random = Random.create();
-
-    public static void playPlaceSoundEffect(World world, BlockPos pos, BlockState state) {
-        Vec3d centerPos = pos.toCenterPos();
-        world.playSound(null, centerPos.getX(), centerPos.getY(), centerPos.getZ(),
-                state.getSoundGroup().getPlaceSound(),
-                SoundCategory.BLOCKS, 1.0f, 0.8f + 0.4f * random.nextFloat(),
-                random.nextLong());
-    }
-
-    public static void breakBlockFromSporeGrowth(World world, BlockPos pos, Entity breakingEntity) {
-        boolean shouldDropLoot = random.nextInt(3) > 0;
-        world.breakBlock(pos, shouldDropLoot, breakingEntity);
-    }
-
-    private static void resetCatalyzed(World world, BlockPos pos) {
-        BlockState state = world.getBlockState(pos);
-        if (state.contains(ModProperties.CATALYZED) && state.get(ModProperties.CATALYZED)) {
-            world.setBlockState(pos, state.with(ModProperties.CATALYZED, false));
-        }
-    }
-
     protected final SporeGrowthComponent sporeGrowthData;
+    private final Vector3d currentForceDir = new Vector3d();
     protected Int3 lastDir = Int3.ZERO;
     private int placeAttempts = 0;
     private BlockPos lastPos = null;
-    private final Vector3d currentForceDir = new Vector3d();
     private double currentForceMagnitude = 0.0;
 
-    public SporeGrowthEntity(EntityType<?> entityType,
-            World world) {
+    public SporeGrowthEntity(EntityType<?> entityType, World world) {
         super(entityType, world);
         this.sporeGrowthData = ModComponents.SPORE_GROWTH.get(this);
     }
@@ -83,36 +61,6 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         if (sporeGrowthData.getStage() == 0) {
             sporeGrowthData.addStage(stage);
         }
-    }
-
-    // lastDir is initialized at zero, but cannot become zero again.
-    public void setLastDir(Int3 lastDir) {
-        if (!lastDir.isZero()) {
-            this.lastDir = lastDir;
-        }
-    }
-
-    protected abstract BlockState getNextBlock();
-
-    protected abstract int getWeight(World world, BlockPos pos, Int3 direction,
-            boolean allowPassthrough);
-
-    protected abstract int getUpdatePeriod();
-
-    protected abstract void updateStage();
-
-    protected abstract int getMaxStage();
-
-    protected abstract void onGrowBlock(BlockPos pos, BlockState state);
-
-    protected abstract boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith);
-
-    protected abstract boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith);
-
-    protected abstract boolean isGrowthBlock(BlockState state);
-
-    protected boolean shouldRecalculateForces() {
-        return true;
     }
 
     @Override
@@ -133,51 +81,20 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
     }
 
-    protected boolean placeBlockWithEffects(BlockPos pos, BlockState state, int cost,
-            boolean drainsWater, boolean showParticles, boolean playSound) {
-        boolean success = this.getWorld().setBlockState(pos, state);
-
-        if (success) {
-            this.doGrowEffects(pos, state, cost, drainsWater, showParticles, playSound);
-        }
-
-        return success;
-    }
-
-    protected void doGrowEffects(BlockPos pos, BlockState state, int cost, boolean drainsWater,
-            boolean showParticles, boolean playSound) {
-        if (drainsWater) {
-            this.drainWater(cost);
-        }
-        this.drainSpores(cost);
-
-        if (showParticles) {
-            this.spawnParticles(pos.toCenterPos(), state);
-        }
-
-        if (playSound) {
-            SporeGrowthEntity.playPlaceSoundEffect(this.getWorld(), pos, state);
-        }
-    }
-
     protected boolean shouldBeDead() {
-        return sporeGrowthData.getStage() > this.getMaxStage()
-                || sporeGrowthData.getSpores() <= 0 || sporeGrowthData.getAge() > MAX_AGE
-                || placeAttempts >= MAX_PLACE_ATTEMPTS || sporeGrowthData.getWater() <= 0;
+        return sporeGrowthData.getStage() > this.getMaxStage() || sporeGrowthData.getSpores() <= 0
+                || sporeGrowthData.getAge() > MAX_AGE || placeAttempts >= MAX_PLACE_ATTEMPTS
+                || sporeGrowthData.getWater() <= 0;
     }
 
-    protected boolean shouldDrainWater() {
-        int spores = sporeGrowthData.getSpores();
-        int water = sporeGrowthData.getWater();
-        if (water >= spores) {
-            return true;
+    private void onEarlyDiscard() {
+        BlockPos pos = this.getBlockPos();
+        BlockPos.Mutable mutable = pos.mutableCopy();
+        World world = this.getWorld();
+        SporeGrowthEntity.resetCatalyzed(world, pos);
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            SporeGrowthEntity.resetCatalyzed(world, mutable.set(pos.offset(direction)));
         }
-        if (water <= 0) {
-            return false;
-        }
-        // Want water to last as long as possible, so higher proportion of spores means lower chance
-        float chanceToCatalyze = (float) spores / water;
-        return random.nextFloat() < chanceToCatalyze;
     }
 
     private void grow() {
@@ -197,6 +114,19 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
                 this.doGrowStep();
             }
         }
+    }
+
+    protected abstract int getMaxStage();
+
+    private static void resetCatalyzed(World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        if (state.contains(ModProperties.CATALYZED) && state.get(ModProperties.CATALYZED)) {
+            world.setBlockState(pos, state.with(ModProperties.CATALYZED, false));
+        }
+    }
+
+    protected boolean shouldRecalculateForces() {
+        return true;
     }
 
     private void recalculateForces() {
@@ -219,8 +149,8 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
             this.drainSpores(SPORE_DRAIN_NEAR_SPORE_KILLABLE);
         }
 
-        if (sporeGrowthData.getWater() < sporeGrowthData.getSpores()
-                && world.getFluidState(pos).isIn(FluidTags.WATER)) {
+        if (sporeGrowthData.getWater() < sporeGrowthData.getSpores() && world.getFluidState(pos)
+                .isIn(FluidTags.WATER)) {
             int waterAbsorbed = WaterReactionManager.absorbWaterAtBlock(world, pos);
             if (waterAbsorbed > 0) {
                 sporeGrowthData.setWater(sporeGrowthData.getWater() + waterAbsorbed);
@@ -243,8 +173,10 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
     }
 
-    private boolean canMoveThrough() {
-        return this.isGrowthBlock(this.getWorld().getBlockState(this.getBlockPos()));
+    protected abstract int getUpdatePeriod();
+
+    protected void drainSpores(int cost) {
+        sporeGrowthData.setSpores(sporeGrowthData.getSpores() - cost);
     }
 
     private boolean attemptGrowBlock(BlockState state) {
@@ -267,15 +199,7 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         return false;
     }
 
-    private boolean growBlock(BlockState state) {
-        // Set the block only, let each block handle its own grow effects in onGrowBlock()
-        BlockPos pos = this.getBlockPos();
-        boolean success = this.getWorld().setBlockState(pos, state);
-        if (success) {
-            this.onGrowBlock(pos, state);
-        }
-        return success;
-    }
+    protected abstract BlockState getNextBlock();
 
     private void shiftBlock(Int3 direction) {
         if (direction.isZero()) {
@@ -311,6 +235,41 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         return nextDirection;
     }
 
+    protected abstract void updateStage();
+
+    private boolean canMoveThrough() {
+        return this.isGrowthBlock(this.getWorld().getBlockState(this.getBlockPos()));
+    }
+
+    protected abstract boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith);
+
+    public static void breakBlockFromSporeGrowth(World world, BlockPos pos, Entity breakingEntity) {
+        boolean shouldDropLoot = random.nextInt(3) > 0;
+        world.breakBlock(pos, shouldDropLoot, breakingEntity);
+    }
+
+    private boolean growBlock(BlockState state) {
+        // Set the block only, let each block handle its own grow effects in onGrowBlock()
+        BlockPos pos = this.getBlockPos();
+        boolean success = this.getWorld().setBlockState(pos, state);
+        if (success) {
+            this.onGrowBlock(pos, state);
+        }
+        return success;
+    }
+
+    protected abstract boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith);
+
+    // lastDir is initialized at zero, but cannot become zero again.
+    public void setLastDir(Int3 lastDir) {
+        if (!lastDir.isZero()) {
+            this.lastDir = lastDir;
+        }
+    }
+
+    protected abstract int getWeight(World world, BlockPos pos, Int3 direction,
+            boolean allowPassthrough);
+
     private Int3 chooseWeighted(List<Int3> candidates, IntList weights, int weightSum) {
 
         if (candidates.isEmpty()) {
@@ -331,8 +290,39 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         return Int3.ZERO;
     }
 
-    protected void drainSpores(int cost) {
-        sporeGrowthData.setSpores(sporeGrowthData.getSpores() - cost);
+    protected abstract boolean isGrowthBlock(BlockState state);
+
+    protected abstract void onGrowBlock(BlockPos pos, BlockState state);
+
+    public SporeGrowthComponent getSporeGrowthData() {
+        return sporeGrowthData;
+    }
+
+    protected boolean placeBlockWithEffects(BlockPos pos, BlockState state, int cost,
+            boolean drainsWater, boolean showParticles, boolean playSound) {
+        boolean success = this.getWorld().setBlockState(pos, state);
+
+        if (success) {
+            this.doGrowEffects(pos, state, cost, drainsWater, showParticles, playSound);
+        }
+
+        return success;
+    }
+
+    protected void doGrowEffects(BlockPos pos, BlockState state, int cost, boolean drainsWater,
+            boolean showParticles, boolean playSound) {
+        if (drainsWater) {
+            this.drainWater(cost);
+        }
+        this.drainSpores(cost);
+
+        if (showParticles) {
+            this.spawnParticles(pos.toCenterPos(), state);
+        }
+
+        if (playSound) {
+            SporeGrowthEntity.playPlaceSoundEffect(this.getWorld(), pos, state);
+        }
     }
 
     protected void drainWater(int cost) {
@@ -347,26 +337,32 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
     }
 
-    private void onEarlyDiscard() {
-        BlockPos pos = this.getBlockPos();
-        BlockPos.Mutable mutable = pos.mutableCopy();
-        World world = this.getWorld();
-        SporeGrowthEntity.resetCatalyzed(world, pos);
-        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            SporeGrowthEntity.resetCatalyzed(world, mutable.set(pos.offset(direction)));
+    public static void playPlaceSoundEffect(World world, BlockPos pos, BlockState state) {
+        Vec3d centerPos = pos.toCenterPos();
+        world.playSound(null, centerPos.getX(), centerPos.getY(), centerPos.getZ(),
+                state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0f,
+                0.8f + 0.4f * random.nextFloat(), random.nextLong());
+    }
+
+    protected boolean shouldDrainWater() {
+        int spores = sporeGrowthData.getSpores();
+        int water = sporeGrowthData.getWater();
+        if (water >= spores) {
+            return true;
         }
+        if (water <= 0) {
+            return false;
+        }
+        // Want water to last as long as possible, so higher proportion of spores means lower chance
+        float chanceToCatalyze = (float) spores / water;
+        return random.nextFloat() < chanceToCatalyze;
     }
 
     // Returns [-currentForceMagnitude, +currentForceMagnitude]
     protected double getExternalForceModifier(Int3 direction) {
         // Dot product returns [-1, 1] based on how well direction matches currentForceDir
-        double dot = direction.x() * currentForceDir.x()
-                + direction.y() * currentForceDir.y()
+        double dot = direction.x() * currentForceDir.x() + direction.y() * currentForceDir.y()
                 + direction.z() * currentForceDir.z();
         return dot * currentForceMagnitude;
-    }
-
-    public SporeGrowthComponent getSporeGrowthData() {
-        return sporeGrowthData;
     }
 }

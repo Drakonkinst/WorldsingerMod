@@ -30,9 +30,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BackgroundRenderer.class)
 public abstract class BackgroundRendererMixin {
 
+    @Shadow
+    private static float red;
+    @Shadow
+    private static float green;
+    @Shadow
+    private static float blue;
+
     @ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;getSubmersionType()Lnet/minecraft/client/render/CameraSubmersionType;", ordinal = 0))
-    private static CameraSubmersionType skipExpensiveCalculation(
-            CameraSubmersionType original) {
+    private static CameraSubmersionType skipExpensiveCalculation(CameraSubmersionType original) {
         // Pretend to be lava, skipping the expensive default "else" calculation
         if (original == ModEnums.CameraSubmersionType.SPORE_SEA) {
             return CameraSubmersionType.LAVA;
@@ -95,11 +101,4 @@ public abstract class BackgroundRendererMixin {
             ci.cancel();
         }
     }
-
-    @Shadow
-    private static float red;
-    @Shadow
-    private static float green;
-    @Shadow
-    private static float blue;
 }

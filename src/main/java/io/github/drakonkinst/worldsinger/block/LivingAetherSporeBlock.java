@@ -16,13 +16,10 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
         WaterReactiveBlock {
 
     public static final MapCodec<LivingAetherSporeBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                    AetherSpores.CODEC.fieldOf("sporeType")
-                            .forGetter(LivingAetherSporeBlock::getSporeType),
-                    Block.CODEC.fieldOf("block")
-                            .forGetter(LivingAetherSporeBlock::getFluidizedBlock),
-                    createSettingsCodec()
-            ).apply(instance, LivingAetherSporeBlock::new));
+            instance -> instance.group(AetherSpores.CODEC.fieldOf("sporeType")
+                            .forGetter(LivingAetherSporeBlock::getSporeType), Block.CODEC.fieldOf("block")
+                            .forGetter(LivingAetherSporeBlock::getFluidizedBlock), createSettingsCodec())
+                    .apply(instance, LivingAetherSporeBlock::new));
 
     public static final int CATALYZE_VALUE = 250;
 
@@ -53,15 +50,15 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     }
 
     @Override
-    public boolean canReactToWater(BlockPos pos, BlockState state) {
-        return true;
-    }
-
-    @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
         world.removeBlock(pos, false);
         sporeType.doReaction(world, pos, CATALYZE_VALUE, waterAmount, random);
+        return true;
+    }
+
+    @Override
+    public boolean canReactToWater(BlockPos pos, BlockState state) {
         return true;
     }
 

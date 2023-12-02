@@ -22,12 +22,6 @@ public class VerdantVineBlock extends PillarBlock implements SporeGrowthBlock {
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.PERSISTENT);
-        super.appendProperties(builder);
-    }
-
-    @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
@@ -54,5 +48,11 @@ public class VerdantVineBlock extends PillarBlock implements SporeGrowthBlock {
     @Override
     public MapCodec<? extends VerdantVineBlock> getCodec() {
         return CODEC;
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(Properties.PERSISTENT);
+        super.appendProperties(builder);
     }
 }

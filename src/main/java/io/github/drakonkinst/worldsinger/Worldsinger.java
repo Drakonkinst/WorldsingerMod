@@ -27,6 +27,10 @@ public class Worldsinger implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ModConstants.MOD_ID);
 
+    public static Identifier id(String id) {
+        return new Identifier(ModConstants.MOD_ID, id);
+    }
+
     @Override
     public void onInitialize() {
         LOGGER.info("Initializing Worldsinger...");
@@ -49,9 +53,5 @@ public class Worldsinger implements ModInitializer {
         Fluidlogged.initialize();
         DataTables.initialize();
         ModApi.initialize();
-    }
-
-    public static Identifier id(String id) {
-        return new Identifier(ModConstants.MOD_ID, id);
     }
 }

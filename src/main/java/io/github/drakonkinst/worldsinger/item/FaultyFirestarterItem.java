@@ -26,19 +26,6 @@ public class FaultyFirestarterItem extends FlintAndSteelItem {
         this.successChance = successChance;
     }
 
-    private boolean isValidUse(ItemUsageContext context) {
-        World world = context.getWorld();
-        BlockPos pos = context.getBlockPos();
-        BlockState state = world.getBlockState(pos);
-        if (CampfireBlock.canBeLit(state)
-                || CandleBlock.canBeLit(state)
-                || CandleCakeBlock.canBeLit(state)) {
-            return true;
-        }
-        BlockPos sidePos = pos.offset(context.getSide());
-        return AbstractFireBlock.canPlaceAt(world, sidePos, context.getHorizontalPlayerFacing());
-    }
-
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
@@ -48,15 +35,13 @@ public class FaultyFirestarterItem extends FlintAndSteelItem {
                 boolean successful = world.getRandom().nextFloat() < successChance;
                 if (successful) {
                     // Play sound for player as well since this is no longer running on client
-                    world.playSound(null, context.getBlockPos(),
-                            SoundEvents.ITEM_FLINTANDSTEEL_USE,
+                    world.playSound(null, context.getBlockPos(), SoundEvents.ITEM_FLINTANDSTEEL_USE,
                             SoundCategory.BLOCKS, 1.0f,
                             world.getRandom().nextFloat() * 0.4f + 0.8f);
                     return super.useOnBlock(context);
                 } else {
                     // Play sound at different pitch
-                    world.playSound(null, context.getBlockPos(),
-                            SoundEvents.ITEM_FLINTANDSTEEL_USE,
+                    world.playSound(null, context.getBlockPos(), SoundEvents.ITEM_FLINTANDSTEEL_USE,
                             SoundCategory.BLOCKS, 1.0f,
                             world.getRandom().nextFloat() * 0.4f + 1.5f);
                 }
@@ -64,6 +49,18 @@ public class FaultyFirestarterItem extends FlintAndSteelItem {
             return ActionResult.success(world.isClient());
         }
         return ActionResult.FAIL;
+    }
+
+    private boolean isValidUse(ItemUsageContext context) {
+        World world = context.getWorld();
+        BlockPos pos = context.getBlockPos();
+        BlockState state = world.getBlockState(pos);
+        if (CampfireBlock.canBeLit(state) || CandleBlock.canBeLit(state)
+                || CandleCakeBlock.canBeLit(state)) {
+            return true;
+        }
+        BlockPos sidePos = pos.offset(context.getSide());
+        return AbstractFireBlock.canPlaceAt(world, sidePos, context.getHorizontalPlayerFacing());
     }
 
     @Override

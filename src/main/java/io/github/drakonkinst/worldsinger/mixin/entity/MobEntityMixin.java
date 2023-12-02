@@ -20,8 +20,7 @@ public abstract class MobEntityMixin extends LivingEntity {
     @Unique
     private static final float STILLING_PENALTY = 8.0f;
 
-    protected MobEntityMixin(EntityType<? extends LivingEntity> entityType,
-            World world) {
+    protected MobEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
 

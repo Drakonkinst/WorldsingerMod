@@ -14,7 +14,7 @@ public final class ModProperties {
             Thickness.class, thickness -> thickness != Thickness.TIP_MERGE);
     public static final IntProperty SUNLIGHT_LEVEL = IntProperty.of("level", 1, 3);
 
-    private ModProperties() {}
-
     public static void initialize() {}
+
+    private ModProperties() {}
 }

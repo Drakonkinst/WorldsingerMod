@@ -31,9 +31,11 @@ public interface WaterloggableMixin {
     private void canFillWithAnyFluid(@Nullable PlayerEntity player, BlockView world, BlockPos pos,
             BlockState state, Fluid fluid, CallbackInfoReturnable<Boolean> cir) {
         if (state.contains(ModProperties.FLUIDLOGGED)) {
-            cir.setReturnValue(state.get(ModProperties.FLUIDLOGGED) == 0
-                    && !state.get(Properties.WATERLOGGED) && (fluid.equals(Fluids.WATER) ||
-                    Fluidlogged.WATERLOGGABLE_FLUIDS.contains(Registries.FLUID.getId(fluid))));
+            cir.setReturnValue(
+                    state.get(ModProperties.FLUIDLOGGED) == 0 && !state.get(Properties.WATERLOGGED)
+                            && (fluid.equals(Fluids.WATER)
+                            || Fluidlogged.WATERLOGGABLE_FLUIDS.contains(
+                            Registries.FLUID.getId(fluid))));
         } else {
             cir.setReturnValue(!state.get(Properties.WATERLOGGED) && (fluid.equals(Fluids.WATER)));
         }
@@ -43,8 +45,8 @@ public interface WaterloggableMixin {
     private void tryFillWithAnyFluid(WorldAccess world, BlockPos pos, BlockState state,
             FluidState fluidState, CallbackInfoReturnable<Boolean> cir) {
         Fluid fluid = fluidState.getFluid();
-        if (state.contains(ModProperties.FLUIDLOGGED) && !state.get(Properties.WATERLOGGED) &&
-                state.get(ModProperties.FLUIDLOGGED) == 0) {
+        if (state.contains(ModProperties.FLUIDLOGGED) && !state.get(Properties.WATERLOGGED)
+                && state.get(ModProperties.FLUIDLOGGED) == 0) {
             if (!world.isClient()) {
                 BlockState newState = state;
                 if (fluid.equals(Fluids.WATER)) {
@@ -75,8 +77,7 @@ public interface WaterloggableMixin {
 
     @Inject(method = "tryDrainFluid", at = @At("HEAD"), cancellable = true)
     private void tryDrainAnyFluid(@Nullable PlayerEntity player, WorldAccess world, BlockPos pos,
-            BlockState state,
-            CallbackInfoReturnable<ItemStack> cir) {
+            BlockState state, CallbackInfoReturnable<ItemStack> cir) {
         if (state.get(Properties.WATERLOGGED) || (state.contains(ModProperties.FLUIDLOGGED)
                 && state.get(ModProperties.FLUIDLOGGED) > 0)) {
             Fluid fluid = Fluidlogged.getFluid(state);

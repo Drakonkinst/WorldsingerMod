@@ -7,11 +7,10 @@ import net.minecraft.world.World;
 
 public interface SporeKillable {
 
-    Block getDeadSporeBlock();
-
     default void killSporeBlock(World world, BlockPos pos, BlockState state) {
-        BlockState newBlockState = this.getDeadSporeBlock()
-                .getStateWithProperties(state);
+        BlockState newBlockState = this.getDeadSporeBlock().getStateWithProperties(state);
         world.setBlockState(pos, newBlockState);
     }
+
+    Block getDeadSporeBlock();
 }

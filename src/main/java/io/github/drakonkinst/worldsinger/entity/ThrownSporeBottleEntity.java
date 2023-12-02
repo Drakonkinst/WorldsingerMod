@@ -31,8 +31,7 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
     private static final int SPORE_AMOUNT = 75;
     private static final int WATER_AMOUNT_PER_LEVEL = 80;
 
-    public ThrownSporeBottleEntity(
-            EntityType<? extends ThrownSporeBottleEntity> entityType,
+    public ThrownSporeBottleEntity(EntityType<? extends ThrownSporeBottleEntity> entityType,
             World world) {
         super(entityType, world);
     }
@@ -65,27 +64,9 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
         }
 
         world.playSound(null, pos.getX(), pos.getY(), pos.getZ(),
-                SoundEvents.ENTITY_SPLASH_POTION_BREAK,
-                SoundCategory.NEUTRAL, 1.0f, random.nextFloat() * 0.1f + 0.9f,
-                world.getRandom().nextLong());
+                SoundEvents.ENTITY_SPLASH_POTION_BREAK, SoundCategory.NEUTRAL, 1.0f,
+                random.nextFloat() * 0.1f + 0.9f, world.getRandom().nextLong());
         this.discard();
-    }
-
-    private void handleLivingSporeBehavior(World world, AetherSpores sporeType,
-            Vec3d pos) {
-        BlockPos blockPos = this.getBlockPos();
-        BlockState blockState = world.getBlockState(blockPos);
-        if (world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
-            int waterAmount = WaterReactionManager.absorbWater(world, blockPos);
-            sporeType.doReactionFromSplashBottle(world, pos, SPORE_AMOUNT, waterAmount, random,
-                    false);
-        } else if (blockState.isOf(Blocks.WATER_CAULDRON)) {
-            int waterAmount =
-                    WATER_AMOUNT_PER_LEVEL * blockState.get(LeveledCauldronBlock.LEVEL);
-            world.setBlockState(blockPos, Blocks.CAULDRON.getStateWithProperties(blockState));
-            sporeType.doReactionFromSplashBottle(world, pos, SPORE_AMOUNT, waterAmount, random,
-                    true);
-        }
     }
 
     @Nullable
@@ -96,6 +77,21 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
         }
         Worldsinger.LOGGER.error("Unable to determine spore type for Thrown Spore Bottle Entity");
         return DeadSpores.getInstance();
+    }
+
+    private void handleLivingSporeBehavior(World world, AetherSpores sporeType, Vec3d pos) {
+        BlockPos blockPos = this.getBlockPos();
+        BlockState blockState = world.getBlockState(blockPos);
+        if (world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
+            int waterAmount = WaterReactionManager.absorbWater(world, blockPos);
+            sporeType.doReactionFromSplashBottle(world, pos, SPORE_AMOUNT, waterAmount, random,
+                    false);
+        } else if (blockState.isOf(Blocks.WATER_CAULDRON)) {
+            int waterAmount = WATER_AMOUNT_PER_LEVEL * blockState.get(LeveledCauldronBlock.LEVEL);
+            world.setBlockState(blockPos, Blocks.CAULDRON.getStateWithProperties(blockState));
+            sporeType.doReactionFromSplashBottle(world, pos, SPORE_AMOUNT, waterAmount, random,
+                    true);
+        }
     }
 
     @Override

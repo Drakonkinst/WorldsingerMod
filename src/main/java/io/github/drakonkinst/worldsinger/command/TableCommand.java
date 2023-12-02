@@ -28,19 +28,13 @@ public class TableCommand {
     };
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(literal("table")
-                .requires(source -> source.hasPermissionLevel(
-                        ModCommands.PERMISSION_LEVEL_GAMEMASTER))
-                .then(literal("list")
-                        .executes(TableCommand::listTables))
-                .then(literal("get")
-                        .then(argument("data_table_id",
-                                IdentifierArgumentType.identifier())
-                                .suggests(SUGGESTION_PROVIDER)
-                                .then(literal("block")
-                                        .then(argument("pos", BlockPosArgumentType.blockPos())
-                                                .executes(
-                                                        TableCommand::getTableEntryForBlock))))));
+        dispatcher.register(literal("table").requires(
+                        source -> source.hasPermissionLevel(ModCommands.PERMISSION_LEVEL_GAMEMASTER))
+                .then(literal("list").executes(TableCommand::listTables)).then(literal("get").then(
+                        argument("data_table_id", IdentifierArgumentType.identifier()).suggests(
+                                SUGGESTION_PROVIDER).then(literal("block").then(
+                                argument("pos", BlockPosArgumentType.blockPos()).executes(
+                                        TableCommand::getTableEntryForBlock))))));
     }
 
     private static int listTables(CommandContext<ServerCommandSource> context) {

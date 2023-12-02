@@ -10,10 +10,6 @@ public class SteelAnvilBlock extends AnvilBlock {
     // Unused Codec
     public static final MapCodec<SteelAnvilBlock> CODEC = createCodec(SteelAnvilBlock::new);
 
-    public SteelAnvilBlock(Settings settings) {
-        super(settings);
-    }
-
     @Nullable
     public static BlockState getLandingState(BlockState fallingState) {
         if (fallingState.isOf(ModBlocks.STEEL_ANVIL)) {
@@ -25,6 +21,10 @@ public class SteelAnvilBlock extends AnvilBlock {
                     .with(FACING, fallingState.get(FACING));
         }
         return null;
+    }
+
+    public SteelAnvilBlock(Settings settings) {
+        super(settings);
     }
 
     // @Override

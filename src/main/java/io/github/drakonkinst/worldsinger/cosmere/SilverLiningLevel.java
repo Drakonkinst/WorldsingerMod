@@ -1,17 +1,12 @@
 package io.github.drakonkinst.worldsinger.cosmere;
 
 public enum SilverLiningLevel {
-    NONE(0.0f),
-    LOW(0.25f),
-    MEDIUM(0.5f),
-    HIGH(0.75f),
-    PERFECT(1.0f);
+    NONE(0.0f), LOW(0.25f), MEDIUM(0.5f), HIGH(0.75f), PERFECT(1.0f);
 
     private static final SilverLiningLevel[] VALUES;
-    private final float maxDurabilityFraction;
 
-    SilverLiningLevel(float maxDurabilityFraction) {
-        this.maxDurabilityFraction = maxDurabilityFraction;
+    static {
+        VALUES = SilverLiningLevel.values();
     }
 
     public static SilverLiningLevel fromDurability(float durabilityFraction) {
@@ -23,7 +18,9 @@ public enum SilverLiningLevel {
         return NONE;
     }
 
-    static {
-        VALUES = SilverLiningLevel.values();
+    private final float maxDurabilityFraction;
+
+    SilverLiningLevel(float maxDurabilityFraction) {
+        this.maxDurabilityFraction = maxDurabilityFraction;
     }
 }

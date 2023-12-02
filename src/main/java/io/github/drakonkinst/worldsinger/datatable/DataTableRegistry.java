@@ -23,14 +23,12 @@ import org.apache.commons.lang3.StringUtils;
 public class DataTableRegistry extends JsonDataLoader implements
         IdentifiableResourceReloadListener {
 
-    public static DataTableRegistry INSTANCE;
-
     private static final DataTable DUMMY = new DataTable(DataTableType.MISC, 0,
             new Object2IntArrayMap<>(), null);
     private static final Identifier IDENTIFIER = Worldsinger.id("data_tables");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final DataTableType[] DATA_TABLE_TYPES = DataTableType.values();
-
+    public static DataTableRegistry INSTANCE;
     private final Map<Identifier, DataTable> dataTables = new HashMap<>();
     private boolean tagsResolved = false;
 
@@ -65,6 +63,35 @@ public class DataTableRegistry extends JsonDataLoader implements
 
     public Collection<Identifier> getDataTableIds() {
         return dataTables.keySet();
+    }
+
+    public void resolveTags() {
+        int numResolvedTables = 0;
+        for (Map.Entry<Identifier, DataTable> entry : dataTables.entrySet()) {
+            DataTable dataTable = entry.getValue();
+            List<Identifier> failedTags = dataTable.resolveTags();
+            if (failedTags != null && !failedTags.isEmpty()) {
+                if (dataTable.getType() == DataTableType.MISC) {
+                    Worldsinger.LOGGER.warn(
+                            "Data table " + entry.getKey() + " is of type " + dataTable.getType()
+                                    + " and is unable to resolve tags. Specify a type to resolve.");
+                } else {
+                    Worldsinger.LOGGER.error(
+                            "Failed to resolve tags for data table " + entry.getKey()
+                                    + ": Unrecognized tags " + StringUtils.join(
+                                    failedTags.stream().map(Identifier::toString).toList()));
+                }
+            } else {
+                numResolvedTables++;
+            }
+        }
+        Worldsinger.LOGGER.info("Resolved tags for " + numResolvedTables + " data tables");
+        tagsResolved = true;
+    }
+
+    @Override
+    public Identifier getFabricId() {
+        return IDENTIFIER;
     }
 
     @Override
@@ -142,34 +169,5 @@ public class DataTableRegistry extends JsonDataLoader implements
         }
         jsonStack.addError("Unrecognized data table type " + typeStr);
         return DataTableType.MISC;
-    }
-
-    public void resolveTags() {
-        int numResolvedTables = 0;
-        for (Map.Entry<Identifier, DataTable> entry : dataTables.entrySet()) {
-            DataTable dataTable = entry.getValue();
-            List<Identifier> failedTags = dataTable.resolveTags();
-            if (failedTags != null && !failedTags.isEmpty()) {
-                if (dataTable.getType() == DataTableType.MISC) {
-                    Worldsinger.LOGGER.warn(
-                            "Data table " + entry.getKey() + " is of type " + dataTable.getType()
-                                    + " and is unable to resolve tags. Specify a type to resolve.");
-                } else {
-                    Worldsinger.LOGGER.error(
-                            "Failed to resolve tags for data table " + entry.getKey()
-                                    + ": Unrecognized tags " + StringUtils.join(
-                                    failedTags.stream().map(Identifier::toString).toList()));
-                }
-            } else {
-                numResolvedTables++;
-            }
-        }
-        Worldsinger.LOGGER.info("Resolved tags for " + numResolvedTables + " data tables");
-        tagsResolved = true;
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return IDENTIFIER;
     }
 }

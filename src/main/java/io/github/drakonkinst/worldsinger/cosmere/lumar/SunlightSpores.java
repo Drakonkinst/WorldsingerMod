@@ -70,27 +70,8 @@ public class SunlightSpores extends AetherSpores {
                 true, 0);
     }
 
-    @Override
-    public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
-            int water, Random random) {
-        this.doSunlightSporeReaction(world, fluidContainerPos, water, random,
-                false, 2);
-    }
-
-    @Override
-    public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,
-            Random random, boolean affectingFluidContainer) {
-        this.doSunlightSporeReaction(world, BlockPosUtil.toRoundedBlockPos(pos), water, random,
-                false, 0);
-    }
-
-    @Override
-    public void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos, int water) {
-        this.doSunlightSporeReaction(world, pos, water, world.getRandom(), false, 0);
-    }
-
-    public void doSunlightSporeReaction(World world, BlockPos pos, int water,
-            Random random, boolean shouldSpreadSunlightBlocks, int fireWaveRadiusBonus) {
+    public void doSunlightSporeReaction(World world, BlockPos pos, int water, Random random,
+            boolean shouldSpreadSunlightBlocks, int fireWaveRadiusBonus) {
         // Number of blocks of Sunlight generated depends on amount of water
         int maxBlocks = Math.min(water / WATER_PER_BLOCK, MAX_BLOCKS_AFFECTED);
         if (maxBlocks <= 0) {
@@ -100,8 +81,7 @@ public class SunlightSpores extends AetherSpores {
         int fireWaveRadius = MIN_FIRE_WAVE_RADIUS + fireWaveRadiusBonus;
 
         if (shouldSpreadSunlightBlocks) {
-            Set<BlockPos> affectedBlocks = this.spreadSunlightBlocks(world, pos,
-                    maxBlocks, random);
+            Set<BlockPos> affectedBlocks = this.spreadSunlightBlocks(world, pos, maxBlocks, random);
 
             // Set blocks on fire, evaporate water, deal damage
             if (!affectedBlocks.isEmpty()) {
@@ -127,76 +107,6 @@ public class SunlightSpores extends AetherSpores {
                 (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
     }
 
-    private void doFireExplosion(World world, BlockPos pos, int radius) {
-        Box box = new Box(pos).expand(radius);
-        List<LivingEntity> affectedEntities = world.getNonSpectatingEntities(LivingEntity.class,
-                box);
-        for (LivingEntity entity : affectedEntities) {
-            entity.damage(entity.getDamageSources().inFire(), 3.0f);
-            entity.setOnFireFor(5);
-        }
-    }
-
-    private void doReactionEffects(World world, BlockPos originPos,
-            Set<BlockPos> affectedBlocks, Random random) {
-        LongSet blocksProcessed = new LongOpenHashSet();
-        Mutable mutable = new Mutable();
-        Mutable mutableDown = new Mutable();
-        MutableBoolean anyEvaporated = new MutableBoolean();
-
-        for (BlockPos pos : affectedBlocks) {
-            if (blocksProcessed.size() >= MAX_BLOCKS_PROCESSED) {
-                break;
-            }
-            this.doReactionEffectsForBlock(world, pos, blocksProcessed, mutable,
-                    mutableDown, anyEvaporated, random);
-        }
-        if (anyEvaporated.booleanValue()) {
-            world.playSound(null, originPos, ModSoundEvents.BLOCK_SUNLIGHT_EVAPORATE,
-                    SoundCategory.BLOCKS, 1.0f,
-                    (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
-        }
-
-        Worldsinger.LOGGER.info(blocksProcessed.size() + " blocks processed");
-    }
-
-    private void doReactionEffectsForBlock(World world, BlockPos centerPos,
-            LongSet blocksProcessed, Mutable mutable, Mutable mutableDown,
-            MutableBoolean anyEvaporated, Random random) {
-        blocksProcessed.add(centerPos.asLong());
-        for (int offsetX = -EFFECT_RADIUS; offsetX <= EFFECT_RADIUS; ++offsetX) {
-            for (int offsetY = -EFFECT_RADIUS; offsetY <= EFFECT_RADIUS; ++offsetY) {
-                for (int offsetZ = -EFFECT_RADIUS; offsetZ <= EFFECT_RADIUS; ++offsetZ) {
-                    mutable.set(centerPos.getX() + offsetX, centerPos.getY() + offsetY,
-                            centerPos.getZ() + offsetZ);
-                    if (!blocksProcessed.add(mutable.asLong())) {
-                        continue;
-                    }
-                    mutableDown.set(mutable).move(0, -1, 0);
-                    this.processBlock(world, mutable, mutableDown, anyEvaporated,
-                            random);
-                }
-            }
-        }
-    }
-
-    private void processBlock(World world, BlockPos mutable, BlockPos mutableDown,
-            MutableBoolean anyEvaporated, Random random) {
-        BlockState state = world.getBlockState(mutable);
-        if (state.getBlock() instanceof FluidDrainable fluidDrainable && state.getFluidState()
-                .isOf(Fluids.WATER)) {
-            // Evaporate water
-            fluidDrainable.tryDrainFluid(null, world, mutable, state);
-            anyEvaporated.setTrue();
-        }
-
-        if (random.nextInt(3) == 0 && state.isAir() && world.getBlockState(mutableDown)
-                .isOpaqueFullCube(world, mutableDown)) {
-            // Set fire
-            world.setBlockState(mutable, AbstractFireBlock.getState(world, mutable));
-        }
-    }
-
     // Spread Sunlight blocks using BFS, replacing Sunlight Spore Sea / Sunlight Spore Blocks
     // Places at least one Sunlight block
     // Should place a consistent amount of Sunlight Blocks (if available)
@@ -206,8 +116,7 @@ public class SunlightSpores extends AetherSpores {
 
         // Always generate one block of Sunlight at the point of interaction
         BlockState blockState = world.getBlockState(startPos);
-        if (blockState.isOf(ModBlocks.SUNLIGHT_SPORE_SEA)
-                || blockState.isOf(
+        if (blockState.isOf(ModBlocks.SUNLIGHT_SPORE_SEA) || blockState.isOf(
                 ModBlocks.SUNLIGHT_SPORE_BLOCK) || blockState.isOf(Blocks.AIR)) {
             // Not a waterlogged block
             world.setBlockState(startPos, ModBlocks.SUNLIGHT.getDefaultState());
@@ -255,6 +164,39 @@ public class SunlightSpores extends AetherSpores {
         return affectedBlocks;
     }
 
+    private void doReactionEffects(World world, BlockPos originPos, Set<BlockPos> affectedBlocks,
+            Random random) {
+        LongSet blocksProcessed = new LongOpenHashSet();
+        Mutable mutable = new Mutable();
+        Mutable mutableDown = new Mutable();
+        MutableBoolean anyEvaporated = new MutableBoolean();
+
+        for (BlockPos pos : affectedBlocks) {
+            if (blocksProcessed.size() >= MAX_BLOCKS_PROCESSED) {
+                break;
+            }
+            this.doReactionEffectsForBlock(world, pos, blocksProcessed, mutable, mutableDown,
+                    anyEvaporated, random);
+        }
+        if (anyEvaporated.booleanValue()) {
+            world.playSound(null, originPos, ModSoundEvents.BLOCK_SUNLIGHT_EVAPORATE,
+                    SoundCategory.BLOCKS, 1.0f,
+                    (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
+        }
+
+        Worldsinger.LOGGER.info(blocksProcessed.size() + " blocks processed");
+    }
+
+    private void doFireExplosion(World world, BlockPos pos, int radius) {
+        Box box = new Box(pos).expand(radius);
+        List<LivingEntity> affectedEntities = world.getNonSpectatingEntities(LivingEntity.class,
+                box);
+        for (LivingEntity entity : affectedEntities) {
+            entity.damage(entity.getDamageSources().inFire(), 3.0f);
+            entity.setOnFireFor(5);
+        }
+    }
+
     private boolean canSunlightReplace(BlockState state) {
         return state.isOf(ModBlocks.SUNLIGHT_SPORE_SEA) || state.isOf(
                 ModBlocks.SUNLIGHT_SPORE_BLOCK);
@@ -263,6 +205,59 @@ public class SunlightSpores extends AetherSpores {
     private boolean canSunlightPassThrough(BlockState state) {
         return state.isOf(ModBlocks.SUNLIGHT) || state.getFluidState()
                 .isOf(ModFluids.SUNLIGHT_SPORES);
+    }
+
+    private void doReactionEffectsForBlock(World world, BlockPos centerPos, LongSet blocksProcessed,
+            Mutable mutable, Mutable mutableDown, MutableBoolean anyEvaporated, Random random) {
+        blocksProcessed.add(centerPos.asLong());
+        for (int offsetX = -EFFECT_RADIUS; offsetX <= EFFECT_RADIUS; ++offsetX) {
+            for (int offsetY = -EFFECT_RADIUS; offsetY <= EFFECT_RADIUS; ++offsetY) {
+                for (int offsetZ = -EFFECT_RADIUS; offsetZ <= EFFECT_RADIUS; ++offsetZ) {
+                    mutable.set(centerPos.getX() + offsetX, centerPos.getY() + offsetY,
+                            centerPos.getZ() + offsetZ);
+                    if (!blocksProcessed.add(mutable.asLong())) {
+                        continue;
+                    }
+                    mutableDown.set(mutable).move(0, -1, 0);
+                    this.processBlock(world, mutable, mutableDown, anyEvaporated, random);
+                }
+            }
+        }
+    }
+
+    private void processBlock(World world, BlockPos mutable, BlockPos mutableDown,
+            MutableBoolean anyEvaporated, Random random) {
+        BlockState state = world.getBlockState(mutable);
+        if (state.getBlock() instanceof FluidDrainable fluidDrainable && state.getFluidState()
+                .isOf(Fluids.WATER)) {
+            // Evaporate water
+            fluidDrainable.tryDrainFluid(null, world, mutable, state);
+            anyEvaporated.setTrue();
+        }
+
+        if (random.nextInt(3) == 0 && state.isAir() && world.getBlockState(mutableDown)
+                .isOpaqueFullCube(world, mutableDown)) {
+            // Set fire
+            world.setBlockState(mutable, AbstractFireBlock.getState(world, mutable));
+        }
+    }
+
+    @Override
+    public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
+            int water, Random random) {
+        this.doSunlightSporeReaction(world, fluidContainerPos, water, random, false, 2);
+    }
+
+    @Override
+    public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,
+            Random random, boolean affectingFluidContainer) {
+        this.doSunlightSporeReaction(world, BlockPosUtil.toRoundedBlockPos(pos), water, random,
+                false, 0);
+    }
+
+    @Override
+    public void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos, int water) {
+        this.doSunlightSporeReaction(world, pos, water, world.getRandom(), false, 0);
     }
 
     @Override

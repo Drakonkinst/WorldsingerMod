@@ -31,10 +31,8 @@ public final class ModFluidRenderers {
             String flowTexturePath) {
         // Register render handler
         FluidRenderHandlerRegistry.INSTANCE.register(still, flow,
-                new SimpleFluidRenderHandler(
-                        Worldsinger.id(stillTexturePath),
-                        Worldsinger.id(flowTexturePath)
-                ));
+                new SimpleFluidRenderHandler(Worldsinger.id(stillTexturePath),
+                        Worldsinger.id(flowTexturePath)));
 
         // Register fluid render layer as translucent (needed to make boats cull properly)
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), still, flow);

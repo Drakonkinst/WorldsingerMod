@@ -45,12 +45,12 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
             0.0, 0.0, TIP_HEIGHT);
     private static final VoxelShape[] TIP_DAMAGE_SHAPES = VoxelShapeUtil.createDirectionAlignedShapes(
             TIP_OFFSET, TIP_HEIGHT, 16.0);
-    private static final VoxelShape[] FRUSTUM_SHAPES = VoxelShapeUtil.createAxisAlignedShapes(
-            4.0, 0.0);
-    private static final VoxelShape[] MIDDLE_SHAPES = VoxelShapeUtil.createAxisAlignedShapes(
-            3.0, 0.0);
-    private static final VoxelShape[] BASE_SHAPES = VoxelShapeUtil.createAxisAlignedShapes(
-            2.0, 0.0);
+    private static final VoxelShape[] FRUSTUM_SHAPES = VoxelShapeUtil.createAxisAlignedShapes(4.0,
+            0.0);
+    private static final VoxelShape[] MIDDLE_SHAPES = VoxelShapeUtil.createAxisAlignedShapes(3.0,
+            0.0);
+    private static final VoxelShape[] BASE_SHAPES = VoxelShapeUtil.createAxisAlignedShapes(2.0,
+            0.0);
 
     // Conditional XZ offsetter that acts normally when on Y-axis, and is disabled on other axes.
     public static Offsetter getOffsetter() {
@@ -63,27 +63,55 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
             long hashCode = MathHelper.hashCode(pos.getX(), 0, pos.getZ());
             float maxOffset = block.getMaxHorizontalModelOffset();
             double xOffset = MathHelper.clamp(
-                    ((double) ((float) (hashCode & 0xFL) / 15.0f) - 0.5) * 0.5,
-                    -maxOffset, maxOffset);
+                    ((double) ((float) (hashCode & 0xFL) / 15.0f) - 0.5) * 0.5, -maxOffset,
+                    maxOffset);
             double zOffset = MathHelper.clamp(
-                    ((double) ((float) (hashCode >> 8 & 0xFL) / 15.0f) - 0.5) * 0.5,
-                    -maxOffset, maxOffset);
+                    ((double) ((float) (hashCode >> 8 & 0xFL) / 15.0f) - 0.5) * 0.5, -maxOffset,
+                    maxOffset);
             return new Vec3d(xOffset, 0.0, zOffset);
         };
     }
 
-    private static boolean isCrimsonSpikeFacingDirection(BlockState state,
-            Direction direction) {
-        return (state.isIn(ModBlockTags.CRIMSON_SPIKE)
-                && state.get(Properties.FACING) == direction);
+    public CrimsonSpikeBlock(Settings settings) {
+        super(settings);
+        this.setDefaultState(this.getDefaultState().with(Properties.FACING, Direction.UP)
+                .with(Properties.PERSISTENT, false).with(Properties.WATERLOGGED, false)
+                .with(ModProperties.DISCRETE_THICKNESS, Thickness.TIP));
     }
 
-    private static boolean canPlaceAtWithDirection(WorldView world, BlockPos pos,
+    @Nullable
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        World world = ctx.getWorld();
+        BlockPos pos = ctx.getBlockPos();
+        Direction direction = ctx.getSide();
+        Direction placeDirection = CrimsonSpikeBlock.getDirectionToPlaceAt(world, pos,
+                direction.getOpposite());
+
+        if (placeDirection == null) {
+            return null;
+        }
+
+        Thickness thickness = CrimsonSpikeBlock.getThickness(world, pos, placeDirection);
+        if (thickness == null) {
+            return null;
+        }
+
+        return this.getDefaultState().with(Properties.FACING, placeDirection)
+                .with(ModProperties.DISCRETE_THICKNESS, thickness).with(Properties.PERSISTENT, true)
+                .with(Properties.WATERLOGGED, world.isWater(pos));
+    }
+
+    @Nullable
+    private static Direction getDirectionToPlaceAt(WorldView world, BlockPos pos,
             Direction direction) {
-        BlockPos anchorPos = pos.offset(direction.getOpposite());
-        BlockState anchorState = world.getBlockState(anchorPos);
-        return anchorState.isSideSolidFullSquare(world, anchorPos, direction)
-                || CrimsonSpikeBlock.isCrimsonSpikeFacingDirection(anchorState, direction);
+        if (CrimsonSpikeBlock.canPlaceAtWithDirection(world, pos, direction)) {
+            return direction;
+        } else if (CrimsonSpikeBlock.canPlaceAtWithDirection(world, pos, direction.getOpposite())) {
+            return direction.getOpposite();
+        } else {
+            return null;
+        }
     }
 
     private static Thickness getThickness(WorldView world, BlockPos pos,
@@ -107,71 +135,17 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
         return Thickness.MIDDLE;
     }
 
-    @Nullable
-    private static Direction getDirectionToPlaceAt(WorldView world, BlockPos pos,
+    private static boolean canPlaceAtWithDirection(WorldView world, BlockPos pos,
             Direction direction) {
-        if (CrimsonSpikeBlock.canPlaceAtWithDirection(world, pos, direction)) {
-            return direction;
-        } else if (CrimsonSpikeBlock.canPlaceAtWithDirection(world, pos, direction.getOpposite())) {
-            return direction.getOpposite();
-        } else {
-            return null;
-        }
+        BlockPos anchorPos = pos.offset(direction.getOpposite());
+        BlockState anchorState = world.getBlockState(anchorPos);
+        return anchorState.isSideSolidFullSquare(world, anchorPos, direction)
+                || CrimsonSpikeBlock.isCrimsonSpikeFacingDirection(anchorState, direction);
     }
 
-    public static boolean isMoving(Entity entity) {
-        boolean isMoving = entity.lastRenderX != entity.getX()
-                || entity.lastRenderY != entity.getY()
-                || entity.lastRenderZ != entity.getZ();
-        if (isMoving) {
-            double deltaX = Math.abs(entity.getX() - entity.lastRenderX);
-            double deltaY = Math.abs(entity.getY() - entity.lastRenderY);
-            double deltaZ = Math.abs(entity.getZ() - entity.lastRenderZ);
-            return deltaX >= MOVEMENT_THRESHOLD || deltaY >= MOVEMENT_THRESHOLD
-                    || deltaZ >= MOVEMENT_THRESHOLD;
-        }
-        return false;
-    }
-
-    public CrimsonSpikeBlock(Settings settings) {
-        super(settings);
-        this.setDefaultState(this.getDefaultState()
-                .with(Properties.FACING, Direction.UP)
-                .with(Properties.PERSISTENT, false)
-                .with(Properties.WATERLOGGED, false)
-                .with(ModProperties.DISCRETE_THICKNESS, Thickness.TIP)
-        );
-    }
-
-    @Override
-    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        return CrimsonSpikeBlock.canPlaceAtWithDirection(world, pos,
-                state.get(Properties.FACING));
-    }
-
-    @Nullable
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        World world = ctx.getWorld();
-        BlockPos pos = ctx.getBlockPos();
-        Direction direction = ctx.getSide();
-        Direction placeDirection = CrimsonSpikeBlock.getDirectionToPlaceAt(world, pos,
-                direction.getOpposite());
-
-        if (placeDirection == null) {
-            return null;
-        }
-
-        Thickness thickness = CrimsonSpikeBlock.getThickness(world, pos, placeDirection);
-        if (thickness == null) {
-            return null;
-        }
-
-        return this.getDefaultState()
-                .with(Properties.FACING, placeDirection)
-                .with(ModProperties.DISCRETE_THICKNESS, thickness)
-                .with(Properties.PERSISTENT, true)
-                .with(Properties.WATERLOGGED, world.isWater(pos));
+    private static boolean isCrimsonSpikeFacingDirection(BlockState state, Direction direction) {
+        return (state.isIn(ModBlockTags.CRIMSON_SPIKE)
+                && state.get(Properties.FACING) == direction);
     }
 
     @Override
@@ -179,6 +153,11 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
         if (!this.canPlaceAt(state, world, pos)) {
             world.breakBlock(pos, true);
         }
+    }
+
+    @Override
+    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        return CrimsonSpikeBlock.canPlaceAtWithDirection(world, pos, state.get(Properties.FACING));
     }
 
     @Override
@@ -255,6 +234,20 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
         entity.damage(ModDamageTypes.createSource(world, ModDamageTypes.SPIKE), 2.0f);
     }
 
+    public static boolean isMoving(Entity entity) {
+        boolean isMoving =
+                entity.lastRenderX != entity.getX() || entity.lastRenderY != entity.getY()
+                        || entity.lastRenderZ != entity.getZ();
+        if (isMoving) {
+            double deltaX = Math.abs(entity.getX() - entity.lastRenderX);
+            double deltaY = Math.abs(entity.getY() - entity.lastRenderY);
+            double deltaZ = Math.abs(entity.getZ() - entity.lastRenderZ);
+            return deltaX >= MOVEMENT_THRESHOLD || deltaY >= MOVEMENT_THRESHOLD
+                    || deltaZ >= MOVEMENT_THRESHOLD;
+        }
+        return false;
+    }
+
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false)
@@ -308,12 +301,8 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
-        builder.add(
-                Properties.FACING,
-                Properties.PERSISTENT,
-                Properties.WATERLOGGED,
-                ModProperties.DISCRETE_THICKNESS
-        );
+        builder.add(Properties.FACING, Properties.PERSISTENT, Properties.WATERLOGGED,
+                ModProperties.DISCRETE_THICKNESS);
     }
 
     @Override

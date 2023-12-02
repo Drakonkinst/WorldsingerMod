@@ -19,8 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin({FlyingEntity.class, AllayEntity.class})
 public abstract class FlyingEntityMixin extends MobEntity {
 
-    protected FlyingEntityMixin(EntityType<? extends MobEntity> entityType,
-            World world) {
+    protected FlyingEntityMixin(EntityType<? extends MobEntity> entityType, World world) {
         super(entityType, world);
     }
 

@@ -31,13 +31,6 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
 
-    /* Start of code common to all LivingSporeGrowthBlocks */
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModProperties.CATALYZED);
-    }
-
     @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -74,23 +67,6 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
-    /* End of code common to all LivingSporeGrowthBlocks */
-
-    @Override
-    public Block getDeadSporeBlock() {
-        return ModBlocks.DEAD_TALL_CRIMSON_SPINES;
-    }
-
-    @Override
-    public void killSporeBlock(World world, BlockPos pos, BlockState state) {
-        BlockState newBlockState = this.getDeadSporeBlock()
-                .getStateWithProperties(state);
-        if (state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER) {
-            TallCrimsonSpinesBlock.placeAt(world, newBlockState, pos, Block.NOTIFY_ALL);
-        } else {
-            world.setBlockState(pos, newBlockState);
-        }
-    }
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
@@ -101,10 +77,26 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
 
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
         CrimsonSpores.getInstance()
-                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
-                        waterAmount, false, true, false, Int3.UP);
+                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE, waterAmount, false,
+                        true, false, Int3.UP);
 
         return true;
+    }
+    /* End of code common to all LivingSporeGrowthBlocks */
+
+    @Override
+    public void killSporeBlock(World world, BlockPos pos, BlockState state) {
+        BlockState newBlockState = this.getDeadSporeBlock().getStateWithProperties(state);
+        if (state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER) {
+            TallCrimsonSpinesBlock.placeAt(world, newBlockState, pos, Block.NOTIFY_ALL);
+        } else {
+            world.setBlockState(pos, newBlockState);
+        }
+    }
+
+    @Override
+    public Block getDeadSporeBlock() {
+        return ModBlocks.DEAD_TALL_CRIMSON_SPINES;
     }
 
     // Catalyze when waterlogged, common to all LivingSporeGrowthBlocks that implement Waterloggable
@@ -118,6 +110,13 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
         if (!newState.get(ModProperties.CATALYZED) && newState.get(Properties.WATERLOGGED)) {
             WaterReactionManager.catalyzeAroundWater(world, pos);
         }
+    }
+
+    /* Start of code common to all LivingSporeGrowthBlocks */
+    @Override
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModProperties.CATALYZED);
     }
 
     @Override

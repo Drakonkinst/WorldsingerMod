@@ -49,6 +49,20 @@ public abstract class WorldRendererMixin {
     private static final int MOON_TEXTURE_SECTIONS_Y = 2;
     @Unique
     private static final int MOON_TEXTURE_SECTIONS_X = 4;
+    @Shadow
+    @Final
+    private static Identifier SUN;
+    @Shadow
+    @Final
+    private MinecraftClient client;
+    @Shadow
+    private @Nullable ClientWorld world;
+    @Shadow
+    private @Nullable VertexBuffer lightSkyBuffer;
+    @Shadow
+    private @Nullable VertexBuffer starsBuffer;
+    @Shadow
+    private @Nullable VertexBuffer darkSkyBuffer;
 
     @ModifyExpressionValue(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/Camera;getSubmersionType()Lnet/minecraft/client/render/CameraSubmersionType;"))
     private CameraSubmersionType skipRenderingInSporeFluid(CameraSubmersionType original) {
@@ -58,7 +72,6 @@ public abstract class WorldRendererMixin {
         }
         return original;
     }
-
 
     @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/DimensionEffects;getSkyType()Lnet/minecraft/client/render/DimensionEffects$SkyType;"), cancellable = true)
     private void addLumarSky(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta,
@@ -77,8 +90,7 @@ public abstract class WorldRendererMixin {
     @Unique
     private void renderLumarSky(@NotNull ClientWorld world, MatrixStack matrices,
             Matrix4f projectionMatrix, float tickDelta, Runnable fogCallback) {
-        Vec3d vec3d = world.getSkyColor(this.client.gameRenderer.getCamera().getPos(),
-                tickDelta);
+        Vec3d vec3d = world.getSkyColor(this.client.gameRenderer.getCamera().getPos(), tickDelta);
         float x = (float) vec3d.x;
         float y = (float) vec3d.y;
         float z = (float) vec3d.z;
@@ -111,8 +123,7 @@ public abstract class WorldRendererMixin {
             Matrix4f matrix4f = matrices.peek().getPositionMatrix();
             bufferBuilder.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
             bufferBuilder.vertex(matrix4f, 0.0f, 100.0f, 0.0f)
-                    .color(fogRgba[0], fogRgba[1], fogRgba[2], fogRgba[3])
-                    .next();
+                    .color(fogRgba[0], fogRgba[1], fogRgba[2], fogRgba[3]).next();
             for (int n = 0; n <= 16; ++n) {
                 float o = (float) n * ((float) Math.PI * 2) / 16.0f;
                 float p = MathHelper.sin(o);
@@ -129,8 +140,8 @@ public abstract class WorldRendererMixin {
         matrices.push();
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0f));
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(
-                world.getSkyAngle(tickDelta) * 360.0f));
+        matrices.multiply(
+                RotationAxis.POSITIVE_X.rotationDegrees(world.getSkyAngle(tickDelta) * 360.0f));
 
         // Draw sun
         float radius = 30.0f;
@@ -184,8 +195,8 @@ public abstract class WorldRendererMixin {
         RenderSystem.defaultBlendFunc();
         matrices.pop();
         RenderSystem.setShaderColor(0.0f, 0.0f, 0.0f, 1.0f);
-        double d = this.client.player.getCameraPosVec(tickDelta).y
-                - world.getLevelProperties().getSkyDarknessHeight(world);
+        double d = this.client.player.getCameraPosVec(tickDelta).y - world.getLevelProperties()
+                .getSkyDarknessHeight(world);
         if (d < 0.0) {
             matrices.push();
             matrices.translate(0.0f, 12.0f, 0.0f);
@@ -206,24 +217,4 @@ public abstract class WorldRendererMixin {
 
         return 0;
     }
-
-    @Shadow
-    @Final
-    private MinecraftClient client;
-
-    @Shadow
-    private @Nullable ClientWorld world;
-
-    @Shadow
-    private @Nullable VertexBuffer lightSkyBuffer;
-
-    @Shadow
-    @Final
-    private static Identifier SUN;
-
-    @Shadow
-    private @Nullable VertexBuffer starsBuffer;
-
-    @Shadow
-    private @Nullable VertexBuffer darkSkyBuffer;
 }

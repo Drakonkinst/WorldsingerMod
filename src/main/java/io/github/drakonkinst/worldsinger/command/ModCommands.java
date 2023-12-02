@@ -8,8 +8,6 @@ public final class ModCommands {
 
     public static final int PERMISSION_LEVEL_GAMEMASTER = 2;
 
-    private ModCommands() {}
-
     public static void initialize() {
         CommandRegistrationCallback.EVENT.register(
                 (dispatcher, registryAccess, environment) -> createCommands(dispatcher));
@@ -20,4 +18,6 @@ public final class ModCommands {
         TableCommand.register(dispatcher);
         SporeCommand.register(dispatcher);
     }
+
+    private ModCommands() {}
 }

@@ -9,35 +9,25 @@ import net.minecraft.registry.Registry;
 public final class ModFluids {
 
     public static final FlowableFluid DEAD_SPORES = register("dead_spores",
-            new DeadSporeFluid.Still()
-    );
+            new DeadSporeFluid.Still());
     public static final FlowableFluid FLOWING_DEAD_SPORES = register("flowing_dead_spores",
-            new DeadSporeFluid.Flowing()
-    );
+            new DeadSporeFluid.Flowing());
     public static final FlowableFluid VERDANT_SPORES = register("verdant_spores",
-            new VerdantSporeFluid.Still()
-    );
+            new VerdantSporeFluid.Still());
     public static final FlowableFluid FLOWING_VERDANT_SPORES = register("flowing_verdant_spores",
-            new VerdantSporeFluid.Flowing()
-    );
+            new VerdantSporeFluid.Flowing());
     public static final FlowableFluid CRIMSON_SPORES = register("crimson_spores",
-            new CrimsonSporeFluid.Still()
-    );
+            new CrimsonSporeFluid.Still());
     public static final FlowableFluid FLOWING_CRIMSON_SPORES = register("flowing_crimson_spores",
-            new CrimsonSporeFluid.Flowing()
-    );
+            new CrimsonSporeFluid.Flowing());
     public static final FlowableFluid ZEPHYR_SPORES = register("zephyr_spores",
-            new ZephyrSporeFluid.Still()
-    );
+            new ZephyrSporeFluid.Still());
     public static final FlowableFluid FLOWING_ZEPHYR_SPORES = register("flowing_zephyr_spores",
-            new ZephyrSporeFluid.Flowing()
-    );
+            new ZephyrSporeFluid.Flowing());
     public static final FlowableFluid SUNLIGHT_SPORES = register("sunlight_spores",
-            new SunlightSporeFluid.Still()
-    );
+            new SunlightSporeFluid.Still());
     public static final FlowableFluid FLOWING_SUNLIGHT_SPORES = register("flowing_sunlight_spores",
-            new SunlightSporeFluid.Flowing()
-    );
+            new SunlightSporeFluid.Flowing());
     public static final StillFluid SUNLIGHT = register("sunlight", new SunlightFluid());
 
     public static <T extends Fluid> T register(String id, T fluid) {

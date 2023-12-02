@@ -29,7 +29,7 @@ public class FillWithFluidCauldronBehavior implements CauldronBehavior {
     public ActionResult interact(BlockState state, World world, BlockPos pos, PlayerEntity player,
             Hand hand, ItemStack stack) {
         return CauldronBehavior.fillCauldron(world, pos, player, hand, stack,
-                cauldronBlock.get().getDefaultState().with(
-                        LeveledCauldronBlock.LEVEL, 3), fillCauldronSound);
+                cauldronBlock.get().getDefaultState().with(LeveledCauldronBlock.LEVEL, 3),
+                fillCauldronSound);
     }
 }

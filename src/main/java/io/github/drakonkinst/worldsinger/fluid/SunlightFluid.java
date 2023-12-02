@@ -25,18 +25,6 @@ public class SunlightFluid extends StillFluid {
     public static final float VERTICAL_DRAG_MULTIPLIER = 0.8f;
 
     @Override
-    protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModProperties.SUNLIGHT_LEVEL);
-    }
-
-    @Override
-    protected BlockState toBlockState(FluidState state) {
-        return ModBlocks.SUNLIGHT.getDefaultState()
-                .with(ModProperties.SUNLIGHT_LEVEL, state.get(ModProperties.SUNLIGHT_LEVEL));
-    }
-
-    @Override
     public void randomDisplayTick(World world, BlockPos pos, FluidState state, Random random) {
         BlockPos blockPos = pos.up();
         if (world.getBlockState(blockPos).isAir() && !world.getBlockState(blockPos)
@@ -106,6 +94,18 @@ public class SunlightFluid extends StillFluid {
             return false;
         }
         return world.getBlockState(pos).isBurnable();
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModProperties.SUNLIGHT_LEVEL);
+    }
+
+    @Override
+    protected BlockState toBlockState(FluidState state) {
+        return ModBlocks.SUNLIGHT.getDefaultState()
+                .with(ModProperties.SUNLIGHT_LEVEL, state.get(ModProperties.SUNLIGHT_LEVEL));
     }
 
     @Override

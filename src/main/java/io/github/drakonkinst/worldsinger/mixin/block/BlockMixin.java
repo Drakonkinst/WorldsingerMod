@@ -17,21 +17,21 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(Block.class)
 public abstract class BlockMixin {
 
-    @Shadow
-    public abstract BlockState getDefaultState();
-
-    @Shadow
-    protected abstract void setDefaultState(BlockState state);
-
     @Inject(method = "<init>", at = @At(value = "INVOKE", target =
-            "Lnet/minecraft/state/StateManager$Builder;build" +
-                    "(Ljava/util/function/Function;Lnet/minecraft/state/StateManager$Factory;)" +
-                    "Lnet/minecraft/state/StateManager;", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+            "Lnet/minecraft/state/StateManager$Builder;build"
+                    + "(Ljava/util/function/Function;Lnet/minecraft/state/StateManager$Factory;)"
+                    + "Lnet/minecraft/state/StateManager;", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
     private void injectFluidProperty(AbstractBlock.Settings settings, CallbackInfo ci,
             StateManager.Builder<Block, BlockState> builder) {
         if (isWaterloggable()) {
             builder.add(ModProperties.FLUIDLOGGED);
         }
+    }
+
+    @Unique
+    private boolean isWaterloggable() {
+        Block block = (Block) (Object) this;
+        return block instanceof Waterloggable;
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
@@ -41,9 +41,9 @@ public abstract class BlockMixin {
         }
     }
 
-    @Unique
-    private boolean isWaterloggable() {
-        Block block = (Block) (Object) this;
-        return block instanceof Waterloggable;
-    }
+    @Shadow
+    protected abstract void setDefaultState(BlockState state);
+
+    @Shadow
+    public abstract BlockState getDefaultState();
 }

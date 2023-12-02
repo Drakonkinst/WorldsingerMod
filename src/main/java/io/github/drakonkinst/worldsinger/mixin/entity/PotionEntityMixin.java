@@ -25,8 +25,7 @@ public abstract class PotionEntityMixin extends ThrownItemEntity {
     @Unique
     private static final int WATER_AMOUNT = 75;
 
-    public PotionEntityMixin(EntityType<? extends ThrownItemEntity> entityType,
-            World world) {
+    public PotionEntityMixin(EntityType<? extends ThrownItemEntity> entityType, World world) {
         super(entityType, world);
     }
 

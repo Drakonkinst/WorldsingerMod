@@ -40,28 +40,9 @@ public class SunlightBlock extends StillFluidBlock {
 
     private static final float DAMAGE_PER_TICK = 4.0f;
 
-    private static boolean isTouchingAnyWater(World world, BlockPos pos) {
-        BlockPos.Mutable neighborPos = new BlockPos.Mutable();
-        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            neighborPos.set(pos.add(direction.getOffsetX(), direction.getOffsetY(),
-                    direction.getOffsetZ()));
-            if (world.isWater(neighborPos)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public SunlightBlock(Settings settings) {
         super(ModFluids.SUNLIGHT, settings);
-        this.setDefaultState(this.getDefaultState()
-                .with(ModProperties.SUNLIGHT_LEVEL, 3));
-    }
-
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModProperties.SUNLIGHT_LEVEL);
+        this.setDefaultState(this.getDefaultState().with(ModProperties.SUNLIGHT_LEVEL, 3));
     }
 
     @Override
@@ -93,6 +74,18 @@ public class SunlightBlock extends StillFluidBlock {
         }
     }
 
+    private static boolean isTouchingAnyWater(World world, BlockPos pos) {
+        BlockPos.Mutable neighborPos = new BlockPos.Mutable();
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            neighborPos.set(pos.add(direction.getOffsetX(), direction.getOffsetY(),
+                    direction.getOffsetZ()));
+            if (world.isWater(neighborPos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         // Same damage and SFX as lava
@@ -117,5 +110,11 @@ public class SunlightBlock extends StillFluidBlock {
 
     public MapCodec<? extends SunlightBlock> getCodec() {
         return CODEC;
+    }
+
+    @Override
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModProperties.SUNLIGHT_LEVEL);
     }
 }

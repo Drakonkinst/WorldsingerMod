@@ -22,9 +22,9 @@ import net.minecraft.world.WorldAccess;
 public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
         WaterReactiveFluid {
 
-    private static final int NUM_RANDOM_SPREAD_PER_RANDOM_TICK = 2;
     public static final int CATALYZE_VALUE_STILL = 250;
     public static final int CATALYZE_VALUE_FLOWING = 25;
+    private static final int NUM_RANDOM_SPREAD_PER_RANDOM_TICK = 2;
 
     public LivingAetherSporeFluid(AetherSpores sporeType) {
         super(sporeType);
@@ -55,12 +55,31 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
             int offsetZ = random.nextInt(3) - 1;
 
             BlockPos blockPos = pos.add(offsetX, offsetY, offsetZ);
-            if (world.getBlockState(blockPos).isOf(ModBlocks.DEAD_SPORE_SEA)
-                    && world.getFluidState(blockPos).isStill()
-                    && !SporeKillingManager.isSporeKillingBlockNearby(world, blockPos)) {
+            if (world.getBlockState(blockPos).isOf(ModBlocks.DEAD_SPORE_SEA) && world.getFluidState(
+                    blockPos).isStill() && !SporeKillingManager.isSporeKillingBlockNearby(world,
+                    blockPos)) {
                 world.setBlockState(blockPos, blockState);
             }
         }
+    }
+
+    @Override
+    public boolean reactToWater(World world, BlockPos pos, FluidState fluidState, int waterAmount,
+            Random random) {
+        // Water reaction
+        int sporeAmount = this.isStill(fluidState) ? CATALYZE_VALUE_STILL : CATALYZE_VALUE_FLOWING;
+        this.getSporeType().doReaction(world, pos, sporeAmount, waterAmount, random);
+
+        // Remove the spores
+        BlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
+        if (block instanceof FluidDrainable fluidDrainable) {
+            ItemStack itemStack = fluidDrainable.tryDrainFluid(null, world, pos, blockState);
+            if (itemStack.isEmpty() && block instanceof FluidBlock) {
+                world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            }
+        }
+        return true;
     }
 
     @Override
@@ -80,25 +99,5 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
             }
         }
         super.flow(world, pos, state, direction, fluidState);
-    }
-
-    @Override
-    public boolean reactToWater(World world, BlockPos pos, FluidState fluidState, int waterAmount,
-            Random random) {
-        // Water reaction
-        int sporeAmount = this.isStill(fluidState) ? CATALYZE_VALUE_STILL : CATALYZE_VALUE_FLOWING;
-        this.getSporeType()
-                .doReaction(world, pos, sporeAmount, waterAmount, random);
-
-        // Remove the spores
-        BlockState blockState = world.getBlockState(pos);
-        Block block = blockState.getBlock();
-        if (block instanceof FluidDrainable fluidDrainable) {
-            ItemStack itemStack = fluidDrainable.tryDrainFluid(null, world, pos, blockState);
-            if (itemStack.isEmpty() && block instanceof FluidBlock) {
-                world.setBlockState(pos, Blocks.AIR.getDefaultState());
-            }
-        }
-        return true;
     }
 }

@@ -29,16 +29,6 @@ public abstract class FurnaceFuelMixin {
     }
 
     @Unique
-    private static void addFuel(Map<Item, Integer> fuelTimes, TagKey<Item> tag, int numItems) {
-        for (RegistryEntry<Item> registryEntry : Registries.ITEM.iterateEntries(tag)) {
-            if (isNonFlammableWood(registryEntry.value())) {
-                continue;
-            }
-            fuelTimes.put(registryEntry.value(), numItems * NUM_ITEMS_TO_TICKS);
-        }
-    }
-
-    @Unique
     private static void addFuel(Map<Item, Integer> fuelTimes, ItemConvertible item, int numItems) {
         Item item2 = item.asItem();
         if (isNonFlammableWood(item2)) {
@@ -50,5 +40,15 @@ public abstract class FurnaceFuelMixin {
     @Unique
     private static boolean isNonFlammableWood(Item item) {
         return item.getRegistryEntry().isIn(ItemTags.NON_FLAMMABLE_WOOD);
+    }
+
+    @Unique
+    private static void addFuel(Map<Item, Integer> fuelTimes, TagKey<Item> tag, int numItems) {
+        for (RegistryEntry<Item> registryEntry : Registries.ITEM.iterateEntries(tag)) {
+            if (isNonFlammableWood(registryEntry.value())) {
+                continue;
+            }
+            fuelTimes.put(registryEntry.value(), numItems * NUM_ITEMS_TO_TICKS);
+        }
     }
 }

@@ -14,23 +14,8 @@ import net.minecraft.world.World;
 
 public final class BlockPosUtil {
 
-    private BlockPosUtil() {}
-
-    public static BlockPos toRoundedBlockPos(Vec3d pos) {
-        int x = MathHelper.floor(pos.getX());
-        int y = (int) Math.round(pos.getY());
-        int z = MathHelper.floor(pos.getZ());
-        return new BlockPos(x, y, z);
-    }
-
     public static boolean isInvestitureBlocked(World world, BlockPos emitterPos,
             BlockPos listenerPos) {
-        return BlockPosUtil.isOccluded(world, emitterPos, listenerPos,
-                ModBlockTags.BLOCKS_INVESTITURE);
-    }
-
-    public static boolean isInvestitureBlocked(World world, Vec3d emitterPos,
-            Vec3d listenerPos) {
         return BlockPosUtil.isOccluded(world, emitterPos, listenerPos,
                 ModBlockTags.BLOCKS_INVESTITURE);
     }
@@ -48,13 +33,19 @@ public final class BlockPosUtil {
             TagKey<Block> blockTag) {
         for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             Vec3d vec3d3 = fromPos.offset(direction, 1.0E-5f);
-            if (world.raycast(new BlockStateRaycastContext(vec3d3, toPos, state -> state.isIn(
-                    blockTag))).getType() == HitResult.Type.BLOCK) {
+            if (world.raycast(
+                            new BlockStateRaycastContext(vec3d3, toPos, state -> state.isIn(blockTag)))
+                    .getType() == HitResult.Type.BLOCK) {
                 continue;
             }
             return false;
         }
         return true;
+    }
+
+    public static boolean isInvestitureBlocked(World world, Vec3d emitterPos, Vec3d listenerPos) {
+        return BlockPosUtil.isOccluded(world, emitterPos, listenerPos,
+                ModBlockTags.BLOCKS_INVESTITURE);
     }
 
     // Iterates over all blocks in an entity's bounding box. Number of blocks iterated is consistent
@@ -66,6 +57,13 @@ public final class BlockPosUtil {
 
     public static Iterable<BlockPos> iterateBoundingBoxForEntity(Entity entity, BlockPos blockPos) {
         return BlockPosUtil.iterateBoundingBoxForEntity(entity, blockPos, 0, 0, 0);
+    }
+
+    public static BlockPos toRoundedBlockPos(Vec3d pos) {
+        int x = MathHelper.floor(pos.getX());
+        int y = (int) Math.round(pos.getY());
+        int z = MathHelper.floor(pos.getZ());
+        return new BlockPos(x, y, z);
     }
 
     public static Iterable<BlockPos> iterateBoundingBoxForEntity(Entity entity, BlockPos blockPos,
@@ -113,4 +111,6 @@ public final class BlockPosUtil {
         Vec3d pos = entity.getPos();
         return new Vec3d(pos.getX(), pos.getY() + entity.getHeight() * 0.5, pos.getZ());
     }
+
+    private BlockPosUtil() {}
 }

@@ -29,9 +29,6 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
 
     private static final int CHEST_VALUE = 8;
     private static final int RAFT_VALUE = 4;
-
-    private final Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels;
-
     private static final Identifier[] TEXTURE_MAP = BoatSilverLiningFeatureRenderer.generateTextureMap();
 
     private static Identifier[] generateTextureMap() {
@@ -55,33 +52,7 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
         return textureMap;
     }
 
-    // Boat variant can be represented as a binary number
-    // Chest = 1 bit, Raft = 1 bit, Silver Lining State = 2 bits
-    // Returns a negative number if not silver-lined
-    private static int encodeBoatVariant(BoatEntity entity) {
-        SilverLinedComponent silverData = ModComponents.SILVER_LINED.get(entity);
-        float durabilityFraction =
-                (float) silverData.getSilverDurability()
-                        / silverData.getMaxSilverDurability();
-        SilverLiningLevel level = SilverLiningLevel.fromDurability(durabilityFraction);
-        if (level == SilverLiningLevel.NONE) {
-            return -1;
-        }
-
-        boolean hasChest = entity instanceof ChestBoatEntity;
-        boolean isRaft = entity.getVariant() == Type.BAMBOO;
-        int silverLiningValue = level.ordinal() - 1;
-        int encoded = (hasChest ? CHEST_VALUE : 0) + (isRaft ? RAFT_VALUE : 0) + silverLiningValue;
-        return encoded;
-    }
-
-    protected static <T extends Entity> void renderModel(EntityModel<T> model, Identifier texture,
-            MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(
-                RenderLayer.getEntityCutoutNoCull(texture));
-        model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f,
-                1.0f);
-    }
+    private final Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels;
 
     public BoatSilverLiningFeatureRenderer(
             FeatureRendererContext<BoatEntity, BoatEntityModel> context,
@@ -100,9 +71,35 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
         }
 
         Identifier texture = TEXTURE_MAP[encodedVariant];
-        BoatSilverLiningFeatureRenderer.renderModel(this.getModelForBoat(entity), texture,
-                matrices,
+        BoatSilverLiningFeatureRenderer.renderModel(this.getModelForBoat(entity), texture, matrices,
                 vertexConsumers, light);
+    }
+
+    // Boat variant can be represented as a binary number
+    // Chest = 1 bit, Raft = 1 bit, Silver Lining State = 2 bits
+    // Returns a negative number if not silver-lined
+    private static int encodeBoatVariant(BoatEntity entity) {
+        SilverLinedComponent silverData = ModComponents.SILVER_LINED.get(entity);
+        float durabilityFraction =
+                (float) silverData.getSilverDurability() / silverData.getMaxSilverDurability();
+        SilverLiningLevel level = SilverLiningLevel.fromDurability(durabilityFraction);
+        if (level == SilverLiningLevel.NONE) {
+            return -1;
+        }
+
+        boolean hasChest = entity instanceof ChestBoatEntity;
+        boolean isRaft = entity.getVariant() == Type.BAMBOO;
+        int silverLiningValue = level.ordinal() - 1;
+        int encoded = (hasChest ? CHEST_VALUE : 0) + (isRaft ? RAFT_VALUE : 0) + silverLiningValue;
+        return encoded;
+    }
+
+    protected static <T extends Entity> void renderModel(EntityModel<T> model, Identifier texture,
+            MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(
+                RenderLayer.getEntityCutoutNoCull(texture));
+        model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f,
+                1.0f);
     }
 
     private EntityModel<BoatEntity> getModelForBoat(BoatEntity entity) {

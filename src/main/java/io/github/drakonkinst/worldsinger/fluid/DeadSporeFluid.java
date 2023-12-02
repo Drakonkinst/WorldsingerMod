@@ -33,17 +33,11 @@ public abstract class DeadSporeFluid extends AetherSporeFluid {
 
     @Override
     protected BlockState toBlockState(FluidState fluidState) {
-        return ModBlocks.DEAD_SPORE_SEA.getDefaultState().with(Properties.LEVEL_15,
-                getBlockStateLevel(fluidState));
+        return ModBlocks.DEAD_SPORE_SEA.getDefaultState()
+                .with(Properties.LEVEL_15, getBlockStateLevel(fluidState));
     }
 
     public static class Flowing extends DeadSporeFluid {
-
-        @Override
-        protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-            super.appendProperties(builder);
-            builder.add(LEVEL);
-        }
 
         @Override
         public int getLevel(FluidState fluidState) {
@@ -53,6 +47,12 @@ public abstract class DeadSporeFluid extends AetherSporeFluid {
         @Override
         public boolean isStill(FluidState fluidState) {
             return false;
+        }
+
+        @Override
+        protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
+            super.appendProperties(builder);
+            builder.add(LEVEL);
         }
     }
 

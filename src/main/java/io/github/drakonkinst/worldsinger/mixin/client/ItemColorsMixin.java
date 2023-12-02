@@ -18,21 +18,13 @@ public abstract class ItemColorsMixin {
         ItemColors itemColors = cir.getReturnValue();
         itemColors.register(
                 (stack, tintIndex) -> tintIndex > 0 ? -1 : AetherSpores.getBottleColor(stack),
-                ModItems.DEAD_SPORES_BOTTLE,
-                ModItems.VERDANT_SPORES_BOTTLE,
-                ModItems.CRIMSON_SPORES_BOTTLE,
-                ModItems.ZEPHYR_SPORES_BOTTLE,
-                ModItems.SUNLIGHT_SPORES_BOTTLE,
-                ModItems.ROSEITE_SPORES_BOTTLE,
-                ModItems.MIDNIGHT_SPORES_BOTTLE,
-                ModItems.DEAD_SPORES_SPLASH_BOTTLE,
-                ModItems.VERDANT_SPORES_SPLASH_BOTTLE,
-                ModItems.CRIMSON_SPORES_SPLASH_BOTTLE,
-                ModItems.ZEPHYR_SPORES_SPLASH_BOTTLE,
-                ModItems.SUNLIGHT_SPORES_SPLASH_BOTTLE,
-                ModItems.ROSEITE_SPORES_SPLASH_BOTTLE,
-                ModItems.MIDNIGHT_SPORES_SPLASH_BOTTLE
-        );
+                ModItems.DEAD_SPORES_BOTTLE, ModItems.VERDANT_SPORES_BOTTLE,
+                ModItems.CRIMSON_SPORES_BOTTLE, ModItems.ZEPHYR_SPORES_BOTTLE,
+                ModItems.SUNLIGHT_SPORES_BOTTLE, ModItems.ROSEITE_SPORES_BOTTLE,
+                ModItems.MIDNIGHT_SPORES_BOTTLE, ModItems.DEAD_SPORES_SPLASH_BOTTLE,
+                ModItems.VERDANT_SPORES_SPLASH_BOTTLE, ModItems.CRIMSON_SPORES_SPLASH_BOTTLE,
+                ModItems.ZEPHYR_SPORES_SPLASH_BOTTLE, ModItems.SUNLIGHT_SPORES_SPLASH_BOTTLE,
+                ModItems.ROSEITE_SPORES_SPLASH_BOTTLE, ModItems.MIDNIGHT_SPORES_SPLASH_BOTTLE);
         cir.setReturnValue(itemColors);
     }
 }

@@ -22,8 +22,7 @@ public abstract class BirdPathNodeMakerMixin {
                 pos);
         if (pathNodeType == PathNodeType.OPEN && y >= world.getBottomY() + 1) {
             PathNodeType pathNodeTypeBelow = LandPathNodeMakerInvoker.worldsinger$getCommonNodeType(
-                    world,
-                    pos.down());
+                    world, pos.down());
             if (pathNodeTypeBelow == ModEnums.PathNodeType.AETHER_SPORE_SEA) {
                 cir.setReturnValue(ModEnums.PathNodeType.AETHER_SPORE_SEA);
             }

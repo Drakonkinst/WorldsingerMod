@@ -27,8 +27,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class BucketItemMixin {
 
     @ModifyExpressionValue(method = "use", at = @At(value = "FIELD", target =
-            "Lnet/minecraft/item/BucketItem;" +
-                    "fluid:Lnet/minecraft/fluid/Fluid;", opcode = Opcodes.GETFIELD, ordinal = 2))
+            "Lnet/minecraft/item/BucketItem;"
+                    + "fluid:Lnet/minecraft/fluid/Fluid;", opcode = Opcodes.GETFIELD, ordinal = 2))
     private Fluid allowAnyFluid(Fluid original) {
         return Fluids.WATER;
     }
@@ -41,9 +41,7 @@ public abstract class BucketItemMixin {
     // play the right sound when draining a fluidlogged block
     @Inject(method = "use", at = @At(value = "INVOKE", target =
             "Lnet/minecraft/block/FluidDrainable;"
-                    +
-                    "getBucketFillSound()Ljava/util/Optional;", shift = At.Shift.BEFORE), locals =
-            LocalCapture.CAPTURE_FAILSOFT)
+                    + "getBucketFillSound()Ljava/util/Optional;", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void playRightSound(World world, PlayerEntity user, Hand hand,
             CallbackInfoReturnable<TypedActionResult<ItemStack>> cir, ItemStack itemStack,
             BlockHitResult blockHitResult, BlockPos blockPos, Direction direction,
@@ -51,11 +49,9 @@ public abstract class BucketItemMixin {
             ItemStack itemStack2) {
         Fluid fluid = Fluidlogged.getFluid(blockState);
         if (fluid != null) {
-            fluid.getBucketFillSound().ifPresentOrElse(
-                    sound -> user.playSound(sound, 1.0F, 1.0F),
+            fluid.getBucketFillSound().ifPresentOrElse(sound -> user.playSound(sound, 1.0F, 1.0F),
                     () -> user.playSound(Fluids.WATER.getBucketFillSound().orElseThrow(), 1.0F,
-                            1.0F)
-            );
+                            1.0F));
         }
     }
 }

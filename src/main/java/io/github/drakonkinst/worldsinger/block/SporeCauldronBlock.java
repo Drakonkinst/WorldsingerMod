@@ -21,26 +21,24 @@ public class SporeCauldronBlock extends LeveledCauldronBlock implements SporeEmi
 
     // Unused Codec
     public static final MapCodec<SporeCauldronBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                            LeveledCauldronBlock.createSettingsCodec(),
+            instance -> instance.group(LeveledCauldronBlock.createSettingsCodec(),
                             CauldronBehavior.CODEC.fieldOf("interactions")
                                     .forGetter(block -> block.behaviorMap),
-                            AetherSpores.CODEC.fieldOf("sporeType").forGetter(
-                                    SporeCauldronBlock::getSporeType))
+                            AetherSpores.CODEC.fieldOf("sporeType")
+                                    .forGetter(SporeCauldronBlock::getSporeType))
                     .apply(instance, SporeCauldronBlock::new));
 
     protected final AetherSpores sporeType;
 
-    public SporeCauldronBlock(Settings settings,
-            CauldronBehaviorMap behaviorMap, AetherSpores sporeType) {
+    public SporeCauldronBlock(Settings settings, CauldronBehaviorMap behaviorMap,
+            AetherSpores sporeType) {
         super(Precipitation.NONE, behaviorMap, settings);
         this.sporeType = sporeType;
     }
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (!world.isClient() && this.isEntityTouchingFluid(state, pos,
-                entity)) {
+        if (!world.isClient() && this.isEntityTouchingFluid(state, pos, entity)) {
             if (entity.isOnFire()) {
                 entity.extinguish();
             }
@@ -51,8 +49,7 @@ public class SporeCauldronBlock extends LeveledCauldronBlock implements SporeEmi
     public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity,
             float fallDistance) {
         super.onLandedUpon(world, state, pos, entity, fallDistance);
-        if (!world.isClient() && this.isEntityTouchingFluid(state, pos,
-                entity)) {
+        if (!world.isClient() && this.isEntityTouchingFluid(state, pos, entity)) {
             if (world instanceof ServerWorld serverWorld) {
                 SporeParticleSpawner.spawnBlockParticles(serverWorld, sporeType, pos, 0.6,
                         Math.min(fallDistance, 3.0));

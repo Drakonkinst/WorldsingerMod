@@ -63,20 +63,11 @@ public abstract class BoatItemMixin extends Item {
         }
 
         if (context.isAdvanced()) {
-            tooltip.add(Text.translatable("item.silver_durability",
-                    silverDurability,
+            tooltip.add(Text.translatable("item.silver_durability", silverDurability,
                     silverItemData.getMaxSilverDurability()).setStyle(SILVER_TEXT_STYLE));
         } else {
             tooltip.add(Text.translatable("item.silver_lined").setStyle(SILVER_TEXT_STYLE));
         }
-    }
-
-    @ModifyVariable(method = "use", at = @At(value = "STORE"))
-    private BoatEntity addDataToEntity(BoatEntity entity, @Local PlayerEntity user,
-            @Local Hand hand) {
-        ItemStack itemStack = user.getStackInHand(hand);
-        this.copySilverDataFromItemToEntity(itemStack, entity);
-        return entity;
     }
 
     @Override
@@ -100,11 +91,27 @@ public abstract class BoatItemMixin extends Item {
         if (silverDurability <= 0) {
             return super.getItemBarStep(stack);
         }
-        int step = Math.min(
-                Math.round((float) silverDurability * MAX_METER_STEPS
-                        / SilverLinedBoatEntityData.MAX_DURABILITY),
-                MAX_METER_STEPS);
+        int step = Math.min(Math.round((float) silverDurability * MAX_METER_STEPS
+                / SilverLinedBoatEntityData.MAX_DURABILITY), MAX_METER_STEPS);
         return step;
+    }
+
+    @ModifyVariable(method = "use", at = @At(value = "STORE"))
+    private BoatEntity addDataToEntity(BoatEntity entity, @Local PlayerEntity user,
+            @Local Hand hand) {
+        ItemStack itemStack = user.getStackInHand(hand);
+        this.copySilverDataFromItemToEntity(itemStack, entity);
+        return entity;
+    }
+
+    @Unique
+    private void copySilverDataFromItemToEntity(ItemStack itemStack, BoatEntity entity) {
+        int silverDurability = this.getSilverDurability(itemStack);
+        if (silverDurability <= 0) {
+            return;
+        }
+        SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED.get(entity);
+        silverEntityData.setSilverDurability(silverDurability);
     }
 
     @Unique
@@ -117,15 +124,5 @@ public abstract class BoatItemMixin extends Item {
             return 0;
         }
         return silverItemData.getSilverDurability();
-    }
-
-    @Unique
-    private void copySilverDataFromItemToEntity(ItemStack itemStack, BoatEntity entity) {
-        int silverDurability = this.getSilverDurability(itemStack);
-        if (silverDurability <= 0) {
-            return;
-        }
-        SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED.get(entity);
-        silverEntityData.setSilverDurability(silverDurability);
     }
 }

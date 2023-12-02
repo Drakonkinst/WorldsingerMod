@@ -17,22 +17,49 @@ import net.minecraft.util.math.MathHelper;
 public class SeetheCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(literal("seethe")
-                .requires(source -> source.hasPermissionLevel(
-                        ModCommands.PERMISSION_LEVEL_GAMEMASTER))
-                .then(literal("on")
-                        .executes(SeetheCommand::activateNoArgs)
-                        .then(argument("duration", TimeArgumentType.time(0))
-                                .executes(SeetheCommand::activateWithArgs)))
-                .then(literal("off")
-                        .executes(SeetheCommand::deactivateNoArgs)
-                        .then(argument("duration", TimeArgumentType.time(0))
-                                .executes(SeetheCommand::deactivateWithArgs)))
+        dispatcher.register(literal("seethe").requires(
+                        source -> source.hasPermissionLevel(ModCommands.PERMISSION_LEVEL_GAMEMASTER))
+                .then(literal("on").executes(SeetheCommand::activateNoArgs)
+                        .then(argument("duration", TimeArgumentType.time(0)).executes(
+                                SeetheCommand::activateWithArgs)))
+                .then(literal("off").executes(SeetheCommand::deactivateNoArgs)
+                        .then(argument("duration", TimeArgumentType.time(0)).executes(
+                                SeetheCommand::deactivateWithArgs)))
                 .executes(SeetheCommand::getStatus));
     }
 
-    private static SeetheComponent getSeethe(CommandContext<ServerCommandSource> context) {
-        return ModComponents.LUMAR_SEETHE.get(context.getSource().getServer().getScoreboard());
+    private static int activateNoArgs(CommandContext<ServerCommandSource> context) {
+        SeetheComponent seethe = SeetheCommand.getSeethe(context);
+        seethe.startSeethe();
+        context.getSource().sendFeedback(() -> Text.literal("Set seethe to ACTIVE"), true);
+        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
+        return 1;
+    }
+
+    private static int activateWithArgs(CommandContext<ServerCommandSource> context) {
+        SeetheComponent seethe = SeetheCommand.getSeethe(context);
+        seethe.startSeethe(getInteger(context, "duration"));
+        context.getSource().sendFeedback(() -> Text.literal(
+                "Set seethe to ACTIVE for " + seethe.getTicksUntilNextCycle() + " ticks"), true);
+        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
+        return 1;
+    }
+
+    private static int deactivateNoArgs(CommandContext<ServerCommandSource> context) {
+        SeetheComponent seethe = SeetheCommand.getSeethe(context);
+        seethe.stopSeethe();
+        context.getSource().sendFeedback(() -> Text.literal("Set seethe to INACTIVE"), true);
+        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
+        return 1;
+    }
+
+    private static int deactivateWithArgs(CommandContext<ServerCommandSource> context) {
+        SeetheComponent seethe = SeetheCommand.getSeethe(context);
+        seethe.stopSeethe(getInteger(context, "duration"));
+        context.getSource().sendFeedback(() -> Text.literal(
+                "Set seethe to INACTIVE for " + seethe.getTicksUntilNextCycle() + " ticks"), true);
+        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
+        return 1;
     }
 
     private static int getStatus(CommandContext<ServerCommandSource> context) {
@@ -47,37 +74,7 @@ public class SeetheCommand {
         return 1;
     }
 
-    private static int activateNoArgs(CommandContext<ServerCommandSource> context) {
-        SeetheComponent seethe = SeetheCommand.getSeethe(context);
-        seethe.startSeethe();
-        context.getSource().sendFeedback(() -> Text.literal("Set seethe to ACTIVE"), true);
-        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
-        return 1;
-    }
-
-    private static int deactivateNoArgs(CommandContext<ServerCommandSource> context) {
-        SeetheComponent seethe = SeetheCommand.getSeethe(context);
-        seethe.stopSeethe();
-        context.getSource().sendFeedback(() -> Text.literal("Set seethe to INACTIVE"), true);
-        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
-        return 1;
-    }
-
-    private static int activateWithArgs(CommandContext<ServerCommandSource> context) {
-        SeetheComponent seethe = SeetheCommand.getSeethe(context);
-        seethe.startSeethe(getInteger(context, "duration"));
-        context.getSource().sendFeedback(() -> Text.literal(
-                "Set seethe to ACTIVE for " + seethe.getTicksUntilNextCycle() + " ticks"), true);
-        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
-        return 1;
-    }
-
-    private static int deactivateWithArgs(CommandContext<ServerCommandSource> context) {
-        SeetheComponent seethe = SeetheCommand.getSeethe(context);
-        seethe.stopSeethe(getInteger(context, "duration"));
-        context.getSource().sendFeedback(() -> Text.literal(
-                "Set seethe to INACTIVE for " + seethe.getTicksUntilNextCycle() + " ticks"), true);
-        ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
-        return 1;
+    private static SeetheComponent getSeethe(CommandContext<ServerCommandSource> context) {
+        return ModComponents.LUMAR_SEETHE.get(context.getSource().getServer().getScoreboard());
     }
 }

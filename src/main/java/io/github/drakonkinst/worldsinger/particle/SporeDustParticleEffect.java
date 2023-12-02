@@ -21,9 +21,8 @@ public class SporeDustParticleEffect extends AbstractDustParticleEffect {
     public static final ParticleEffect.Factory<SporeDustParticleEffect> PARAMETERS_FACTORY = new ParticleEffect.Factory<>() {
 
         @Override
-        public SporeDustParticleEffect read(
-                ParticleType<SporeDustParticleEffect> particleType, StringReader stringReader)
-                throws CommandSyntaxException {
+        public SporeDustParticleEffect read(ParticleType<SporeDustParticleEffect> particleType,
+                StringReader stringReader) throws CommandSyntaxException {
             Vector3f vector3f = AbstractDustParticleEffect.readColor(stringReader);
             stringReader.expect(' ');
             float f = stringReader.readFloat();
@@ -31,11 +30,10 @@ public class SporeDustParticleEffect extends AbstractDustParticleEffect {
         }
 
         @Override
-        public SporeDustParticleEffect read(
-                ParticleType<SporeDustParticleEffect> particleType,
+        public SporeDustParticleEffect read(ParticleType<SporeDustParticleEffect> particleType,
                 PacketByteBuf packetByteBuf) {
-            return new SporeDustParticleEffect(
-                    AbstractDustParticleEffect.readColor(packetByteBuf), packetByteBuf.readFloat());
+            return new SporeDustParticleEffect(AbstractDustParticleEffect.readColor(packetByteBuf),
+                    packetByteBuf.readFloat());
         }
     };
 

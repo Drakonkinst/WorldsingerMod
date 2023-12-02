@@ -21,31 +21,6 @@ public final class VoxelShapeUtil {
                 maxHeight);
     }
 
-    // Creates a symmetric axis aligned shape with equal widths, and height along the primary axis.
-    public static VoxelShape createAxisAlignedShape(Axis axis, double widthOffset,
-            double heightOffset) {
-        VoxelShape shape;
-        switch(axis) {
-            case Y -> shape = Block.createCuboidShape(widthOffset, heightOffset, widthOffset,
-                    MAX_VOXEL - widthOffset, MAX_VOXEL - heightOffset, MAX_VOXEL - widthOffset);
-            case X -> shape = Block.createCuboidShape(heightOffset, widthOffset, widthOffset,
-                    MAX_VOXEL - heightOffset, MAX_VOXEL - widthOffset, MAX_VOXEL - widthOffset);
-            // Z
-            default -> shape = Block.createCuboidShape(widthOffset, widthOffset, heightOffset,
-                    MAX_VOXEL - widthOffset, MAX_VOXEL - widthOffset, MAX_VOXEL - heightOffset);
-        }
-        return shape;
-    }
-
-    public static VoxelShape[] createAxisAlignedShapes(double widthOffset, double heightOffset) {
-        VoxelShape[] shapes = new VoxelShape[AXIS_VALUES.length];
-        for (Axis axis : AXIS_VALUES) {
-            int index = axis.ordinal();
-            shapes[index] = VoxelShapeUtil.createAxisAlignedShape(axis, widthOffset, heightOffset);
-        }
-        return shapes;
-    }
-
     public static VoxelShape createDirectionAlignedShape(Direction direction, double widthOffset,
             double minHeight, double maxHeight) {
         VoxelShape shape;
@@ -66,6 +41,31 @@ public final class VoxelShapeUtil {
             default ->
                     shape = Block.createCuboidShape(MAX_VOXEL - maxHeight, widthOffset, widthOffset,
                             MAX_VOXEL, MAX_VOXEL - widthOffset, MAX_VOXEL - widthOffset);
+        }
+        return shape;
+    }
+
+    public static VoxelShape[] createAxisAlignedShapes(double widthOffset, double heightOffset) {
+        VoxelShape[] shapes = new VoxelShape[AXIS_VALUES.length];
+        for (Axis axis : AXIS_VALUES) {
+            int index = axis.ordinal();
+            shapes[index] = VoxelShapeUtil.createAxisAlignedShape(axis, widthOffset, heightOffset);
+        }
+        return shapes;
+    }
+
+    // Creates a symmetric axis aligned shape with equal widths, and height along the primary axis.
+    public static VoxelShape createAxisAlignedShape(Axis axis, double widthOffset,
+            double heightOffset) {
+        VoxelShape shape;
+        switch(axis) {
+            case Y -> shape = Block.createCuboidShape(widthOffset, heightOffset, widthOffset,
+                    MAX_VOXEL - widthOffset, MAX_VOXEL - heightOffset, MAX_VOXEL - widthOffset);
+            case X -> shape = Block.createCuboidShape(heightOffset, widthOffset, widthOffset,
+                    MAX_VOXEL - heightOffset, MAX_VOXEL - widthOffset, MAX_VOXEL - widthOffset);
+            // Z
+            default -> shape = Block.createCuboidShape(widthOffset, widthOffset, heightOffset,
+                    MAX_VOXEL - widthOffset, MAX_VOXEL - widthOffset, MAX_VOXEL - heightOffset);
         }
         return shape;
     }

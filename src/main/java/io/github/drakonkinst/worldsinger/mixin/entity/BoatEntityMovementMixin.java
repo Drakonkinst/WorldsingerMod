@@ -49,18 +49,23 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
 
     @Unique
     private static final int UNDER_SPORES_SILVER_PENALTY_TICK = 10;
-
-    @Unique
-    private boolean inSporeSea;
-
-    @Unique
-    private AetherSporeFluid lastAetherSporeFluid = null;
-
-    @Unique
-    private SilverLinedComponent silverData;
-
     @Unique
     private final boolean[] firstPaddle = {true, true};
+    @Unique
+    private boolean inSporeSea;
+    @Unique
+    private AetherSporeFluid lastAetherSporeFluid = null;
+    @Unique
+    private SilverLinedComponent silverData;
+    @Shadow
+    private double waterLevel;
+    @Shadow
+    private float velocityDecay;
+    @Shadow
+    private Location location;
+    @Shadow
+    @Final
+    private float[] paddlePhases;
 
     public BoatEntityMovementMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -125,6 +130,9 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
         }
     }
 
+    @Shadow
+    public abstract boolean isPaddleMoving(int paddle);
+
     @Unique
     private void checkRowingParticle(ServerWorld world, int paddleIndex) {
         if (isAtRowingApex(paddleIndex)) {
@@ -136,8 +144,7 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
                 Vec3d vec3d = this.getRotationVec(1.0f);
                 double xOffset = paddleIndex == 1 ? -vec3d.z : vec3d.z;
                 double zOffset = paddleIndex == 1 ? vec3d.x : -vec3d.x;
-                Vec3d pos = new Vec3d(this.getX() + xOffset, this.getY(),
-                        this.getZ() + zOffset);
+                Vec3d pos = new Vec3d(this.getX() + xOffset, this.getY(), this.getZ() + zOffset);
                 SporeParticleSpawner.spawnRowingParticles(world,
                         lastAetherSporeFluid.getSporeType(), pos);
             }
@@ -183,31 +190,37 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
         }
     }
 
-    @Inject(method = "updateVelocity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;setVelocity(DDD)V"), slice = @Slice(to = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/entity/vehicle/BoatEntity;yawVelocity:F")))
-    private void addSporeSeaVelocityLogic(CallbackInfo ci) {
-        if (this.inSporeSea && !LumarSeethe.areSporesFluidized(this.getWorld())) {
-            this.velocityDecay = 0.0f;
-        }
-    }
-
-    @WrapOperation(method = "updatePaddles", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"))
-    private void restrictMovementInSporeSea(BoatEntity instance, Vec3d velocity,
-            Operation<Void> original) {
-        if (this.inSporeSea && this.location != Location.ON_LAND && !LumarSeethe.areSporesFluidized(
-                this.getWorld())) {
-            return;
-        }
-        original.call(instance, velocity);
-    }
-
-    @Inject(method = "updatePassengerPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setYaw(F)V"), cancellable = true)
-    private void restrictMovementInSporeSeaPassenger(CallbackInfo ci) {
-        if (this.inSporeSea && this.location != Location.ON_LAND) {
-            World world = this.getWorld();
-            if (!LumarSeethe.areSporesFluidized(world)) {
-                ci.cancel();
+    @Unique
+    private Location getUnderSporeSeaLocation() {
+        Box box = this.getBoundingBox();
+        double d = box.maxY + 0.001;
+        int minX = MathHelper.floor(box.minX);
+        int maxX = MathHelper.ceil(box.maxX);
+        int minY = MathHelper.floor(box.maxY);
+        int maxY = MathHelper.ceil(d);
+        int minZ = MathHelper.floor(box.minZ);
+        int maxZ = MathHelper.ceil(box.maxZ);
+        boolean bl = false;
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        for (int x = minX; x < maxX; ++x) {
+            for (int y = minY; y < maxY; ++y) {
+                for (int z = minZ; z < maxZ; ++z) {
+                    mutable.set(x, y, z);
+                    FluidState fluidState = this.getWorld().getFluidState(mutable);
+                    if (!fluidState.isIn(ModFluidTags.AETHER_SPORES) || !(d < (double) (
+                            (float) mutable.getY() + fluidState.getHeight(this.getWorld(),
+                                    mutable)))) {
+                        continue;
+                    }
+                    if (fluidState.isStill()) {
+                        bl = true;
+                        continue;
+                    }
+                    return Location.UNDER_FLOWING_WATER;
+                }
             }
         }
+        return bl ? Location.UNDER_WATER : null;
     }
 
     @Unique
@@ -248,37 +261,31 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
         return inSporeSea;
     }
 
-    @Unique
-    private Location getUnderSporeSeaLocation() {
-        Box box = this.getBoundingBox();
-        double d = box.maxY + 0.001;
-        int minX = MathHelper.floor(box.minX);
-        int maxX = MathHelper.ceil(box.maxX);
-        int minY = MathHelper.floor(box.maxY);
-        int maxY = MathHelper.ceil(d);
-        int minZ = MathHelper.floor(box.minZ);
-        int maxZ = MathHelper.ceil(box.maxZ);
-        boolean bl = false;
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (int x = minX; x < maxX; ++x) {
-            for (int y = minY; y < maxY; ++y) {
-                for (int z = minZ; z < maxZ; ++z) {
-                    mutable.set(x, y, z);
-                    FluidState fluidState = this.getWorld().getFluidState(mutable);
-                    if (!fluidState.isIn(ModFluidTags.AETHER_SPORES) || !(d < (double) (
-                            (float) mutable.getY() + fluidState.getHeight(this.getWorld(),
-                                    mutable)))) {
-                        continue;
-                    }
-                    if (fluidState.isStill()) {
-                        bl = true;
-                        continue;
-                    }
-                    return Location.UNDER_FLOWING_WATER;
-                }
+    @Inject(method = "updateVelocity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;setVelocity(DDD)V"), slice = @Slice(to = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/entity/vehicle/BoatEntity;yawVelocity:F")))
+    private void addSporeSeaVelocityLogic(CallbackInfo ci) {
+        if (this.inSporeSea && !LumarSeethe.areSporesFluidized(this.getWorld())) {
+            this.velocityDecay = 0.0f;
+        }
+    }
+
+    @WrapOperation(method = "updatePaddles", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/BoatEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"))
+    private void restrictMovementInSporeSea(BoatEntity instance, Vec3d velocity,
+            Operation<Void> original) {
+        if (this.inSporeSea && this.location != Location.ON_LAND && !LumarSeethe.areSporesFluidized(
+                this.getWorld())) {
+            return;
+        }
+        original.call(instance, velocity);
+    }
+
+    @Inject(method = "updatePassengerPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setYaw(F)V"), cancellable = true)
+    private void restrictMovementInSporeSeaPassenger(CallbackInfo ci) {
+        if (this.inSporeSea && this.location != Location.ON_LAND) {
+            World world = this.getWorld();
+            if (!LumarSeethe.areSporesFluidized(world)) {
+                ci.cancel();
             }
         }
-        return bl ? Location.UNDER_WATER : null;
     }
 
     // Switches to the entity-based collision shape, which can use the entity world object
@@ -288,18 +295,5 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
             BlockPos blockPos) {
         return instance.getCollisionShape(blockView, blockPos, ShapeContext.of(this));
     }
-
-    @Shadow
-    public abstract boolean isPaddleMoving(int paddle);
-
-    @Shadow
-    private double waterLevel;
-    @Shadow
-    private float velocityDecay;
-    @Shadow
-    private Location location;
-    @Shadow
-    @Final
-    private float[] paddlePhases;
 
 }

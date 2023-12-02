@@ -9,8 +9,8 @@ import net.minecraft.registry.Registry;
 
 public class ModParticleTypes {
 
-    public static final ParticleType<SporeDustParticleEffect> SPORE_DUST = register(
-            "spore_dust", true, SporeDustParticleEffect.PARAMETERS_FACTORY);
+    public static final ParticleType<SporeDustParticleEffect> SPORE_DUST = register("spore_dust",
+            true, SporeDustParticleEffect.PARAMETERS_FACTORY);
 
     public static void initialize() {}
 

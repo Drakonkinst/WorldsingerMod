@@ -17,12 +17,6 @@ public class MetalQueryManager {
                 armorDataTable);
     }
 
-    public static int getSteelContentForEntity(Entity entity, DataTable entityDataTable,
-            DataTable armorDataTable) {
-        return MetalQueryManager.getMetalContentForEntity(entity, Metals.STEEL, entityDataTable,
-                armorDataTable);
-    }
-
     public static int getMetalContentForEntity(Entity entity, Metal metal,
             DataTable entityDataTable, DataTable armorDataTable) {
         int ironContent = 0;
@@ -53,5 +47,11 @@ public class MetalQueryManager {
         }
 
         return ironContent;
+    }
+
+    public static int getSteelContentForEntity(Entity entity, DataTable entityDataTable,
+            DataTable armorDataTable) {
+        return MetalQueryManager.getMetalContentForEntity(entity, Metals.STEEL, entityDataTable,
+                armorDataTable);
     }
 }

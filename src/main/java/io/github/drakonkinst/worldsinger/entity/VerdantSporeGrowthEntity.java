@@ -84,10 +84,6 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         return Axis.Y;
     }
 
-    private int getDistanceFromOrigin(BlockPos pos) {
-        return pos.getManhattanDistance(sporeGrowthData.getOrigin());
-    }
-
     @Override
     protected int getWeight(World world, BlockPos pos, Int3 direction, boolean allowPassthrough) {
         BlockState state = world.getBlockState(pos);
@@ -142,6 +138,24 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         return weight;
     }
 
+    @Override
+    protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
+        return state.isIn(ModBlockTags.SPORES_CAN_BREAK);
+    }
+
+    @Override
+    protected boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith) {
+        return state.isIn(ModBlockTags.SPORES_CAN_GROW) || state.isIn(
+                ModBlockTags.VERDANT_VINE_SNARE) || state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)
+                || (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)
+                && sporeGrowthData.getStage() == 0);
+    }
+
+    @Override
+    protected boolean isGrowthBlock(BlockState state) {
+        return state.isIn(ModBlockTags.ALL_VERDANT_VINES);
+    }
+
     private int getNeighborBonus(World world, BlockPos pos) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         int weightBonus = 0;
@@ -152,8 +166,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
             BlockState state = world.getBlockState(mutable);
             if (state.isIn(ModBlockTags.ALL_VERDANT_VINES)) {
                 // Prefer NOT to be adjacent to too many other of the same block
-                if (sporeGrowthData.getStage() == 0
-                        && state.isIn(ModBlockTags.VERDANT_VINE_BLOCK)
+                if (sporeGrowthData.getStage() == 0 && state.isIn(ModBlockTags.VERDANT_VINE_BLOCK)
                         && sporeGrowthData.getSpores() > SPORE_BRANCH_THICK_THRESHOLD) {
                     // Allow thick branches
                     continue;
@@ -177,15 +190,19 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         return weightBonus;
     }
 
+    private int getDistanceFromOrigin(BlockPos pos) {
+        return pos.getManhattanDistance(sporeGrowthData.getOrigin());
+    }
+
     @Override
     protected void updateStage() {
         if (sporeGrowthData.getStage() == 0) {
             // Advance stage if low on water
             if (sporeGrowthData.getWater() <= SPORE_WATER_THRESHOLD) {
                 sporeGrowthData.addStage(1);
-            } else if (sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MIN
-                    || (sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MAX
-                    && random.nextInt(5) == 0)) {
+            } else if (sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MIN || (
+                    sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MAX
+                            && random.nextInt(5) == 0)) {
                 // Chance to advance stage if low on spores
                 sporeGrowthData.addStage(1);
             }
@@ -202,31 +219,10 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
         int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
-        VerdantSpores.getInstance()
-                .spawnSporeGrowth(this.getWorld(), spawnPos, numSpores, numWater,
-                        sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true,
-                        Int3.ZERO);
+        VerdantSpores.getInstance().spawnSporeGrowth(this.getWorld(), spawnPos, numSpores, numWater,
+                sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true, Int3.ZERO);
         this.drainSpores(numSpores);
         this.drainWater(numWater);
-    }
-
-    @Override
-    protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
-        return state.isIn(ModBlockTags.SPORES_CAN_BREAK);
-    }
-
-    @Override
-    protected boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith) {
-        return state.isIn(ModBlockTags.SPORES_CAN_GROW)
-                || state.isIn(ModBlockTags.VERDANT_VINE_SNARE)
-                || state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)
-                || (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)
-                && sporeGrowthData.getStage() == 0);
-    }
-
-    @Override
-    protected boolean isGrowthBlock(BlockState state) {
-        return state.isIn(ModBlockTags.ALL_VERDANT_VINES);
     }
 
     @Override
@@ -236,6 +232,25 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         this.doGrowEffects(pos, state, cost, drainsWater, true, true);
         this.attemptPlaceDecorators();
         this.applySporeEffectToEntities(pos);
+    }
+
+    @Override
+    protected int getMaxStage() {
+        return MAX_STAGE;
+    }
+
+    @Override
+    protected int getUpdatePeriod() {
+        int water = sporeGrowthData.getWater();
+        int spores = sporeGrowthData.getSpores();
+
+        if (water > spores) {
+            return 5;
+        }
+        if (water == spores) {
+            return 7;
+        }
+        return 8;
     }
 
     private boolean attemptPlaceDecorators() {
@@ -283,8 +298,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
                 .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
 
         boolean success = this.placeBlockWithEffects(pos, state, TWISTING_VINES_COST,
-                shouldDrainWater, false,
-                false);
+                shouldDrainWater, false, false);
         if (!success) {
             return;
         }
@@ -323,32 +337,12 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
                 .with(ModProperties.CATALYZED, shouldDrainWater)
                 .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
 
-        this.placeBlockWithEffects(pos, state, VINE_SNARE_COST, shouldDrainWater,
-                false, true);
+        this.placeBlockWithEffects(pos, state, VINE_SNARE_COST, shouldDrainWater, false, true);
     }
 
     private void applySporeEffectToEntities(BlockPos pos) {
         if (this.getWorld() instanceof ServerWorld world) {
             SporeParticleManager.damageEntitiesInBlock(world, VerdantSpores.getInstance(), pos);
         }
-    }
-
-    @Override
-    protected int getMaxStage() {
-        return MAX_STAGE;
-    }
-
-    @Override
-    protected int getUpdatePeriod() {
-        int water = sporeGrowthData.getWater();
-        int spores = sporeGrowthData.getSpores();
-
-        if (water > spores) {
-            return 5;
-        }
-        if (water == spores) {
-            return 7;
-        }
-        return 8;
     }
 }

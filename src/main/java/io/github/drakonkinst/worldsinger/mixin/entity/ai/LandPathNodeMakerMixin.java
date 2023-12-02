@@ -30,8 +30,7 @@ public abstract class LandPathNodeMakerMixin extends PathNodeMaker {
             return PathNodeType.LAVA;
         }
 
-        if (state.isIn(ModBlockTags.CRIMSON_SPIKE)
-                || state.isIn(ModBlockTags.TALL_CRIMSON_SPINES)
+        if (state.isIn(ModBlockTags.CRIMSON_SPIKE) || state.isIn(ModBlockTags.TALL_CRIMSON_SPINES)
                 || state.isIn(ModBlockTags.AETHER_SPORE_BLOCKS)) {
             return PathNodeType.DAMAGE_CAUTIOUS;
         }

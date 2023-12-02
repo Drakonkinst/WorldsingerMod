@@ -27,8 +27,7 @@ public class CustomMineshaftStructure extends Structure {
 
     public static final Codec<CustomMineshaftStructure> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(CustomMineshaftStructure.configCodecBuilder(instance),
-                            (Type.CODEC.fieldOf(
-                                    "mineshaft_type")).forGetter(
+                            (Type.CODEC.fieldOf("mineshaft_type")).forGetter(
                                     mineshaftStructure -> mineshaftStructure.type))
                     .apply(instance, CustomMineshaftStructure::new));
     private final Type type;
@@ -54,8 +53,7 @@ public class CustomMineshaftStructure extends Structure {
         ChunkRandom chunkRandom = context.random();
         ChunkGenerator chunkGenerator = context.chunkGenerator();
         CustomMineshaftGenerator.MineshaftRoom mineshaftRoom = new CustomMineshaftGenerator.MineshaftRoom(
-                0,
-                chunkRandom, chunkPos.getOffsetX(2), chunkPos.getOffsetZ(2), this.type);
+                0, chunkRandom, chunkPos.getOffsetX(2), chunkPos.getOffsetZ(2), this.type);
         collector.addPiece(mineshaftRoom);
         mineshaftRoom.fillOpenings(mineshaftRoom, collector, chunkRandom);
 
@@ -81,12 +79,23 @@ public class CustomMineshaftStructure extends Structure {
 
     public enum Type implements StringIdentifiable {
         LUMAR_OAK("lumar_oak", Blocks.OAK_LOG, Blocks.OAK_PLANKS, Blocks.OAK_FENCE, true, true,
-                false, false, true, ModLootTables.LUMAR_SALTSTONE_MINESHAFT_CHEST),
-        LUMAR_BIRCH("lumar_birch", Blocks.BIRCH_LOG, Blocks.BIRCH_PLANKS, Blocks.BIRCH_FENCE, true,
+                false, false, true, ModLootTables.LUMAR_SALTSTONE_MINESHAFT_CHEST), LUMAR_BIRCH(
+                "lumar_birch", Blocks.BIRCH_LOG, Blocks.BIRCH_PLANKS, Blocks.BIRCH_FENCE, true,
                 true, false, false, true, ModLootTables.LUMAR_SALTSTONE_MINESHAFT_CHEST);
 
         public static final Codec<Type> CODEC;
         private static final IntFunction<Type> BY_ID;
+
+        static {
+            CODEC = StringIdentifiable.createCodec(Type::values);
+            BY_ID = ValueLists.createIdToValueFunction((ToIntFunction<Type>) Enum::ordinal,
+                    Type.values(), ValueLists.OutOfBoundsHandling.ZERO);
+        }
+
+        public static Type byId(int id) {
+            return BY_ID.apply(id);
+        }
+
         private final String name;
         private final BlockState log;
         private final BlockState planks;
@@ -155,16 +164,6 @@ public class CustomMineshaftStructure extends Structure {
         @Override
         public String asString() {
             return this.name;
-        }
-
-        public static Type byId(int id) {
-            return BY_ID.apply(id);
-        }
-
-        static {
-            CODEC = StringIdentifiable.createCodec(Type::values);
-            BY_ID = ValueLists.createIdToValueFunction((ToIntFunction<Type>) Enum::ordinal,
-                    Type.values(), ValueLists.OutOfBoundsHandling.ZERO);
         }
     }
 }

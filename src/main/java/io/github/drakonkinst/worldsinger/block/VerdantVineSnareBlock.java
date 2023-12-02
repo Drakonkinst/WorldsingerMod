@@ -35,17 +35,15 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
 
     private static final VoxelShape[] SHAPES = VoxelShapeUtil.createAxisAlignedShapes(2.0, 0.0);
 
-    public VerdantVineSnareBlock(Settings settings) {
-        super(settings);
-        this.setDefaultState(this.getDefaultState()
-                .with(FACING, Direction.NORTH)
-                .with(FACE, BlockFace.FLOOR)
-                .with(Properties.PERSISTENT, false)
-                .with(Properties.WATERLOGGED, false));
-    }
-
     public static Direction getDirection(BlockState state) {
         return WallMountedBlock.getDirection(state);
+    }
+
+    public VerdantVineSnareBlock(Settings settings) {
+        super(settings);
+        this.setDefaultState(
+                this.getDefaultState().with(FACING, Direction.NORTH).with(FACE, BlockFace.FLOOR)
+                        .with(Properties.PERSISTENT, false).with(Properties.WATERLOGGED, false));
     }
 
     @Override
@@ -74,12 +72,6 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(FACE, FACING, Properties.PERSISTENT, Properties.WATERLOGGED);
-    }
-
-    @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
             ShapeContext context) {
         Axis axis = WallMountedBlock.getDirection(state).getAxis();
@@ -91,8 +83,7 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
-            placementState = placementState
-                    .with(Properties.PERSISTENT, true)
+            placementState = placementState.with(Properties.PERSISTENT, true)
                     .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()));
         }
         return placementState;
@@ -126,6 +117,12 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
                 neighborPos);
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(FACE, FACING, Properties.PERSISTENT, Properties.WATERLOGGED);
     }
 
     @Override

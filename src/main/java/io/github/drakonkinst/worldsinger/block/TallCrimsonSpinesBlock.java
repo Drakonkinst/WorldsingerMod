@@ -69,8 +69,7 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
 
     public TallCrimsonSpinesBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState()
-                .with(Properties.PERSISTENT, false)
+        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false)
                 .with(Properties.WATERLOGGED, false)
                 .with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER));
     }
@@ -82,15 +81,13 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
             world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
         DoubleBlockHalf half = state.get(Properties.DOUBLE_BLOCK_HALF);
-        if (!(direction.getAxis() != Direction.Axis.Y
-                || half == DoubleBlockHalf.LOWER != (direction == Direction.UP)
-                || neighborState.isIn(ModBlockTags.TALL_CRIMSON_SPINES)
+        if (!(direction.getAxis() != Direction.Axis.Y || half == DoubleBlockHalf.LOWER != (direction
+                == Direction.UP) || neighborState.isIn(ModBlockTags.TALL_CRIMSON_SPINES)
                 && neighborState.get(Properties.DOUBLE_BLOCK_HALF) != half)) {
             return Blocks.AIR.getDefaultState();
         }
-        if (half == DoubleBlockHalf.LOWER
-                && direction == Direction.DOWN
-                && !state.canPlaceAt(world, pos)) {
+        if (half == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canPlaceAt(world,
+                pos)) {
             return Blocks.AIR.getDefaultState();
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
@@ -138,12 +135,10 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockPos pos = ctx.getBlockPos();
         World world = ctx.getWorld();
-        if (pos.getY() >= world.getTopY() - 1 || !world.getBlockState(pos.up())
-                .canReplace(ctx)) {
+        if (pos.getY() >= world.getTopY() - 1 || !world.getBlockState(pos.up()).canReplace(ctx)) {
             return null;
         }
-        return this.getDefaultState()
-                .with(Properties.PERSISTENT, true)
+        return this.getDefaultState().with(Properties.PERSISTENT, true)
                 .with(Properties.WATERLOGGED, world.isWater(pos));
     }
 
@@ -243,8 +238,7 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
-        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED,
-                Properties.DOUBLE_BLOCK_HALF);
+        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED, Properties.DOUBLE_BLOCK_HALF);
     }
 
     @Override

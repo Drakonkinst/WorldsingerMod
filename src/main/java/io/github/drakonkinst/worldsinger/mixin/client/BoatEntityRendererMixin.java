@@ -32,14 +32,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class BoatEntityRendererMixin extends EntityRenderer<BoatEntity> implements
         FeatureRendererContext<BoatEntity, BoatEntityModel> {
 
+    @Unique
+    protected final List<FeatureRenderer<BoatEntity, BoatEntityModel>> features = Lists.newArrayList();
     @Shadow
     @Final
     private Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesAndModels;
-    @Unique
-    protected final List<FeatureRenderer<BoatEntity, BoatEntityModel>> features = Lists.newArrayList();
 
     protected BoatEntityRendererMixin(Context ctx) {
         super(ctx);
+    }
+
+    @Override
+    public BoatEntityModel getModel() {
+        // Should not be used, model is generated based on Type variant
+        return null;
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
@@ -55,11 +61,5 @@ public abstract class BoatEntityRendererMixin extends EntityRenderer<BoatEntity>
             featureRenderer.render(matrixStack, vertexConsumerProvider, i, boatEntity, 0.0f, 0.0f,
                     0.0f, 0.0f, 0.0f, 0.0f);
         }
-    }
-
-    @Override
-    public BoatEntityModel getModel() {
-        // Should not be used, model is generated based on Type variant
-        return null;
     }
 }

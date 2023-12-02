@@ -27,11 +27,10 @@ public final class ModStatusEffects {
     public static final StatusEffect MIDNIGHT_SPORES = register("midnight_spores",
             new SporeStatusEffect(MidnightSpores.getInstance(), ModDamageTypes.MIDNIGHT_ESSENCE));
 
-    private ModStatusEffects() {}
-
     private static <T extends StatusEffect> T register(String id, T statusEffect) {
-        Registry.register(Registries.STATUS_EFFECT, Worldsinger.id(id),
-                statusEffect);
+        Registry.register(Registries.STATUS_EFFECT, Worldsinger.id(id), statusEffect);
         return statusEffect;
     }
+
+    private ModStatusEffects() {}
 }

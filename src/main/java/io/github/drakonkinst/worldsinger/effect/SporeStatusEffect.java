@@ -35,7 +35,6 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         this.damageType = damageType;
     }
 
-
     @Override
     public boolean canApplyUpdateEffect(int duration, int amplifier) {
         return true;
@@ -55,8 +54,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         }
 
         boolean wasDamaged = entity.damage(
-                ModDamageTypes.createSource(entity.getWorld(), damageType),
-                damageAmount);
+                ModDamageTypes.createSource(entity.getWorld(), damageType), damageAmount);
         if (wasDamaged && sporeType.getId() == SunlightSpores.ID) {
             // Play lava damage sound
             entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f,
@@ -74,7 +72,6 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
                 entity.getWidth() * entity.getHeight() * WATER_PER_ENTITY_BLOCK);
         sporeType.onDeathFromStatusEffect(world, entity, pos, waterAmount);
     }
-
 
     public AetherSpores getSporeType() {
         return sporeType;

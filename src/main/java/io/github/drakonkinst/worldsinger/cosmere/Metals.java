@@ -9,8 +9,8 @@ import net.minecraft.item.Item;
 import net.minecraft.registry.tag.TagKey;
 
 public enum Metals implements Metal {
-    IRON(ModBlockTags.HAS_IRON, ModItemTags.HAS_IRON, ModEntityTypeTags.HAS_IRON),
-    STEEL(ModBlockTags.HAS_STEEL, ModItemTags.HAS_STEEL, ModEntityTypeTags.HAS_STEEL);
+    IRON(ModBlockTags.HAS_IRON, ModItemTags.HAS_IRON, ModEntityTypeTags.HAS_IRON), STEEL(
+            ModBlockTags.HAS_STEEL, ModItemTags.HAS_STEEL, ModEntityTypeTags.HAS_STEEL);
 
     private final TagKey<Block> blockTag;
     private final TagKey<Item> itemTag;

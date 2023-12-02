@@ -20,8 +20,8 @@ public abstract class CarverMixin<C extends CarverConfig> {
     private BlockState modifySporeSeaState(@Nullable BlockState state, CarverContext context,
             C config, BlockPos pos, AquiferSampler sampler) {
         if (state != null && state.isOf(LumarChunkGenerator.PLACEHOLDER_BLOCK)) {
-            return LumarChunkGenerator.getSporeSeaBlockAtPos(context.getNoiseConfig(),
-                    pos.getX(), pos.getY(), pos.getZ());
+            return LumarChunkGenerator.getSporeSeaBlockAtPos(context.getNoiseConfig(), pos.getX(),
+                    pos.getY(), pos.getZ());
         }
         return state;
     }

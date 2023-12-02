@@ -10,8 +10,7 @@ import net.minecraft.world.WorldAccess;
 // Represents the outermost block of a vertical growth.
 public abstract class AbstractVerticalGrowthBudBlock extends AbstractVerticalGrowthComponentBlock {
 
-    public AbstractVerticalGrowthBudBlock(Settings settings,
-            VoxelShape outlineShape) {
+    public AbstractVerticalGrowthBudBlock(Settings settings, VoxelShape outlineShape) {
         super(settings, outlineShape);
     }
 

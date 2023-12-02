@@ -10,11 +10,9 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
 // Represents middle blocks of a vertical growth.
-public abstract class AbstractVerticalGrowthStemBlock extends
-        AbstractVerticalGrowthComponentBlock {
+public abstract class AbstractVerticalGrowthStemBlock extends AbstractVerticalGrowthComponentBlock {
 
-    public AbstractVerticalGrowthStemBlock(Settings settings,
-            VoxelShape outlineShape) {
+    public AbstractVerticalGrowthStemBlock(Settings settings, VoxelShape outlineShape) {
         super(settings, outlineShape);
     }
 

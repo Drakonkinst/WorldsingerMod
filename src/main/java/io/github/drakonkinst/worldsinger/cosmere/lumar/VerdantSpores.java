@@ -31,12 +31,10 @@ public class VerdantSpores extends AetherSpores {
 
     public static final String NAME = "verdant";
     public static final int ID = 1;
-
+    public static final double COMBINE_GROWTH_MAX_RADIUS = 3.0;
     private static final VerdantSpores INSTANCE = new VerdantSpores();
     private static final int COLOR = 0x2e522e;
     private static final int PARTICLE_COLOR = 0x64aa4a;
-
-    public static final double COMBINE_GROWTH_MAX_RADIUS = 3.0;
 
     public static VerdantSpores getInstance() {
         return INSTANCE;
@@ -46,8 +44,49 @@ public class VerdantSpores extends AetherSpores {
 
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
-        this.spawnSporeGrowth(world, pos, spores, water, true,
-                false, false, Int3.ZERO);
+        this.spawnSporeGrowth(world, pos, spores, water, true, false, false, Int3.ZERO);
+    }
+
+    public void spawnSporeGrowth(World world, Vec3d pos, int spores, int water, boolean isInitial,
+            boolean isSmall, boolean isSplit, Int3 lastDir) {
+        // If one already exists nearby, just augment that one
+        if (!isSplit && this.tryCombineWithNearbyGrowth(world, pos, spores, water, isInitial,
+                isSmall)) {
+            return;
+        }
+
+        VerdantSporeGrowthEntity entity = ModEntityTypes.VERDANT_SPORE_GROWTH.create(world);
+        if (entity == null) {
+            return;
+        }
+        entity.setPosition(pos);
+        entity.setSporeData(spores, water, isInitial);
+        entity.setLastDir(lastDir);
+        if (isSmall) {
+            entity.setInitialStage(VerdantSporeGrowthEntity.MAX_STAGE);
+        }
+
+        world.spawnEntity(entity);
+    }
+
+    private boolean tryCombineWithNearbyGrowth(World world, Vec3d pos, int spores, int water,
+            boolean isInitial, boolean isSmall) {
+        Box box = Box.from(pos).expand(COMBINE_GROWTH_MAX_RADIUS);
+        List<VerdantSporeGrowthEntity> nearbySporeGrowthEntities = world.getEntitiesByClass(
+                VerdantSporeGrowthEntity.class, box, sporeGrowthEntity -> {
+                    SporeGrowthComponent sporeGrowthData = sporeGrowthEntity.getSporeGrowthData();
+                    return sporeGrowthData.getAge() == 0
+                            && sporeGrowthData.isInitialGrowth() == isInitial
+                            && (sporeGrowthData.getStage() == 1) == isSmall;
+                });
+        if (nearbySporeGrowthEntities.isEmpty()) {
+            return false;
+        }
+        VerdantSporeGrowthEntity existingSporeGrowthEntity = nearbySporeGrowthEntities.get(0);
+        SporeGrowthComponent sporeGrowthData = existingSporeGrowthEntity.getSporeGrowthData();
+        sporeGrowthData.setSpores(sporeGrowthData.getSpores() + spores);
+        sporeGrowthData.setWater(sporeGrowthData.getWater() + water);
+        return true;
     }
 
     @Override
@@ -87,59 +126,17 @@ public class VerdantSpores extends AetherSpores {
                 false, false, Int3.ZERO);
     }
 
-    public void spawnSporeGrowth(World world, Vec3d pos, int spores, int water,
-            boolean isInitial, boolean isSmall, boolean isSplit, Int3 lastDir) {
-        // If one already exists nearby, just augment that one
-        if (!isSplit && this.tryCombineWithNearbyGrowth(world, pos, spores, water,
-                isInitial, isSmall)) {
-            return;
-        }
-
-        VerdantSporeGrowthEntity entity = ModEntityTypes.VERDANT_SPORE_GROWTH.create(world);
-        if (entity == null) {
-            return;
-        }
-        entity.setPosition(pos);
-        entity.setSporeData(spores, water, isInitial);
-        entity.setLastDir(lastDir);
-        if (isSmall) {
-            entity.setInitialStage(VerdantSporeGrowthEntity.MAX_STAGE);
-        }
-
-        world.spawnEntity(entity);
-    }
-
     // Fill entity's bounding box with Verdant Vine Snare
     private void growVerdantSpores(World world, LivingEntity entity) {
         BlockState newBlockState = ModBlocks.VERDANT_VINE_SNARE.getDefaultState();
 
         for (BlockPos pos : BlockPosUtil.iterateBoundingBoxForEntity(entity)) {
             BlockState blockState = world.getBlockState(pos);
-            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW)
-                    && newBlockState.canPlaceAt(world, pos)) {
+            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW) && newBlockState.canPlaceAt(world,
+                    pos)) {
                 world.setBlockState(pos, newBlockState);
             }
         }
-    }
-
-    private boolean tryCombineWithNearbyGrowth(World world, Vec3d pos, int spores,
-            int water, boolean isInitial, boolean isSmall) {
-        Box box = Box.from(pos).expand(COMBINE_GROWTH_MAX_RADIUS);
-        List<VerdantSporeGrowthEntity> nearbySporeGrowthEntities = world
-                .getEntitiesByClass(VerdantSporeGrowthEntity.class, box, sporeGrowthEntity -> {
-                    SporeGrowthComponent sporeGrowthData = sporeGrowthEntity.getSporeGrowthData();
-                    return sporeGrowthData.getAge() == 0
-                            && sporeGrowthData.isInitialGrowth() == isInitial
-                            && (sporeGrowthData.getStage() == 1) == isSmall;
-                });
-        if (nearbySporeGrowthEntities.isEmpty()) {
-            return false;
-        }
-        VerdantSporeGrowthEntity existingSporeGrowthEntity = nearbySporeGrowthEntities.get(0);
-        SporeGrowthComponent sporeGrowthData = existingSporeGrowthEntity.getSporeGrowthData();
-        sporeGrowthData.setSpores(sporeGrowthData.getSpores() + spores);
-        sporeGrowthData.setWater(sporeGrowthData.getWater() + water);
-        return true;
     }
 
     @Override
@@ -194,7 +191,6 @@ public class VerdantSpores extends AetherSpores {
 
     @Override
     public BlockState getFluidCollisionState() {
-        return ModBlocks.VERDANT_VINE_BLOCK.getDefaultState().with(
-                ModProperties.CATALYZED, true);
+        return ModBlocks.VERDANT_VINE_BLOCK.getDefaultState().with(ModProperties.CATALYZED, true);
     }
 }

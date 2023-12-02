@@ -18,30 +18,20 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity {
 
-    @Shadow
-    protected abstract void applyLavaBuoyancy();
-
     @Unique
     private static final float HEIGHT_OFFSET = 1.0f / 9.0f;
-
     @Unique
     private static final double HORIZONTAL_BUOYANCY_DRAG = 0.95;
-
     @Unique
     private static final double HORIZONTAL_LAND_DRAG = 0.7;
-
     @Unique
     private static final double VERTICAL_BUOYANCY_FORCE_VANILLA = 5.0E-4;
-
     @Unique
     private static final double LAND_BUOYANCY = VERTICAL_BUOYANCY_FORCE_VANILLA;
-
     @Unique
     private static final double VERTICAL_BUOYANCY_FORCE = VERTICAL_BUOYANCY_FORCE_VANILLA * 4;
-
     @Unique
     private static final double MAX_VERTICAL_VELOCITY_VANILLA = 0.06;
-
     @Unique
     private static final double MAX_VERTICAL_VELOCITY = MAX_VERTICAL_VELOCITY_VANILLA * 4;
 
@@ -52,15 +42,15 @@ public abstract class ItemEntityMixin extends Entity {
     @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ItemEntity;hasNoGravity()Z"))
     private boolean injectCustomFluidCheck(ItemEntity instance, Operation<Boolean> original) {
         double height = this.getStandingEyeHeight() - HEIGHT_OFFSET;
-        if (EntityUtil.isSubmergedInSporeSea(this) && this.getFluidHeight(
-                ModFluidTags.AETHER_SPORES) > height) {
+        if (EntityUtil.isSubmergedInSporeSea(this)
+                && this.getFluidHeight(ModFluidTags.AETHER_SPORES) > height) {
             this.applySporeSeaBuoyancy();
             // Skip original gravity
             return true;
         }
 
-        if (EntityUtil.isSubmergedInFluid(this, ModFluidTags.SUNLIGHT) && this.getFluidHeight(
-                ModFluidTags.SUNLIGHT) > height) {
+        if (EntityUtil.isSubmergedInFluid(this, ModFluidTags.SUNLIGHT)
+                && this.getFluidHeight(ModFluidTags.SUNLIGHT) > height) {
             // Identical to lava buoyancy
             this.applyLavaBuoyancy();
             return true;
@@ -85,5 +75,7 @@ public abstract class ItemEntityMixin extends Entity {
                 vec3d.z * HORIZONTAL_BUOYANCY_DRAG);
     }
 
+    @Shadow
+    protected abstract void applyLavaBuoyancy();
 
 }

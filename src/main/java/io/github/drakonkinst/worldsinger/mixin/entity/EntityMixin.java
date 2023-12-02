@@ -34,8 +34,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
+    @Shadow
+    public float fallDistance;
     @Unique
     private boolean wasTouchingSporeSea = false;
+
+    @Shadow
+    @Deprecated
+    public abstract BlockPos getLandingPos();
+
+    @Shadow
+    public abstract int getId();
+
+    @Shadow
+    public abstract EntityType<?> getType();
 
     @ModifyReturnValue(method = "updateWaterState", at = @At("RETURN"))
     private boolean allowCustomFluidToPushEntity(boolean isTouchingAnyFluid) {
@@ -50,8 +62,7 @@ public abstract class EntityMixin {
                             getAllTouchingFluids());
                     optionalSporeType.ifPresent(
                             sporeType -> SporeParticleSpawner.spawnSplashParticles(serverWorld,
-                                    sporeType,
-                                    (Entity) (Object) this, this.fallDistance, true));
+                                    sporeType, (Entity) (Object) this, this.fallDistance, true));
                 }
             }
             this.fallDistance = 0.0f;
@@ -72,19 +83,31 @@ public abstract class EntityMixin {
         return isTouchingAnyFluid;
     }
 
+    @Shadow
+    public abstract boolean updateMovementInFluid(TagKey<Fluid> tag, double speed);
+
+    @Shadow
+    public abstract World getWorld();
+
     @Unique
     private Set<Fluid> getAllTouchingFluids() {
         return BlockPos.stream(this.getBoundingBox())
-                .map(pos -> this.getWorld().getFluidState(pos).getFluid()).collect(
-                        Collectors.toUnmodifiableSet());
+                .map(pos -> this.getWorld().getFluidState(pos).getFluid())
+                .collect(Collectors.toUnmodifiableSet());
     }
+
+    @Shadow
+    public abstract void extinguish();
+
+    @Shadow
+    public abstract Box getBoundingBox();
 
     @WrapOperation(method = "spawnSprintingParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getRenderType()Lnet/minecraft/block/BlockRenderType;"))
     private BlockRenderType showSprintingParticlesForCustomFluid(BlockState instance,
             Operation<BlockRenderType> original) {
         World world = this.getWorld();
-        if (!instance.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
-                || LumarSeethe.areSporesFluidized(world)) {
+        if (!instance.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS) || LumarSeethe.areSporesFluidized(
+                world)) {
             return original.call(instance);
         }
         return BlockRenderType.MODEL;
@@ -105,8 +128,7 @@ public abstract class EntityMixin {
                 Optional<AetherSpores> sporeType = AetherSpores.getSporeTypeFromBlock(
                         steppingBlock);
                 if (sporeType.isEmpty()) {
-                    Worldsinger.LOGGER.error(
-                            "Aether spore block should have a spore type defined");
+                    Worldsinger.LOGGER.error("Aether spore block should have a spore type defined");
                     return;
                 }
                 SporeParticleSpawner.spawnFootstepParticles(serverWorld, sporeType.get(),
@@ -116,33 +138,8 @@ public abstract class EntityMixin {
     }
 
     @Shadow
-    public abstract boolean updateMovementInFluid(TagKey<Fluid> tag, double speed);
-
-    @Shadow
-    public abstract void extinguish();
-
-    @Shadow
-    @Deprecated
-    public abstract BlockPos getLandingPos();
-
-    @Shadow
-    public abstract World getWorld();
-
-    @Shadow
     public abstract boolean isSneaking();
 
     @Shadow
     public abstract BlockState getSteppingBlockState();
-
-    @Shadow
-    public abstract int getId();
-
-    @Shadow
-    public abstract EntityType<?> getType();
-
-    @Shadow
-    public abstract Box getBoundingBox();
-
-    @Shadow
-    public float fallDistance;
 }

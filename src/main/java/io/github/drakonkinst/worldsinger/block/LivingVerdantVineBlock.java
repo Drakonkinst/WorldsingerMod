@@ -20,36 +20,15 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class LivingVerdantVineBlock extends VerdantVineBlock implements
-        LivingSporeGrowthBlock {
+public class LivingVerdantVineBlock extends VerdantVineBlock implements LivingSporeGrowthBlock {
 
     public static final MapCodec<LivingVerdantVineBlock> CODEC = createCodec(
             LivingVerdantVineBlock::new);
     public static final int RECATALYZE_VALUE = 100;
 
-    public static BlockPos getWaterNeighborPos(BlockView world, BlockPos pos) {
-        BlockPos.Mutable mutable = pos.mutableCopy();
-        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            mutable.set(pos, direction);
-            BlockState blockState = world.getBlockState(mutable);
-            if (blockState.getFluidState().isIn(FluidTags.WATER)
-                    && !blockState.isSideSolidFullSquare(world, pos, direction.getOpposite())) {
-                return mutable;
-            }
-        }
-        return null;
-    }
-
     public LivingVerdantVineBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
-    }
-
-    /* Start of code common to all LivingSporeGrowthBlocks */
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModProperties.CATALYZED);
     }
 
     @Override
@@ -76,6 +55,19 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
                 neighborPos);
     }
 
+    public static BlockPos getWaterNeighborPos(BlockView world, BlockPos pos) {
+        BlockPos.Mutable mutable = pos.mutableCopy();
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            mutable.set(pos, direction);
+            BlockState blockState = world.getBlockState(mutable);
+            if (blockState.getFluidState().isIn(FluidTags.WATER)
+                    && !blockState.isSideSolidFullSquare(world, pos, direction.getOpposite())) {
+                return mutable;
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean hasRandomTicks(BlockState state) {
         return super.hasRandomTicks(state) || !state.get(ModProperties.CATALYZED);
@@ -88,7 +80,6 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
-    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
@@ -99,10 +90,11 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
 
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
         VerdantSpores.getInstance()
-                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
-                        waterAmount, false, false, false, Int3.ZERO);
+                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE, waterAmount, false,
+                        false, false, Int3.ZERO);
         return true;
     }
+    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public Block getDeadSporeBlock() {
@@ -112,5 +104,12 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements
     @Override
     public MapCodec<? extends LivingVerdantVineBlock> getCodec() {
         return CODEC;
+    }
+
+    /* Start of code common to all LivingSporeGrowthBlocks */
+    @Override
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModProperties.CATALYZED);
     }
 }

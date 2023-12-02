@@ -13,25 +13,11 @@ public class ModApi {
 
     public static void initialize() {
         ModApi.SILVER_LINED_ITEM.registerForItems(
-                (stack, context) -> new SilverLinedBoatItemData(stack),
-                Items.ACACIA_BOAT,
-                Items.BIRCH_BOAT,
-                Items.CHERRY_BOAT,
-                Items.DARK_OAK_BOAT,
-                Items.JUNGLE_BOAT,
-                Items.MANGROVE_BOAT,
-                Items.OAK_BOAT,
-                Items.SPRUCE_BOAT,
-                Items.BAMBOO_RAFT,
-                Items.ACACIA_CHEST_BOAT,
-                Items.BIRCH_CHEST_BOAT,
-                Items.CHERRY_CHEST_BOAT,
-                Items.DARK_OAK_CHEST_BOAT,
-                Items.JUNGLE_CHEST_BOAT,
-                Items.MANGROVE_CHEST_BOAT,
-                Items.OAK_CHEST_BOAT,
-                Items.SPRUCE_CHEST_BOAT,
-                Items.BAMBOO_CHEST_RAFT
-        );
+                (stack, context) -> new SilverLinedBoatItemData(stack), Items.ACACIA_BOAT,
+                Items.BIRCH_BOAT, Items.CHERRY_BOAT, Items.DARK_OAK_BOAT, Items.JUNGLE_BOAT,
+                Items.MANGROVE_BOAT, Items.OAK_BOAT, Items.SPRUCE_BOAT, Items.BAMBOO_RAFT,
+                Items.ACACIA_CHEST_BOAT, Items.BIRCH_CHEST_BOAT, Items.CHERRY_CHEST_BOAT,
+                Items.DARK_OAK_CHEST_BOAT, Items.JUNGLE_CHEST_BOAT, Items.MANGROVE_CHEST_BOAT,
+                Items.OAK_CHEST_BOAT, Items.SPRUCE_CHEST_BOAT, Items.BAMBOO_CHEST_RAFT);
     }
 }

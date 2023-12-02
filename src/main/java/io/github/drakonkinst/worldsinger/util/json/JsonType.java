@@ -25,19 +25,6 @@ public final class JsonType<T extends JsonElement> {
             JsonElement::getAsJsonPrimitive, () -> new JsonPrimitive(false));
     private static final JsonType<?>[] TYPES = {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN};
 
-    public final String name;
-    private final Predicate<JsonElement> is;
-    private final Function<JsonElement, T> cast;
-    private final Supplier<T> dummy;
-
-    private JsonType(String name, Predicate<JsonElement> is, Function<JsonElement, T> cast,
-            Supplier<T> dummy) {
-        this.name = name;
-        this.is = is;
-        this.cast = cast;
-        this.dummy = dummy;
-    }
-
     @SuppressWarnings("unchecked")
     public static <T extends JsonElement> JsonType<? extends T> of(T element) {
         for (JsonType<?> type : TYPES) {
@@ -50,6 +37,18 @@ public final class JsonType<T extends JsonElement> {
 
     public boolean is(JsonElement element) {
         return is.test(element);
+    }
+    public final String name;
+    private final Predicate<JsonElement> is;
+    private final Function<JsonElement, T> cast;
+    private final Supplier<T> dummy;
+
+    private JsonType(String name, Predicate<JsonElement> is, Function<JsonElement, T> cast,
+            Supplier<T> dummy) {
+        this.name = name;
+        this.is = is;
+        this.cast = cast;
+        this.dummy = dummy;
     }
 
     public T cast(JsonElement element) {

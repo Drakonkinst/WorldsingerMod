@@ -37,8 +37,7 @@ public abstract class BoatEntitySilverMixin extends VehicleEntity {
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.isIn(ModItemTags.SILVER_INGOTS)
                 && silverData.getSilverDurability() < silverData.getMaxSilverDurability()) {
-            silverData.setSilverDurability(
-                    silverData.getSilverDurability() + SILVER_REPAIR_AMOUNT);
+            silverData.setSilverDurability(silverData.getSilverDurability() + SILVER_REPAIR_AMOUNT);
             float pitch = 1.0f + (this.random.nextFloat() - this.random.nextFloat()) * 0.2f;
             this.playSound(ModSoundEvents.ENTITY_BOAT_LINE_SILVER, 1.0f, pitch);
             if (!player.getAbilities().creativeMode) {

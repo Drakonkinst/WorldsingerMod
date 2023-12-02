@@ -21,32 +21,14 @@ import org.jetbrains.annotations.Nullable;
 public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBlock implements
         Waterloggable, SporeGrowthBlock {
 
+    private static final VoxelShape SHAPE = VoxelShapeUtil.createOffsetCuboid(4.0, 0.0);
     public static final MapCodec<TwistingVerdantVineStemBlock> CODEC = createCodec(
             TwistingVerdantVineStemBlock::new);
 
-    private static final VoxelShape SHAPE = VoxelShapeUtil.createOffsetCuboid(4.0, 0.0);
-
     public TwistingVerdantVineStemBlock(Settings settings) {
         super(settings, SHAPE);
-        this.setDefaultState(this.getDefaultState()
-                .with(Properties.PERSISTENT, false)
+        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false)
                 .with(Properties.WATERLOGGED, false));
-    }
-
-    @Override
-    protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
-        return TwistingVerdantVineBlock.canAttach(state, attachCandidate);
-    }
-
-    @Override
-    protected Block getBud() {
-        return ModBlocks.DEAD_TWISTING_VERDANT_VINES;
-    }
-
-    @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED);
-        super.appendProperties(builder);
     }
 
     @Override
@@ -54,8 +36,7 @@ public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBloc
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
-            placementState = placementState
-                    .with(Properties.PERSISTENT, true)
+            placementState = placementState.with(Properties.PERSISTENT, true)
                     .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()));
         }
         return placementState;
@@ -89,6 +70,22 @@ public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBloc
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
                 neighborPos).with(Properties.PERSISTENT, state.get(Properties.PERSISTENT));
+    }
+
+    @Override
+    protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
+        return TwistingVerdantVineBlock.canAttach(state, attachCandidate);
+    }
+
+    @Override
+    protected Block getBud() {
+        return ModBlocks.DEAD_TWISTING_VERDANT_VINES;
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED);
+        super.appendProperties(builder);
     }
 
     @Override

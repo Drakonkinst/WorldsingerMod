@@ -41,35 +41,23 @@ public class ZephyrSpores extends AetherSpores {
     protected ZephyrSpores() {}
 
     @Override
+    public void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos, int water) {
+        Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity, ModFluidTags.ZEPHYR_SPORES);
+        this.doReaction(world, startPos, LivingAetherSporeBlock.CATALYZE_VALUE, water,
+                world.getRandom());
+    }
+
+    @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
         // TODO: Deal damage
         // TODO: Drain surrounding zephyr spores too?
         float power = Math.min(spores, water) * SPORE_TO_POWER_MULTIPLIER + random.nextFloat();
-        Worldsinger.LOGGER.info("spores = " + spores + ", water = " + water
-                + " base_value = " + (Math.min(spores, water) * SPORE_TO_POWER_MULTIPLIER)
-                + ", power = " + power);
-        world.createExplosion(
-                null,
-                null,
-                WindChargeEntity.EXPLOSION_BEHAVIOR,
-                pos.getX(),
-                pos.getY(),
-                pos.getZ(),
-                power,
-                false,
-                World.ExplosionSourceType.BLOW,
-                ParticleTypes.GUST,
-                ParticleTypes.GUST_EMITTER,
-                ModSoundEvents.BLOCK_ZEPHYR_SEA_CATALYZE
-        );
-    }
-
-    @Override
-    public void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos, int water) {
-        Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
-                ModFluidTags.ZEPHYR_SPORES);
-        this.doReaction(world, startPos, LivingAetherSporeBlock.CATALYZE_VALUE, water,
-                world.getRandom());
+        Worldsinger.LOGGER.info("spores = " + spores + ", water = " + water + " base_value = " + (
+                Math.min(spores, water) * SPORE_TO_POWER_MULTIPLIER) + ", power = " + power);
+        world.createExplosion(null, null, WindChargeEntity.EXPLOSION_BEHAVIOR, pos.getX(),
+                pos.getY(), pos.getZ(), power, false, World.ExplosionSourceType.BLOW,
+                ParticleTypes.GUST, ParticleTypes.GUST_EMITTER,
+                ModSoundEvents.BLOCK_ZEPHYR_SEA_CATALYZE);
     }
 
     @Override

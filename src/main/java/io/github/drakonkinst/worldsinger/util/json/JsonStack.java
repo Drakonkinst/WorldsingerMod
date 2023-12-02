@@ -34,6 +34,33 @@ public class JsonStack {
         return this;
     }
 
+    private <T extends JsonElement> T child(String key, JsonType<T> expected) {
+        return maybeChild(key, expected).orElseGet(() -> {
+            errors.add("Missing " + expected.name + ' ' + joinPath() + '/' + key);
+            return expected.dummy();
+        });
+    }
+
+    private <T extends JsonElement> Optional<T> maybeChild(String key, JsonType<T> expected) {
+        assert elementPath.peek() != null;
+        JsonObject head = elementPath.peek().json;
+        if (head.has(key)) {
+            JsonElement element = head.get(key);
+            if (expected.is(element)) {
+                return Optional.of(expected.cast(element));
+            } else {
+                errors.add(joinPath() + '/' + key + " must be " + expected.name + " not "
+                        + JsonType.of(element).name);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private String joinPath() {
+        return Streams.stream(elementPath.descendingIterator()).map(Member::name)
+                .collect(joining("/"));
+    }
+
     public JsonStack pop() {
         elementPath.pop();
         return this;
@@ -48,8 +75,8 @@ public class JsonStack {
         Set<String> present = elementPath.peek().json.keySet();
         Set<String> unexpected = Sets.difference(present, allowed);
         if (!unexpected.isEmpty()) {
-            errors.add(joinPath() + " allows children " +
-                    allowed + ". Did not expect " + unexpected);
+            errors.add(
+                    joinPath() + " allows children " + allowed + ". Did not expect " + unexpected);
         }
         return this;
     }
@@ -99,41 +126,12 @@ public class JsonStack {
         return elementPath.peek().json();
     }
 
-    private <T extends JsonElement> T child(String key, JsonType<T> expected) {
-        return maybeChild(key, expected).orElseGet(() ->
-        {
-            errors.add("Missing " + expected.name + ' ' + joinPath() + '/' + key);
-            return expected.dummy();
-        });
-    }
-
     public void addError(String msg) {
         errors.add(msg);
     }
 
     public List<String> getErrors() {
         return errors;
-    }
-
-    private <T extends JsonElement> Optional<T> maybeChild(String key, JsonType<T> expected) {
-        assert elementPath.peek() != null;
-        JsonObject head = elementPath.peek().json;
-        if (head.has(key)) {
-            JsonElement element = head.get(key);
-            if (expected.is(element)) {
-                return Optional.of(expected.cast(element));
-            } else {
-                errors.add(joinPath() + '/' + key + " must be " + expected.name +
-                        " not " + JsonType.of(element).name);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private String joinPath() {
-        return Streams.stream(elementPath.descendingIterator())
-                .map(Member::name)
-                .collect(joining("/"));
     }
 
     private record Member(JsonObject json, String name) {}

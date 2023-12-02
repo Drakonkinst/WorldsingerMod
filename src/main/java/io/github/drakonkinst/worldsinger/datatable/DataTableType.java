@@ -1,10 +1,7 @@
 package io.github.drakonkinst.worldsinger.datatable;
 
 public enum DataTableType {
-    BLOCK,
-    ENTITY,
-    ITEM,
-    MISC;
+    BLOCK, ENTITY, ITEM, MISC;
 
     private final String name;
 

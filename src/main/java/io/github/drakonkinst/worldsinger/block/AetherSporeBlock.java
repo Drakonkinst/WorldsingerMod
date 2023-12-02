@@ -33,26 +33,19 @@ import org.jetbrains.annotations.Nullable;
 public class AetherSporeBlock extends FallingBlock implements FluidDrainable, SporeEmitting {
 
     public static final MapCodec<AetherSporeBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                    AetherSpores.CODEC.fieldOf("sporeType")
-                            .forGetter(AetherSporeBlock::getSporeType),
-                    Registries.BLOCK.getCodec().fieldOf("block")
-                            .forGetter(AetherSporeBlock::getFluidizedBlock),
-                    createSettingsCodec()
-            ).apply(instance,
-                    (sporeType, fluidizedBlock1, settings1) -> new AetherSporeBlock(sporeType,
-                            settings1)));
+            instance -> instance.group(AetherSpores.CODEC.fieldOf("sporeType")
+                                    .forGetter(AetherSporeBlock::getSporeType),
+                            Registries.BLOCK.getCodec().fieldOf("block")
+                                    .forGetter(AetherSporeBlock::getFluidizedBlock), createSettingsCodec())
+                    .apply(instance,
+                            (sporeType, fluidizedBlock1, settings1) -> new AetherSporeBlock(
+                                    sporeType, settings1)));
 
     protected final AetherSpores sporeType;
 
     public AetherSporeBlock(AetherSpores sporeType, Settings settings) {
         super(settings);
         this.sporeType = sporeType;
-    }
-
-    @Override
-    protected void configureFallingBlockEntity(FallingBlockEntity entity) {
-        entity.dropItem = false;
     }
 
     @Override
@@ -71,13 +64,15 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
             // Spawn particles based on fall distance
             int fallDistance = fallingBlockEntity.getFallingBlockPos().getY() - pos.getY();
             if (fallDistance >= 4) {
-                SporeParticleSpawner.spawnBlockParticles(serverWorld, sporeType, pos, 1.5,
-                        0.45);
+                SporeParticleSpawner.spawnBlockParticles(serverWorld, sporeType, pos, 1.5, 0.45);
             } else {
-                SporeParticleSpawner.spawnBlockParticles(serverWorld, sporeType, pos, 0.75,
-                        0.5);
+                SporeParticleSpawner.spawnBlockParticles(serverWorld, sporeType, pos, 0.75, 0.5);
             }
         }
+    }
+
+    public Block getFluidizedBlock() {
+        return sporeType.getFluidBlock();
     }
 
     @Override
@@ -117,8 +112,8 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         // Spawn splash particles on landing
         if (fallDistance > 0.25f && world instanceof ServerWorld serverWorld
                 && !(entity instanceof FallingBlockEntity)) {
-            SporeParticleSpawner.spawnSplashParticles(serverWorld, sporeType, entity,
-                    fallDistance, false);
+            SporeParticleSpawner.spawnSplashParticles(serverWorld, sporeType, entity, fallDistance,
+                    false);
         }
         super.onLandedUpon(world, state, pos, entity, fallDistance);
     }
@@ -143,10 +138,6 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
         super.onBroken(world, pos, state);
     }
 
-    public Block getFluidizedBlock() {
-        return sporeType.getFluidBlock();
-    }
-
     @Override
     public Optional<SoundEvent> getBucketFillSound() {
         return Optional.of(ModSoundEvents.ITEM_BUCKET_FILL_AETHER_SPORE);
@@ -160,6 +151,11 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
     @Override
     public AetherSpores getSporeType() {
         return sporeType;
+    }
+
+    @Override
+    protected void configureFallingBlockEntity(FallingBlockEntity entity) {
+        entity.dropItem = false;
     }
 
     @Override

@@ -49,10 +49,6 @@ public record Int3(int x, int y, int z) {
 
     // Converts all values to their sign
     public Int3 toSigns() {
-        return new Int3(
-                Integer.signum(x),
-                Integer.signum(y),
-                Integer.signum(z)
-        );
+        return new Int3(Integer.signum(x), Integer.signum(y), Integer.signum(z));
     }
 }

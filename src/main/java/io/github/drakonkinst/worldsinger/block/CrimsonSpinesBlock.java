@@ -37,10 +37,8 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
 
     public CrimsonSpinesBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState()
-                .with(Properties.PERSISTENT, false)
-                .with(Properties.WATERLOGGED, false)
-                .with(Properties.FACING, Direction.UP));
+        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false)
+                .with(Properties.WATERLOGGED, false).with(Properties.FACING, Direction.UP));
     }
 
     @Override
@@ -81,17 +79,10 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
                 ModDamageTypes.createSource(world, ModDamageTypes.SPIKE_FALL));
     }
 
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED, Properties.FACING);
-    }
-
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState()
-                .with(Properties.PERSISTENT, true)
+        return this.getDefaultState().with(Properties.PERSISTENT, true)
                 .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()))
                 .with(Properties.FACING, ctx.getSide());
     }
@@ -144,6 +135,12 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
                 neighborPos);
+    }
+
+    @Override
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(Properties.PERSISTENT, Properties.WATERLOGGED, Properties.FACING);
     }
 
     @Override

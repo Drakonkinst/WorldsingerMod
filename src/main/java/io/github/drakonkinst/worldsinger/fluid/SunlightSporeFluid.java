@@ -33,17 +33,11 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
 
     @Override
     protected BlockState toBlockState(FluidState fluidState) {
-        return ModBlocks.SUNLIGHT_SPORE_SEA.getDefaultState().with(Properties.LEVEL_15,
-                getBlockStateLevel(fluidState));
+        return ModBlocks.SUNLIGHT_SPORE_SEA.getDefaultState()
+                .with(Properties.LEVEL_15, getBlockStateLevel(fluidState));
     }
 
     public static class Flowing extends SunlightSporeFluid {
-
-        @Override
-        protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-            super.appendProperties(builder);
-            builder.add(LEVEL);
-        }
 
         @Override
         public int getLevel(FluidState fluidState) {
@@ -53,6 +47,12 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
         @Override
         public boolean isStill(FluidState fluidState) {
             return false;
+        }
+
+        @Override
+        protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
+            super.appendProperties(builder);
+            builder.add(LEVEL);
         }
     }
 

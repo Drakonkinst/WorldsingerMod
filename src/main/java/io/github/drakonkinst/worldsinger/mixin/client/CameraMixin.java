@@ -26,6 +26,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Camera.class)
 public abstract class CameraMixin implements CameraPosAccess {
 
+    @Shadow
+    private BlockView area;
+    @Shadow
+    private Vec3d pos;
+    @Shadow
+    @Final
+    private Mutable blockPos;
+    @Shadow
+    private boolean ready;
+
+    @Override
+    public BlockState worldsinger$getBlockState() {
+        return this.area.getBlockState(this.blockPos);
+    }
+
     @Inject(method = "getSubmersionType", at = @At("HEAD"), cancellable = true)
     private void addCustomSubmersionType(CallbackInfoReturnable<CameraSubmersionType> cir) {
         if (!this.ready) {
@@ -55,19 +70,4 @@ public abstract class CameraMixin implements CameraPosAccess {
         }
         return Fluids.EMPTY.getDefaultState();
     }
-
-    @Override
-    public BlockState worldsinger$getBlockState() {
-        return this.area.getBlockState(this.blockPos);
-    }
-
-    @Shadow
-    private BlockView area;
-    @Shadow
-    private Vec3d pos;
-    @Shadow
-    @Final
-    private Mutable blockPos;
-    @Shadow
-    private boolean ready;
 }

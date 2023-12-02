@@ -123,13 +123,13 @@ public class DataTable {
         return failedTags;
     }
 
-    public int getInt(Identifier id) {
-        return entryTable.getInt(id);
-    }
-
     public int getIntForBlock(BlockState blockState) {
         Identifier id = Registries.BLOCK.getId(blockState.getBlock());
         return this.getInt(id);
+    }
+
+    public int getInt(Identifier id) {
+        return entryTable.getInt(id);
     }
 
     public int getIntForEntity(Entity entity) {

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ProjectileUtil.class)
 public abstract class ProjectileUtilMixin {
-    
+
     @Redirect(method = "getCollision(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/entity/Entity;Ljava/util/function/Predicate;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/world/World;FLnet/minecraft/world/RaycastContext$ShapeType;)Lnet/minecraft/util/hit/HitResult;", at = @At(value = "NEW", target = "(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/world/RaycastContext$ShapeType;Lnet/minecraft/world/RaycastContext$FluidHandling;Lnet/minecraft/entity/Entity;)Lnet/minecraft/world/RaycastContext;"))
     private static RaycastContext makeThrownPotionsBreakAgainstSporeSea(Vec3d start, Vec3d end,
             ShapeType shapeType, FluidHandling fluidHandling, Entity entity) {

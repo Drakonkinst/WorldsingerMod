@@ -27,13 +27,6 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
 
-    /* Start of code common to all LivingSporeGrowthBlocks */
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModProperties.CATALYZED);
-    }
-
     @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -70,12 +63,6 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
-    /* End of code common to all LivingSporeGrowthBlocks */
-
-    @Override
-    public Block getDeadSporeBlock() {
-        return ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT;
-    }
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
@@ -87,10 +74,11 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
         LivingTwistingVerdantVineBlock.growInSameDirection(world, pos, state, random);
         return true;
     }
+    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
-    protected Block getBud() {
-        return ModBlocks.TWISTING_VERDANT_VINES;
+    public Block getDeadSporeBlock() {
+        return ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT;
     }
 
     // Catalyze when waterlogged, common to all LivingSporeGrowthBlocks that implement Waterloggable
@@ -104,6 +92,18 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
         if (!newState.get(ModProperties.CATALYZED) && newState.get(Properties.WATERLOGGED)) {
             WaterReactionManager.catalyzeAroundWater(world, pos);
         }
+    }
+
+    /* Start of code common to all LivingSporeGrowthBlocks */
+    @Override
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModProperties.CATALYZED);
+    }
+
+    @Override
+    protected Block getBud() {
+        return ModBlocks.TWISTING_VERDANT_VINES;
     }
 
     @Override

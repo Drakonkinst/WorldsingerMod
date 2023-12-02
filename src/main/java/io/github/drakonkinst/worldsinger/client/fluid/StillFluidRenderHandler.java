@@ -27,21 +27,9 @@ import org.jetbrains.annotations.Nullable;
 public class StillFluidRenderHandler implements FluidRenderHandler {
 
     private static final float Z_FIGHTING_BUFFER = 0.001f;
-
-    private static boolean isSideCovered(BlockView world, BlockPos pos, Direction direction,
-            BlockState state) {
-        if (state.isOpaque()) {
-            VoxelShape voxelShape = VoxelShapes.fullCube();
-            VoxelShape neighborVoxelShape = state.getCullingShape(world, pos.offset(direction));
-            return VoxelShapes.isSideCovered(voxelShape, neighborVoxelShape, direction);
-        }
-        return false;
-    }
-
     protected final Identifier texture;
     protected final Sprite[] sprites;
     protected final boolean shaded;
-
     public StillFluidRenderHandler(Identifier stillTexture, boolean shaded) {
         this.texture = Objects.requireNonNull(stillTexture, "texture");
         this.sprites = new Sprite[2];
@@ -60,7 +48,6 @@ public class StillFluidRenderHandler implements FluidRenderHandler {
         // Workaround since renderer expects sprite to have 2 entries
         sprites[1] = sprites[0];
     }
-
 
     @Override
     // Since these fluids only have one sprite and are always full blocks, we can skip a lot of rendering logic
@@ -219,14 +206,14 @@ public class StillFluidRenderHandler implements FluidRenderHandler {
         }
     }
 
-    private void vertex(VertexConsumer vertexConsumer, double x, double y, double z,
-            float brightness,
-            float u, float v, int light) {
-        if (shaded) {
-            brightness = 1.0f;
+    private static boolean isSideCovered(BlockView world, BlockPos pos, Direction direction,
+            BlockState state) {
+        if (state.isOpaque()) {
+            VoxelShape voxelShape = VoxelShapes.fullCube();
+            VoxelShape neighborVoxelShape = state.getCullingShape(world, pos.offset(direction));
+            return VoxelShapes.isSideCovered(voxelShape, neighborVoxelShape, direction);
         }
-        vertexConsumer.vertex(x, y, z).color(brightness, brightness, brightness, 1.0f).texture(u, v)
-                .light(light).normal(0.0f, 1.0f, 0.0f).next();
+        return false;
     }
 
     private int getLight(BlockRenderView world, BlockPos pos) {
@@ -237,5 +224,14 @@ public class StillFluidRenderHandler implements FluidRenderHandler {
         int m = i >> 16 & (LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE | 0xF);
         int n = j >> 16 & (LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE | 0xF);
         return (k > l ? k : l) | (m > n ? m : n) << 16;
+    }
+
+    private void vertex(VertexConsumer vertexConsumer, double x, double y, double z,
+            float brightness, float u, float v, int light) {
+        if (shaded) {
+            brightness = 1.0f;
+        }
+        vertexConsumer.vertex(x, y, z).color(brightness, brightness, brightness, 1.0f).texture(u, v)
+                .light(light).normal(0.0f, 1.0f, 0.0f).next();
     }
 }

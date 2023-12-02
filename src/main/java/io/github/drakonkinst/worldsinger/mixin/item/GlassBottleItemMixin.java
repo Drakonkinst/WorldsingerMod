@@ -32,10 +32,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GlassBottleItem.class)
 public abstract class GlassBottleItemMixin extends Item {
 
-    @Shadow
-    protected abstract ItemStack fill(ItemStack stack, PlayerEntity player,
-            ItemStack outputStack);
-
     public GlassBottleItemMixin(Settings settings) {
         super(settings);
     }
@@ -81,12 +77,13 @@ public abstract class GlassBottleItemMixin extends Item {
             BlockPos blockPos, AetherSpores sporeType,
             CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
         world.playSound(user, user.getX(), user.getY(), user.getZ(),
-                ModSoundEvents.ITEM_BOTTLE_FILL_AETHER_SPORE,
-                SoundCategory.NEUTRAL, 1.0f, 1.0f);
+                ModSoundEvents.ITEM_BOTTLE_FILL_AETHER_SPORE, SoundCategory.NEUTRAL, 1.0f, 1.0f);
         world.emitGameEvent(user, GameEvent.FLUID_PICKUP, blockPos);
         cir.setReturnValue(TypedActionResult.success(
-                this.fill(itemStack, user,
-                        sporeType.getBottledItem().getDefaultStack()),
+                this.fill(itemStack, user, sporeType.getBottledItem().getDefaultStack()),
                 world.isClient()));
     }
+
+    @Shadow
+    protected abstract ItemStack fill(ItemStack stack, PlayerEntity player, ItemStack outputStack);
 }

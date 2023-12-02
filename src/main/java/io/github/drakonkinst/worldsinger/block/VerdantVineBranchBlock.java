@@ -24,10 +24,9 @@ import net.minecraft.world.WorldView;
 public class VerdantVineBranchBlock extends ConnectingBlock implements Waterloggable,
         SporeGrowthBlock {
 
+    private static final float RADIUS = 0.25f;
     public static final MapCodec<VerdantVineBranchBlock> CODEC = createCodec(
             VerdantVineBranchBlock::new);
-
-    private static final float RADIUS = 0.25f;
     private static final BooleanProperty[] DIRECTION_PROPERTIES = {DOWN, UP, NORTH, EAST, SOUTH,
             WEST};
     private static final Direction[] DIRECTIONS = {Direction.DOWN, Direction.UP, Direction.NORTH,
@@ -35,40 +34,10 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
     public VerdantVineBranchBlock(Settings settings) {
         super(RADIUS, settings);
-        this.setDefaultState(this.stateManager.getDefaultState()
-                .with(NORTH, false)
-                .with(SOUTH, false)
-                .with(EAST, false)
-                .with(WEST, false)
-                .with(UP, false)
-                .with(DOWN, false)
-                .with(Properties.WATERLOGGED, false)
-                .with(Properties.PERSISTENT, false));
-    }
-
-    private static boolean canConnect(BlockView world, BlockPos pos, BlockState state,
-            Direction direction) {
-        // Can connect to any other branch block
-        if (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
-            return true;
-        }
-
-        // Can connect to snare only if supporting it
-        if (state.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
-            Direction attachDirection = VerdantVineSnareBlock.getDirection(state).getOpposite();
-            return attachDirection == direction;
-        }
-
-        // Can connect to twisting vines only if supporting them
-        if (state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
-            Direction attachDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(
-                    state).getOpposite();
-            return attachDirection == direction;
-        }
-
-        // Can connect to any solid face
-        boolean faceFullSquare = state.isSideSolidFullSquare(world, pos, direction.getOpposite());
-        return faceFullSquare;
+        this.setDefaultState(
+                this.stateManager.getDefaultState().with(NORTH, false).with(SOUTH, false)
+                        .with(EAST, false).with(WEST, false).with(UP, false).with(DOWN, false)
+                        .with(Properties.WATERLOGGED, false).with(Properties.PERSISTENT, false));
     }
 
     @Override
@@ -97,10 +66,29 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
         return false;
     }
 
-    @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, Properties.WATERLOGGED,
-                Properties.PERSISTENT);
+    private static boolean canConnect(BlockView world, BlockPos pos, BlockState state,
+            Direction direction) {
+        // Can connect to any other branch block
+        if (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
+            return true;
+        }
+
+        // Can connect to snare only if supporting it
+        if (state.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
+            Direction attachDirection = VerdantVineSnareBlock.getDirection(state).getOpposite();
+            return attachDirection == direction;
+        }
+
+        // Can connect to twisting vines only if supporting them
+        if (state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
+            Direction attachDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(
+                    state).getOpposite();
+            return attachDirection == direction;
+        }
+
+        // Can connect to any solid face
+        boolean faceFullSquare = state.isSideSolidFullSquare(world, pos, direction.getOpposite());
+        return faceFullSquare;
     }
 
     @Override
@@ -108,12 +96,6 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
         return this.withConnectionProperties(ctx.getWorld(), ctx.getBlockPos())
                 .with(Properties.PERSISTENT, true)
                 .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()));
-    }
-
-    @Override
-    public FluidState getFluidState(BlockState state) {
-        return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false)
-                : super.getFluidState(state);
     }
 
     public BlockState withConnectionProperties(BlockView world, BlockPos pos) {
@@ -130,6 +112,12 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     }
 
     @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.get(Properties.WATERLOGGED) ? Fluids.WATER.getStill(false)
+                : super.getFluidState(state);
+    }
+
+    @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
             BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
         if (!state.canPlaceAt(world, pos)) {
@@ -140,8 +128,7 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
             world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
-        boolean canConnect = canConnect(world, neighborPos, neighborState,
-                direction.getOpposite());
+        boolean canConnect = canConnect(world, neighborPos, neighborState, direction.getOpposite());
         return state.with(FACING_PROPERTIES.get(direction), canConnect);
     }
 
@@ -163,6 +150,12 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
         if (SporeGrowthBlock.canDecay(world, pos, state, random)) {
             world.breakBlock(pos, true);
         }
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, Properties.WATERLOGGED,
+                Properties.PERSISTENT);
     }
 
     @Override

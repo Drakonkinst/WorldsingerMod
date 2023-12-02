@@ -44,8 +44,9 @@ public abstract class LivingEntityMixin extends Entity {
             ModFluidTags.ZEPHYR_SPORES, ModStatusEffects.ZEPHYR_SPORES,
             ModFluidTags.SUNLIGHT_SPORES, ModStatusEffects.SUNLIGHT_SPORES,
             ModFluidTags.ROSEITE_SPORES, ModStatusEffects.ROSEITE_SPORES,
-            ModFluidTags.MIDNIGHT_SPORES, ModStatusEffects.MIDNIGHT_SPORES
-    );
+            ModFluidTags.MIDNIGHT_SPORES, ModStatusEffects.MIDNIGHT_SPORES);
+    @Shadow
+    protected boolean jumping;
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -67,6 +68,37 @@ public abstract class LivingEntityMixin extends Entity {
         checkSporeSeaEffects();
     }
 
+    @Unique
+    private void checkSporeSeaEffects() {
+        if (EntityUtil.isSubmergedInSporeSea(this)) {
+            if ((LivingEntity) (Object) this instanceof PlayerEntity playerEntity && (
+                    playerEntity.isCreative() || playerEntity.isSpectator())) {
+                return;
+            }
+            applySporeSeaEffects();
+
+            // Also take suffocation damage, mainly for dead spores
+            this.damage(ModDamageTypes.createSource(this.getWorld(), ModDamageTypes.DROWN_SPORE),
+                    1.0f);
+        }
+    }
+
+    @Unique
+    private void applySporeSeaEffects() {
+        if (this.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
+            return;
+        }
+        for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
+            if (this.isSubmergedIn(entry.getKey())) {
+                SporeParticleManager.applySporeEffect((LivingEntity) (Object) this,
+                        entry.getValue(), SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);
+            }
+        }
+    }
+
+    @Shadow
+    public abstract boolean damage(DamageSource source, float amount);
+
     @Inject(method = "tickMovement", at = @At("RETURN"))
     private void allowCustomFluidSwimming(CallbackInfo ci) {
         if (this.jumping && this.shouldSwimInFluids()) {
@@ -75,8 +107,8 @@ public abstract class LivingEntityMixin extends Entity {
 
             // Swimming in liquid is the same velocity regardless of liquid, unless we decide to override the swimUpward function
             // Prevent swimUpwards() from being called more than once if in multiple distinct fluids
-            if (this.canSwimUpwards(FluidTags.WATER, swimHeight, fluidState)
-                    || this.canSwimUpwards(FluidTags.LAVA, swimHeight, fluidState)) {
+            if (this.canSwimUpwards(FluidTags.WATER, swimHeight, fluidState) || this.canSwimUpwards(
+                    FluidTags.LAVA, swimHeight, fluidState)) {
                 // Do nothing, already swimming upwards
             } else if (this.canSwimUpwards(ModFluidTags.AETHER_SPORES, swimHeight, fluidState)) {
                 this.swimUpward(ModFluidTags.AETHER_SPORES);
@@ -86,18 +118,26 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
+    @Shadow
+    protected abstract boolean shouldSwimInFluids();
+
     private boolean canSwimUpwards(TagKey<Fluid> fluidTag, double swimHeight,
             FluidState fluidState) {
         double fluidHeight = this.getFluidHeight(fluidTag);
         if (fluidHeight > 0.0) {
             // During stillings, spore fluids do not act like a fluid and can climb out at any height
-            boolean canSwim =
-                    !this.isOnGround() || fluidHeight > swimHeight || this.canWalkOnFluid(
-                            fluidState);
+            boolean canSwim = !this.isOnGround() || fluidHeight > swimHeight || this.canWalkOnFluid(
+                    fluidState);
             return canSwim;
         }
         return false;
     }
+
+    @Shadow
+    protected abstract void swimUpward(TagKey<Fluid> fluid);
+
+    @Shadow
+    public abstract boolean canWalkOnFluid(FluidState state);
 
     @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isFallFlying()Z"), cancellable = true)
     private void injectCustomFluidPhysics(Vec3d movementInput, CallbackInfo ci) {
@@ -126,8 +166,8 @@ public abstract class LivingEntityMixin extends Entity {
             this.applyFluidPhysics(movementInput, horizontalMovementMultiplier,
                     verticalMovementMultiplier, gravity, isFalling);
             ci.cancel();
-        } else if (EntityUtil.isTouchingFluid(this, ModFluidTags.SUNLIGHT)
-                && !this.canWalkOnFluid(fluidState)) {
+        } else if (EntityUtil.isTouchingFluid(this, ModFluidTags.SUNLIGHT) && !this.canWalkOnFluid(
+                fluidState)) {
             boolean isFalling = this.getVelocity().y <= 0.0;
             double gravity = 0.08;
             if (isFalling && this.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
@@ -143,6 +183,9 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
+    @Shadow
+    public abstract boolean hasStatusEffect(StatusEffect effect);
+
     @Unique
     private void applyFluidPhysics(Vec3d movementInput, float horizontalMovementMultiplier,
             float verticalMovementMultiplier, double gravity, boolean isFalling) {
@@ -155,9 +198,8 @@ public abstract class LivingEntityMixin extends Entity {
             vec3d = new Vec3d(vec3d.x, 0.2, vec3d.z);
         }
 
-        this.setVelocity(
-                vec3d.multiply(horizontalMovementMultiplier, verticalMovementMultiplier,
-                        horizontalMovementMultiplier));
+        this.setVelocity(vec3d.multiply(horizontalMovementMultiplier, verticalMovementMultiplier,
+                horizontalMovementMultiplier));
         vec3d = this.applyFluidMovingSpeed(gravity, isFalling, this.getVelocity());
         this.setVelocity(vec3d);
 
@@ -175,59 +217,12 @@ public abstract class LivingEntityMixin extends Entity {
         updateLimbs(this instanceof Flutterer);
     }
 
-    @Unique
-    private void checkSporeSeaEffects() {
-        if (EntityUtil.isSubmergedInSporeSea(this)) {
-            if ((LivingEntity) (Object) this instanceof PlayerEntity playerEntity
-                    && (playerEntity.isCreative() || playerEntity.isSpectator())) {
-                return;
-            }
-            applySporeSeaEffects();
-
-            // Also take suffocation damage, mainly for dead spores
-            this.damage(ModDamageTypes.createSource(this.getWorld(), ModDamageTypes.DROWN_SPORE),
-                    1.0f);
-        }
-    }
-
-    @Unique
-    private void applySporeSeaEffects() {
-        if (this.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
-            return;
-        }
-        for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
-            if (this.isSubmergedIn(entry.getKey())) {
-                SporeParticleManager.applySporeEffect((LivingEntity) (Object) this,
-                        entry.getValue(), SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);
-            }
-        }
-    }
-
-    @Shadow
-    protected abstract boolean shouldSwimInFluids();
-
-    @Shadow
-    protected abstract void swimUpward(TagKey<Fluid> fluid);
-
-    @Shadow
-    public abstract boolean canWalkOnFluid(FluidState state);
-
-    @Shadow
-    public abstract Vec3d applyFluidMovingSpeed(double gravity, boolean falling,
-            Vec3d motion);
-
-    @Shadow
-    public abstract boolean hasStatusEffect(StatusEffect effect);
-
-    @Shadow
-    public abstract void updateLimbs(boolean flutter);
-
     @Shadow
     public abstract boolean isClimbing();
 
     @Shadow
-    protected boolean jumping;
+    public abstract Vec3d applyFluidMovingSpeed(double gravity, boolean falling, Vec3d motion);
 
     @Shadow
-    public abstract boolean damage(DamageSource source, float amount);
+    public abstract void updateLimbs(boolean flutter);
 }

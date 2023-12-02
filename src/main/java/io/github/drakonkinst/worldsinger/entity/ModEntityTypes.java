@@ -29,23 +29,15 @@ public final class ModEntityTypes {
     public static final EntityType<VerdantSporeGrowthEntity> VERDANT_SPORE_GROWTH = register(
             "verdant_spore_growth",
             FabricEntityTypeBuilder.create(SpawnGroup.MISC, VerdantSporeGrowthEntity::new)
-                    .dimensions(EntityDimensions.fixed(0.0f, 0.0f))
-                    .trackRangeChunks(0)
-                    .build());
+                    .dimensions(EntityDimensions.fixed(0.0f, 0.0f)).trackRangeChunks(0).build());
     public static final EntityType<CrimsonSporeGrowthEntity> CRIMSON_SPORE_GROWTH = register(
             "crimson_spore_growth",
             FabricEntityTypeBuilder.create(SpawnGroup.MISC, CrimsonSporeGrowthEntity::new)
-                    .dimensions(EntityDimensions.fixed(0.0f, 0.0f))
-                    .trackRangeChunks(0)
-                    .build());
+                    .dimensions(EntityDimensions.fixed(0.0f, 0.0f)).trackRangeChunks(0).build());
     public static final EntityType<ThrownSporeBottleEntity> THROWN_SPORE_BOTTLE = register(
-            "spore_bottle",
-            FabricEntityTypeBuilder.<ThrownSporeBottleEntity>create(SpawnGroup.MISC,
-                            ThrownSporeBottleEntity::new)
-                    .dimensions(EntityDimensions.fixed(0.25f, 0.25f))
-                    .trackRangeChunks(4)
-                    .trackedUpdateRate(10)
-                    .build());
+            "spore_bottle", FabricEntityTypeBuilder.<ThrownSporeBottleEntity>create(SpawnGroup.MISC,
+                            ThrownSporeBottleEntity::new).dimensions(EntityDimensions.fixed(0.25f, 0.25f))
+                    .trackRangeChunks(4).trackedUpdateRate(10).build());
 
     public static void initialize() {
         // Overwrite chicken spawn restriction
@@ -53,14 +45,12 @@ public final class ModEntityTypes {
         // Once we add a seagull mob sometime in the future, all this can be removed--along with
         // the mixins and access wideners that helped make this happen.
         // This is bad bad code and I'm sorry
-        SpawnRestrictionAccessor.worldsinger$getSpawnRestrictionsMap()
-                .put(EntityType.CHICKEN, new Entry(
-                        Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, Location.ON_GROUND,
+        SpawnRestrictionAccessor.worldsinger$getSpawnRestrictionsMap().put(EntityType.CHICKEN,
+                new Entry(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, Location.ON_GROUND,
                         (SpawnPredicate<ChickenEntity>) ModEntityTypes::canChickensSpawn));
     }
 
-    private static boolean canChickensSpawn(EntityType<ChickenEntity> type,
-            WorldAccess world,
+    private static boolean canChickensSpawn(EntityType<ChickenEntity> type, WorldAccess world,
             SpawnReason spawnReason, BlockPos pos, Random random) {
         DimensionType lumarDimension = world.getRegistryManager().get(RegistryKeys.DIMENSION_TYPE)
                 .get(ModDimensionTypes.LUMAR);
@@ -68,14 +58,12 @@ public final class ModEntityTypes {
             return world.getBlockState(pos.down()).isIn(ModBlockTags.SEAGULLS_SPAWNABLE_ON)
                     && world.getBaseLightLevel(pos, 0) > 8;
         }
-        return AnimalEntity.isValidNaturalSpawn(type, world,
-                spawnReason, pos, random);
+        return AnimalEntity.isValidNaturalSpawn(type, world, spawnReason, pos, random);
 
     }
 
     private static <T extends Entity> EntityType<T> register(String id, EntityType<T> entityType) {
-        return Registry.register(Registries.ENTITY_TYPE, Worldsinger.id(id),
-                entityType);
+        return Registry.register(Registries.ENTITY_TYPE, Worldsinger.id(id), entityType);
     }
 
     private ModEntityTypes() {}

@@ -20,9 +20,9 @@ public final class ModFluidTags {
     public static final TagKey<Fluid> AETHER_SPORES_OR_SUNLIGHT = ModFluidTags.of(
             "aether_spores_or_sunlight");
 
-    private ModFluidTags() {}
-
     private static TagKey<Fluid> of(String id) {
         return TagKey.of(RegistryKeys.FLUID, Worldsinger.id(id));
     }
+
+    private ModFluidTags() {}
 }

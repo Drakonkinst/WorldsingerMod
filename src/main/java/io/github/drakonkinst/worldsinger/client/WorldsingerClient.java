@@ -26,21 +26,13 @@ public class WorldsingerClient implements ClientModInitializer {
 
         // Register block render layer
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
-                ModBlocks.VERDANT_VINE_SNARE,
-                ModBlocks.DEAD_VERDANT_VINE_SNARE,
-                ModBlocks.TWISTING_VERDANT_VINES,
-                ModBlocks.DEAD_TWISTING_VERDANT_VINES,
-                ModBlocks.TWISTING_VERDANT_VINES_PLANT,
-                ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
-                ModBlocks.CRIMSON_SPIKE,
-                ModBlocks.DEAD_CRIMSON_SPIKE,
-                ModBlocks.CRIMSON_SNARE,
-                ModBlocks.DEAD_CRIMSON_SNARE,
-                ModBlocks.CRIMSON_SPINES,
-                ModBlocks.DEAD_CRIMSON_SPINES,
-                ModBlocks.TALL_CRIMSON_SPINES,
-                ModBlocks.DEAD_TALL_CRIMSON_SPINES
-        );
+                ModBlocks.VERDANT_VINE_SNARE, ModBlocks.DEAD_VERDANT_VINE_SNARE,
+                ModBlocks.TWISTING_VERDANT_VINES, ModBlocks.DEAD_TWISTING_VERDANT_VINES,
+                ModBlocks.TWISTING_VERDANT_VINES_PLANT, ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
+                ModBlocks.CRIMSON_SPIKE, ModBlocks.DEAD_CRIMSON_SPIKE, ModBlocks.CRIMSON_SNARE,
+                ModBlocks.DEAD_CRIMSON_SNARE, ModBlocks.CRIMSON_SPINES,
+                ModBlocks.DEAD_CRIMSON_SPINES, ModBlocks.TALL_CRIMSON_SPINES,
+                ModBlocks.DEAD_TALL_CRIMSON_SPINES);
 
         // Register particles
         ParticleFactoryRegistry.getInstance()
@@ -53,6 +45,5 @@ public class WorldsingerClient implements ClientModInitializer {
         ModModelPredicates.register();
         ModDimensionEffects.initialize();
     }
-
 
 }

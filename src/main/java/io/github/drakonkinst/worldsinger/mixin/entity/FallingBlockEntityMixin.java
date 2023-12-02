@@ -33,8 +33,23 @@ public abstract class FallingBlockEntityMixin extends Entity {
     @Unique
     private static final float BREAKING_FALL_DISTANCE = 16.0f;
 
-    public FallingBlockEntityMixin(EntityType<?> type,
-            World world) {
+    @ModifyConstant(method = "tick", constant = @Constant(classValue = ConcretePowderBlock.class))
+    private static boolean alsoCheckSporeBlock(Object obj, Class<? extends Object> objClass) {
+        return objClass.isAssignableFrom(obj.getClass()) || obj instanceof LivingAetherSporeBlock;
+    }
+    @Shadow
+    public boolean dropItem;
+    @Shadow
+    private boolean hurtEntities;
+    @Shadow
+    private boolean destroyedOnLanding;
+    @Shadow
+    private BlockState block;
+    @Shadow
+    private int fallHurtMax;
+    @Shadow
+    private float fallHurtAmount;
+    public FallingBlockEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
 
@@ -66,11 +81,6 @@ public abstract class FallingBlockEntityMixin extends Entity {
         }
     }
 
-    @ModifyConstant(method = "tick", constant = @Constant(classValue = ConcretePowderBlock.class))
-    private static boolean alsoCheckSporeBlock(Object obj, Class<? extends Object> objClass) {
-        return objClass.isAssignableFrom(obj.getClass()) || obj instanceof LivingAetherSporeBlock;
-    }
-
     // Prevents falling blocks (except for aether spore blocks, which fluidize)
     // from passing through sea blocks, regardless of seethe. This behavior makes
     // solidifying the sea too easy.
@@ -95,6 +105,9 @@ public abstract class FallingBlockEntityMixin extends Entity {
         }
     }
 
+    @Shadow
+    public abstract BlockState getBlockState();
+
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     private void addSteelAnvilHurtsEntities(NbtCompound nbt, CallbackInfo ci) {
         if (nbt.contains("HurtEntities", NbtElement.NUMBER_TYPE)) {
@@ -104,20 +117,4 @@ public abstract class FallingBlockEntityMixin extends Entity {
             this.hurtEntities = true;
         }
     }
-
-    @Shadow
-    private boolean hurtEntities;
-    @Shadow
-    private boolean destroyedOnLanding;
-    @Shadow
-    private BlockState block;
-    @Shadow
-    public boolean dropItem;
-    @Shadow
-    private int fallHurtMax;
-    @Shadow
-    private float fallHurtAmount;
-
-    @Shadow
-    public abstract BlockState getBlockState();
 }

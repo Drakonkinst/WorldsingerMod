@@ -49,6 +49,48 @@ public class CrimsonSpores extends AetherSpores {
         this.spawnSporeGrowth(world, pos, spores, water, true, false, false, Int3.ZERO);
     }
 
+    public void spawnSporeGrowth(World world, Vec3d pos, int spores, int water,
+            boolean initialGrowth, boolean isSmall, boolean isSplit, Int3 lastDir) {
+        // If one already exists nearby, just augment that one
+        if (!isSplit && this.tryCombineWithNearbyGrowth(world, pos, spores, water, initialGrowth,
+                isSmall)) {
+            return;
+        }
+
+        CrimsonSporeGrowthEntity entity = ModEntityTypes.CRIMSON_SPORE_GROWTH.create(world);
+        if (entity == null) {
+            return;
+        }
+        entity.setPosition(pos);
+        entity.setSporeData(spores, water, initialGrowth);
+        entity.setLastDir(lastDir);
+        if (isSmall) {
+            entity.setInitialStage(CrimsonSporeGrowthEntity.MAX_STAGE - 1);
+        }
+
+        world.spawnEntity(entity);
+    }
+
+    private boolean tryCombineWithNearbyGrowth(World world, Vec3d pos, int spores, int water,
+            boolean isInitial, boolean isSmall) {
+        Box box = Box.from(pos).expand(VerdantSpores.COMBINE_GROWTH_MAX_RADIUS);
+        List<CrimsonSporeGrowthEntity> nearbySporeGrowthEntities = world.getEntitiesByClass(
+                CrimsonSporeGrowthEntity.class, box, sporeGrowthEntity -> {
+                    SporeGrowthComponent sporeGrowthData = sporeGrowthEntity.getSporeGrowthData();
+                    return sporeGrowthData.getAge() == 0
+                            && sporeGrowthData.isInitialGrowth() == isInitial
+                            && (sporeGrowthData.getStage() == 1) == isSmall;
+                });
+        if (nearbySporeGrowthEntities.isEmpty()) {
+            return false;
+        }
+        CrimsonSporeGrowthEntity existingSporeGrowthEntity = nearbySporeGrowthEntities.get(0);
+        SporeGrowthComponent sporeGrowthData = existingSporeGrowthEntity.getSporeGrowthData();
+        sporeGrowthData.setSpores(sporeGrowthData.getSpores() + spores);
+        sporeGrowthData.setWater(sporeGrowthData.getWater() + water);
+        return true;
+    }
+
     @Override
     public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
             int water, Random random) {
@@ -80,32 +122,9 @@ public class CrimsonSpores extends AetherSpores {
             return;
         }
 
-        Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
-                ModFluidTags.CRIMSON_SPORES);
+        Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity, ModFluidTags.CRIMSON_SPORES);
         this.spawnSporeGrowth(world, startPos, LivingAetherSporeBlock.CATALYZE_VALUE, water, true,
                 false, false, Int3.ZERO);
-    }
-
-    public void spawnSporeGrowth(World world, Vec3d pos, int spores, int water,
-            boolean initialGrowth, boolean isSmall, boolean isSplit, Int3 lastDir) {
-        // If one already exists nearby, just augment that one
-        if (!isSplit && this.tryCombineWithNearbyGrowth(world, pos, spores, water, initialGrowth,
-                isSmall)) {
-            return;
-        }
-
-        CrimsonSporeGrowthEntity entity = ModEntityTypes.CRIMSON_SPORE_GROWTH.create(world);
-        if (entity == null) {
-            return;
-        }
-        entity.setPosition(pos);
-        entity.setSporeData(spores, water, initialGrowth);
-        entity.setLastDir(lastDir);
-        if (isSmall) {
-            entity.setInitialStage(CrimsonSporeGrowthEntity.MAX_STAGE - 1);
-        }
-
-        world.spawnEntity(entity);
     }
 
     // Fill entity's bounding box with Crimson Snare
@@ -125,26 +144,6 @@ public class CrimsonSpores extends AetherSpores {
                 world.setBlockState(pos, newBlockState);
             }
         }
-    }
-
-    private boolean tryCombineWithNearbyGrowth(World world, Vec3d pos, int spores,
-            int water, boolean isInitial, boolean isSmall) {
-        Box box = Box.from(pos).expand(VerdantSpores.COMBINE_GROWTH_MAX_RADIUS);
-        List<CrimsonSporeGrowthEntity> nearbySporeGrowthEntities = world
-                .getEntitiesByClass(CrimsonSporeGrowthEntity.class, box, sporeGrowthEntity -> {
-                    SporeGrowthComponent sporeGrowthData = sporeGrowthEntity.getSporeGrowthData();
-                    return sporeGrowthData.getAge() == 0
-                            && sporeGrowthData.isInitialGrowth() == isInitial
-                            && (sporeGrowthData.getStage() == 1) == isSmall;
-                });
-        if (nearbySporeGrowthEntities.isEmpty()) {
-            return false;
-        }
-        CrimsonSporeGrowthEntity existingSporeGrowthEntity = nearbySporeGrowthEntities.get(0);
-        SporeGrowthComponent sporeGrowthData = existingSporeGrowthEntity.getSporeGrowthData();
-        sporeGrowthData.setSpores(sporeGrowthData.getSpores() + spores);
-        sporeGrowthData.setWater(sporeGrowthData.getWater() + water);
-        return true;
     }
 
     @Override
@@ -199,7 +198,6 @@ public class CrimsonSpores extends AetherSpores {
 
     @Override
     public BlockState getFluidCollisionState() {
-        return ModBlocks.CRIMSON_GROWTH.getDefaultState().with(
-                ModProperties.CATALYZED, true);
+        return ModBlocks.CRIMSON_GROWTH.getDefaultState().with(ModProperties.CATALYZED, true);
     }
 }

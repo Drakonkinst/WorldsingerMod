@@ -64,8 +64,39 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
     }
 
     @Override
-    protected boolean isInfinite(World world) {
-        return true;
+    public void onScheduledTick(World world, BlockPos pos, FluidState state) {
+        if (this.isStill(state) && !AetherSporeFluidBlock.shouldFluidize(
+                world.getBlockState(pos.down()))) {
+            AetherSporeFluidBlock.updateFluidizationForBlock(world, pos, state.getBlockState(),
+                    false);
+        }
+        super.onScheduledTick(world, pos, state);
+    }
+
+    @Override
+    public Optional<SoundEvent> getBucketFillSound() {
+        return Optional.of(ModSoundEvents.ITEM_BUCKET_FILL_AETHER_SPORE);
+    }
+
+    @Override
+    public int getTickRate(WorldView worldView) {
+        return 5;
+    }
+
+    public float getFogRed() {
+        return fogRed;
+    }
+
+    public float getFogGreen() {
+        return fogGreen;
+    }
+
+    public float getFogBlue() {
+        return fogBlue;
+    }
+
+    public AetherSpores getSporeType() {
+        return sporeType;
     }
 
     @Override
@@ -89,31 +120,20 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
                 double spawnX = (double) pos.getX() + random.nextDouble();
                 double spawnY = (double) pos.getY() + 1.0 + random.nextDouble();
                 double spawnZ = (double) pos.getZ() + random.nextDouble();
-                SporeParticleManager.spawnDisplayParticles(world, sporeType, spawnX,
-                        spawnY, spawnZ, 1f);
+                SporeParticleManager.spawnDisplayParticles(world, sporeType, spawnX, spawnY, spawnZ,
+                        1f);
             }
             if (random.nextInt(200) == 0) {
                 world.playSound(pos.getX(), pos.getY(), pos.getZ(),
-                        ModSoundEvents.BLOCK_SPORE_SEA_AMBIENT,
-                        SoundCategory.BLOCKS, 0.2f + random.nextFloat() * 0.2f,
-                        0.9f + random.nextFloat() * 0.15f, false);
+                        ModSoundEvents.BLOCK_SPORE_SEA_AMBIENT, SoundCategory.BLOCKS,
+                        0.2f + random.nextFloat() * 0.2f, 0.9f + random.nextFloat() * 0.15f, false);
             }
         }
     }
 
     @Override
-    public void onScheduledTick(World world, BlockPos pos, FluidState state) {
-        if (this.isStill(state) && !AetherSporeFluidBlock.shouldFluidize(
-                world.getBlockState(pos.down()))) {
-            AetherSporeFluidBlock.updateFluidizationForBlock(world, pos, state.getBlockState(),
-                    false);
-        }
-        super.onScheduledTick(world, pos, state);
-    }
-
-    @Override
-    protected boolean canBeReplacedWith(FluidState state, BlockView world,
-            BlockPos pos, Fluid fluid, Direction direction) {
+    protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos,
+            Fluid fluid, Direction direction) {
         return state.isIn(ModFluidTags.AETHER_SPORES) && !state.isStill();
     }
 
@@ -163,8 +183,13 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
     }
 
     @Override
-    public Optional<SoundEvent> getBucketFillSound() {
-        return Optional.of(ModSoundEvents.ITEM_BUCKET_FILL_AETHER_SPORE);
+    protected boolean isInfinite(World world) {
+        return true;
+    }
+
+    @Override
+    protected int getLevelDecreasePerBlock(WorldView worldView) {
+        return 2;
     }
 
     @Override
@@ -175,33 +200,7 @@ public abstract class AetherSporeFluid extends FlowableFluid implements SporeEmi
     }
 
     @Override
-    protected int getLevelDecreasePerBlock(WorldView worldView) {
-        return 2;
-    }
-
-    @Override
-    public int getTickRate(WorldView worldView) {
-        return 5;
-    }
-
-    @Override
     protected float getBlastResistance() {
         return 100.0F;
-    }
-
-    public float getFogRed() {
-        return fogRed;
-    }
-
-    public float getFogGreen() {
-        return fogGreen;
-    }
-
-    public float getFogBlue() {
-        return fogBlue;
-    }
-
-    public AetherSpores getSporeType() {
-        return sporeType;
     }
 }

@@ -21,11 +21,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ShipwreckGeneratorPieceMixin {
 
     @Unique
-    private static final Map<String, Identifier> LUMAR_LOOT_TABLES = Map.of(
-            "map_chest", ModLootTables.LUMAR_SHIPWRECK_SPROUTER_CHEST,
-            "treasure_chest", ModLootTables.LUMAR_SHIPWRECK_CAPTAIN_CHEST,
-            "supply_chest", ModLootTables.LUMAR_SHIPWRECK_SUPPLY_CHEST
-    );
+    private static final Map<String, Identifier> LUMAR_LOOT_TABLES = Map.of("map_chest",
+            ModLootTables.LUMAR_SHIPWRECK_SPROUTER_CHEST, "treasure_chest",
+            ModLootTables.LUMAR_SHIPWRECK_CAPTAIN_CHEST, "supply_chest",
+            ModLootTables.LUMAR_SHIPWRECK_SUPPLY_CHEST);
 
     @Inject(method = "handleMetadata", at = @At("HEAD"), cancellable = true)
     private void injectLumarLootTables(String metadata, BlockPos pos, ServerWorldAccess world,

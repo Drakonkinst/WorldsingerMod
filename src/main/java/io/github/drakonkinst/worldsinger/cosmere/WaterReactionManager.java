@@ -34,8 +34,6 @@ public final class WaterReactionManager {
     private static final Int3[] SURROUNDING_AND_CENTER = {Int3.ZERO, Int3.UP, Int3.DOWN, Int3.NORTH,
             Int3.SOUTH, Int3.EAST, Int3.WEST};
 
-    private WaterReactionManager() {}
-
     public static void catalyzeAroundWater(World world, BlockPos waterPos) {
         // TODO: Possibly collect nearby water reactive blocks/fluids during the draining process
         // for more natural results
@@ -123,8 +121,8 @@ public final class WaterReactionManager {
         } else if (blockState.isOf(Blocks.KELP) || blockState.isOf(Blocks.KELP_PLANT)
                 || blockState.isOf(Blocks.SEAGRASS) || blockState.isOf(Blocks.TALL_SEAGRASS)) {
             // Waterlogged block
-            BlockEntity blockEntity = blockState.hasBlockEntity() ? world.getBlockEntity(
-                    pos) : null;
+            BlockEntity blockEntity =
+                    blockState.hasBlockEntity() ? world.getBlockEntity(pos) : null;
             Block.dropStacks(blockState, world, pos, blockEntity);
             world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
             return WATER_AMOUNT_STILL;
@@ -132,4 +130,6 @@ public final class WaterReactionManager {
         // Not sure what kind of block
         return WATER_AMOUNT_FLOWING;
     }
+
+    private WaterReactionManager() {}
 }

@@ -13,6 +13,10 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(World.class)
 public abstract class WorldMixin {
 
+    @Shadow
+    @Final
+    private RegistryKey<DimensionType> dimension;
+
     @ModifyReturnValue(method = "getRainGradient", at = @At("RETURN"))
     private float removeCustomDimensionRainGradient(float originalValue) {
         if (this.dimension.equals(ModDimensionTypes.LUMAR)) {
@@ -28,8 +32,4 @@ public abstract class WorldMixin {
         }
         return originalValue;
     }
-
-    @Shadow
-    @Final
-    private RegistryKey<DimensionType> dimension;
 }

@@ -15,9 +15,8 @@ public class ExtendedRaycastContext extends RaycastContext {
 
     private final ExtendedFluidHandling extendedFluidHandling;
 
-    public ExtendedRaycastContext(Vec3d start,
-            Vec3d end, ShapeType shapeType, ExtendedFluidHandling fluidHandling,
-            Entity entity) {
+    public ExtendedRaycastContext(Vec3d start, Vec3d end, ShapeType shapeType,
+            ExtendedFluidHandling fluidHandling, Entity entity) {
         super(start, end, shapeType, FluidHandling.NONE, entity);
         this.extendedFluidHandling = fluidHandling;
     }

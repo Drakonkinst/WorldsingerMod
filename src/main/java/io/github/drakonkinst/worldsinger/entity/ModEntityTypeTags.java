@@ -11,14 +11,12 @@ public final class ModEntityTypeTags {
             "spores_always_affect");
     public static TagKey<EntityType<?>> SPORES_NEVER_AFFECT = ModEntityTypeTags.of(
             "spores_never_affect");
-    public static TagKey<EntityType<?>> HAS_STEEL = ModEntityTypeTags.of(
-            "has_steel");
-    public static TagKey<EntityType<?>> HAS_IRON = ModEntityTypeTags.of(
-            "has_iron");
-
-    private ModEntityTypeTags() {}
+    public static TagKey<EntityType<?>> HAS_STEEL = ModEntityTypeTags.of("has_steel");
+    public static TagKey<EntityType<?>> HAS_IRON = ModEntityTypeTags.of("has_iron");
 
     private static TagKey<EntityType<?>> of(String id) {
         return TagKey.of(RegistryKeys.ENTITY_TYPE, Worldsinger.id(id));
     }
+
+    private ModEntityTypeTags() {}
 }

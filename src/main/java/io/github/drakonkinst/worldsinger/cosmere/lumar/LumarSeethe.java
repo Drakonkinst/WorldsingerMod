@@ -32,12 +32,6 @@ public class LumarSeethe implements SeetheComponent {
     private static final IntProvider STILLING_LONG_CYCLE_PROVIDER = BiasedToBottomIntProvider.create(
             2, 5);
 
-    private final Random random = Random.create();
-    private final Object provider;
-    private boolean isSeething;
-    private int ticksRemaining;
-    private int cyclesUntilLongStilling;
-
     public static boolean areSporesFluidized(World world) {
         return LumarSeethe.areSporesFluidized(world.getScoreboard());
     }
@@ -46,12 +40,29 @@ public class LumarSeethe implements SeetheComponent {
         return ModComponents.LUMAR_SEETHE.get(scoreboard).isSeething();
     }
 
+    private final Random random = Random.create();
+    private final Object provider;
+    private boolean isSeething;
+    private int ticksRemaining;
+    private int cyclesUntilLongStilling;
+
     public LumarSeethe(Scoreboard scoreboard, @Nullable MinecraftServer server) {
         this.provider = scoreboard;
 
         // Default values
         this.startSeethe();
         this.cyclesUntilLongStilling = STILLING_LONG_CYCLE_PROVIDER.get(this.random);
+    }
+
+    @Override
+    public void startSeethe() {
+        startSeethe(SEETHE_DURATION_PROVIDER.get(this.random));
+    }
+
+    @Override
+    public void startSeethe(int ticks) {
+        isSeething = true;
+        ticksRemaining = ticks;
     }
 
     @Override
@@ -66,17 +77,6 @@ public class LumarSeethe implements SeetheComponent {
             }
         }
         ModComponents.LUMAR_SEETHE.sync(this.provider);
-    }
-
-    @Override
-    public void startSeethe() {
-        startSeethe(SEETHE_DURATION_PROVIDER.get(this.random));
-    }
-
-    @Override
-    public void startSeethe(int ticks) {
-        isSeething = true;
-        ticksRemaining = ticks;
     }
 
     @Override

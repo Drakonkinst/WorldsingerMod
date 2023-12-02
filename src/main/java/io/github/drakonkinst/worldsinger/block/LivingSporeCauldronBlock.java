@@ -19,12 +19,11 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
 
     // Unused Codec
     public static final MapCodec<LivingSporeCauldronBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                            LeveledCauldronBlock.createSettingsCodec(),
+            instance -> instance.group(LeveledCauldronBlock.createSettingsCodec(),
                             CauldronBehavior.CODEC.fieldOf("interactions")
                                     .forGetter(block -> block.behaviorMap),
-                            AetherSpores.CODEC.fieldOf("sporeType").forGetter(
-                                    LivingSporeCauldronBlock::getSporeType))
+                            AetherSpores.CODEC.fieldOf("sporeType")
+                                    .forGetter(LivingSporeCauldronBlock::getSporeType))
                     .apply(instance, LivingSporeCauldronBlock::new));
     private static final int CATALYZE_VALUE_PER_LEVEL = 80;
 
@@ -62,8 +61,7 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
         }
         world.setBlockState(pos, Blocks.CAULDRON.getStateWithProperties(state));
         int catalyzeValue = CATALYZE_VALUE_PER_LEVEL * state.get(LEVEL);
-        sporeType
-                .doReactionFromFluidContainer(world, pos, catalyzeValue, waterAmount, random);
+        sporeType.doReactionFromFluidContainer(world, pos, catalyzeValue, waterAmount, random);
         return true;
     }
 }

@@ -21,24 +21,8 @@ public abstract class StillFluid extends Fluid {
     }
 
     @Override
-    protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos,
-            Fluid fluid, Direction direction) {
-        return false;
-    }
-
-    @Override
-    protected Vec3d getVelocity(BlockView world, BlockPos pos, FluidState state) {
-        return Vec3d.ZERO;
-    }
-
-    @Override
     public int getTickRate(WorldView world) {
         return 0;
-    }
-
-    @Override
-    protected float getBlastResistance() {
-        return 100.0f;
     }
 
     @Override
@@ -64,5 +48,21 @@ public abstract class StillFluid extends Fluid {
     @Override
     public VoxelShape getShape(FluidState state, BlockView world, BlockPos pos) {
         return VoxelShapes.fullCube();
+    }
+
+    @Override
+    protected boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos,
+            Fluid fluid, Direction direction) {
+        return false;
+    }
+
+    @Override
+    protected Vec3d getVelocity(BlockView world, BlockPos pos, FluidState state) {
+        return Vec3d.ZERO;
+    }
+
+    @Override
+    protected float getBlastResistance() {
+        return 100.0f;
     }
 }

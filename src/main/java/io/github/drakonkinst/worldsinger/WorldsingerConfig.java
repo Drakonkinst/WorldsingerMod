@@ -20,19 +20,12 @@ import net.minecraft.util.Identifier;
 
 public final class WorldsingerConfig {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(WorldsingerConfig.class, new Serializer())
-            .setPrettyPrinting()
-            .create();
+    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(WorldsingerConfig.class,
+            new Serializer()).setPrettyPrinting().create();
     private static final String CONFIG_FILE_NAME = "worldsinger_config.json";
     private static final String DEFAULT_CONFIG_FILE_PATH = "/default_config.json";
     private static final String KEY_FLUIDLOGGABLE_FLUIDS = "fluidloggable_fluids";
     private static WorldsingerConfig INSTANCE;
-    private final List<Identifier> fluidloggableFluids;
-
-    private WorldsingerConfig(List<Identifier> fluidloggableFluids) {
-        this.fluidloggableFluids = fluidloggableFluids;
-    }
 
     public static WorldsingerConfig instance() {
         if (INSTANCE == null) {
@@ -40,9 +33,8 @@ public final class WorldsingerConfig {
             try {
                 if (!Files.exists(configPath)) {
                     Files.createDirectories(configPath.getParent());
-                    Files.copy(
-                            Objects.requireNonNull(WorldsingerConfig.class.getResourceAsStream(
-                                    DEFAULT_CONFIG_FILE_PATH)),
+                    Files.copy(Objects.requireNonNull(
+                                    WorldsingerConfig.class.getResourceAsStream(DEFAULT_CONFIG_FILE_PATH)),
                             configPath);
                 }
                 try (Reader reader = Files.newBufferedReader(configPath)) {
@@ -55,25 +47,17 @@ public final class WorldsingerConfig {
         return INSTANCE;
     }
 
+    private final List<Identifier> fluidloggableFluids;
+
+    private WorldsingerConfig(List<Identifier> fluidloggableFluids) {
+        this.fluidloggableFluids = fluidloggableFluids;
+    }
+
     public List<Identifier> getFluidloggableFluids() {
         return fluidloggableFluids;
     }
 
     private static class Serializer implements JsonDeserializer<WorldsingerConfig> {
-
-        private static List<Identifier> stringListToIdentifierList(JsonStack stack,
-                List<String> strList) {
-            List<Identifier> idList = new ArrayList<>(strList.size());
-            for (String str : strList) {
-                Identifier id = Identifier.tryParse(str);
-                if (id == null) {
-                    stack.addError("Unable to parse id " + str);
-                } else {
-                    idList.add(id);
-                }
-            }
-            return idList;
-        }
 
         @Override
         public WorldsingerConfig deserialize(JsonElement root, Type type,
@@ -87,6 +71,20 @@ public final class WorldsingerConfig {
                     fluidloggableFluidStrs);
 
             return new WorldsingerConfig(fluidloggableFluidIds);
+        }
+
+        private static List<Identifier> stringListToIdentifierList(JsonStack stack,
+                List<String> strList) {
+            List<Identifier> idList = new ArrayList<>(strList.size());
+            for (String str : strList) {
+                Identifier id = Identifier.tryParse(str);
+                if (id == null) {
+                    stack.addError("Unable to parse id " + str);
+                } else {
+                    idList.add(id);
+                }
+            }
+            return idList;
         }
     }
 }

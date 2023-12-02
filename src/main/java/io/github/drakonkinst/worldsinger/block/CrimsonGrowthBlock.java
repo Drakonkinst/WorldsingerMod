@@ -21,12 +21,6 @@ public class CrimsonGrowthBlock extends Block implements SporeGrowthBlock {
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.PERSISTENT);
-        super.appendProperties(builder);
-    }
-
-    @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
@@ -48,6 +42,12 @@ public class CrimsonGrowthBlock extends Block implements SporeGrowthBlock {
         if (SporeGrowthBlock.canDecay(world, pos, state, random)) {
             world.breakBlock(pos, true);
         }
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(Properties.PERSISTENT);
+        super.appendProperties(builder);
     }
 
     @Override

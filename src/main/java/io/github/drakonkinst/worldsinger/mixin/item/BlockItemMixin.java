@@ -17,6 +17,9 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin {
 
+    @Shadow
+    public abstract Block getBlock();
+
     // When placing into a fluid block, allow waterlogged
     @ModifyReturnValue(method = "getPlacementState", at = @At(value = "RETURN"))
     private BlockState injectCustomFluidPlacementState(BlockState original,
@@ -42,7 +45,4 @@ public abstract class BlockItemMixin {
         // Add fluid
         return original.with(ModProperties.FLUIDLOGGED, index);
     }
-
-    @Shadow
-    public abstract Block getBlock();
 }

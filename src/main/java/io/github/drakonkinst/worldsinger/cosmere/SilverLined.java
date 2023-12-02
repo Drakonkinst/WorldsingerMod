@@ -22,9 +22,9 @@ public interface SilverLined {
         }
     }
 
+    void setSilverDurability(int durability);
+
     int getSilverDurability();
 
     int getMaxSilverDurability();
-
-    void setSilverDurability(int durability);
 }

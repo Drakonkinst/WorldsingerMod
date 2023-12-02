@@ -29,10 +29,6 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
         this.setDefaultState(this.getDefaultState().with(VERTICAL_DIRECTION, Direction.UP));
     }
 
-    public static Direction getGrowthDirection(BlockState state) {
-        return state.get(VERTICAL_DIRECTION);
-    }
-
     @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -56,34 +52,6 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
         return this.getDefaultState().with(VERTICAL_DIRECTION, placeDirection);
     }
 
-    @Nullable
-    private Direction getDirectionToPlaceAt(WorldView world, BlockPos pos,
-            Direction direction) {
-        if (direction != Direction.UP && direction != Direction.DOWN) {
-            return null;
-        }
-
-        Direction placeDirection = null;
-        if (this.canPlaceAtWithDirection(world, pos, direction)) {
-            placeDirection = direction;
-        } else if (this.canPlaceAtWithDirection(world, pos, direction.getOpposite())) {
-            placeDirection = direction.getOpposite();
-        }
-        return placeDirection;
-    }
-
-    private boolean canPlaceAtWithDirection(WorldView world, BlockPos pos,
-            Direction direction) {
-        BlockPos supportingBlockPos = pos.offset(direction.getOpposite());
-        BlockState supportingBlockState = world.getBlockState(supportingBlockPos);
-        return supportingBlockState.isSideSolidFullSquare(world, supportingBlockPos, direction)
-                || this.isSamePlantWithDirection(supportingBlockState, direction);
-    }
-
-    protected boolean isSamePlantWithDirection(BlockState state, Direction direction) {
-        return this.isSamePlant(state) && state.get(VERTICAL_DIRECTION) == direction;
-    }
-
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         Direction growthDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
@@ -91,8 +59,7 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
         BlockState attachedBlockState = world.getBlockState(attachedBlockPos);
 
         // Can always place on a solid face
-        if (attachedBlockState.isSideSolidFullSquare(world, attachedBlockPos,
-                growthDirection)) {
+        if (attachedBlockState.isSideSolidFullSquare(world, attachedBlockPos, growthDirection)) {
             return true;
         }
 
@@ -103,6 +70,22 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
 
         return this.canAttachTo(state, attachedBlockState);
     }
+
+    public static Direction getGrowthDirection(BlockState state) {
+        return state.get(VERTICAL_DIRECTION);
+    }
+
+    protected boolean isSamePlant(BlockState state) {
+        return state.isOf(this.getBud()) || state.isOf(this.getStem());
+    }
+
+    protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
+        return false;
+    }
+
+    protected abstract Block getBud();
+
+    protected abstract Block getStem();
 
     @Override
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
@@ -118,20 +101,34 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
         return this.outlineShape;
     }
 
-    protected abstract Block getBud();
-
-    protected abstract Block getStem();
+    protected boolean isSamePlantWithDirection(BlockState state, Direction direction) {
+        return this.isSamePlant(state) && state.get(VERTICAL_DIRECTION) == direction;
+    }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(VERTICAL_DIRECTION);
     }
 
-    protected boolean isSamePlant(BlockState state) {
-        return state.isOf(this.getBud()) || state.isOf(this.getStem());
+    @Nullable
+    private Direction getDirectionToPlaceAt(WorldView world, BlockPos pos, Direction direction) {
+        if (direction != Direction.UP && direction != Direction.DOWN) {
+            return null;
+        }
+
+        Direction placeDirection = null;
+        if (this.canPlaceAtWithDirection(world, pos, direction)) {
+            placeDirection = direction;
+        } else if (this.canPlaceAtWithDirection(world, pos, direction.getOpposite())) {
+            placeDirection = direction.getOpposite();
+        }
+        return placeDirection;
     }
 
-    protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
-        return false;
+    private boolean canPlaceAtWithDirection(WorldView world, BlockPos pos, Direction direction) {
+        BlockPos supportingBlockPos = pos.offset(direction.getOpposite());
+        BlockState supportingBlockState = world.getBlockState(supportingBlockPos);
+        return supportingBlockState.isSideSolidFullSquare(world, supportingBlockPos, direction)
+                || this.isSamePlantWithDirection(supportingBlockState, direction);
     }
 }

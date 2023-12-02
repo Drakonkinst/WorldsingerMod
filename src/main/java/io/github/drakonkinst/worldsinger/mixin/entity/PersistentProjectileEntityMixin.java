@@ -18,6 +18,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PersistentProjectileEntity.class)
 public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
 
+    @Shadow
+    protected boolean inGround;
+    @Shadow
+    private @Nullable BlockState inBlockState;
+
+    public PersistentProjectileEntityMixin(EntityType<? extends ProjectileEntity> entityType,
+            World world) {
+        super(entityType, world);
+    }
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void collideWithSolidSpores(CallbackInfo ci) {
         // Spore sea blocks can change solidity without warning, so check if it should fall even if there is no block update
@@ -28,30 +38,6 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
         }
     }
 
-    @ModifyReturnValue(method = "shouldFall", at = @At("RETURN"))
-    private boolean doNotFallIfInSolidSpores(boolean shouldFall) {
-        if (!shouldFall) {
-            return false;
-        }
-        World world = this.getWorld();
-        boolean isInSolidSpores = this.inBlockState != null
-                && this.inBlockState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)
-                && this.inBlockState.getFluidState().isStill()
-                && !LumarSeethe.areSporesFluidized(world);
-        return !isInSolidSpores;
-    }
-
-    @Shadow
-    protected boolean inGround;
-    @Shadow
-    private @Nullable BlockState inBlockState;
-
-    public PersistentProjectileEntityMixin(
-            EntityType<? extends ProjectileEntity> entityType,
-            World world) {
-        super(entityType, world);
-    }
-
     @Shadow
     public abstract boolean isNoClip();
 
@@ -60,4 +46,16 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
 
     @Shadow
     protected abstract void fall();
+
+    @ModifyReturnValue(method = "shouldFall", at = @At("RETURN"))
+    private boolean doNotFallIfInSolidSpores(boolean shouldFall) {
+        if (!shouldFall) {
+            return false;
+        }
+        World world = this.getWorld();
+        boolean isInSolidSpores = this.inBlockState != null && this.inBlockState.isIn(
+                ModBlockTags.AETHER_SPORE_SEA_BLOCKS) && this.inBlockState.getFluidState().isStill()
+                && !LumarSeethe.areSporesFluidized(world);
+        return !isInSolidSpores;
+    }
 }
