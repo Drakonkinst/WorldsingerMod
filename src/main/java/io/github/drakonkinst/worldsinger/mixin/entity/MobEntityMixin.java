@@ -2,8 +2,8 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.util.ModEnums;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.PathNodeType;

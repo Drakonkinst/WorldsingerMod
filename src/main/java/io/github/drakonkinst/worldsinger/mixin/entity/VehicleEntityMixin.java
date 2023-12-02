@@ -2,7 +2,7 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.drakonkinst.worldsinger.world.SilverLined;
+import io.github.drakonkinst.worldsinger.cosmere.SilverLined;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.VehicleEntity;

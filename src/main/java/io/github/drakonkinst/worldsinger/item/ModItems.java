@@ -2,11 +2,17 @@ package io.github.drakonkinst.worldsinger.item;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.CrimsonSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.DeadSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.RoseiteSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SunlightSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.VerdantSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.ZephyrSpores;
 import io.github.drakonkinst.worldsinger.material.ModArmorMaterials;
 import io.github.drakonkinst.worldsinger.material.ModToolMaterials;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -49,40 +55,40 @@ public final class ModItems {
 
     // Spore Bottles
     public static final Item DEAD_SPORES_BOTTLE = ModItems.register("dead_spores_bottle",
-            createSporeBottleItem(AetherSporeType.DEAD));
+            createSporeBottleItem(DeadSpores.getInstance()));
     public static final Item VERDANT_SPORES_BOTTLE = ModItems.register("verdant_spores_bottle",
-            createSporeBottleItem(AetherSporeType.VERDANT));
+            createSporeBottleItem(VerdantSpores.getInstance()));
     public static final Item CRIMSON_SPORES_BOTTLE = ModItems.register("crimson_spores_bottle",
-            createSporeBottleItem(AetherSporeType.CRIMSON));
+            createSporeBottleItem(CrimsonSpores.getInstance()));
     public static final Item ZEPHYR_SPORES_BOTTLE = ModItems.register("zephyr_spores_bottle",
-            createSporeBottleItem(AetherSporeType.ZEPHYR));
+            createSporeBottleItem(ZephyrSpores.getInstance()));
     public static final Item SUNLIGHT_SPORES_BOTTLE = ModItems.register("sunlight_spores_bottle",
-            createSporeBottleItem(AetherSporeType.SUNLIGHT));
+            createSporeBottleItem(SunlightSpores.getInstance()));
     public static final Item ROSEITE_SPORES_BOTTLE = ModItems.register("roseite_spores_bottle",
-            createSporeBottleItem(AetherSporeType.ROSEITE));
+            createSporeBottleItem(RoseiteSpores.getInstance()));
     public static final Item MIDNIGHT_SPORES_BOTTLE = ModItems.register("midnight_spores_bottle",
-            createSporeBottleItem(AetherSporeType.MIDNIGHT));
+            createSporeBottleItem(MidnightSpores.getInstance()));
     public static final Item DEAD_SPORES_SPLASH_BOTTLE = ModItems.register(
             "dead_spores_splash_bottle",
-            createSporeSplashBottleItem(AetherSporeType.DEAD));
+            createSporeSplashBottleItem(DeadSpores.getInstance()));
     public static final Item VERDANT_SPORES_SPLASH_BOTTLE = ModItems.register(
             "verdant_spores_splash_bottle",
-            createSporeSplashBottleItem(AetherSporeType.VERDANT));
+            createSporeSplashBottleItem(VerdantSpores.getInstance()));
     public static final Item CRIMSON_SPORES_SPLASH_BOTTLE = ModItems.register(
             "crimson_spores_splash_bottle",
-            createSporeSplashBottleItem(AetherSporeType.CRIMSON));
+            createSporeSplashBottleItem(CrimsonSpores.getInstance()));
     public static final Item ZEPHYR_SPORES_SPLASH_BOTTLE = ModItems.register(
             "zephyr_spores_splash_bottle",
-            createSporeSplashBottleItem(AetherSporeType.ZEPHYR));
+            createSporeSplashBottleItem(ZephyrSpores.getInstance()));
     public static final Item SUNLIGHT_SPORES_SPLASH_BOTTLE = ModItems.register(
             "sunlight_spores_splash_bottle",
-            createSporeSplashBottleItem(AetherSporeType.SUNLIGHT));
+            createSporeSplashBottleItem(SunlightSpores.getInstance()));
     public static final Item ROSEITE_SPORES_SPLASH_BOTTLE = ModItems.register(
             "roseite_spores_splash_bottle",
-            createSporeSplashBottleItem(AetherSporeType.ROSEITE));
+            createSporeSplashBottleItem(RoseiteSpores.getInstance()));
     public static final Item MIDNIGHT_SPORES_SPLASH_BOTTLE = ModItems.register(
             "midnight_spores_splash_bottle",
-            createSporeSplashBottleItem(AetherSporeType.MIDNIGHT));
+            createSporeSplashBottleItem(MidnightSpores.getInstance()));
 
     public static final Item VERDANT_VINE = ModItems.register("verdant_vine",
             new Item(new FabricItemSettings().food(
@@ -153,14 +159,14 @@ public final class ModItems {
                         .maxCount(1));
     }
 
-    private static Item createSporeBottleItem(SporeType sporeType) {
+    private static Item createSporeBottleItem(AetherSpores sporeType) {
         return new SporeBottleItem(
                 sporeType, new FabricItemSettings()
                 .recipeRemainder(Items.GLASS_BOTTLE)
                 .maxCount(Items.POTION.getMaxCount()));
     }
 
-    private static Item createSporeSplashBottleItem(SporeType sporeType) {
+    private static Item createSporeSplashBottleItem(AetherSpores sporeType) {
         return new SplashSporeBottleItem(
                 sporeType, new FabricItemSettings()
                 .maxCount(Items.SPLASH_POTION.getMaxCount()));

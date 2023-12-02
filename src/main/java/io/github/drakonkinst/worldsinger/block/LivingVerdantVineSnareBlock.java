@@ -1,10 +1,10 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.VerdantSpores;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
-import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
-import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -91,8 +91,8 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
         Direction direction = VerdantVineSnareBlock.getDirection(state);
         Int3 dir = new Int3(direction.getOffsetX(), direction.getOffsetY(),
                 direction.getOffsetZ());
-        VerdantSporeManager.spawnVerdantSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE,
-                waterAmount, false, true, false, dir);
+        VerdantSpores.getInstance().spawnSporeGrowth(world, pos.toCenterPos(),
+                RECATALYZE_VALUE, waterAmount, false, true, false, dir);
         return true;
     }
 

@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.server.world.ServerWorld;

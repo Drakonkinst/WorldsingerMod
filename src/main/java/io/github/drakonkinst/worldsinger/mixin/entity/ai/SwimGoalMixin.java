@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.entity.ai;
 
+import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.world.World;

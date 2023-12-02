@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world;
+package io.github.drakonkinst.worldsinger.cosmere;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.api.ModApi;

@@ -1,11 +1,11 @@
-package io.github.drakonkinst.worldsinger.world.lumar;
+package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.cosmere.MetalQueryManager;
 import io.github.drakonkinst.worldsinger.datatable.DataTable;
 import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
-import io.github.drakonkinst.worldsinger.world.MetalQueryManager;
 import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

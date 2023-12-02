@@ -1,49 +1,33 @@
 package io.github.drakonkinst.worldsinger.effect;
 
-import io.github.drakonkinst.worldsinger.block.LivingAetherSporeBlock;
-import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
-import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntity;
-import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SunlightSpores;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
-import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
-import io.github.drakonkinst.worldsinger.util.EntityUtil;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.ZephyrSporeManager;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
     public static final float DEFAULT_DAMAGE = 15.0f;
     private static final int WATER_PER_ENTITY_BLOCK = 75;
-    private final SporeType sporeType;
+    private final AetherSpores sporeType;
     private final RegistryKey<DamageType> damageType;
     private final float damageAmount;
 
-    protected SporeStatusEffect(SporeType sporeType, RegistryKey<DamageType> damageType) {
+    protected SporeStatusEffect(AetherSpores sporeType, RegistryKey<DamageType> damageType) {
         this(sporeType, DEFAULT_DAMAGE, damageType);
     }
 
-    protected SporeStatusEffect(SporeType sporeType, float damageAmount,
+    protected SporeStatusEffect(AetherSpores sporeType, float damageAmount,
             RegistryKey<DamageType> damageType) {
         super(StatusEffectCategory.HARMFUL, sporeType.getParticleColor());
         this.sporeType = sporeType;
@@ -63,7 +47,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
             return;
         }
 
-        if (sporeType == AetherSporeType.SUNLIGHT) {
+        if (sporeType.getId() == SunlightSpores.ID) {
             if (!entity.isFireImmune()) {
                 entity.setOnFireFor(15);
             }
@@ -73,7 +57,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         boolean wasDamaged = entity.damage(
                 ModDamageTypes.createSource(entity.getWorld(), damageType),
                 damageAmount);
-        if (wasDamaged && sporeType == AetherSporeType.SUNLIGHT) {
+        if (wasDamaged && sporeType.getId() == SunlightSpores.ID) {
             // Play lava damage sound
             entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4f,
                     2.0f + entity.getWorld().getRandom().nextFloat() * 0.4f);
@@ -88,98 +72,11 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         BlockPos pos = entity.getBlockPos();
         int waterAmount = MathHelper.ceil(
                 entity.getWidth() * entity.getHeight() * WATER_PER_ENTITY_BLOCK);
-
-        if (sporeType == AetherSporeType.VERDANT) {
-            // Fill with snare blocks
-            this.growVerdantSpores(world, entity);
-
-            // Only spawn spore growth if in the spore sea
-            if (!world.getFluidState(pos).isIn(ModFluidTags.VERDANT_SPORES)
-                    && !EntityUtil.isSubmergedInSporeSea(entity)) {
-                return;
-            }
-
-            Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
-                    ModFluidTags.VERDANT_SPORES);
-            VerdantSporeManager.spawnVerdantSporeGrowth(world, startPos,
-                    LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false, false);
-        } else if (sporeType == AetherSporeType.CRIMSON) {
-            this.growCrimsonSpores(world, entity);
-
-            // Only spawn spore growth if in the spore sea
-            if (!world.getFluidState(pos).isIn(ModFluidTags.CRIMSON_SPORES)
-                    && !EntityUtil.isTouchingSporeSea(entity)) {
-                return;
-            }
-
-            Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
-                    ModFluidTags.CRIMSON_SPORES);
-            CrimsonSporeManager.spawnCrimsonSporeGrowth(world, startPos,
-                    LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, true, false, false);
-        } else if (sporeType == AetherSporeType.SUNLIGHT) {
-            SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, world.getRandom(),
-                    false, 0);
-        } else if (sporeType == AetherSporeType.ZEPHYR) {
-            Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity,
-                    ModFluidTags.ZEPHYR_SPORES);
-            ZephyrSporeManager.doZephyrSporeReaction(world, startPos,
-                    LivingAetherSporeBlock.CATALYZE_VALUE, waterAmount, world.getRandom());
-        }
-        // TODO: Add remaining spore logic
+        sporeType.onDeathFromStatusEffect(world, entity, pos, waterAmount);
     }
 
-    // Fill entity's bounding box with Verdant Vine Snare
-    private void growVerdantSpores(World world, LivingEntity entity) {
-        BlockState newBlockState = ModBlocks.VERDANT_VINE_SNARE.getDefaultState();
 
-        for (BlockPos pos : BlockPosUtil.iterateBoundingBoxForEntity(entity)) {
-            BlockState blockState = world.getBlockState(pos);
-            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW)
-                    && newBlockState.canPlaceAt(world, pos)) {
-                world.setBlockState(pos, newBlockState);
-            }
-        }
-    }
-
-    // Fill entity's bounding box with Crimson Snare
-    private void growCrimsonSpores(World world, LivingEntity entity) {
-        BlockState newBlockState = ModBlocks.CRIMSON_SNARE.getDefaultState();
-
-        for (BlockPos pos : BlockPosUtil.iterateBoundingBoxForEntity(entity)) {
-            if (!newBlockState.canPlaceAt(world, pos)) {
-                continue;
-            }
-
-            BlockState blockState = world.getBlockState(pos);
-            if (blockState.isIn(ModBlockTags.SPORES_CAN_GROW)) {
-                world.setBlockState(pos, newBlockState);
-            } else if (blockState.isIn(ModBlockTags.SPORES_CAN_BREAK)) {
-                SporeGrowthEntity.breakBlockFromSporeGrowth(world, pos, null);
-                world.setBlockState(pos, newBlockState);
-            }
-        }
-    }
-
-    // Do a little hack to move spore growth position to the topmost block
-    private Vec3d getTopmostSeaPosForEntity(World world, LivingEntity entity,
-            TagKey<Fluid> fluidTag) {
-        BlockPos.Mutable mutable = entity.getBlockPos().mutableCopy();
-
-        while (world.getFluidState(mutable).isIn(fluidTag)
-                && mutable.getY() < world.getTopY()) {
-            mutable.move(Direction.UP);
-        }
-
-        if (world.getBlockState(mutable).isAir()) {
-            // Found a good position, use it
-            return mutable.move(Direction.DOWN).toCenterPos();
-        } else {
-            // Use original position
-            return entity.getPos();
-        }
-    }
-
-    public SporeType getSporeType() {
+    public AetherSpores getSporeType() {
         return sporeType;
     }
 }

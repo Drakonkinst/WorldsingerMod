@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 
 public interface SporeEmitting {
 
-    SporeType getSporeType();
+    AetherSpores getSporeType();
 }

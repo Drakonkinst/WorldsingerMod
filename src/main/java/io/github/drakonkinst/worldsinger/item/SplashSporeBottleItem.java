@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.item;
 
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.entity.ThrownSporeBottleEntity;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
@@ -13,9 +13,7 @@ import net.minecraft.world.World;
 
 public class SplashSporeBottleItem extends SporeBottleItem {
 
-    public SplashSporeBottleItem(
-            SporeType sporeType,
-            Settings settings) {
+    public SplashSporeBottleItem(AetherSpores sporeType, Settings settings) {
         super(sporeType, settings);
     }
 

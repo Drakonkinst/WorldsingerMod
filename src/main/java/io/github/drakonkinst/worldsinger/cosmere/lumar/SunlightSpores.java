@@ -1,9 +1,12 @@
-package io.github.drakonkinst.worldsinger.world.lumar;
+package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
+import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
+import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import it.unimi.dsi.fastutil.ints.IntObjectImmutablePair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -14,11 +17,15 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import net.minecraft.block.AbstractFireBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Item;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -30,8 +37,16 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.jetbrains.annotations.Nullable;
 
-public final class SunlightSporeManager {
+public class SunlightSpores extends AetherSpores {
+
+    public static final String NAME = "sunlight";
+    public static final int ID = 3;
+
+    private static final SunlightSpores INSTANCE = new SunlightSpores();
+    private static final int COLOR = 0xf4bd52;
+    private static final int PARTICLE_COLOR = 0xf4bd52;
 
     private static final int MAX_SUNLIGHT_SPREAD_DEPTH = 7;
     private static final int MAX_BLOCKS_AFFECTED = 65;
@@ -42,8 +57,39 @@ public final class SunlightSporeManager {
     private static final int FIRE_WAVE_RADIUS_DIVISOR = 10;
     private static final int MAX_BLOCKS_PROCESSED = 1000;
 
-    // Create light and heat
-    public static void doSunlightSporeReaction(World world, BlockPos pos, int water,
+    public static SunlightSpores getInstance() {
+        return INSTANCE;
+    }
+
+    protected SunlightSpores() {}
+
+    @Override
+    public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
+        // Do nothing
+        this.doSunlightSporeReaction(world, BlockPosUtil.toRoundedBlockPos(pos), water, random,
+                true, 0);
+    }
+
+    @Override
+    public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
+            int water, Random random) {
+        this.doSunlightSporeReaction(world, fluidContainerPos, water, random,
+                false, 2);
+    }
+
+    @Override
+    public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,
+            Random random, boolean affectingFluidContainer) {
+        this.doSunlightSporeReaction(world, BlockPosUtil.toRoundedBlockPos(pos), water, random,
+                false, 0);
+    }
+
+    @Override
+    public void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos, int water) {
+        this.doSunlightSporeReaction(world, pos, water, world.getRandom(), false, 0);
+    }
+
+    public void doSunlightSporeReaction(World world, BlockPos pos, int water,
             Random random, boolean shouldSpreadSunlightBlocks, int fireWaveRadiusBonus) {
         // Number of blocks of Sunlight generated depends on amount of water
         int maxBlocks = Math.min(water / WATER_PER_BLOCK, MAX_BLOCKS_AFFECTED);
@@ -54,19 +100,19 @@ public final class SunlightSporeManager {
         int fireWaveRadius = MIN_FIRE_WAVE_RADIUS + fireWaveRadiusBonus;
 
         if (shouldSpreadSunlightBlocks) {
-            Set<BlockPos> affectedBlocks = SunlightSporeManager.spreadSunlightBlocks(world, pos,
+            Set<BlockPos> affectedBlocks = this.spreadSunlightBlocks(world, pos,
                     maxBlocks, random);
 
             // Set blocks on fire, evaporate water, deal damage
             if (!affectedBlocks.isEmpty()) {
-                SunlightSporeManager.doReactionEffects(world, pos, affectedBlocks, random);
+                this.doReactionEffects(world, pos, affectedBlocks, random);
             }
 
             fireWaveRadius += affectedBlocks.size() / FIRE_WAVE_RADIUS_DIVISOR;
         }
 
         fireWaveRadius = Math.min(fireWaveRadius, MAX_FIRE_WAVE_RADIUS);
-        SunlightSporeManager.doFireExplosion(world, pos, fireWaveRadius);
+        this.doFireExplosion(world, pos, fireWaveRadius);
 
         // Show particles
         if (world instanceof ServerWorld serverWorld) {
@@ -81,7 +127,7 @@ public final class SunlightSporeManager {
                 (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
     }
 
-    private static void doFireExplosion(World world, BlockPos pos, int radius) {
+    private void doFireExplosion(World world, BlockPos pos, int radius) {
         Box box = new Box(pos).expand(radius);
         List<LivingEntity> affectedEntities = world.getNonSpectatingEntities(LivingEntity.class,
                 box);
@@ -91,7 +137,7 @@ public final class SunlightSporeManager {
         }
     }
 
-    private static void doReactionEffects(World world, BlockPos originPos,
+    private void doReactionEffects(World world, BlockPos originPos,
             Set<BlockPos> affectedBlocks, Random random) {
         LongSet blocksProcessed = new LongOpenHashSet();
         Mutable mutable = new Mutable();
@@ -102,7 +148,7 @@ public final class SunlightSporeManager {
             if (blocksProcessed.size() >= MAX_BLOCKS_PROCESSED) {
                 break;
             }
-            SunlightSporeManager.doReactionEffectsForBlock(world, pos, blocksProcessed, mutable,
+            this.doReactionEffectsForBlock(world, pos, blocksProcessed, mutable,
                     mutableDown, anyEvaporated, random);
         }
         if (anyEvaporated.booleanValue()) {
@@ -114,7 +160,7 @@ public final class SunlightSporeManager {
         Worldsinger.LOGGER.info(blocksProcessed.size() + " blocks processed");
     }
 
-    private static void doReactionEffectsForBlock(World world, BlockPos centerPos,
+    private void doReactionEffectsForBlock(World world, BlockPos centerPos,
             LongSet blocksProcessed, Mutable mutable, Mutable mutableDown,
             MutableBoolean anyEvaporated, Random random) {
         blocksProcessed.add(centerPos.asLong());
@@ -127,14 +173,14 @@ public final class SunlightSporeManager {
                         continue;
                     }
                     mutableDown.set(mutable).move(0, -1, 0);
-                    SunlightSporeManager.processBlock(world, mutable, mutableDown, anyEvaporated,
+                    this.processBlock(world, mutable, mutableDown, anyEvaporated,
                             random);
                 }
             }
         }
     }
 
-    private static void processBlock(World world, BlockPos mutable, BlockPos mutableDown,
+    private void processBlock(World world, BlockPos mutable, BlockPos mutableDown,
             MutableBoolean anyEvaporated, Random random) {
         BlockState state = world.getBlockState(mutable);
         if (state.getBlock() instanceof FluidDrainable fluidDrainable && state.getFluidState()
@@ -154,7 +200,7 @@ public final class SunlightSporeManager {
     // Spread Sunlight blocks using BFS, replacing Sunlight Spore Sea / Sunlight Spore Blocks
     // Places at least one Sunlight block
     // Should place a consistent amount of Sunlight Blocks (if available)
-    private static Set<BlockPos> spreadSunlightBlocks(World world, BlockPos startPos, int maxBlocks,
+    private Set<BlockPos> spreadSunlightBlocks(World world, BlockPos startPos, int maxBlocks,
             Random random) {
         Set<BlockPos> affectedBlocks = new HashSet<>();
 
@@ -181,14 +227,14 @@ public final class SunlightSporeManager {
             int depth = nextPair.leftInt();
             BlockPos nextPos = nextPair.right();
             BlockState state = world.getBlockState(nextPos);
-            if (SunlightSporeManager.canSunlightReplace(state)) {
+            if (this.canSunlightReplace(state)) {
                 // Replace with Sunlight
                 world.setBlockState(nextPos, ModBlocks.SUNLIGHT.getDefaultState());
                 affectedBlocks.add(nextPos);
             } else if (state.getFluidState().isOf(ModFluids.SUNLIGHT_SPORES)
                     && state.getBlock() instanceof FluidDrainable fluidDrainable) {
                 fluidDrainable.tryDrainFluid(null, world, nextPos, state);
-            } else if (!SunlightSporeManager.canSunlightPassThrough(state)) {
+            } else if (!this.canSunlightPassThrough(state)) {
                 continue;
             }
 
@@ -209,15 +255,68 @@ public final class SunlightSporeManager {
         return affectedBlocks;
     }
 
-    private static boolean canSunlightReplace(BlockState state) {
+    private boolean canSunlightReplace(BlockState state) {
         return state.isOf(ModBlocks.SUNLIGHT_SPORE_SEA) || state.isOf(
                 ModBlocks.SUNLIGHT_SPORE_BLOCK);
     }
 
-    private static boolean canSunlightPassThrough(BlockState state) {
+    private boolean canSunlightPassThrough(BlockState state) {
         return state.isOf(ModBlocks.SUNLIGHT) || state.getFluidState()
                 .isOf(ModFluids.SUNLIGHT_SPORES);
     }
 
-    private SunlightSporeManager() {}
+    @Override
+    public Item getBottledItem() {
+        return ModItems.SUNLIGHT_SPORES_BOTTLE;
+    }
+
+    @Override
+    public Item getBucketItem() {
+        return ModItems.SUNLIGHT_SPORES_BUCKET;
+    }
+
+    @Override
+    public Block getFluidBlock() {
+        return ModBlocks.SUNLIGHT_SPORE_SEA;
+    }
+
+    @Override
+    public Block getSolidBlock() {
+        return ModBlocks.SUNLIGHT_SPORE_BLOCK;
+    }
+
+    @Override
+    public FlowableFluid getFluid() {
+        return ModFluids.SUNLIGHT_SPORES;
+    }
+
+    @Override
+    public StatusEffect getStatusEffect() {
+        return ModStatusEffects.SUNLIGHT_SPORES;
+    }
+
+    @Override
+    public int getColor() {
+        return COLOR;
+    }
+
+    @Override
+    public int getParticleColor() {
+        return PARTICLE_COLOR;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public int getId() {
+        return ID;
+    }
+
+    @Override
+    public @Nullable BlockState getFluidCollisionState() {
+        return ModBlocks.SUNLIGHT.getDefaultState();
+    }
 }

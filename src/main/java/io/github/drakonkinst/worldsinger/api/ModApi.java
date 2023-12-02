@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.api;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.cosmere.SilverLined;
 import io.github.drakonkinst.worldsinger.item.SilverLinedBoatItemData;
-import io.github.drakonkinst.worldsinger.world.SilverLined;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.minecraft.item.Items;
 

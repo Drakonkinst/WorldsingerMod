@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.client;
 
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.item.ModItems;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +17,7 @@ public abstract class ItemColorsMixin {
             CallbackInfoReturnable<ItemColors> cir) {
         ItemColors itemColors = cir.getReturnValue();
         itemColors.register(
-                (stack, tintIndex) -> tintIndex > 0 ? -1 : AetherSporeType.getBottleColor(stack),
+                (stack, tintIndex) -> tintIndex > 0 ? -1 : AetherSpores.getBottleColor(stack),
                 ModItems.DEAD_SPORES_BOTTLE,
                 ModItems.VERDANT_SPORES_BOTTLE,
                 ModItems.CRIMSON_SPORES_BOTTLE,

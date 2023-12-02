@@ -15,9 +15,8 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
-import java.util.Arrays;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleManager;
 import java.util.Optional;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.Vec3ArgumentType;
@@ -27,10 +26,8 @@ import net.minecraft.util.math.Vec3d;
 
 public class SporeCommand {
 
-    private static final AetherSporeType[] VALUES = AetherSporeType.values();
-
     private static final SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (context, builder) -> CommandSource.suggestMatching(
-            Arrays.stream(VALUES).map(AetherSporeType::asString),
+            AetherSpores.AETHER_SPORE_MAP.keySet().stream(),
             builder);
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -53,7 +50,7 @@ public class SporeCommand {
 
     public static int spawnSporeParticle(CommandContext<ServerCommandSource> context) {
         String aetherSporeTypeStr = getString(context, "spore_type");
-        Optional<AetherSporeType> aetherSporeType = getAetherSporeTypeFromString(
+        Optional<AetherSpores> aetherSporeType = getAetherSporeTypeFromString(
                 aetherSporeTypeStr);
         if (aetherSporeType.isEmpty()) {
             context.getSource().sendError(
@@ -69,13 +66,13 @@ public class SporeCommand {
                 aetherSporeType.get(), pos.x, pos.y, pos.z, horizontalRadius, height, size, count,
                 false);
         context.getSource().sendFeedback(() -> Text.literal(
-                "Spawned aether spore particle of type " + aetherSporeType.get().asString()), true);
+                "Spawned aether spore particle of type " + aetherSporeType.get().getName()), true);
         return 1;
     }
 
-    private static Optional<AetherSporeType> getAetherSporeTypeFromString(String str) {
-        for (AetherSporeType aetherSporeType : VALUES) {
-            if (aetherSporeType.asString().equals(str)) {
+    private static Optional<AetherSpores> getAetherSporeTypeFromString(String str) {
+        for (AetherSpores aetherSporeType : AetherSpores.AETHER_SPORE_MAP.values()) {
+            if (aetherSporeType.getName().equals(str)) {
                 return Optional.of(aetherSporeType);
             }
         }

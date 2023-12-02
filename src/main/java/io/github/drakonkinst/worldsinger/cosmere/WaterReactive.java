@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world;
+package io.github.drakonkinst.worldsinger.cosmere;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;

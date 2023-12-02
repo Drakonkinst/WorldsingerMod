@@ -5,10 +5,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.client.CameraPosAccess;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SunlightSpores;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.util.ColorUtil;
 import io.github.drakonkinst.worldsinger.util.ModEnums;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -55,7 +55,7 @@ public abstract class BackgroundRendererMixin {
 
         if (blockState.isOf(ModBlocks.SUNLIGHT)) {
             // Use Sunlight Spore colors for Sunlight blocks
-            int color = AetherSporeType.SUNLIGHT.getColor();
+            int color = SunlightSpores.getInstance().getColor();
             red = ColorUtil.getNormalizedRed(color);
             green = ColorUtil.getNormalizedGreen(color);
             blue = ColorUtil.getNormalizedBlue(color);

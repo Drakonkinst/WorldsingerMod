@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import com.google.common.base.Suppliers;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeKillingManager;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import java.util.function.Supplier;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

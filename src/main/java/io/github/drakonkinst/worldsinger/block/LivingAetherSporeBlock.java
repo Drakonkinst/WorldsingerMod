@@ -2,16 +2,9 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.drakonkinst.worldsinger.util.ModProperties;
-import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.ZephyrSporeManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -24,7 +17,7 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
 
     public static final MapCodec<LivingAetherSporeBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                    AetherSporeType.CODEC.fieldOf("sporeType")
+                    AetherSpores.CODEC.fieldOf("sporeType")
                             .forGetter(LivingAetherSporeBlock::getSporeType),
                     Block.CODEC.fieldOf("block")
                             .forGetter(LivingAetherSporeBlock::getFluidizedBlock),
@@ -33,7 +26,7 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
 
     public static final int CATALYZE_VALUE = 250;
 
-    public LivingAetherSporeBlock(AetherSporeType aetherSporeType, Block fluidized,
+    public LivingAetherSporeBlock(AetherSpores aetherSporeType, Block fluidized,
             Settings settings) {
         super(aetherSporeType, settings);
     }
@@ -42,19 +35,10 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
         if (waterNeighborPos != null) {
-            WaterReactionManager.catalyzeAroundWater(world, waterNeighborPos);
-            if (aetherSporeType == AetherSporeType.VERDANT) {
-                world.setBlockState(pos, ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
-                        .with(ModProperties.CATALYZED, true));
-            } else if (aetherSporeType == AetherSporeType.CRIMSON) {
-                world.setBlockState(pos, ModBlocks.CRIMSON_GROWTH.getDefaultState()
-                        .with(ModProperties.CATALYZED, true));
-            } else if (aetherSporeType == AetherSporeType.SUNLIGHT) {
-                world.setBlockState(pos, ModBlocks.SUNLIGHT.getDefaultState());
-            } else if (aetherSporeType == AetherSporeType.ZEPHYR) {
-                world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            BlockState replacingState = sporeType.getFluidCollisionState();
+            if (replacingState != null) {
+                world.setBlockState(waterNeighborPos, replacingState);
             }
-            // TODO: Add remaining spore logic
             return;
         }
         super.scheduledTick(state, world, pos, random);
@@ -77,19 +61,7 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
         world.removeBlock(pos, false);
-        if (aetherSporeType == AetherSporeType.VERDANT) {
-            VerdantSporeManager.spawnVerdantSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
-                    waterAmount, true, false, false);
-        } else if (aetherSporeType == AetherSporeType.CRIMSON) {
-            CrimsonSporeManager.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), CATALYZE_VALUE,
-                    waterAmount, true, false, false);
-        } else if (aetherSporeType == AetherSporeType.SUNLIGHT) {
-            SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random, true, 0);
-        } else if (aetherSporeType == AetherSporeType.ZEPHYR) {
-            ZephyrSporeManager.doZephyrSporeReaction(world, pos.toCenterPos(), CATALYZE_VALUE,
-                    waterAmount, random);
-        }
-        // TODO: Add remaining spore logic
+        sporeType.doReaction(world, pos, CATALYZE_VALUE, waterAmount, random);
         return true;
     }
 

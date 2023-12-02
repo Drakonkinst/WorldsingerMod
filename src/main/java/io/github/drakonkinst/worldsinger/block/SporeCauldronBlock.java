@@ -2,8 +2,8 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleSpawner;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.cauldron.CauldronBehavior;
@@ -25,14 +25,14 @@ public class SporeCauldronBlock extends LeveledCauldronBlock implements SporeEmi
                             LeveledCauldronBlock.createSettingsCodec(),
                             CauldronBehavior.CODEC.fieldOf("interactions")
                                     .forGetter(block -> block.behaviorMap),
-                            AetherSporeType.CODEC.fieldOf("sporeType").forGetter(
+                            AetherSpores.CODEC.fieldOf("sporeType").forGetter(
                                     SporeCauldronBlock::getSporeType))
                     .apply(instance, SporeCauldronBlock::new));
 
-    protected final AetherSporeType sporeType;
+    protected final AetherSpores sporeType;
 
     public SporeCauldronBlock(Settings settings,
-            CauldronBehaviorMap behaviorMap, AetherSporeType sporeType) {
+            CauldronBehaviorMap behaviorMap, AetherSpores sporeType) {
         super(Precipitation.NONE, behaviorMap, settings);
         this.sporeType = sporeType;
     }
@@ -67,7 +67,7 @@ public class SporeCauldronBlock extends LeveledCauldronBlock implements SporeEmi
     }
 
     @Override
-    public AetherSporeType getSporeType() {
+    public AetherSpores getSporeType() {
         return sporeType;
     }
 

@@ -6,14 +6,13 @@ import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeKillingManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleSpawner;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.EntityType;
@@ -233,8 +232,8 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
                     }
                     if (fluidState.getFluid() instanceof AetherSporeFluid aetherSporeFluid) {
                         if (this.lastAetherSporeFluid != null
-                                && this.lastAetherSporeFluid.getSporeType() != AetherSporeType.DEAD
-                                && aetherSporeFluid.getSporeType() == AetherSporeType.DEAD) {
+                                && !this.lastAetherSporeFluid.getSporeType().isDead()
+                                && aetherSporeFluid.getSporeType().isDead()) {
                             // Do not allow dead spores to override living spores
                         } else {
                             this.lastAetherSporeFluid = aetherSporeFluid;

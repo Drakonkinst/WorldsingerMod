@@ -1,23 +1,19 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.CrimsonSpores;
 import io.github.drakonkinst.worldsinger.item.ModItems;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
 
 public abstract class CrimsonSporeFluid extends LivingAetherSporeFluid {
 
     public CrimsonSporeFluid() {
-        super(AetherSporeType.CRIMSON);
+        super(CrimsonSpores.getInstance());
     }
 
     @Override
@@ -39,13 +35,6 @@ public abstract class CrimsonSporeFluid extends LivingAetherSporeFluid {
     protected BlockState toBlockState(FluidState fluidState) {
         return ModBlocks.CRIMSON_SPORE_SEA.getDefaultState().with(Properties.LEVEL_15,
                 getBlockStateLevel(fluidState));
-    }
-
-    @Override
-    protected void doWaterReaction(World world, BlockPos pos, int sporeAmount,
-            int waterAmount, Random random) {
-        CrimsonSporeManager.spawnCrimsonSporeGrowth(world, pos.toCenterPos(), sporeAmount,
-                waterAmount, true, false, false);
     }
 
     public static class Flowing extends CrimsonSporeFluid {

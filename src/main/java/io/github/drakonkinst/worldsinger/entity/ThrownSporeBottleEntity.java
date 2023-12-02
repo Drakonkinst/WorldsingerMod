@@ -1,16 +1,12 @@
 package io.github.drakonkinst.worldsinger.entity;
 
-import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.DeadSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleSpawner;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.item.SporeBottleItem;
-import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.ZephyrSporeManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -28,6 +24,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingItemEntity {
 
@@ -62,8 +59,8 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
             SporeParticleSpawner.spawnSplashPotionParticles(serverWorld, this.getSporeType(), pos);
         }
 
-        SporeType sporeType = this.getSporeType();
-        if (sporeType != AetherSporeType.DEAD) {
+        AetherSpores sporeType = this.getSporeType();
+        if (!sporeType.isDead()) {
             this.handleLivingSporeBehavior(world, sporeType, pos);
         }
 
@@ -74,64 +71,31 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
         this.discard();
     }
 
-    private void handleLivingSporeBehavior(World world, SporeType sporeType, Vec3d pos) {
+    private void handleLivingSporeBehavior(World world, AetherSpores sporeType,
+            Vec3d pos) {
         BlockPos blockPos = this.getBlockPos();
         BlockState blockState = world.getBlockState(blockPos);
         if (world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
             int waterAmount = WaterReactionManager.absorbWater(world, blockPos);
-            if (sporeType == AetherSporeType.VERDANT) {
-                VerdantSporeManager.spawnVerdantSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
-                        true, true, false);
-            } else if (sporeType == AetherSporeType.CRIMSON) {
-                CrimsonSporeManager.spawnCrimsonSporeGrowth(world, pos, SPORE_AMOUNT, waterAmount,
-                        true, true, false);
-            } else if (sporeType == AetherSporeType.SUNLIGHT) {
-                SunlightSporeManager.doSunlightSporeReaction(world, blockPos, waterAmount, random,
-                        false, 0);
-            } else if (sporeType == AetherSporeType.ZEPHYR) {
-                ZephyrSporeManager.doZephyrSporeReaction(world, pos, SPORE_AMOUNT, waterAmount,
-                        random);
-            }
-            // TODO: Add remaining spore logic
+            sporeType.doReactionFromSplashBottle(world, pos, SPORE_AMOUNT, waterAmount, random,
+                    false);
         } else if (blockState.isOf(Blocks.WATER_CAULDRON)) {
             int waterAmount =
                     WATER_AMOUNT_PER_LEVEL * blockState.get(LeveledCauldronBlock.LEVEL);
             world.setBlockState(blockPos, Blocks.CAULDRON.getStateWithProperties(blockState));
-
-            if (sporeType == AetherSporeType.VERDANT) {
-                BlockPos posAbove = blockPos.up();
-                BlockState stateAbove = world.getBlockState(posAbove);
-                if (stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) || stateAbove.isIn(
-                        ModBlockTags.SPORES_CAN_BREAK)) {
-                    VerdantSporeManager.spawnVerdantSporeGrowth(world, posAbove.toCenterPos(),
-                            SPORE_AMOUNT, waterAmount, true, true, false);
-                }
-            } else if (sporeType == AetherSporeType.CRIMSON) {
-                BlockPos posAbove = blockPos.up();
-                BlockState stateAbove = world.getBlockState(posAbove);
-                if (stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) || stateAbove.isIn(
-                        ModBlockTags.SPORES_CAN_BREAK)) {
-                    CrimsonSporeManager.spawnCrimsonSporeGrowth(world, posAbove.toCenterPos(),
-                            SPORE_AMOUNT, waterAmount, true, true, false);
-                }
-            } else if (sporeType == AetherSporeType.SUNLIGHT) {
-                SunlightSporeManager.doSunlightSporeReaction(world, blockPos, waterAmount, random,
-                        false, 0);
-            } else if (sporeType == AetherSporeType.ZEPHYR) {
-                ZephyrSporeManager.doZephyrSporeReaction(world, pos, SPORE_AMOUNT, waterAmount,
-                        random);
-            }
-            // TODO: Add remaining spore logic
-
+            sporeType.doReactionFromSplashBottle(world, pos, SPORE_AMOUNT, waterAmount, random,
+                    true);
         }
     }
 
-    private SporeType getSporeType() {
+    @Nullable
+    private AetherSpores getSporeType() {
         ItemStack stack = this.getStack();
         if (stack.getItem() instanceof SporeBottleItem sporeBottleItem) {
             return sporeBottleItem.getSporeType();
         }
-        return null;
+        Worldsinger.LOGGER.error("Unable to determine spore type for Thrown Spore Bottle Entity");
+        return DeadSpores.getInstance();
     }
 
     @Override

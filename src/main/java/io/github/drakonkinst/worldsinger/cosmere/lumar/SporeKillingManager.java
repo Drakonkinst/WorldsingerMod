@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world.lumar;
+package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;

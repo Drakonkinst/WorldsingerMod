@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.DeadSpores;
 import io.github.drakonkinst.worldsinger.item.ModItems;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -13,7 +13,7 @@ import net.minecraft.state.property.Properties;
 public abstract class DeadSporeFluid extends AetherSporeFluid {
 
     public DeadSporeFluid() {
-        super(AetherSporeType.DEAD);
+        super(DeadSpores.getInstance());
     }
 
     @Override

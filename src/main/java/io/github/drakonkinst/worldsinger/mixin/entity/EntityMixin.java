@@ -5,12 +5,11 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleSpawner;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,7 +46,7 @@ public abstract class EntityMixin {
                 // Just entered spore sea
                 // This needs to run server-side since particles are not just client-side.
                 if (this.getWorld() instanceof ServerWorld serverWorld) {
-                    Optional<SporeType> optionalSporeType = AetherSporeType.getFirstSporeTypeFromFluid(
+                    Optional<AetherSpores> optionalSporeType = AetherSpores.getFirstSporeTypeFromFluid(
                             getAllTouchingFluids());
                     optionalSporeType.ifPresent(
                             sporeType -> SporeParticleSpawner.spawnSplashParticles(serverWorld,
@@ -103,14 +102,14 @@ public abstract class EntityMixin {
             BlockState steppingBlock = this.getSteppingBlockState();
             if (steppingBlock.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS) || steppingBlock.isIn(
                     ModBlockTags.AETHER_SPORE_BLOCKS)) {
-                Optional<SporeType> aetherSporeType = AetherSporeType.getSporeTypeFromBlock(
+                Optional<AetherSpores> sporeType = AetherSpores.getSporeTypeFromBlock(
                         steppingBlock);
-                if (aetherSporeType.isEmpty()) {
+                if (sporeType.isEmpty()) {
                     Worldsinger.LOGGER.error(
                             "Aether spore block should have a spore type defined");
                     return;
                 }
-                SporeParticleSpawner.spawnFootstepParticles(serverWorld, aetherSporeType.get(),
+                SporeParticleSpawner.spawnFootstepParticles(serverWorld, sporeType.get(),
                         (Entity) (Object) this);
             }
         }

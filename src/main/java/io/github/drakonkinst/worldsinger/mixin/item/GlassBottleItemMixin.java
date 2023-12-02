@@ -3,10 +3,10 @@ package io.github.drakonkinst.worldsinger.mixin.item;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.AetherSporeBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -78,14 +78,15 @@ public abstract class GlassBottleItemMixin extends Item {
 
     @Unique
     private void fillWithSporeBottle(World world, PlayerEntity user, ItemStack itemStack,
-            BlockPos blockPos, SporeType sporeType,
+            BlockPos blockPos, AetherSpores sporeType,
             CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
         world.playSound(user, user.getX(), user.getY(), user.getZ(),
                 ModSoundEvents.ITEM_BOTTLE_FILL_AETHER_SPORE,
                 SoundCategory.NEUTRAL, 1.0f, 1.0f);
         world.emitGameEvent(user, GameEvent.FLUID_PICKUP, blockPos);
         cir.setReturnValue(TypedActionResult.success(
-                this.fill(itemStack, user, sporeType.getBottledItem().getDefaultStack()),
+                this.fill(itemStack, user,
+                        sporeType.getBottledItem().getDefaultStack()),
                 world.isClient()));
     }
 }

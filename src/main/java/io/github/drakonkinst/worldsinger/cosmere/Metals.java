@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world;
+package io.github.drakonkinst.worldsinger.cosmere;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;

@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.item;
 
-import io.github.drakonkinst.worldsinger.world.SilverLined;
+import io.github.drakonkinst.worldsinger.cosmere.SilverLined;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;

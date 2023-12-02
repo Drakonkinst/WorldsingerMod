@@ -2,9 +2,9 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeKillingManager;
 import io.github.drakonkinst.worldsinger.mixin.accessor.FluidBlockAccessor;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FlowableFluid;
@@ -20,14 +20,14 @@ public class LivingAetherSporeFluidBlock extends AetherSporeFluidBlock implement
                     FluidBlockAccessor.worldsinger$getFluidCodec().fieldOf("fluid")
                             .forGetter(
                                     block -> block.fluid),
-                    AetherSporeType.CODEC.fieldOf("sporeType")
+                    AetherSpores.CODEC.fieldOf("sporeType")
                             .forGetter(LivingAetherSporeFluidBlock::getSporeType),
                     createSettingsCodec()
             ).apply(instance, LivingAetherSporeFluidBlock::new));
 
-    public LivingAetherSporeFluidBlock(FlowableFluid fluid, AetherSporeType aetherSporeType,
+    public LivingAetherSporeFluidBlock(FlowableFluid fluid, AetherSpores sporeType,
             Settings settings) {
-        super(aetherSporeType, settings);
+        super(sporeType, settings);
     }
 
     @Override

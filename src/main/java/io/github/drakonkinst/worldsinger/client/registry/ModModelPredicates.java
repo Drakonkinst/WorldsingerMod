@@ -2,7 +2,7 @@ package io.github.drakonkinst.worldsinger.client.registry;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.api.ModApi;
-import io.github.drakonkinst.worldsinger.world.SilverLined;
+import io.github.drakonkinst.worldsinger.cosmere.SilverLined;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.item.ClampedModelPredicateProvider;

@@ -1,12 +1,10 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
-import io.github.drakonkinst.worldsinger.util.ModProperties;
-import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeKillingManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeKillingManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -28,12 +26,9 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
     public static final int CATALYZE_VALUE_STILL = 250;
     public static final int CATALYZE_VALUE_FLOWING = 25;
 
-    public LivingAetherSporeFluid(SporeType sporeType) {
+    public LivingAetherSporeFluid(AetherSpores sporeType) {
         super(sporeType);
     }
-
-    protected abstract void doWaterReaction(World world, BlockPos pos, int sporeAmount,
-            int waterAmount, Random random);
 
     @Override
     protected boolean hasRandomTicks() {
@@ -76,23 +71,10 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
             if (neighborState.isIn(FluidTags.WATER)) {
                 if (state.getBlock() instanceof FluidBlock && world instanceof World realWorld) {
                     WaterReactionManager.catalyzeAroundWater(realWorld, pos);
-                    SporeType sporeType = this.getSporeType();
-                    if (sporeType == AetherSporeType.VERDANT) {
-                        world.setBlockState(pos,
-                                ModBlocks.VERDANT_VINE_BLOCK.getDefaultState().with(
-                                        ModProperties.CATALYZED, true), Block.NOTIFY_ALL);
-                    } else if (sporeType == AetherSporeType.CRIMSON) {
-                        world.setBlockState(pos, ModBlocks.CRIMSON_GROWTH.getDefaultState().with(
-                                ModProperties.CATALYZED, true), Block.NOTIFY_ALL);
-                    } else if (sporeType == AetherSporeType.SUNLIGHT) {
-                        world.setBlockState(pos, ModBlocks.SUNLIGHT.getDefaultState(),
-                                Block.NOTIFY_ALL);
-                    } else if (sporeType == AetherSporeType.ZEPHYR) {
-                        world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+                    BlockState replacingState = this.getSporeType().getFluidCollisionState();
+                    if (replacingState != null) {
+                        world.setBlockState(pos, replacingState, Block.NOTIFY_ALL);
                     }
-                    // TODO: Add remaining spore logic
-                    // Not sure if other spores will all have a block for this, specifically Zephyr (probably just Air?)
-
                     return;
                 }
             }
@@ -105,7 +87,8 @@ public abstract class LivingAetherSporeFluid extends AetherSporeFluid implements
             Random random) {
         // Water reaction
         int sporeAmount = this.isStill(fluidState) ? CATALYZE_VALUE_STILL : CATALYZE_VALUE_FLOWING;
-        this.doWaterReaction(world, pos, sporeAmount, waterAmount, random);
+        this.getSporeType()
+                .doReaction(world, pos, sporeAmount, waterAmount, random);
 
         // Remove the spores
         BlockState blockState = world.getBlockState(pos);

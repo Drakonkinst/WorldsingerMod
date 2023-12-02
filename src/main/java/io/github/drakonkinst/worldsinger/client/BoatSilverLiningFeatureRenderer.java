@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
-import io.github.drakonkinst.worldsinger.world.SilverLiningLevel;
+import io.github.drakonkinst.worldsinger.cosmere.SilverLiningLevel;
 import java.util.Map;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

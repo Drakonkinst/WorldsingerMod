@@ -1,13 +1,10 @@
 package io.github.drakonkinst.worldsinger.mixin.block;
 
 import com.google.common.collect.ImmutableList;
-import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.LivingAetherSporeFluid;
-import io.github.drakonkinst.worldsinger.util.ModProperties;
-import io.github.drakonkinst.worldsinger.world.WaterReactionManager;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
@@ -40,7 +37,7 @@ public abstract class FluidBlockMixin {
             return;
         }
 
-        SporeType sporeType = sporeFluid.getSporeType();
+        AetherSpores sporeType = sporeFluid.getSporeType();
 
         for (Direction direction : FLOW_DIRECTIONS) {
             BlockPos neighborPos = pos.offset(direction.getOpposite());
@@ -49,16 +46,10 @@ public abstract class FluidBlockMixin {
 
                 // Replace touching block with a different block if applicable, tends to help
                 // with limiting spread.
-                if (sporeType == AetherSporeType.VERDANT) {
-                    world.setBlockState(neighborPos,
-                            ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
-                                    .with(ModProperties.CATALYZED, true));
-                } else if (sporeType == AetherSporeType.CRIMSON) {
-                    world.setBlockState(neighborPos,
-                            ModBlocks.CRIMSON_GROWTH.getDefaultState()
-                                    .with(ModProperties.CATALYZED, true));
+                BlockState replacingState = sporeType.getFluidCollisionState();
+                if (replacingState != null) {
+                    world.setBlockState(neighborPos, replacingState);
                 }
-
                 cir.setReturnValue(false);
                 return;
             }

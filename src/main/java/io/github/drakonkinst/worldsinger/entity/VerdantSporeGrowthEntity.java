@@ -3,13 +3,12 @@ package io.github.drakonkinst.worldsinger.entity;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.VerdantVineBranchBlock;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.VerdantSpores;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleManager;
-import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.BlockState;
@@ -203,9 +202,10 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
         int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
-        VerdantSporeManager.spawnVerdantSporeGrowth(this.getWorld(),
-                spawnPos, numSpores, numWater,
-                sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true);
+        VerdantSpores.getInstance()
+                .spawnSporeGrowth(this.getWorld(), spawnPos, numSpores, numWater,
+                        sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true,
+                        Int3.ZERO);
         this.drainSpores(numSpores);
         this.drainWater(numWater);
     }
@@ -329,7 +329,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
 
     private void applySporeEffectToEntities(BlockPos pos) {
         if (this.getWorld() instanceof ServerWorld world) {
-            SporeParticleManager.damageEntitiesInBlock(world, AetherSporeType.VERDANT, pos);
+            SporeParticleManager.damageEntitiesInBlock(world, VerdantSpores.getInstance(), pos);
         }
     }
 

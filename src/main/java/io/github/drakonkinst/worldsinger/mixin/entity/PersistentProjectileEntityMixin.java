@@ -2,7 +2,7 @@ package io.github.drakonkinst.worldsinger.mixin.entity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;

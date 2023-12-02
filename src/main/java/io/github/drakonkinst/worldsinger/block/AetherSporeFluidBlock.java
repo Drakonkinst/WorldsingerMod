@@ -2,13 +2,13 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleSpawner;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.FluidBlockAccessor;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.LumarSeethe;
-import io.github.drakonkinst.worldsinger.world.lumar.SporeParticleSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -37,15 +37,15 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
                     FluidBlockAccessor.worldsinger$getFluidCodec().fieldOf("fluid")
                             .forGetter(
                                     block -> block.fluid),
-                    AetherSporeType.CODEC.fieldOf("sporeType")
+                    AetherSpores.CODEC.fieldOf("sporeType")
                             .forGetter(AetherSporeFluidBlock::getSporeType),
                     createSettingsCodec()
             ).apply(instance, (fluid1, sporeType, settings1) -> new AetherSporeFluidBlock(sporeType,
                     settings1)));
 
-    protected final AetherSporeType sporeType;
+    protected final AetherSpores sporeType;
 
-    public AetherSporeFluidBlock(AetherSporeType sporeType,
+    public AetherSporeFluidBlock(AetherSpores sporeType,
             Settings settings) {
         super(sporeType.getFluid(), settings);
         this.sporeType = sporeType;
@@ -216,7 +216,7 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
         return super.getCollisionShape(state, world, pos, context);
     }
 
-    public AetherSporeType getSporeType() {
+    public AetherSpores getSporeType() {
         return sporeType;
     }
 

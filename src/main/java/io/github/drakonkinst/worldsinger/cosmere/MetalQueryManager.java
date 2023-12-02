@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.world;
+package io.github.drakonkinst.worldsinger.cosmere;
 
 import io.github.drakonkinst.worldsinger.datatable.DataTable;
 import io.github.drakonkinst.worldsinger.item.ModItemTags;

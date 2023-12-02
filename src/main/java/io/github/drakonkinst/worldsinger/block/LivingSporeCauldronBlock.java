@@ -2,11 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.drakonkinst.worldsinger.world.lumar.AetherSporeType;
-import io.github.drakonkinst.worldsinger.world.lumar.CrimsonSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.SunlightSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.VerdantSporeManager;
-import io.github.drakonkinst.worldsinger.world.lumar.ZephyrSporeManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -15,7 +11,6 @@ import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.cauldron.CauldronBehavior.CauldronBehaviorMap;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
@@ -28,13 +23,13 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
                             LeveledCauldronBlock.createSettingsCodec(),
                             CauldronBehavior.CODEC.fieldOf("interactions")
                                     .forGetter(block -> block.behaviorMap),
-                            AetherSporeType.CODEC.fieldOf("sporeType").forGetter(
+                            AetherSpores.CODEC.fieldOf("sporeType").forGetter(
                                     LivingSporeCauldronBlock::getSporeType))
                     .apply(instance, LivingSporeCauldronBlock::new));
     private static final int CATALYZE_VALUE_PER_LEVEL = 80;
 
     public LivingSporeCauldronBlock(Settings settings, CauldronBehaviorMap behaviorMap,
-            AetherSporeType sporeType) {
+            AetherSpores sporeType) {
         super(settings, behaviorMap, sporeType);
     }
 
@@ -66,23 +61,9 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
             return false;
         }
         world.setBlockState(pos, Blocks.CAULDRON.getStateWithProperties(state));
-        Vec3d spawnPos = posAbove.toCenterPos();
         int catalyzeValue = CATALYZE_VALUE_PER_LEVEL * state.get(LEVEL);
-
-        if (sporeType == AetherSporeType.VERDANT) {
-            VerdantSporeManager.spawnVerdantSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
-                    true, false, false);
-        } else if (sporeType == AetherSporeType.CRIMSON) {
-            CrimsonSporeManager.spawnCrimsonSporeGrowth(world, spawnPos, catalyzeValue, waterAmount,
-                    true, false, false);
-        } else if (sporeType == AetherSporeType.SUNLIGHT) {
-            SunlightSporeManager.doSunlightSporeReaction(world, pos, waterAmount, random,
-                    false, 2);
-        } else if (sporeType == AetherSporeType.ZEPHYR) {
-            ZephyrSporeManager.doZephyrSporeReaction(world, spawnPos, catalyzeValue, waterAmount,
-                    random);
-        }
-        // TODO: Add remaining spore logic
+        sporeType
+                .doReactionFromFluidContainer(world, pos, catalyzeValue, waterAmount, random);
         return true;
     }
 }
