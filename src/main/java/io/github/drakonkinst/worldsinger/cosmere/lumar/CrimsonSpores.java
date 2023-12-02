@@ -12,6 +12,7 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
+import io.github.drakonkinst.worldsinger.util.BoxUtil;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
@@ -73,7 +74,7 @@ public class CrimsonSpores extends AetherSpores {
 
     private boolean tryCombineWithNearbyGrowth(World world, Vec3d pos, int spores, int water,
             boolean isInitial, boolean isSmall) {
-        Box box = Box.from(pos).expand(VerdantSpores.COMBINE_GROWTH_MAX_RADIUS);
+        Box box = BoxUtil.createBoxAroundPos(pos, VerdantSpores.COMBINE_GROWTH_MAX_RADIUS);
         List<CrimsonSporeGrowthEntity> nearbySporeGrowthEntities = world.getEntitiesByClass(
                 CrimsonSporeGrowthEntity.class, box, sporeGrowthEntity -> {
                     SporeGrowthComponent sporeGrowthData = sporeGrowthEntity.getSporeGrowthData();
@@ -101,7 +102,7 @@ public class CrimsonSpores extends AetherSpores {
     public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,
             Random random, boolean affectingFluidContainer) {
         if (affectingFluidContainer) {
-            BlockPos posAbove = BlockPosUtil.toRoundedBlockPos(pos).up();
+            BlockPos posAbove = BlockPosUtil.toBlockPos(pos).up();
             BlockState stateAbove = world.getBlockState(posAbove);
             if (stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) || stateAbove.isIn(
                     ModBlockTags.SPORES_CAN_BREAK)) {

@@ -120,8 +120,8 @@ public final class SporeKillingManager {
 
     public static boolean checkNearbyEntitiesForRange(World world, double minX, double minY,
             double minZ, double maxX, double maxY, double maxZ) {
-        Box box = new Box(minX, minY, minZ, maxX, maxY, maxZ);
-        box = box.expand(BOAT_RADIUS);
+        Box box = new Box(minX - BOAT_RADIUS, minY - BOAT_RADIUS, minZ - BOAT_RADIUS,
+                maxX + BOAT_RADIUS, maxY + BOAT_RADIUS, maxZ + BOAT_RADIUS);
         return checkNearbyEntitiesInBox(world, box);
     }
 

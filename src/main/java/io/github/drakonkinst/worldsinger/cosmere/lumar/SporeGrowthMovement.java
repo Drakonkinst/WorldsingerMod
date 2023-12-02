@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.cosmere.MetalQueryManager;
 import io.github.drakonkinst.worldsinger.datatable.DataTable;
 import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
+import io.github.drakonkinst.worldsinger.util.BoxUtil;
 import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -84,7 +85,7 @@ public final class SporeGrowthMovement {
     private static void calcEntityExternalForce(World world, BlockPos pos, Vector3d force) {
         DataTable metalContentTable = DataTables.get(DataTables.ENTITY_METAL_CONTENT);
         DataTable armorMetalContentTable = DataTables.get(DataTables.ARMOR_METAL_CONTENT);
-        Box box = new Box(pos).expand(MAX_SEARCH_RADIUS);
+        Box box = BoxUtil.createBoxAroundBlock(pos, MAX_SEARCH_RADIUS);
         double forceX = 0;
         double forceY = 0;
         double forceZ = 0;

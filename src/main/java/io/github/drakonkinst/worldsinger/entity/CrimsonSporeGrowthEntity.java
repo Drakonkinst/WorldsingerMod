@@ -7,6 +7,7 @@ import io.github.drakonkinst.worldsinger.block.TallCrimsonSpinesBlock;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.CrimsonSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleManager;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
+import io.github.drakonkinst.worldsinger.util.BoxUtil;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
@@ -18,7 +19,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -318,7 +318,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     private void applySporeEffectToEntities(BlockPos pos) {
         if (this.getWorld() instanceof ServerWorld world) {
             SporeParticleManager.damageEntitiesInBox(world, CrimsonSpores.getInstance(),
-                    new Box(pos).expand(1.0), true);
+                    BoxUtil.createBoxAroundBlock(pos, 1.0), true);
         }
     }
 

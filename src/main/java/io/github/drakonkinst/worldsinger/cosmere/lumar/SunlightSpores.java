@@ -7,6 +7,7 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
+import io.github.drakonkinst.worldsinger.util.BoxUtil;
 import it.unimi.dsi.fastutil.ints.IntObjectImmutablePair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -66,8 +67,7 @@ public class SunlightSpores extends AetherSpores {
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
         // Do nothing
-        this.doSunlightSporeReaction(world, BlockPosUtil.toRoundedBlockPos(pos), water, random,
-                true, 0);
+        this.doSunlightSporeReaction(world, BlockPosUtil.toBlockPos(pos), water, random, true, 0);
     }
 
     public void doSunlightSporeReaction(World world, BlockPos pos, int water, Random random,
@@ -188,7 +188,7 @@ public class SunlightSpores extends AetherSpores {
     }
 
     private void doFireExplosion(World world, BlockPos pos, int radius) {
-        Box box = new Box(pos).expand(radius);
+        Box box = BoxUtil.createBoxAroundBlock(pos, radius);
         List<LivingEntity> affectedEntities = world.getNonSpectatingEntities(LivingEntity.class,
                 box);
         for (LivingEntity entity : affectedEntities) {
@@ -251,8 +251,7 @@ public class SunlightSpores extends AetherSpores {
     @Override
     public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,
             Random random, boolean affectingFluidContainer) {
-        this.doSunlightSporeReaction(world, BlockPosUtil.toRoundedBlockPos(pos), water, random,
-                false, 0);
+        this.doSunlightSporeReaction(world, BlockPosUtil.toBlockPos(pos), water, random, false, 0);
     }
 
     @Override

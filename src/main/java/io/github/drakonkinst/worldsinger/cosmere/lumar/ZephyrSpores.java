@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
+import com.google.common.collect.Maps;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.LivingAetherSporeBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
@@ -8,19 +9,32 @@ import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
+import io.github.drakonkinst.worldsinger.util.BoxUtil;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.ProtectionEnchantment;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.projectile.WindChargeEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.item.Item;
+import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
+import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
 
 public class ZephyrSpores extends AetherSpores {
@@ -32,7 +46,9 @@ public class ZephyrSpores extends AetherSpores {
     private static final int COLOR = 0x4b9bb7;
     private static final int PARTICLE_COLOR = 0x4b9bb7;
 
-    private static final float SPORE_TO_POWER_MULTIPLIER = 0.25f;
+    private static final float SPORE_TO_POWER_MULTIPLIER = 0.15f;
+    private static final float KNOCKBACK_MULTIPLIER = 2.0f;
+    private static final int MAX_DISTANCE = 64;
 
     public static ZephyrSpores getInstance() {
         return INSTANCE;
@@ -49,15 +65,78 @@ public class ZephyrSpores extends AetherSpores {
 
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
-        // TODO: Deal damage
-        // TODO: Drain surrounding zephyr spores too?
         float power = Math.min(spores, water) * SPORE_TO_POWER_MULTIPLIER + random.nextFloat();
         Worldsinger.LOGGER.info("spores = " + spores + ", water = " + water + " base_value = " + (
                 Math.min(spores, water) * SPORE_TO_POWER_MULTIPLIER) + ", power = " + power);
-        world.createExplosion(null, null, WindChargeEntity.EXPLOSION_BEHAVIOR, pos.getX(),
-                pos.getY(), pos.getZ(), power, false, World.ExplosionSourceType.BLOW,
-                ParticleTypes.GUST, ParticleTypes.GUST_EMITTER,
-                ModSoundEvents.BLOCK_ZEPHYR_SEA_CATALYZE);
+        int numAffectedEntities = this.explode(world, pos, power, KNOCKBACK_MULTIPLIER);
+        Worldsinger.LOGGER.info("Hit " + numAffectedEntities + " entities");
+    }
+
+    // Too inefficient to use actual Explosions, so we'll need our own solution
+    private int explode(World world, Vec3d centerPos, float radius,
+            float globalKnockbackMultiplier) {
+        world.emitGameEvent(null, GameEvent.EXPLODE, centerPos);
+        Box box = BoxUtil.createBoxAroundPos(centerPos, radius);
+        List<Entity> entities = world.getEntitiesByClass(Entity.class, box,
+                EntityPredicates.EXCEPT_SPECTATOR);
+
+        int numAffectedEntities = 0;
+        Map<PlayerEntity, Vec3d> affectedPlayers = Maps.newHashMap();
+        for (Entity entity : entities) {
+            if (entity.isImmuneToExplosion(null)) {
+                continue;
+            }
+
+            double sqrDistance = entity.getPos().squaredDistanceTo(centerPos);
+            if (sqrDistance > radius * radius) {
+                continue;
+            }
+            double distanceMultiplier = Math.sqrt(sqrDistance) / radius;
+            double forceX = entity.getX() - centerPos.getX();
+            double forceY = entity.getY() - centerPos.getY();
+            double forceZ = entity.getZ() - centerPos.getZ();
+            double delta = Math.sqrt(forceX * forceX + forceY * forceY + forceZ * forceZ);
+            if (delta <= 0.0) {
+                continue;
+            }
+
+            double knockbackMultiplier =
+                    (1.0 - distanceMultiplier) * Explosion.getExposure(centerPos, entity)
+                            * globalKnockbackMultiplier;
+            if (entity instanceof LivingEntity livingEntity) {
+                knockbackMultiplier = ProtectionEnchantment.transformExplosionKnockback(
+                        livingEntity, knockbackMultiplier);
+            }
+
+            double forceMultiplier = knockbackMultiplier / delta;
+            forceX = forceX * forceMultiplier;
+            forceY = forceY * forceMultiplier;
+            forceZ = forceZ * forceMultiplier;
+            Vec3d forceVector = new Vec3d(forceX, forceY, forceZ);
+            entity.setVelocity(entity.getVelocity().add(forceVector));
+
+            if (entity instanceof PlayerEntity playerEntity && !playerEntity.isSpectator() && (
+                    !playerEntity.isCreative() || !playerEntity.getAbilities().flying)) {
+                affectedPlayers.put(playerEntity, forceVector);
+            }
+
+            numAffectedEntities += 1;
+        }
+
+        if (!world.isClient() && world instanceof ServerWorld serverWorld) {
+            for (ServerPlayerEntity player : serverWorld.getPlayers()) {
+                if (player.squaredDistanceTo(centerPos) < MAX_DISTANCE * MAX_DISTANCE) {
+                    player.networkHandler.sendPacket(
+                            new ExplosionS2CPacket(centerPos.getX(), centerPos.getY(),
+                                    centerPos.getZ(), radius, Collections.emptyList(),
+                                    affectedPlayers.get(player),
+                                    Explosion.DestructionType.TRIGGER_BLOCK, ParticleTypes.GUST,
+                                    ParticleTypes.GUST_EMITTER,
+                                    ModSoundEvents.BLOCK_ZEPHYR_SEA_CATALYZE));
+                }
+            }
+        }
+        return numAffectedEntities;
     }
 
     @Override

@@ -66,6 +66,13 @@ public final class BlockPosUtil {
         return new BlockPos(x, y, z);
     }
 
+    public static BlockPos toBlockPos(Vec3d pos) {
+        int x = MathHelper.floor(pos.getX());
+        int y = MathHelper.floor(pos.getY());
+        int z = MathHelper.floor(pos.getZ());
+        return new BlockPos(x, y, z);
+    }
+
     public static Iterable<BlockPos> iterateBoundingBoxForEntity(Entity entity, BlockPos blockPos,
             int offsetX, int offsetY, int offsetZ) {
         int width = MathHelper.ceil(entity.getWidth());

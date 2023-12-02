@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -32,9 +33,10 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         BlockPos waterNeighborPos = LivingVerdantVineBlock.getWaterNeighborPos(world, pos);
         if (waterNeighborPos != null) {
+            WaterReactionManager.catalyzeAroundWater(world, waterNeighborPos);
             BlockState replacingState = sporeType.getFluidCollisionState();
             if (replacingState != null) {
-                world.setBlockState(waterNeighborPos, replacingState);
+                world.setBlockState(pos, replacingState);
             }
             return;
         }
