@@ -27,7 +27,7 @@ public class RoseiteSpores extends AetherSpores {
         return INSTANCE;
     }
 
-    protected RoseiteSpores() {}
+    private RoseiteSpores() {}
 
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {

@@ -41,7 +41,7 @@ public class CrimsonSpores extends AetherSpores {
         return INSTANCE;
     }
 
-    protected CrimsonSpores() {}
+    private CrimsonSpores() {}
 
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {

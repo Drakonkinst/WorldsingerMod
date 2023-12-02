@@ -61,7 +61,7 @@ public class SunlightSpores extends AetherSpores {
         return INSTANCE;
     }
 
-    protected SunlightSpores() {}
+    private SunlightSpores() {}
 
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {

@@ -38,8 +38,6 @@ public abstract class AetherSpores {
         return -1;
     }
 
-    public abstract int getColor();
-
     public static Optional<AetherSpores> getSporeTypeFromBlock(BlockState state) {
         Block block = state.getBlock();
         if (block instanceof SporeEmitting sporeEmittingBlock) {
@@ -60,6 +58,8 @@ public abstract class AetherSpores {
     protected AetherSpores() {
         AETHER_SPORE_MAP.put(this.getName(), this);
     }
+
+    public abstract int getColor();
 
     public abstract String getName();
 

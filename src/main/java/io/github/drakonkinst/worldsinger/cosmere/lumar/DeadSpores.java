@@ -27,7 +27,7 @@ public class DeadSpores extends AetherSpores {
         return INSTANCE;
     }
 
-    protected DeadSpores() {}
+    private DeadSpores() {}
 
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {

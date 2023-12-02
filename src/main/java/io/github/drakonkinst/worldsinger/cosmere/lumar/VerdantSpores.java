@@ -40,7 +40,7 @@ public class VerdantSpores extends AetherSpores {
         return INSTANCE;
     }
 
-    protected VerdantSpores() {}
+    private VerdantSpores() {}
 
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
