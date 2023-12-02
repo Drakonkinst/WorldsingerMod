@@ -61,7 +61,9 @@ public class ZephyrSpores extends AetherSpores {
     @Override
     public void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos, int water) {
         Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity, ModFluidTags.ZEPHYR_SPORES);
-        this.doReaction(world, startPos, LivingAetherSporeBlock.CATALYZE_VALUE, water,
+        Vec3d adjustedStartPos = new Vec3d(startPos.getX(), Math.ceil(startPos.getY()),
+                startPos.getZ());
+        this.doReaction(world, adjustedStartPos, LivingAetherSporeBlock.CATALYZE_VALUE, water,
                 world.getRandom());
     }
 
