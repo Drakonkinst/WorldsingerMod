@@ -33,15 +33,13 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
 
     // Unused Codec
     public static final MapCodec<AetherSporeFluidBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                            FluidBlockAccessor.worldsinger$getFluidCodec().fieldOf("fluid")
-                                    .forGetter(block -> block.fluid),
-                            AetherSpores.CODEC.fieldOf("sporeType")
-                                    .forGetter(AetherSporeFluidBlock::getSporeType), createSettingsCodec())
+            instance -> instance.group(FluidBlockAccessor.worldsinger$getFluidCodec()
+                            .fieldOf("fluid")
+                            .forGetter(block -> block.fluid), AetherSpores.CODEC.fieldOf("sporeType")
+                            .forGetter(AetherSporeFluidBlock::getSporeType), createSettingsCodec())
                     .apply(instance,
                             (fluid1, sporeType, settings1) -> new AetherSporeFluidBlock(sporeType,
                                     settings1)));
-
     protected final AetherSpores sporeType;
 
     public AetherSporeFluidBlock(AetherSpores sporeType, Settings settings) {

@@ -263,8 +263,10 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
         int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
-        CrimsonSpores.getInstance().spawnSporeGrowth(this.getWorld(), spawnPos, numSpores, numWater,
-                sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true, Int3.UP);
+        CrimsonSpores.getInstance()
+                .spawnSporeGrowth(this.getWorld(), spawnPos, numSpores, numWater,
+                        sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true,
+                        Int3.UP);
         this.drainSpores(numSpores);
         this.drainWater(numWater);
     }
@@ -347,7 +349,8 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         int fluidloggedIndex = Fluidlogged.getFluidIndex(
                 this.getWorld().getFluidState(pos).getFluid());
         BlockState state = ModBlocks.CRIMSON_SPINES.getDefaultState()
-                .with(Properties.FACING, direction).with(ModProperties.CATALYZED, shouldDrainWater)
+                .with(Properties.FACING, direction)
+                .with(ModProperties.CATALYZED, shouldDrainWater)
                 .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
         this.placeBlockWithEffects(pos, state, SPINES_COST, shouldDrainWater, false, true);
     }

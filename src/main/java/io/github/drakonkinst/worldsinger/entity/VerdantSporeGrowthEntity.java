@@ -219,8 +219,10 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
         int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
-        VerdantSpores.getInstance().spawnSporeGrowth(this.getWorld(), spawnPos, numSpores, numWater,
-                sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true, Int3.ZERO);
+        VerdantSpores.getInstance()
+                .spawnSporeGrowth(this.getWorld(), spawnPos, numSpores, numWater,
+                        sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true,
+                        Int3.ZERO);
         this.drainSpores(numSpores);
         this.drainWater(numWater);
     }

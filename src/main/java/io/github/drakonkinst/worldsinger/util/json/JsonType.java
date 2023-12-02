@@ -38,6 +38,7 @@ public final class JsonType<T extends JsonElement> {
     public boolean is(JsonElement element) {
         return is.test(element);
     }
+
     public final String name;
     private final Predicate<JsonElement> is;
     private final Function<JsonElement, T> cast;

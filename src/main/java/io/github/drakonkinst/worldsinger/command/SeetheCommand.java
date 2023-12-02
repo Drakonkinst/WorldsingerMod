@@ -39,8 +39,10 @@ public class SeetheCommand {
     private static int activateWithArgs(CommandContext<ServerCommandSource> context) {
         SeetheComponent seethe = SeetheCommand.getSeethe(context);
         seethe.startSeethe(getInteger(context, "duration"));
-        context.getSource().sendFeedback(() -> Text.literal(
-                "Set seethe to ACTIVE for " + seethe.getTicksUntilNextCycle() + " ticks"), true);
+        context.getSource()
+                .sendFeedback(() -> Text.literal(
+                                "Set seethe to ACTIVE for " + seethe.getTicksUntilNextCycle() + " ticks"),
+                        true);
         ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
         return 1;
     }
@@ -56,8 +58,10 @@ public class SeetheCommand {
     private static int deactivateWithArgs(CommandContext<ServerCommandSource> context) {
         SeetheComponent seethe = SeetheCommand.getSeethe(context);
         seethe.stopSeethe(getInteger(context, "duration"));
-        context.getSource().sendFeedback(() -> Text.literal(
-                "Set seethe to INACTIVE for " + seethe.getTicksUntilNextCycle() + " ticks"), true);
+        context.getSource()
+                .sendFeedback(() -> Text.literal(
+                                "Set seethe to INACTIVE for " + seethe.getTicksUntilNextCycle() + " ticks"),
+                        true);
         ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
         return 1;
     }
@@ -66,10 +70,11 @@ public class SeetheCommand {
         SeetheComponent seethe = SeetheCommand.getSeethe(context);
         boolean isSeething = seethe.isSeething();
         int cycleTicks = seethe.getTicksUntilNextCycle();
-        context.getSource().sendMessage(Text.literal(
-                "Seethe is " + (isSeething ? "ACTIVE" : "INACTIVE") + " for the next " + cycleTicks
-                        + " ticks, or " + (MathHelper.floor(
-                        cycleTicks * ModConstants.TICKS_TO_SECONDS)) + " seconds"));
+        context.getSource()
+                .sendMessage(Text.literal(
+                        "Seethe is " + (isSeething ? "ACTIVE" : "INACTIVE") + " for the next "
+                                + cycleTicks + " ticks, or " + (MathHelper.floor(
+                                cycleTicks * ModConstants.TICKS_TO_SECONDS)) + " seconds"));
         ModComponents.LUMAR_SEETHE.sync(context.getSource().getServer().getScoreboard());
         return 1;
     }

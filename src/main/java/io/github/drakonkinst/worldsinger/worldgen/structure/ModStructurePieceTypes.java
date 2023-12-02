@@ -9,17 +9,17 @@ public final class ModStructurePieceTypes {
 
     public static void initialize() {}
 
-    public static final StructurePieceType CUSTOM_MINESHAFT_CORRIDOR = ModStructurePieceTypes.register(
-            CustomMineshaftGenerator.MineshaftCorridor::new, "CMSCorridor");
-
     public static StructurePieceType register(StructurePieceType type, String id) {
         return Registry.register(Registries.STRUCTURE_PIECE, id.toLowerCase(Locale.ROOT), type);
     }
 
+    private ModStructurePieceTypes() {}
+
+    public static final StructurePieceType CUSTOM_MINESHAFT_CORRIDOR = ModStructurePieceTypes.register(
+            CustomMineshaftGenerator.MineshaftCorridor::new, "CMSCorridor");
+
     public static final StructurePieceType CUSTOM_MINESHAFT_CROSSING = ModStructurePieceTypes.register(
             CustomMineshaftGenerator.MineshaftCrossing::new, "CMSCrossing");
-
-    private ModStructurePieceTypes() {}
 
     public static final StructurePieceType CUSTOM_MINESHAFT_ROOM = ModStructurePieceTypes.register(
             CustomMineshaftGenerator.MineshaftRoom::new, "CMSRoom");

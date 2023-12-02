@@ -123,13 +123,15 @@ public abstract class WorldRendererMixin {
             Matrix4f matrix4f = matrices.peek().getPositionMatrix();
             bufferBuilder.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
             bufferBuilder.vertex(matrix4f, 0.0f, 100.0f, 0.0f)
-                    .color(fogRgba[0], fogRgba[1], fogRgba[2], fogRgba[3]).next();
+                    .color(fogRgba[0], fogRgba[1], fogRgba[2], fogRgba[3])
+                    .next();
             for (int n = 0; n <= 16; ++n) {
                 float o = (float) n * ((float) Math.PI * 2) / 16.0f;
                 float p = MathHelper.sin(o);
                 float q = MathHelper.cos(o);
                 bufferBuilder.vertex(matrix4f, p * 120.0f, q * 120.0f, -q * 40.0f * fogRgba[3])
-                        .color(fogRgba[0], fogRgba[1], fogRgba[2], 0.0f).next();
+                        .color(fogRgba[0], fogRgba[1], fogRgba[2], 0.0f)
+                        .next();
             }
             BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
             matrices.pop();

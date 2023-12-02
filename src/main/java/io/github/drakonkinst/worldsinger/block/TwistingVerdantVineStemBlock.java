@@ -27,7 +27,8 @@ public class TwistingVerdantVineStemBlock extends AbstractVerticalGrowthStemBloc
 
     public TwistingVerdantVineStemBlock(Settings settings) {
         super(settings, SHAPE);
-        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false)
+        this.setDefaultState(this.getDefaultState()
+                .with(Properties.PERSISTENT, false)
                 .with(Properties.WATERLOGGED, false));
     }
 

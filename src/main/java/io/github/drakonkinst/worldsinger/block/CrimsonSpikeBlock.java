@@ -74,8 +74,10 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
 
     public CrimsonSpikeBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(Properties.FACING, Direction.UP)
-                .with(Properties.PERSISTENT, false).with(Properties.WATERLOGGED, false)
+        this.setDefaultState(this.getDefaultState()
+                .with(Properties.FACING, Direction.UP)
+                .with(Properties.PERSISTENT, false)
+                .with(Properties.WATERLOGGED, false)
                 .with(ModProperties.DISCRETE_THICKNESS, Thickness.TIP));
     }
 
@@ -97,8 +99,10 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
             return null;
         }
 
-        return this.getDefaultState().with(Properties.FACING, placeDirection)
-                .with(ModProperties.DISCRETE_THICKNESS, thickness).with(Properties.PERSISTENT, true)
+        return this.getDefaultState()
+                .with(Properties.FACING, placeDirection)
+                .with(ModProperties.DISCRETE_THICKNESS, thickness)
+                .with(Properties.PERSISTENT, true)
                 .with(Properties.WATERLOGGED, world.isWater(pos));
     }
 

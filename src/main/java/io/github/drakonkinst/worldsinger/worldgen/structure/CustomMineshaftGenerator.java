@@ -650,8 +650,9 @@ public class CustomMineshaftGenerator {
             BlockPos.Mutable blockPos = this.offsetPos(x, y, z);
             if (boundingBox.contains(blockPos) && world.getBlockState(blockPos).isAir()
                     && !world.getBlockState(blockPos.down()).isAir()) {
-                BlockState blockState = Blocks.RAIL.getDefaultState().with(RailBlock.SHAPE,
-                        random.nextBoolean() ? RailShape.NORTH_SOUTH : RailShape.EAST_WEST);
+                BlockState blockState = Blocks.RAIL.getDefaultState()
+                        .with(RailBlock.SHAPE,
+                                random.nextBoolean() ? RailShape.NORTH_SOUTH : RailShape.EAST_WEST);
                 this.addBlock(world, blockState, x, y, z, boundingBox);
                 ChestMinecartEntity chestMinecartEntity = new ChestMinecartEntity(
                         world.toServerWorld(), (double) blockPos.getX() + 0.5,
@@ -899,7 +900,8 @@ public class CustomMineshaftGenerator {
             super(ModStructurePieceTypes.CUSTOM_MINESHAFT_ROOM, nbt);
             BlockBox.CODEC.listOf()
                     .parse(NbtOps.INSTANCE, nbt.getList("Entrances", NbtElement.INT_ARRAY_TYPE))
-                    .resultOrPartial(Worldsinger.LOGGER::error).ifPresent(this.entrances::addAll);
+                    .resultOrPartial(Worldsinger.LOGGER::error)
+                    .ifPresent(this.entrances::addAll);
         }
 
         @Override
@@ -1006,7 +1008,8 @@ public class CustomMineshaftGenerator {
         @Override
         protected void writeNbt(StructureContext context, NbtCompound nbt) {
             super.writeNbt(context, nbt);
-            BlockBox.CODEC.listOf().encodeStart(NbtOps.INSTANCE, this.entrances)
+            BlockBox.CODEC.listOf()
+                    .encodeStart(NbtOps.INSTANCE, this.entrances)
                     .resultOrPartial(Worldsinger.LOGGER::error)
                     .ifPresent(nbtElement -> nbt.put("Entrances", nbtElement));
         }

@@ -76,6 +76,18 @@ public abstract class BoatItemMixin extends Item {
         return super.isItemBarVisible(stack) || silverDurability > 0;
     }
 
+    @Unique
+    private int getSilverDurability(ItemStack stack) {
+        SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(stack, null);
+        if (silverItemData == null) {
+            Worldsinger.LOGGER.error(
+                    "Expected to find silver data for boat item (testing " + stack.getItem()
+                            .toString() + ")");
+            return 0;
+        }
+        return silverItemData.getSilverDurability();
+    }
+
     @Override
     public int getItemBarColor(ItemStack stack) {
         int silverDurability = this.getSilverDurability(stack);
@@ -112,17 +124,5 @@ public abstract class BoatItemMixin extends Item {
         }
         SilverLinedComponent silverEntityData = ModComponents.SILVER_LINED.get(entity);
         silverEntityData.setSilverDurability(silverDurability);
-    }
-
-    @Unique
-    private int getSilverDurability(ItemStack stack) {
-        SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(stack, null);
-        if (silverItemData == null) {
-            Worldsinger.LOGGER.error(
-                    "Expected to find silver data for boat item (testing " + stack.getItem()
-                            .toString() + ")");
-            return 0;
-        }
-        return silverItemData.getSilverDurability();
     }
 }

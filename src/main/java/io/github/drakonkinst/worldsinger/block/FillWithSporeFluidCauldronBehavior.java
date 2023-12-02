@@ -30,7 +30,8 @@ public class FillWithSporeFluidCauldronBehavior extends FillWithFluidCauldronBeh
             Hand hand, ItemStack stack) {
         if (SporeKillingManager.isSporeKillingBlockNearby(world, pos)) {
             return CauldronBehavior.fillCauldron(world, pos, player, hand, stack,
-                    deadSporeCauldronBlock.get().getDefaultState()
+                    deadSporeCauldronBlock.get()
+                            .getDefaultState()
                             .with(LeveledCauldronBlock.LEVEL, 3), fillCauldronSound);
         }
         return super.interact(state, world, pos, player, hand, stack);

@@ -29,8 +29,10 @@ public abstract class ShipwreckGeneratorPieceMixin {
     @Inject(method = "handleMetadata", at = @At("HEAD"), cancellable = true)
     private void injectLumarLootTables(String metadata, BlockPos pos, ServerWorldAccess world,
             Random random, BlockBox boundingBox, CallbackInfo ci) {
-        if (world.getDimension().equals(world.getRegistryManager().get(RegistryKeys.DIMENSION_TYPE)
-                .get(ModDimensionTypes.LUMAR))) {
+        if (world.getDimension()
+                .equals(world.getRegistryManager()
+                        .get(RegistryKeys.DIMENSION_TYPE)
+                        .get(ModDimensionTypes.LUMAR))) {
             Identifier identifier = LUMAR_LOOT_TABLES.get(metadata);
             if (identifier != null) {
                 LootableInventory.setLootTable(world, random, pos.down(), identifier);

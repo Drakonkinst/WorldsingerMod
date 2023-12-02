@@ -31,7 +31,8 @@ public class CrimsonSnareBlock extends Block implements Waterloggable, SporeGrow
 
     public CrimsonSnareBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false)
+        this.setDefaultState(this.getDefaultState()
+                .with(Properties.PERSISTENT, false)
                 .with(Properties.WATERLOGGED, false));
     }
 
@@ -70,7 +71,8 @@ public class CrimsonSnareBlock extends Block implements Waterloggable, SporeGrow
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(Properties.PERSISTENT, true)
+        return this.getDefaultState()
+                .with(Properties.PERSISTENT, true)
                 .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()));
     }
 

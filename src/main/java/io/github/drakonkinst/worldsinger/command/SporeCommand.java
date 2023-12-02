@@ -33,21 +33,26 @@ public class SporeCommand {
         dispatcher.register(literal("spore").requires(
                         source -> source.hasPermissionLevel(ModCommands.PERMISSION_LEVEL_GAMEMASTER))
                 .then(argument("spore_type", StringArgumentType.word()).suggests(
-                        SUGGESTION_PROVIDER).then(argument("pos", Vec3ArgumentType.vec3()).then(
-                        argument("horizontal_radius", DoubleArgumentType.doubleArg(0.0)).then(
-                                argument("height", DoubleArgumentType.doubleArg(0.0)).then(
-                                        argument("size", FloatArgumentType.floatArg(0.0f)).then(
-                                                argument("count",
-                                                        IntegerArgumentType.integer(1)).executes(
-                                                        SporeCommand::spawnSporeParticle))))))));
+                                SUGGESTION_PROVIDER)
+                        .then(argument("pos", Vec3ArgumentType.vec3()).then(
+                                argument("horizontal_radius",
+                                        DoubleArgumentType.doubleArg(0.0)).then(
+                                        argument("height", DoubleArgumentType.doubleArg(0.0)).then(
+                                                argument("size",
+                                                        FloatArgumentType.floatArg(0.0f)).then(
+                                                        argument("count",
+                                                                IntegerArgumentType.integer(
+                                                                        1)).executes(
+                                                                SporeCommand::spawnSporeParticle))))))));
     }
 
     public static int spawnSporeParticle(CommandContext<ServerCommandSource> context) {
         String aetherSporeTypeStr = getString(context, "spore_type");
         Optional<AetherSpores> aetherSporeType = getAetherSporeTypeFromString(aetherSporeTypeStr);
         if (aetherSporeType.isEmpty()) {
-            context.getSource().sendError(
-                    Text.literal("Unknown aether spore type \"" + aetherSporeTypeStr + "\""));
+            context.getSource()
+                    .sendError(Text.literal(
+                            "Unknown aether spore type \"" + aetherSporeTypeStr + "\""));
             return 0;
         }
         Vec3d pos = getVec3(context, "pos");
@@ -58,8 +63,10 @@ public class SporeCommand {
         SporeParticleManager.createSporeParticles(context.getSource().getWorld(),
                 aetherSporeType.get(), pos.x, pos.y, pos.z, horizontalRadius, height, size, count,
                 false);
-        context.getSource().sendFeedback(() -> Text.literal(
-                "Spawned aether spore particle of type " + aetherSporeType.get().getName()), true);
+        context.getSource()
+                .sendFeedback(() -> Text.literal(
+                                "Spawned aether spore particle of type " + aetherSporeType.get().getName()),
+                        true);
         return 1;
     }
 

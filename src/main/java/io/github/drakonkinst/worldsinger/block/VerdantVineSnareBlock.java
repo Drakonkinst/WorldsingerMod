@@ -41,9 +41,11 @@ public class VerdantVineSnareBlock extends WallMountedBlock implements Waterlogg
 
     public VerdantVineSnareBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(
-                this.getDefaultState().with(FACING, Direction.NORTH).with(FACE, BlockFace.FLOOR)
-                        .with(Properties.PERSISTENT, false).with(Properties.WATERLOGGED, false));
+        this.setDefaultState(this.getDefaultState()
+                .with(FACING, Direction.NORTH)
+                .with(FACE, BlockFace.FLOOR)
+                .with(Properties.PERSISTENT, false)
+                .with(Properties.WATERLOGGED, false));
     }
 
     @Override

@@ -34,10 +34,15 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
     public VerdantVineBranchBlock(Settings settings) {
         super(RADIUS, settings);
-        this.setDefaultState(
-                this.stateManager.getDefaultState().with(NORTH, false).with(SOUTH, false)
-                        .with(EAST, false).with(WEST, false).with(UP, false).with(DOWN, false)
-                        .with(Properties.WATERLOGGED, false).with(Properties.PERSISTENT, false));
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(NORTH, false)
+                .with(SOUTH, false)
+                .with(EAST, false)
+                .with(WEST, false)
+                .with(UP, false)
+                .with(DOWN, false)
+                .with(Properties.WATERLOGGED, false)
+                .with(Properties.PERSISTENT, false));
     }
 
     @Override

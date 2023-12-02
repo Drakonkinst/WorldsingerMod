@@ -16,12 +16,11 @@ public class LivingAetherSporeFluidBlock extends AetherSporeFluidBlock implement
 
     // Unused Codec
     public static final MapCodec<LivingAetherSporeFluidBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                    FluidBlockAccessor.worldsinger$getFluidCodec().fieldOf("fluid")
-                            .forGetter(block -> block.fluid),
-                    AetherSpores.CODEC.fieldOf("sporeType")
-                            .forGetter(LivingAetherSporeFluidBlock::getSporeType),
-                    createSettingsCodec()).apply(instance, LivingAetherSporeFluidBlock::new));
+            instance -> instance.group(FluidBlockAccessor.worldsinger$getFluidCodec()
+                            .fieldOf("fluid")
+                            .forGetter(block -> block.fluid), AetherSpores.CODEC.fieldOf("sporeType")
+                            .forGetter(LivingAetherSporeFluidBlock::getSporeType), createSettingsCodec())
+                    .apply(instance, LivingAetherSporeFluidBlock::new));
 
     public LivingAetherSporeFluidBlock(FlowableFluid fluid, AetherSpores sporeType,
             Settings settings) {

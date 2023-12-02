@@ -144,7 +144,8 @@ public final class ModItems {
     // Item Groups
     private static final ItemGroup WORLDSINGER_ITEM_GROUP = FabricItemGroup.builder()
             .icon(() -> new ItemStack(ModBlocks.VERDANT_VINE_SNARE))
-            .displayName(Text.translatable("itemGroup.worldsinger.worldsinger")).build();
+            .displayName(Text.translatable("itemGroup.worldsinger.worldsinger"))
+            .build();
 
     private static Item createSporeBucketItem(Block sporeBlock) {
         return new AetherSporeBucketItem(sporeBlock, ModSoundEvents.BLOCK_SPORE_BLOCK_PLACE,

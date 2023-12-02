@@ -37,6 +37,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
     private static boolean alsoCheckSporeBlock(Object obj, Class<? extends Object> objClass) {
         return objClass.isAssignableFrom(obj.getClass()) || obj instanceof LivingAetherSporeBlock;
     }
+
     @Shadow
     public boolean dropItem;
     @Shadow
@@ -49,6 +50,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
     private int fallHurtMax;
     @Shadow
     private float fallHurtAmount;
+
     public FallingBlockEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }

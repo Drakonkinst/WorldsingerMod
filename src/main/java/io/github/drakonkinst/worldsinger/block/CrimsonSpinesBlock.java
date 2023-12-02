@@ -37,8 +37,10 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
 
     public CrimsonSpinesBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false)
-                .with(Properties.WATERLOGGED, false).with(Properties.FACING, Direction.UP));
+        this.setDefaultState(this.getDefaultState()
+                .with(Properties.PERSISTENT, false)
+                .with(Properties.WATERLOGGED, false)
+                .with(Properties.FACING, Direction.UP));
     }
 
     @Override
@@ -82,7 +84,8 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(Properties.PERSISTENT, true)
+        return this.getDefaultState()
+                .with(Properties.PERSISTENT, true)
                 .with(Properties.WATERLOGGED, ctx.getWorld().isWater(ctx.getBlockPos()))
                 .with(Properties.FACING, ctx.getSide());
     }

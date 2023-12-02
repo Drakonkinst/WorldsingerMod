@@ -49,9 +49,10 @@ public abstract class BucketItemMixin {
             ItemStack itemStack2) {
         Fluid fluid = Fluidlogged.getFluid(blockState);
         if (fluid != null) {
-            fluid.getBucketFillSound().ifPresentOrElse(sound -> user.playSound(sound, 1.0F, 1.0F),
-                    () -> user.playSound(Fluids.WATER.getBucketFillSound().orElseThrow(), 1.0F,
-                            1.0F));
+            fluid.getBucketFillSound()
+                    .ifPresentOrElse(sound -> user.playSound(sound, 1.0F, 1.0F),
+                            () -> user.playSound(Fluids.WATER.getBucketFillSound().orElseThrow(),
+                                    1.0F, 1.0F));
         }
     }
 }

@@ -69,7 +69,8 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
 
     public TallCrimsonSpinesBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false)
+        this.setDefaultState(this.getDefaultState()
+                .with(Properties.PERSISTENT, false)
                 .with(Properties.WATERLOGGED, false)
                 .with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER));
     }
@@ -138,7 +139,8 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
         if (pos.getY() >= world.getTopY() - 1 || !world.getBlockState(pos.up()).canReplace(ctx)) {
             return null;
         }
-        return this.getDefaultState().with(Properties.PERSISTENT, true)
+        return this.getDefaultState()
+                .with(Properties.PERSISTENT, true)
                 .with(Properties.WATERLOGGED, world.isWater(pos));
     }
 

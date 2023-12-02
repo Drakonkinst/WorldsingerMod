@@ -34,9 +34,9 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
 
     public static final MapCodec<AetherSporeBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(AetherSpores.CODEC.fieldOf("sporeType")
-                                    .forGetter(AetherSporeBlock::getSporeType),
-                            Registries.BLOCK.getCodec().fieldOf("block")
-                                    .forGetter(AetherSporeBlock::getFluidizedBlock), createSettingsCodec())
+                            .forGetter(AetherSporeBlock::getSporeType), Registries.BLOCK.getCodec()
+                            .fieldOf("block")
+                            .forGetter(AetherSporeBlock::getFluidizedBlock), createSettingsCodec())
                     .apply(instance,
                             (sporeType, fluidizedBlock1, settings1) -> new AetherSporeBlock(
                                     sporeType, settings1)));

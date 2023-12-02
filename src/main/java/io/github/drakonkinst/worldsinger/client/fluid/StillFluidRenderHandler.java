@@ -30,6 +30,7 @@ public class StillFluidRenderHandler implements FluidRenderHandler {
     protected final Identifier texture;
     protected final Sprite[] sprites;
     protected final boolean shaded;
+
     public StillFluidRenderHandler(Identifier stillTexture, boolean shaded) {
         this.texture = Objects.requireNonNull(stillTexture, "texture");
         this.sprites = new Sprite[2];
@@ -231,7 +232,11 @@ public class StillFluidRenderHandler implements FluidRenderHandler {
         if (shaded) {
             brightness = 1.0f;
         }
-        vertexConsumer.vertex(x, y, z).color(brightness, brightness, brightness, 1.0f).texture(u, v)
-                .light(light).normal(0.0f, 1.0f, 0.0f).next();
+        vertexConsumer.vertex(x, y, z)
+                .color(brightness, brightness, brightness, 1.0f)
+                .texture(u, v)
+                .light(light)
+                .normal(0.0f, 1.0f, 0.0f)
+                .next();
     }
 }

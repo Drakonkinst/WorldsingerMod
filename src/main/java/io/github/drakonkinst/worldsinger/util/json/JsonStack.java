@@ -57,7 +57,8 @@ public class JsonStack {
     }
 
     private String joinPath() {
-        return Streams.stream(elementPath.descendingIterator()).map(Member::name)
+        return Streams.stream(elementPath.descendingIterator())
+                .map(Member::name)
                 .collect(joining("/"));
     }
 

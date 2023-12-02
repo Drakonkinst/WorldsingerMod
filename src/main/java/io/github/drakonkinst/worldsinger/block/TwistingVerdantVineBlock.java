@@ -27,7 +27,8 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
 
     public TwistingVerdantVineBlock(Settings settings) {
         super(settings, SHAPE);
-        this.setDefaultState(this.getDefaultState().with(Properties.PERSISTENT, false)
+        this.setDefaultState(this.getDefaultState()
+                .with(Properties.PERSISTENT, false)
                 .with(Properties.WATERLOGGED, false));
     }
 
