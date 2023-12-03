@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.fluid;
 
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
-import io.github.drakonkinst.worldsinger.cosmere.lumar.SunlightSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.RoseiteSpores;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
@@ -13,7 +13,7 @@ import net.minecraft.state.property.Properties;
 public abstract class RoseiteSporeFluid extends LivingAetherSporeFluid {
 
     public RoseiteSporeFluid() {
-        super(SunlightSpores.getInstance());
+        super(RoseiteSpores.getInstance());
     }
 
     @Override
