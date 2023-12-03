@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
+import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
@@ -44,12 +45,14 @@ public class ZephyrSpores extends AetherSpores {
 
     private static final ZephyrSpores INSTANCE = new ZephyrSpores();
     private static final int COLOR = 0x4b9bb7;
-    private static final int PARTICLE_COLOR = 0x4b9bb7;
+    private static final int PARTICLE_COLOR = 0xb6d6e2;
 
     private static final float SPORE_TO_POWER_MULTIPLIER = 0.15f;
     private static final float KNOCKBACK_MULTIPLIER = 2.0f;
     private static final int MAX_PLAYER_AFFECTED_DISTANCE = 64;
     private static final int MAX_BLOCK_AFFECTED_DISTANCE = 8;
+    private static final float MAX_DAMAGE_DISTANCE = 0.5f;
+    private static final float DAMAGE_AMOUNT = 4.0f;
 
     public static ZephyrSpores getInstance() {
         return INSTANCE;
@@ -72,6 +75,12 @@ public class ZephyrSpores extends AetherSpores {
         // Push the explosion to the top of the block, so that it is not obstructed by itself
         Vec3d centerPos = new Vec3d(pos.getX(), Math.ceil(pos.getY()), pos.getZ());
         ZephyrSpores.explode(world, centerPos, power, KNOCKBACK_MULTIPLIER);
+
+        // Also spawn some spore particles
+        if (world instanceof ServerWorld serverWorld) {
+            SporeParticleSpawner.spawnBlockParticles(serverWorld, ZephyrSpores.getInstance(),
+                    BlockPosUtil.toBlockPos(pos), 1, 1);
+        }
     }
 
     // Too inefficient to use actual explosion logic since they spend a lot of time calculating blocks,
@@ -122,6 +131,12 @@ public class ZephyrSpores extends AetherSpores {
             if (sqrDistance > radius * radius) {
                 continue;
             }
+
+            if (sqrDistance <= MAX_DAMAGE_DISTANCE * MAX_DAMAGE_DISTANCE) {
+                entity.damage(ModDamageTypes.createSource(world, ModDamageTypes.ZEPHYR_SPORE),
+                        DAMAGE_AMOUNT);
+            }
+
             double distanceMultiplier = Math.sqrt(sqrDistance) / radius;
             double forceX = entity.getX() - centerPos.getX();
             double forceY = entity.getY() - centerPos.getY();
