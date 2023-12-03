@@ -20,8 +20,6 @@ public final class DataTables {
 
     @Environment(EnvType.CLIENT)
     public static void initializeClient() {
-        DataTables.initialize();
-
         ClientPlayNetworking.registerGlobalReceiver(DATA_TABLE_PACKET_ID,
                 (client, handler, buf, responseSender) -> {
                     if (DataTableRegistry.INSTANCE == null) {
@@ -57,6 +55,9 @@ public final class DataTables {
                 Worldsinger.LOGGER.error("Tags are not resolved on server side");
                 return;
             }
+
+            Worldsinger.LOGGER.info("Syncing " + DataTableRegistry.INSTANCE.getDataTableIds().size()
+                    + " data tables");
 
             PacketByteBuf buf = PacketByteBufs.create();
             DataTableRegistry.INSTANCE.writePacket(buf);

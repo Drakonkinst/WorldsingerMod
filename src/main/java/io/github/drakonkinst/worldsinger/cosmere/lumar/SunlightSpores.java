@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
@@ -183,8 +182,6 @@ public class SunlightSpores extends AetherSpores {
                     SoundCategory.BLOCKS, 1.0f,
                     (random.nextFloat() - random.nextFloat()) * 0.2f + 1.0f);
         }
-
-        Worldsinger.LOGGER.info(blocksProcessed.size() + " blocks processed");
     }
 
     private void doFireExplosion(World world, BlockPos pos, int radius) {
