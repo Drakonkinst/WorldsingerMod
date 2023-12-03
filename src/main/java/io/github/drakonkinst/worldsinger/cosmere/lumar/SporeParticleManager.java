@@ -165,7 +165,7 @@ public final class SporeParticleManager {
     }
 
     // Apply spore effect to entities within a given box
-    public static void damageEntitiesInBox(ServerWorld world, AetherSpores sporeType, Box box,
+    public static void damageEntitiesInBox(World world, AetherSpores sporeType, Box box,
             boolean useDistance) {
         if (sporeType.isDead()) {
             // Dead spores cannot damage anything
@@ -183,7 +183,7 @@ public final class SporeParticleManager {
         // Gather all candidate entities
         Vec3d centerPos = box.getCenter();
         List<LivingEntity> entitiesInRange = world.getEntitiesByClass(LivingEntity.class, box,
-                entity -> sporesCanAffect(entity) && (
+                entity -> SporeParticleManager.sporesCanAffect(entity) && (
                         entity.getType().isIn(ModEntityTypeTags.SPORES_ALWAYS_AFFECT)
                                 || box.contains(entity.getEyePos())));
 
@@ -251,8 +251,7 @@ public final class SporeParticleManager {
     }
 
     // Apply spore effect to entities within a specific block
-    public static void damageEntitiesInBlock(ServerWorld world, AetherSpores sporeType,
-            BlockPos pos) {
+    public static void damageEntitiesInBlock(World world, AetherSpores sporeType, BlockPos pos) {
         Box box = new Box(pos);
         SporeParticleManager.damageEntitiesInBox(world, sporeType, box, false);
     }

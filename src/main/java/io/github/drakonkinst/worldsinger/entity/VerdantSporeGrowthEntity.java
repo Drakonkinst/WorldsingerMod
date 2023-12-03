@@ -16,7 +16,6 @@ import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.enums.BlockFace;
 import net.minecraft.entity.EntityType;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -343,8 +342,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     private void applySporeEffectToEntities(BlockPos pos) {
-        if (this.getWorld() instanceof ServerWorld world) {
-            SporeParticleManager.damageEntitiesInBlock(world, VerdantSpores.getInstance(), pos);
-        }
+        SporeParticleManager.damageEntitiesInBlock(this.getWorld(), VerdantSpores.getInstance(),
+                pos);
     }
 }

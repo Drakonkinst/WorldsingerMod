@@ -16,7 +16,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -316,10 +315,8 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     private void applySporeEffectToEntities(BlockPos pos) {
-        if (this.getWorld() instanceof ServerWorld world) {
-            SporeParticleManager.damageEntitiesInBox(world, CrimsonSpores.getInstance(),
-                    BoxUtil.createBoxAroundBlock(pos, 1.0), true);
-        }
+        SporeParticleManager.damageEntitiesInBox(this.getWorld(), CrimsonSpores.getInstance(),
+                BoxUtil.createBoxAroundBlock(pos, 1.0), true);
     }
 
     private boolean canPlaceDecorator(BlockState state) {
