@@ -86,6 +86,10 @@ public class DataTableRegistry extends JsonDataLoader implements
     }
 
     public void resolveTags() {
+        if (tagsResolved) {
+            return;
+        }
+
         int numResolvedTables = 0;
         for (Map.Entry<Identifier, DataTable> entry : dataTables.entrySet()) {
             DataTable dataTable = entry.getValue();

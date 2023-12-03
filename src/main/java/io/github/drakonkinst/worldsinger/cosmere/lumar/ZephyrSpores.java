@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.LivingAetherSporeBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
@@ -93,12 +92,7 @@ public class ZephyrSpores extends AetherSpores {
     private static void affectBlocks(World world, Explosion explosion) {
         // TODO: Will particles still appear on dedicated server?
         world.getProfiler().push("explosion_blocks");
-        boolean first = true;
         for (BlockPos blockPos : explosion.getAffectedBlocks()) {
-            if (first) {
-                Worldsinger.LOGGER.info(blockPos.toString());
-                first = false;
-            }
             world.getBlockState(blockPos)
                     .onExploded(world, blockPos, explosion, (stack, pos) -> {});
         }

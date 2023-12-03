@@ -83,7 +83,8 @@ public class ThrownSporeBottleEntity extends ThrownItemEntity implements FlyingI
         BlockPos blockPos = this.getBlockPos();
         BlockState blockState = world.getBlockState(blockPos);
         if (world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
-            int waterAmount = WaterReactionManager.absorbWater(world, blockPos);
+            int waterAmount = WaterReactionManager.absorbWaterAndCollectReactives(world, blockPos,
+                    null);
             sporeType.doReactionFromSplashBottle(world, pos, SPORE_AMOUNT, waterAmount, random,
                     false);
         } else if (blockState.isOf(Blocks.WATER_CAULDRON)) {

@@ -3,10 +3,10 @@ package io.github.drakonkinst.worldsinger.cosmere;
 import io.github.drakonkinst.worldsinger.block.WaterReactiveBlock;
 import io.github.drakonkinst.worldsinger.fluid.WaterReactiveFluid;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
-import io.github.drakonkinst.worldsinger.util.math.Int3;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,7 @@ import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public final class WaterReactionManager {
 
@@ -31,50 +32,32 @@ public final class WaterReactionManager {
     private static final int MAX_ITERATIONS = 129;
     private static final int MAX_DEPTH = 32;
 
-    private static final Int3[] SURROUNDING_AND_CENTER = {Int3.ZERO, Int3.UP, Int3.DOWN, Int3.NORTH,
-            Int3.SOUTH, Int3.EAST, Int3.WEST};
-
     public static void catalyzeAroundWater(World world, BlockPos waterPos) {
-        // TODO: Possibly collect nearby water reactive blocks/fluids during the draining process
-        // for more natural results
-        int waterAmount = WaterReactionManager.absorbWater(world, waterPos);
+        List<Pair<BlockPos, WaterReactive>> reactiveBlocks = new ArrayList<>();
+        int waterAmount = WaterReactionManager.absorbWaterAndCollectReactives(world, waterPos,
+                reactiveBlocks);
         if (waterAmount <= 0) {
             return;
         }
 
-        // Check for other blocks that can be catalyzed by this block
-        List<Pair<BlockPos, WaterReactive>> neighborReactives = new ArrayList<>(6);
-        for (Int3 direction : SURROUNDING_AND_CENTER) {
-            BlockPos neighborPos = waterPos.add(direction.x(), direction.y(), direction.z());
-            BlockState neighborState = world.getBlockState(neighborPos);
-            if (neighborState.getBlock() instanceof WaterReactiveBlock waterReactiveBlock
-                    && waterReactiveBlock.canReactToWater(neighborPos, neighborState)) {
-                neighborReactives.add(Pair.of(neighborPos, waterReactiveBlock));
-            } else if (neighborState.getFluidState()
-                    .getFluid() instanceof WaterReactiveFluid waterReactiveFluid) {
-                neighborReactives.add(Pair.of(neighborPos, waterReactiveFluid));
-            }
-        }
-
-        if (neighborReactives.isEmpty()) {
-            return;
-        }
-
-        int waterAmountPerReactive = waterAmount / neighborReactives.size();
-        for (Pair<BlockPos, WaterReactive> pair : neighborReactives) {
+        int waterAmountPerReactive = waterAmount / reactiveBlocks.size();
+        for (Pair<BlockPos, WaterReactive> pair : reactiveBlocks) {
             WaterReactive waterReactive = pair.right();
             BlockPos pos = pair.left();
             waterReactive.reactToWater(world, pos, waterAmountPerReactive);
         }
     }
 
-    public static int absorbWater(World world, BlockPos centerPos) {
+    public static int absorbWaterAndCollectReactives(World world, BlockPos centerPos,
+            @Nullable List<Pair<BlockPos, WaterReactive>> reactiveBlocks) {
         Queue<IntObjectPair<BlockPos>> queue = new ArrayDeque<>();
-        LongOpenHashSet visited = new LongOpenHashSet();
+        LongSet visited = new LongOpenHashSet();
         queue.add(IntObjectPair.of(0, centerPos));
+
         int numIterations = 0;
         int totalWaterAmount = 0;
 
+        boolean shouldConsumeWater = true;
         while (!queue.isEmpty()) {
             IntObjectPair<BlockPos> next = queue.poll();
             BlockPos pos = next.right();
@@ -82,24 +65,38 @@ public final class WaterReactionManager {
             if (!visited.add(posId)) {
                 continue;
             }
+
             int waterAmount = WaterReactionManager.absorbWaterAtBlock(world, pos);
             if (waterAmount <= 0) {
-                // TODO: Check if it's water-reactive?
-                continue;
+                BlockState blockState = world.getBlockState(pos);
+                if (reactiveBlocks != null) {
+                    // Check if water reactive
+                    if (blockState.getBlock() instanceof WaterReactiveBlock waterReactiveBlock
+                            && waterReactiveBlock.canReactToWater(pos, blockState)) {
+                        reactiveBlocks.add(Pair.of(pos, waterReactiveBlock));
+                    } else if (blockState.getFluidState()
+                            .getFluid() instanceof WaterReactiveFluid waterReactiveFluid) {
+                        reactiveBlocks.add(Pair.of(pos, waterReactiveFluid));
+                    }
+                }
+            } else if (shouldConsumeWater) {
+                // Absorb water
+                totalWaterAmount += waterAmount;
+                shouldConsumeWater = totalWaterAmount < MAX_WATER_AMOUNT;
+                int depth = next.leftInt();
+                if (depth >= MAX_DEPTH) {
+                    continue;
+                }
+                for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+                    queue.add(IntObjectPair.of(depth + 1, pos.offset(direction)));
+                }
             }
-            totalWaterAmount += waterAmount;
-            if (++numIterations >= MAX_ITERATIONS || totalWaterAmount >= MAX_WATER_AMOUNT) {
-                return Math.min(totalWaterAmount, MAX_WATER_AMOUNT);
-            }
-            int depth = next.leftInt();
-            if (depth >= MAX_DEPTH) {
-                continue;
-            }
-            for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-                queue.add(IntObjectPair.of(depth + 1, pos.offset(direction)));
+            if (++numIterations >= MAX_ITERATIONS) {
+                break;
             }
         }
-        return totalWaterAmount;
+
+        return Math.min(totalWaterAmount, MAX_WATER_AMOUNT);
     }
 
     public static int absorbWaterAtBlock(World world, BlockPos pos) {
