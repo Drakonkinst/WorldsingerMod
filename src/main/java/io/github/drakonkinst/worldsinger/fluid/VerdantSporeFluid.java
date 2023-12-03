@@ -32,8 +32,8 @@ public abstract class VerdantSporeFluid extends LivingAetherSporeFluid {
     }
 
     @Override
-    public WaterReactiveType getReactiveType() {
-        return WaterReactiveType.VERDANT_SPORES;
+    public Type getReactiveType() {
+        return Type.VERDANT_SPORES;
     }
 
     @Override

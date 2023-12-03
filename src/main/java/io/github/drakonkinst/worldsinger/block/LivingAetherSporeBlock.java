@@ -81,7 +81,7 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
     }
 
     @Override
-    public WaterReactiveType getReactiveType() {
+    public Type getReactiveType() {
         return AetherSpores.getReactiveTypeFromSpore(sporeType);
     }
 

@@ -32,8 +32,8 @@ public abstract class ZephyrSporeFluid extends LivingAetherSporeFluid {
     }
 
     @Override
-    public WaterReactiveType getReactiveType() {
-        return WaterReactiveType.ZEPHYR_SPORES;
+    public Type getReactiveType() {
+        return Type.ZEPHYR_SPORES;
     }
 
     @Override

@@ -101,8 +101,8 @@ public class LivingCrimsonSnareBlock extends CrimsonSnareBlock implements Living
     }
 
     @Override
-    public WaterReactiveType getReactiveType() {
-        return WaterReactiveType.CRIMSON_SPORES;
+    public Type getReactiveType() {
+        return Type.CRIMSON_SPORES;
     }
 
     /* Start of code common to all LivingSporeGrowthBlocks */

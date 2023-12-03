@@ -79,8 +79,8 @@ public class CustomMineshaftStructure extends Structure {
 
     public enum Type implements StringIdentifiable {
         LUMAR_OAK("lumar_oak", Blocks.OAK_LOG, Blocks.OAK_PLANKS, Blocks.OAK_FENCE, true, true,
-                false, false, true, ModLootTables.LUMAR_SALTSTONE_MINESHAFT_CHEST), LUMAR_BIRCH(
-                "lumar_birch", Blocks.BIRCH_LOG, Blocks.BIRCH_PLANKS, Blocks.BIRCH_FENCE, true,
+                false, false, true, ModLootTables.LUMAR_SALTSTONE_MINESHAFT_CHEST),
+        LUMAR_BIRCH("lumar_birch", Blocks.BIRCH_LOG, Blocks.BIRCH_PLANKS, Blocks.BIRCH_FENCE, true,
                 true, false, false, true, ModLootTables.LUMAR_SALTSTONE_MINESHAFT_CHEST);
 
         public static final Codec<Type> CODEC;

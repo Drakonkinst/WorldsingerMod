@@ -86,8 +86,8 @@ public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements Livi
     }
 
     @Override
-    public WaterReactiveType getReactiveType() {
-        return WaterReactiveType.CRIMSON_SPORES;
+    public Type getReactiveType() {
+        return Type.CRIMSON_SPORES;
     }
 
     /* Start of code common to all LivingSporeGrowthBlocks */

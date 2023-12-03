@@ -66,7 +66,7 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
     }
 
     @Override
-    public WaterReactiveType getReactiveType() {
+    public Type getReactiveType() {
         return AetherSpores.getReactiveTypeFromSpore(sporeType);
     }
 }

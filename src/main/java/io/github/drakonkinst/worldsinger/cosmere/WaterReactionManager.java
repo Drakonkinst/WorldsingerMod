@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.cosmere;
 
 import io.github.drakonkinst.worldsinger.block.WaterReactiveBlock;
-import io.github.drakonkinst.worldsinger.cosmere.WaterReactive.WaterReactiveType;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactive.Type;
 import io.github.drakonkinst.worldsinger.fluid.WaterReactiveFluid;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import it.unimi.dsi.fastutil.Pair;
@@ -150,12 +150,13 @@ public final class WaterReactionManager {
     public static void catalyzeAroundWaterEffect(World world, BlockPos impactPos,
             int horizontalRadius, int verticalRadius, int waterAmount) {
         List<Pair<BlockPos, WaterReactive>> reactiveBlocks = new ArrayList<>();
-        Set<WaterReactiveType> encounteredTypes = new HashSet<>();
+        Set<Type> encounteredTypes = new HashSet<>();
         for (BlockPos currPos : BlockPos.iterateOutwards(impactPos, horizontalRadius,
                 verticalRadius, horizontalRadius)) {
             BlockState state = world.getBlockState(currPos);
             WaterReactive reactive = WaterReactionManager.getIfWaterReactive(state);
-            if (reactive != null && encounteredTypes.add(reactive.getReactiveType())) {
+            if (reactive != null && (!reactive.getReactiveType().shouldBeUnique()
+                    || encounteredTypes.add(reactive.getReactiveType()))) {
                 reactiveBlocks.add(Pair.of(new BlockPos(currPos), reactive));
             }
             if (reactiveBlocks.size() >= MAX_AFFECTED_FROM_EFFECT) {

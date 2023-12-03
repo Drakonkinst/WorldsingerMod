@@ -10,9 +10,25 @@ public interface WaterReactive {
 
     boolean reactToWater(World world, BlockPos pos, int waterAmount);
 
-    WaterReactiveType getReactiveType();
+    Type getReactiveType();
 
-    enum WaterReactiveType {
-        MISC, VERDANT_SPORES, CRIMSON_SPORES, ZEPHYR_SPORES, SUNLIGHT_SPORES, ROSEITE_SPORES, MIDNIGHT_SPORES
+    enum Type {
+        MISC(false),
+        VERDANT_SPORES(true),
+        CRIMSON_SPORES(true),
+        ZEPHYR_SPORES(true),
+        SUNLIGHT_SPORES(true),
+        ROSEITE_SPORES(true),
+        MIDNIGHT_SPORES(true);
+
+        private final boolean shouldBeUnique;
+
+        Type(boolean shouldBeUnique) {
+            this.shouldBeUnique = shouldBeUnique;
+        }
+
+        public boolean shouldBeUnique() {
+            return shouldBeUnique;
+        }
     }
 }

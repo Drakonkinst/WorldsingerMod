@@ -95,8 +95,8 @@ public class LivingTwistingVerdantVineStemBlock extends TwistingVerdantVineStemB
     }
 
     @Override
-    public WaterReactiveType getReactiveType() {
-        return WaterReactiveType.VERDANT_SPORES;
+    public Type getReactiveType() {
+        return Type.VERDANT_SPORES;
     }
 
     /* Start of code common to all LivingSporeGrowthBlocks */

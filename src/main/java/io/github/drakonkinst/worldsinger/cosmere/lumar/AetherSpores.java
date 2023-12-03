@@ -3,8 +3,7 @@ package io.github.drakonkinst.worldsinger.cosmere.lumar;
 import com.mojang.serialization.Codec;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
-import io.github.drakonkinst.worldsinger.cosmere.WaterReactive;
-import io.github.drakonkinst.worldsinger.cosmere.WaterReactive.WaterReactiveType;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactive.Type;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.item.SporeBottleItem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
@@ -51,15 +50,15 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
 
     public abstract int getColor();
 
-    public static WaterReactive.WaterReactiveType getReactiveTypeFromSpore(AetherSpores sporeType) {
+    public static Type getReactiveTypeFromSpore(AetherSpores sporeType) {
         return switch(sporeType.getId()) {
-            case VerdantSpores.ID -> WaterReactiveType.VERDANT_SPORES;
-            case CrimsonSpores.ID -> WaterReactiveType.CRIMSON_SPORES;
-            case SunlightSpores.ID -> WaterReactiveType.SUNLIGHT_SPORES;
-            case ZephyrSpores.ID -> WaterReactiveType.ZEPHYR_SPORES;
-            case RoseiteSpores.ID -> WaterReactiveType.ROSEITE_SPORES;
-            case MidnightSpores.ID -> WaterReactiveType.MIDNIGHT_SPORES;
-            default -> WaterReactiveType.MISC;
+            case VerdantSpores.ID -> Type.VERDANT_SPORES;
+            case CrimsonSpores.ID -> Type.CRIMSON_SPORES;
+            case SunlightSpores.ID -> Type.SUNLIGHT_SPORES;
+            case ZephyrSpores.ID -> Type.ZEPHYR_SPORES;
+            case RoseiteSpores.ID -> Type.ROSEITE_SPORES;
+            case MidnightSpores.ID -> Type.MIDNIGHT_SPORES;
+            default -> Type.MISC;
         };
     }
 

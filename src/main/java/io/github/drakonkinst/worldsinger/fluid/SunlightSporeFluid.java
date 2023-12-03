@@ -32,8 +32,8 @@ public abstract class SunlightSporeFluid extends LivingAetherSporeFluid {
     }
 
     @Override
-    public WaterReactiveType getReactiveType() {
-        return WaterReactiveType.SUNLIGHT_SPORES;
+    public Type getReactiveType() {
+        return Type.SUNLIGHT_SPORES;
     }
 
     @Override

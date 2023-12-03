@@ -32,8 +32,8 @@ public abstract class CrimsonSporeFluid extends LivingAetherSporeFluid {
     }
 
     @Override
-    public WaterReactiveType getReactiveType() {
-        return WaterReactiveType.CRIMSON_SPORES;
+    public Type getReactiveType() {
+        return Type.CRIMSON_SPORES;
     }
 
     @Override
