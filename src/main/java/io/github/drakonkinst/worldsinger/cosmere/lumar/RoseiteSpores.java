@@ -1,6 +1,8 @@
 package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
+import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
+import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -46,26 +48,22 @@ public class RoseiteSpores extends AetherSpores {
 
     @Override
     public Item getBucketItem() {
-        return null;
-        // return ModItems.ROSEITE_SPORES_BUCKET;
+        return ModItems.ROSEITE_SPORES_BUCKET;
     }
 
     @Override
     public Block getFluidBlock() {
-        return null;
-        // return ModBlocks.ROSEITE_SPORE_SEA;
+        return ModBlocks.ROSEITE_SPORE_SEA;
     }
 
     @Override
     public Block getSolidBlock() {
-        return null;
-        // return ModBlocks.ROSEITE_SPORE_BLOCK;
+        return ModBlocks.ROSEITE_SPORE_BLOCK;
     }
 
     @Override
     public FlowableFluid getFluid() {
-        return null;
-        // return ModFluids.ROSEITE_SPORES;
+        return ModFluids.ROSEITE_SPORES;
     }
 
     @Override

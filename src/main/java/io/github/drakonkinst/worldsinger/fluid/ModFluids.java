@@ -28,6 +28,14 @@ public final class ModFluids {
             new SunlightSporeFluid.Still());
     public static final FlowableFluid FLOWING_SUNLIGHT_SPORES = register("flowing_sunlight_spores",
             new SunlightSporeFluid.Flowing());
+    public static final FlowableFluid ROSEITE_SPORES = register("roseite_spores",
+            new RoseiteSporeFluid.Still());
+    public static final FlowableFluid FLOWING_ROSEITE_SPORES = register("flowing_roseite_spores",
+            new RoseiteSporeFluid.Flowing());
+    public static final FlowableFluid MIDNIGHT_SPORES = register("midnight_spores",
+            new MidnightSporeFluid.Still());
+    public static final FlowableFluid FLOWING_MIDNIGHT_SPORES = register("flowing_midnight_spores",
+            new MidnightSporeFluid.Flowing());
     public static final StillFluid SUNLIGHT = register("sunlight", new SunlightFluid());
 
     public static <T extends Fluid> T register(String id, T fluid) {

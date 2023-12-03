@@ -20,8 +20,8 @@ public class DeadSpores extends AetherSpores {
     public static final int ID = 0;
 
     private static final DeadSpores INSTANCE = new DeadSpores();
-    private static final int COLOR = 0x111111;
-    private static final int PARTICLE_COLOR = 0x111111;
+    private static final int COLOR = 0x888888;
+    private static final int PARTICLE_COLOR = 0xaaaaaa;
 
     public static DeadSpores getInstance() {
         return INSTANCE;

@@ -39,6 +39,8 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
     private static final BlockState CRIMSON_SEA = ModBlocks.CRIMSON_SPORE_SEA.getDefaultState();
     private static final BlockState ZEPHYR_SEA = ModBlocks.ZEPHYR_SPORE_SEA.getDefaultState();
     private static final BlockState SUNLIGHT_SEA = ModBlocks.SUNLIGHT_SPORE_SEA.getDefaultState();
+    private static final BlockState ROSEITE_SEA = ModBlocks.ROSEITE_SPORE_SEA.getDefaultState();
+    private static final BlockState MIDNIGHT_SEA = ModBlocks.MIDNIGHT_SPORE_SEA.getDefaultState();
 
     private static AquiferSampler.FluidLevelSampler createFluidLevelSampler() {
         AquiferSampler.FluidLevel fluidLevel = new AquiferSampler.FluidLevel(SEA_LEVEL,
@@ -65,16 +67,22 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
         DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
         NoiseRouter noiseRouter = noiseConfig.getNoiseRouter();
         double temperature = noiseRouter.temperature().sample(noisePos);
-        if (temperature <= -0.25f) {
+        if (temperature <= -0.66f) {
+            return ROSEITE_SEA;
+        }
+        if (temperature <= -0.33f) {
             return EMERALD_SEA;
         }
         if (temperature <= 0.0f) {
             return ZEPHYR_SEA;
         }
-        if (temperature <= 0.25) {
+        if (temperature <= 0.33) {
             return SUNLIGHT_SEA;
         }
-        return CRIMSON_SEA;
+        if (temperature <= 0.66) {
+            return CRIMSON_SEA;
+        }
+        return MIDNIGHT_SEA;
     }
 
     @Override

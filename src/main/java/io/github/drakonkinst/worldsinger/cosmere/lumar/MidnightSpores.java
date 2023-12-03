@@ -1,6 +1,8 @@
 package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
+import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
+import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
@@ -18,8 +20,8 @@ public class MidnightSpores extends AetherSpores {
     public static final int ID = 6;
 
     private static final MidnightSpores INSTANCE = new MidnightSpores();
-    private static final int COLOR = 0x888888;
-    private static final int PARTICLE_COLOR = 0xaaaaaa;
+    private static final int COLOR = 0x111111;
+    private static final int PARTICLE_COLOR = 0x111111;
 
     public static MidnightSpores getInstance() {
         return INSTANCE;
@@ -44,26 +46,22 @@ public class MidnightSpores extends AetherSpores {
 
     @Override
     public Item getBucketItem() {
-        return null;
-        // return ModItems.MIDNIGHT_SPORES_BUCKET;
+        return ModItems.MIDNIGHT_SPORES_BUCKET;
     }
 
     @Override
     public Block getFluidBlock() {
-        return null;
-        // return ModBlocks.MIDNIGHT_SPORE_SEA;
+        return ModBlocks.MIDNIGHT_SPORE_SEA;
     }
 
     @Override
     public Block getSolidBlock() {
-        return null;
-        // return ModBlocks.MIDNIGHT_SPORE_BLOCK;
+        return ModBlocks.MIDNIGHT_SPORE_BLOCK;
     }
 
     @Override
     public FlowableFluid getFluid() {
-        return null;
-        // return ModFluids.MIDNIGHT_SPORES;
+        return ModFluids.MIDNIGHT_SPORES;
     }
 
     @Override

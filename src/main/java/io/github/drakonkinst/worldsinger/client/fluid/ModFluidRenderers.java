@@ -24,6 +24,10 @@ public final class ModFluidRenderers {
                 "block/zephyr_spore_block", "block/zephyr_spore_sea_flow");
         registerFluidRenderer(ModFluids.SUNLIGHT_SPORES, ModFluids.FLOWING_SUNLIGHT_SPORES,
                 "block/sunlight_spore_block", "block/sunlight_spore_sea_flow");
+        registerFluidRenderer(ModFluids.ROSEITE_SPORES, ModFluids.FLOWING_ROSEITE_SPORES,
+                "block/roseite_spore_block", "block/roseite_spore_sea_flow");
+        registerFluidRenderer(ModFluids.MIDNIGHT_SPORES, ModFluids.FLOWING_MIDNIGHT_SPORES,
+                "block/midnight_spore_block", "block/midnight_spore_sea_flow");
         registerFluidRenderer(ModFluids.SUNLIGHT, "block/sunlight", false);
     }
 

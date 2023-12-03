@@ -3,6 +3,8 @@ package io.github.drakonkinst.worldsinger.block;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.CrimsonSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.DeadSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.RoseiteSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SunlightSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.VerdantSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.ZephyrSpores;
@@ -248,6 +250,34 @@ public final class ModBlocks {
                     .luminance(SunlightBlock.STATE_TO_LUMINANCE)
                     .mapColor(MapColor.YELLOW)
                     .pistonBehavior(PistonBehavior.DESTROY)), false);
+
+    // Roseite Spores
+    public static final Block ROSEITE_SPORE_SEA = register("roseite_spore_sea",
+            new LivingAetherSporeFluidBlock(ModFluids.ROSEITE_SPORES, RoseiteSpores.getInstance(),
+                    createSporeFluidSettings(true, MapColor.PINK)), false);
+    public static final Block ROSEITE_SPORE_BLOCK = register("roseite_spore_block",
+            new LivingAetherSporeBlock(RoseiteSpores.getInstance(), ModBlocks.ROSEITE_SPORE_SEA,
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
+                            .ticksRandomly()
+                            .mapColor(MapColor.PINK)), false);
+    public static final Block ROSEITE_SPORE_CAULDRON = register("roseite_spore_cauldron",
+            new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON).ticksRandomly(),
+                    ModCauldronBehaviors.ROSEITE_SPORE_CAULDRON_BEHAVIOR,
+                    RoseiteSpores.getInstance()), false);
+
+    // Midnight Spores
+    public static final Block MIDNIGHT_SPORE_SEA = register("midnight_spore_sea",
+            new LivingAetherSporeFluidBlock(ModFluids.MIDNIGHT_SPORES, MidnightSpores.getInstance(),
+                    createSporeFluidSettings(true, MapColor.BLACK)), false);
+    public static final Block MIDNIGHT_SPORE_BLOCK = register("midnight_spore_block",
+            new LivingAetherSporeBlock(MidnightSpores.getInstance(), ModBlocks.MIDNIGHT_SPORE_SEA,
+                    FabricBlockSettings.copyOf(ModBlocks.DEAD_SPORE_BLOCK)
+                            .ticksRandomly()
+                            .mapColor(MapColor.BLACK)), false);
+    public static final Block MIDNIGHT_SPORE_CAULDRON = register("midnight_spore_cauldron",
+            new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON).ticksRandomly(),
+                    ModCauldronBehaviors.MIDNIGHT_SPORE_CAULDRON_BEHAVIOR,
+                    MidnightSpores.getInstance()), false);
 
     // Other
     public static final Block MAGMA_VENT = register("magma_vent",

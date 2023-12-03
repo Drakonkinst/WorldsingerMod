@@ -30,6 +30,10 @@ public final class ModCauldronBehaviors {
             "zephyr_spores");
     public static final CauldronBehaviorMap SUNLIGHT_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap(
             "sunlight_spores");
+    public static final CauldronBehaviorMap ROSEITE_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap(
+            "roseite_spores");
+    public static final CauldronBehaviorMap MIDNIGHT_SPORE_CAULDRON_BEHAVIOR = CauldronBehavior.createMap(
+            "midnight_spores");
 
     public static final CauldronBehavior FILL_WITH_DEAD_SPORES = new FillWithFluidCauldronBehavior(
             () -> ModBlocks.DEAD_SPORE_CAULDRON, ModSoundEvents.ITEM_BUCKET_EMPTY_AETHER_SPORE);
@@ -41,6 +45,10 @@ public final class ModCauldronBehaviors {
             () -> ModBlocks.ZEPHYR_SPORE_CAULDRON, () -> ModBlocks.DEAD_SPORE_CAULDRON);
     public static final CauldronBehavior FILL_WITH_SUNLIGHT_SPORES = new FillWithSporeFluidCauldronBehavior(
             () -> ModBlocks.SUNLIGHT_SPORE_CAULDRON, () -> ModBlocks.DEAD_SPORE_CAULDRON);
+    public static final CauldronBehavior FILL_WITH_ROSEITE_SPORES = new FillWithSporeFluidCauldronBehavior(
+            () -> ModBlocks.ROSEITE_SPORE_CAULDRON, () -> ModBlocks.DEAD_SPORE_CAULDRON);
+    public static final CauldronBehavior FILL_WITH_MIDNIGHT_SPORES = new FillWithSporeFluidCauldronBehavior(
+            () -> ModBlocks.MIDNIGHT_SPORE_CAULDRON, () -> ModBlocks.DEAD_SPORE_CAULDRON);
 
     private static final SoundEvent FILL_SPORE_BOTTLE_SOUND = SoundEvents.BLOCK_SAND_BREAK;
     private static final SoundEvent FILL_SPORE_BUCKET_SOUND = SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW;
@@ -70,6 +78,14 @@ public final class ModCauldronBehaviors {
                 ModCauldronBehaviors.SUNLIGHT_SPORE_CAULDRON_BEHAVIOR,
                 ModBlocks.SUNLIGHT_SPORE_CAULDRON, ModItems.SUNLIGHT_SPORES_BUCKET,
                 ModItems.SUNLIGHT_SPORES_BOTTLE);
+        ModCauldronBehaviors.registerSporeBucket(
+                ModCauldronBehaviors.ROSEITE_SPORE_CAULDRON_BEHAVIOR,
+                ModBlocks.ROSEITE_SPORE_CAULDRON, ModItems.ROSEITE_SPORES_BUCKET,
+                ModItems.ROSEITE_SPORES_BOTTLE);
+        ModCauldronBehaviors.registerSporeBucket(
+                ModCauldronBehaviors.MIDNIGHT_SPORE_CAULDRON_BEHAVIOR,
+                ModBlocks.MIDNIGHT_SPORE_CAULDRON, ModItems.MIDNIGHT_SPORES_BUCKET,
+                ModItems.MIDNIGHT_SPORES_BOTTLE);
     }
 
     private static void registerExtraBucketBehavior(CauldronBehaviorMap behavior) {
@@ -89,6 +105,9 @@ public final class ModCauldronBehaviors {
         behavior.put(ModItems.ZEPHYR_SPORES_BUCKET, ModCauldronBehaviors.FILL_WITH_ZEPHYR_SPORES);
         behavior.put(ModItems.SUNLIGHT_SPORES_BUCKET,
                 ModCauldronBehaviors.FILL_WITH_SUNLIGHT_SPORES);
+        behavior.put(ModItems.ROSEITE_SPORES_BUCKET, ModCauldronBehaviors.FILL_WITH_ROSEITE_SPORES);
+        behavior.put(ModItems.MIDNIGHT_SPORES_BUCKET,
+                ModCauldronBehaviors.FILL_WITH_MIDNIGHT_SPORES);
     }
 
     private static void registerSporeBucket(Map<Item, CauldronBehavior> behavior,

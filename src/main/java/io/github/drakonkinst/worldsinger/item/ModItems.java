@@ -52,6 +52,10 @@ public final class ModItems {
             createSporeBucketItem(ModBlocks.ZEPHYR_SPORE_BLOCK));
     public static final Item SUNLIGHT_SPORES_BUCKET = ModItems.register("sunlight_spores_bucket",
             createSporeBucketItem(ModBlocks.SUNLIGHT_SPORE_BLOCK));
+    public static final Item ROSEITE_SPORES_BUCKET = ModItems.register("roseite_spores_bucket",
+            createSporeBucketItem(ModBlocks.ROSEITE_SPORE_BLOCK));
+    public static final Item MIDNIGHT_SPORES_BUCKET = ModItems.register("midnight_spores_bucket",
+            createSporeBucketItem(ModBlocks.MIDNIGHT_SPORE_BLOCK));
 
     // Spore Bottles
     public static final Item DEAD_SPORES_BOTTLE = ModItems.register("dead_spores_bottle",
@@ -187,8 +191,10 @@ public final class ModItems {
                     ModItems.STEEL_AXE, ModItems.STEEL_HOE);
             itemGroup.addAfter(Items.FLINT_AND_STEEL, ModItems.QUARTZ_AND_STEEL,
                     ModItems.FLINT_AND_IRON, ModItems.QUARTZ_AND_IRON);
-            itemGroup.addAfter(Items.MILK_BUCKET, ModItems.VERDANT_SPORES_BUCKET,
-                    ModItems.DEAD_SPORES_BUCKET);
+            itemGroup.addAfter(Items.MILK_BUCKET, ModItems.DEAD_SPORES_BUCKET,
+                    ModItems.VERDANT_SPORES_BUCKET, ModItems.CRIMSON_SPORES_BUCKET,
+                    ModItems.ZEPHYR_SPORES_BUCKET, ModItems.SUNLIGHT_SPORES_BUCKET,
+                    ModItems.ROSEITE_SPORES_BUCKET, ModItems.MIDNIGHT_SPORES_BUCKET);
         });
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register((itemGroup) -> {
@@ -236,6 +242,8 @@ public final class ModItems {
             itemGroup.add(ModItems.CRIMSON_SPORES_BUCKET);
             itemGroup.add(ModItems.ZEPHYR_SPORES_BUCKET);
             itemGroup.add(ModItems.SUNLIGHT_SPORES_BUCKET);
+            itemGroup.add(ModItems.ROSEITE_SPORES_BUCKET);
+            itemGroup.add(ModItems.MIDNIGHT_SPORES_BUCKET);
 
             itemGroup.add(ModBlocks.VERDANT_VINE_BLOCK);
             itemGroup.add(ModBlocks.VERDANT_VINE_BRANCH);
