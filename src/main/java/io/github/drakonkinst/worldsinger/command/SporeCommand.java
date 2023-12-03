@@ -27,7 +27,7 @@ import net.minecraft.util.math.Vec3d;
 public class SporeCommand {
 
     private static final SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (context, builder) -> CommandSource.suggestMatching(
-            AetherSpores.AETHER_SPORE_MAP.keySet().stream(), builder);
+            AetherSpores.getAetherSporeMap().keySet(), builder);
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("spore").requires(
@@ -71,7 +71,7 @@ public class SporeCommand {
     }
 
     private static Optional<AetherSpores> getAetherSporeTypeFromString(String str) {
-        for (AetherSpores aetherSporeType : AetherSpores.AETHER_SPORE_MAP.values()) {
+        for (AetherSpores aetherSporeType : AetherSpores.getAetherSporeMap().values()) {
             if (aetherSporeType.getName().equals(str)) {
                 return Optional.of(aetherSporeType);
             }

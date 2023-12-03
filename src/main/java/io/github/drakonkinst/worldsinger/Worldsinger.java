@@ -35,7 +35,7 @@ public class Worldsinger implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Initializing Worldsinger...");
 
-        DataTables.initializeServer();
+        DataTables.initialize();
         Fluidlogged.initialize();
 
         ModProperties.initialize();

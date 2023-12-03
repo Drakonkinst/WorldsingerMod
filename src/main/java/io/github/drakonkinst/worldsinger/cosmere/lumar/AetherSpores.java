@@ -27,13 +27,18 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AetherSpores {
+public abstract class AetherSpores implements Comparable<AetherSpores> {
 
-    public static final Map<String, AetherSpores> AETHER_SPORE_MAP = new Object2ObjectArrayMap<>();
+    private static final Map<String, AetherSpores> AETHER_SPORE_MAP = new Object2ObjectArrayMap<>();
     public static final Codec<AetherSpores> CODEC = Codecs.idChecked(AetherSpores::getName,
             AETHER_SPORE_MAP::get);
+
+    public static Map<String, AetherSpores> getAetherSporeMap() {
+        return AETHER_SPORE_MAP;
+    }
 
     public static int getBottleColor(ItemStack stack) {
         if (stack.getItem() instanceof SporeBottleItem sporeBottleItem) {
@@ -168,5 +173,10 @@ public abstract class AetherSpores {
             // Use original position
             return entity.getPos();
         }
+    }
+
+    @Override
+    public int compareTo(@NotNull AetherSpores o) {
+        return this.getId() - o.getId();
     }
 }

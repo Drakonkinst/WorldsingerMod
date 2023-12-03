@@ -18,13 +18,9 @@ public final class DataTables {
 
     private static final Identifier DATA_TABLE_PACKET_ID = Worldsinger.id("data_table");
 
-    private static void initialize() {
+    public static void initialize() {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA)
                 .registerReloadListener(new DataTableRegistry());
-    }
-
-    public static void initializeServer() {
-        DataTables.initialize();
 
         CommonLifecycleEvents.TAGS_LOADED.register(((registries, client) -> {
             if (DataTableRegistry.INSTANCE != null) {
