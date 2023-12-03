@@ -101,6 +101,11 @@ public class LivingCrimsonSpikeBlock extends CrimsonSpikeBlock implements Living
         }
     }
 
+    @Override
+    public WaterReactiveType getReactiveType() {
+        return WaterReactiveType.CRIMSON_SPORES;
+    }
+
     /* Start of code common to all LivingSporeGrowthBlocks */
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {

@@ -130,6 +130,11 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
         }
     }
 
+    @Override
+    public WaterReactiveType getReactiveType() {
+        return WaterReactiveType.VERDANT_SPORES;
+    }
+
     /* Start of code common to all LivingSporeGrowthBlocks */
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {

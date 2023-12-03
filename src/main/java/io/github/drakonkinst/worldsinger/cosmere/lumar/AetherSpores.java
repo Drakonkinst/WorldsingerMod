@@ -3,6 +3,8 @@ package io.github.drakonkinst.worldsinger.cosmere.lumar;
 import com.mojang.serialization.Codec;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactive;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactive.WaterReactiveType;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.item.SporeBottleItem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
@@ -48,6 +50,20 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
     }
 
     public abstract int getColor();
+
+    public static WaterReactive.WaterReactiveType getReactiveTypeFromSpore(AetherSpores sporeType) {
+        return switch(sporeType.getId()) {
+            case VerdantSpores.ID -> WaterReactiveType.VERDANT_SPORES;
+            case CrimsonSpores.ID -> WaterReactiveType.CRIMSON_SPORES;
+            case SunlightSpores.ID -> WaterReactiveType.SUNLIGHT_SPORES;
+            case ZephyrSpores.ID -> WaterReactiveType.ZEPHYR_SPORES;
+            case RoseiteSpores.ID -> WaterReactiveType.ROSEITE_SPORES;
+            case MidnightSpores.ID -> WaterReactiveType.MIDNIGHT_SPORES;
+            default -> WaterReactiveType.MISC;
+        };
+    }
+
+    public abstract int getId();
 
     // Called when an entity enters the spore sea
     public static void onEnterSporeSea(Entity entity) {
@@ -128,8 +144,6 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
 
     public abstract int getParticleColor();
 
-    public abstract int getId();
-
     // By default, act as normal
     public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
             int water, Random random) {
@@ -157,6 +171,11 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
         return false;
     }
 
+    @Override
+    public int compareTo(@NotNull AetherSpores o) {
+        return this.getId() - o.getId();
+    }
+
     // Do a little hack to move spore growth position to the topmost block
     protected Vec3d getTopmostSeaPosForEntity(World world, LivingEntity entity,
             TagKey<Fluid> fluidTag) {
@@ -173,10 +192,5 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
             // Use original position
             return entity.getPos();
         }
-    }
-
-    @Override
-    public int compareTo(@NotNull AetherSpores o) {
-        return this.getId() - o.getId();
     }
 }

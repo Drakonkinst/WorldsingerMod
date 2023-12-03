@@ -18,6 +18,22 @@ public final class DataTables {
 
     private static final Identifier DATA_TABLE_PACKET_ID = Worldsinger.id("data_table");
 
+    @Environment(EnvType.CLIENT)
+    public static void initializeClient() {
+        DataTables.initialize();
+
+        ClientPlayNetworking.registerGlobalReceiver(DATA_TABLE_PACKET_ID,
+                (client, handler, buf, responseSender) -> {
+                    if (DataTableRegistry.INSTANCE == null) {
+                        Worldsinger.LOGGER.error("DataTableRegistry is null on client side");
+                    }
+                    DataTableRegistry.INSTANCE.readPacket(buf);
+                    Worldsinger.LOGGER.info(
+                            "Loaded " + DataTableRegistry.INSTANCE.getDataTableIds().size()
+                                    + " data tables");
+                });
+    }
+
     public static void initialize() {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA)
                 .registerReloadListener(new DataTableRegistry());
@@ -46,22 +62,6 @@ public final class DataTables {
             DataTableRegistry.INSTANCE.writePacket(buf);
             ServerPlayNetworking.send(player, DATA_TABLE_PACKET_ID, buf);
         }));
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static void initializeClient() {
-        DataTables.initialize();
-
-        ClientPlayNetworking.registerGlobalReceiver(DATA_TABLE_PACKET_ID,
-                (client, handler, buf, responseSender) -> {
-                    if (DataTableRegistry.INSTANCE == null) {
-                        Worldsinger.LOGGER.error("DataTableRegistry is null on client side");
-                    }
-                    DataTableRegistry.INSTANCE.readPacket(buf);
-                    Worldsinger.LOGGER.info(
-                            "Loaded " + DataTableRegistry.INSTANCE.getDataTableIds().size()
-                                    + " data tables");
-                });
     }
 
     // Warning: Do NOT cache DataTable instances! They are overwritten each reload

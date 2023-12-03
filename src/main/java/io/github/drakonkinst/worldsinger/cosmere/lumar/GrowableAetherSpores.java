@@ -29,27 +29,6 @@ public abstract class GrowableAetherSpores<T extends SporeGrowthEntity> extends 
         this.spawnSporeGrowth(world, pos, spores, water, true, false, false, Int3.ZERO);
     }
 
-    @Override
-    public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
-            int water, Random random) {
-        super.doReactionFromFluidContainer(world, fluidContainerPos.up(), spores, water, random);
-    }
-
-    @Override
-    public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,
-            Random random, boolean affectingFluidContainer) {
-        if (affectingFluidContainer) {
-            BlockPos posAbove = BlockPosUtil.toBlockPos(pos).up();
-            BlockState stateAbove = world.getBlockState(posAbove);
-            if (stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) || stateAbove.isIn(
-                    ModBlockTags.SPORES_CAN_BREAK)) {
-                this.spawnSporeGrowth(world, pos.add(0.0, 1.0, 0.0), spores, water, true, true,
-                        false, Int3.ZERO);
-            }
-        }
-        this.spawnSporeGrowth(world, pos, spores, water, true, true, false, Int3.ZERO);
-    }
-
     public void spawnSporeGrowth(World world, Vec3d pos, int spores, int water,
             boolean initialGrowth, boolean isSmall, boolean isSplit, Int3 lastDir) {
         // If one already exists nearby, just augment that one
@@ -95,4 +74,25 @@ public abstract class GrowableAetherSpores<T extends SporeGrowthEntity> extends 
     public abstract EntityType<T> getSporeGrowthEntityType();
 
     public abstract int getSmallStage();
+
+    @Override
+    public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
+            int water, Random random) {
+        super.doReactionFromFluidContainer(world, fluidContainerPos.up(), spores, water, random);
+    }
+
+    @Override
+    public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,
+            Random random, boolean affectingFluidContainer) {
+        if (affectingFluidContainer) {
+            BlockPos posAbove = BlockPosUtil.toBlockPos(pos).up();
+            BlockState stateAbove = world.getBlockState(posAbove);
+            if (stateAbove.isIn(ModBlockTags.SPORES_CAN_GROW) || stateAbove.isIn(
+                    ModBlockTags.SPORES_CAN_BREAK)) {
+                this.spawnSporeGrowth(world, pos.add(0.0, 1.0, 0.0), spores, water, true, true,
+                        false, Int3.ZERO);
+            }
+        }
+        this.spawnSporeGrowth(world, pos, spores, water, true, true, false, Int3.ZERO);
+    }
 }

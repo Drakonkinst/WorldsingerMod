@@ -32,6 +32,11 @@ public abstract class ZephyrSporeFluid extends LivingAetherSporeFluid {
     }
 
     @Override
+    public WaterReactiveType getReactiveType() {
+        return WaterReactiveType.ZEPHYR_SPORES;
+    }
+
+    @Override
     protected BlockState toBlockState(FluidState fluidState) {
         return ModBlocks.ZEPHYR_SPORE_SEA.getDefaultState()
                 .with(Properties.LEVEL_15, getBlockStateLevel(fluidState));

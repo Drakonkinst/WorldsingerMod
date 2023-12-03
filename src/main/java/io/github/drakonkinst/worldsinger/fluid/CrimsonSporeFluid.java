@@ -32,6 +32,11 @@ public abstract class CrimsonSporeFluid extends LivingAetherSporeFluid {
     }
 
     @Override
+    public WaterReactiveType getReactiveType() {
+        return WaterReactiveType.CRIMSON_SPORES;
+    }
+
+    @Override
     protected BlockState toBlockState(FluidState fluidState) {
         return ModBlocks.CRIMSON_SPORE_SEA.getDefaultState()
                 .with(Properties.LEVEL_15, getBlockStateLevel(fluidState));

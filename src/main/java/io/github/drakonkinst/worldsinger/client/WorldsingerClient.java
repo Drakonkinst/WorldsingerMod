@@ -23,7 +23,7 @@ public class WorldsingerClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         DataTables.initializeClient();
-        
+
         // Register fluids
         ModFluidRenderers.register();
 

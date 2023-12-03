@@ -85,6 +85,11 @@ public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements Livi
         return ModBlocks.DEAD_CRIMSON_GROWTH;
     }
 
+    @Override
+    public WaterReactiveType getReactiveType() {
+        return WaterReactiveType.CRIMSON_SPORES;
+    }
+
     /* Start of code common to all LivingSporeGrowthBlocks */
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {

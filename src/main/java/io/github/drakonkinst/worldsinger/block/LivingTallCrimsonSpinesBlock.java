@@ -112,6 +112,11 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
         }
     }
 
+    @Override
+    public WaterReactiveType getReactiveType() {
+        return WaterReactiveType.CRIMSON_SPORES;
+    }
+
     /* Start of code common to all LivingSporeGrowthBlocks */
     @Override
     protected void appendProperties(Builder<Block, BlockState> builder) {

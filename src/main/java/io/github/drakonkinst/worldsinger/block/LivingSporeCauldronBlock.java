@@ -64,4 +64,9 @@ public class LivingSporeCauldronBlock extends SporeCauldronBlock implements Spor
         sporeType.doReactionFromFluidContainer(world, pos, catalyzeValue, waterAmount, random);
         return true;
     }
+
+    @Override
+    public WaterReactiveType getReactiveType() {
+        return AetherSpores.getReactiveTypeFromSpore(sporeType);
+    }
 }

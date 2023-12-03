@@ -89,16 +89,6 @@ public class ZephyrSpores extends AetherSpores {
         ZephyrSpores.sendToPlayers(world, explosion);
     }
 
-    private static void affectBlocks(World world, Explosion explosion) {
-        // TODO: Will particles still appear on dedicated server?
-        world.getProfiler().push("explosion_blocks");
-        for (BlockPos blockPos : explosion.getAffectedBlocks()) {
-            world.getBlockState(blockPos)
-                    .onExploded(world, blockPos, explosion, (stack, pos) -> {});
-        }
-        world.getProfiler().pop();
-    }
-
     // Instead of doing a full raycast, just collect all blocks in the radius
     private static void collectBlocks(World world, Vec3d centerPos, float radius,
             Explosion explosion) {
@@ -161,6 +151,16 @@ public class ZephyrSpores extends AetherSpores {
                 affectedPlayers.put(playerEntity, forceVector);
             }
         }
+    }
+
+    private static void affectBlocks(World world, Explosion explosion) {
+        // TODO: Will particles still appear on dedicated server?
+        world.getProfiler().push("explosion_blocks");
+        for (BlockPos blockPos : explosion.getAffectedBlocks()) {
+            world.getBlockState(blockPos)
+                    .onExploded(world, blockPos, explosion, (stack, pos) -> {});
+        }
+        world.getProfiler().pop();
     }
 
     // Send packet to players

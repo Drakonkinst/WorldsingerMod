@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.cosmere;
 
 import io.github.drakonkinst.worldsinger.block.WaterReactiveBlock;
+import io.github.drakonkinst.worldsinger.cosmere.WaterReactive.WaterReactiveType;
 import io.github.drakonkinst.worldsinger.fluid.WaterReactiveFluid;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import it.unimi.dsi.fastutil.Pair;
@@ -9,8 +10,10 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -31,6 +34,7 @@ public final class WaterReactionManager {
     private static final int MAX_WATER_AMOUNT = 2500;
     private static final int MAX_ITERATIONS = 129;
     private static final int MAX_DEPTH = 32;
+    private static final int MAX_AFFECTED_FROM_EFFECT = 4;
 
     public static void catalyzeAroundWater(World world, BlockPos waterPos) {
         List<Pair<BlockPos, WaterReactive>> reactiveBlocks = new ArrayList<>();
@@ -39,13 +43,7 @@ public final class WaterReactionManager {
         if (waterAmount <= 0) {
             return;
         }
-
-        int waterAmountPerReactive = waterAmount / reactiveBlocks.size();
-        for (Pair<BlockPos, WaterReactive> pair : reactiveBlocks) {
-            WaterReactive waterReactive = pair.right();
-            BlockPos pos = pair.left();
-            waterReactive.reactToWater(world, pos, waterAmountPerReactive);
-        }
+        WaterReactionManager.doReactions(world, reactiveBlocks, waterAmount);
     }
 
     public static int absorbWaterAndCollectReactives(World world, BlockPos centerPos,
@@ -71,12 +69,9 @@ public final class WaterReactionManager {
                 BlockState blockState = world.getBlockState(pos);
                 if (reactiveBlocks != null) {
                     // Check if water reactive
-                    if (blockState.getBlock() instanceof WaterReactiveBlock waterReactiveBlock
-                            && waterReactiveBlock.canReactToWater(pos, blockState)) {
-                        reactiveBlocks.add(Pair.of(pos, waterReactiveBlock));
-                    } else if (blockState.getFluidState()
-                            .getFluid() instanceof WaterReactiveFluid waterReactiveFluid) {
-                        reactiveBlocks.add(Pair.of(pos, waterReactiveFluid));
+                    WaterReactive reactive = WaterReactionManager.getIfWaterReactive(blockState);
+                    if (reactive != null) {
+                        reactiveBlocks.add(Pair.of(pos, reactive));
                     }
                 }
             } else if (shouldConsumeWater) {
@@ -97,6 +92,19 @@ public final class WaterReactionManager {
         }
 
         return Math.min(totalWaterAmount, MAX_WATER_AMOUNT);
+    }
+
+    private static void doReactions(World world, List<Pair<BlockPos, WaterReactive>> reactiveBlocks,
+            int totalWaterAmount) {
+        if (reactiveBlocks.isEmpty()) {
+            return;
+        }
+        int waterAmountPerReactive = totalWaterAmount / reactiveBlocks.size();
+        for (Pair<BlockPos, WaterReactive> pair : reactiveBlocks) {
+            WaterReactive waterReactive = pair.right();
+            BlockPos pos = pair.left();
+            waterReactive.reactToWater(world, pos, waterAmountPerReactive);
+        }
     }
 
     public static int absorbWaterAtBlock(World world, BlockPos pos) {
@@ -126,6 +134,35 @@ public final class WaterReactionManager {
         }
         // Not sure what kind of block
         return WATER_AMOUNT_FLOWING;
+    }
+
+    private static WaterReactive getIfWaterReactive(BlockState state) {
+        if (state.getBlock() instanceof WaterReactiveBlock waterReactiveBlock) {
+            return waterReactiveBlock;
+        } else if (state.getFluidState()
+                .getFluid() instanceof WaterReactiveFluid waterReactiveFluid) {
+            return waterReactiveFluid;
+        }
+        return null;
+    }
+
+    // Only triggers a certain type once
+    public static void catalyzeAroundWaterEffect(World world, BlockPos impactPos,
+            int horizontalRadius, int verticalRadius, int waterAmount) {
+        List<Pair<BlockPos, WaterReactive>> reactiveBlocks = new ArrayList<>();
+        Set<WaterReactiveType> encounteredTypes = new HashSet<>();
+        for (BlockPos currPos : BlockPos.iterateOutwards(impactPos, horizontalRadius,
+                verticalRadius, horizontalRadius)) {
+            BlockState state = world.getBlockState(currPos);
+            WaterReactive reactive = WaterReactionManager.getIfWaterReactive(state);
+            if (reactive != null && encounteredTypes.add(reactive.getReactiveType())) {
+                reactiveBlocks.add(Pair.of(new BlockPos(currPos), reactive));
+            }
+            if (reactiveBlocks.size() >= MAX_AFFECTED_FROM_EFFECT) {
+                break;
+            }
+        }
+        WaterReactionManager.doReactions(world, reactiveBlocks, waterAmount);
     }
 
     private WaterReactionManager() {}

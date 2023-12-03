@@ -9,4 +9,10 @@ public interface WaterReactive {
     Random random = Random.create();
 
     boolean reactToWater(World world, BlockPos pos, int waterAmount);
+
+    WaterReactiveType getReactiveType();
+
+    enum WaterReactiveType {
+        MISC, VERDANT_SPORES, CRIMSON_SPORES, ZEPHYR_SPORES, SUNLIGHT_SPORES, ROSEITE_SPORES, MIDNIGHT_SPORES
+    }
 }

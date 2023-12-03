@@ -32,6 +32,11 @@ public abstract class VerdantSporeFluid extends LivingAetherSporeFluid {
     }
 
     @Override
+    public WaterReactiveType getReactiveType() {
+        return WaterReactiveType.VERDANT_SPORES;
+    }
+
+    @Override
     protected BlockState toBlockState(FluidState fluidState) {
         return ModBlocks.VERDANT_SPORE_SEA.getDefaultState()
                 .with(Properties.LEVEL_15, getBlockStateLevel(fluidState));

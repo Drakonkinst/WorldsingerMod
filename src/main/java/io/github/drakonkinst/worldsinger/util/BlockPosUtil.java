@@ -66,10 +66,6 @@ public final class BlockPosUtil {
         return new BlockPos(x, y, z);
     }
 
-    public static BlockPos toBlockPos(Vec3d pos) {
-        return BlockPos.ofFloored(pos);
-    }
-
     public static Iterable<BlockPos> iterateBoundingBoxForEntity(Entity entity, BlockPos blockPos,
             int offsetX, int offsetY, int offsetZ) {
         int width = MathHelper.ceil(entity.getWidth());
@@ -82,6 +78,10 @@ public final class BlockPosUtil {
         int minZ = blockPos.getZ() - (width / 2) + offsetZ;
         int maxZ = blockPos.getZ() + ((width - 1) / 2) + offsetZ;
         return BlockPos.iterate(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    public static BlockPos toBlockPos(Vec3d pos) {
+        return BlockPos.ofFloored(pos);
     }
 
     public static int getDistance(BlockPos pos1, BlockPos pos2) {
