@@ -30,6 +30,13 @@ public class LivingVerdantVineBranchBlock extends VerdantVineBranchBlock impleme
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
 
+    /* Start of code common to all LivingSporeGrowthBlocks */
+    @Override
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModProperties.CATALYZED);
+    }
+
     @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -66,6 +73,7 @@ public class LivingVerdantVineBranchBlock extends VerdantVineBranchBlock impleme
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
+    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
@@ -80,7 +88,6 @@ public class LivingVerdantVineBranchBlock extends VerdantVineBranchBlock impleme
                         true, false, Int3.ZERO);
         return true;
     }
-    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public Block getDeadSporeBlock() {
@@ -103,13 +110,6 @@ public class LivingVerdantVineBranchBlock extends VerdantVineBranchBlock impleme
     @Override
     public Type getReactiveType() {
         return Type.VERDANT_SPORES;
-    }
-
-    /* Start of code common to all LivingSporeGrowthBlocks */
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModProperties.CATALYZED);
     }
 
     @Override

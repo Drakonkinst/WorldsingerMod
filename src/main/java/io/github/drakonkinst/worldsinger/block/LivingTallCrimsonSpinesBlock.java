@@ -31,6 +31,13 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
     }
 
+    /* Start of code common to all LivingSporeGrowthBlocks */
+    @Override
+    protected void appendProperties(Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(ModProperties.CATALYZED);
+    }
+
     @Override
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -67,6 +74,7 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
+    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
@@ -82,7 +90,6 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
 
         return true;
     }
-    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public void killSporeBlock(World world, BlockPos pos, BlockState state) {
@@ -115,13 +122,6 @@ public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock impleme
     @Override
     public Type getReactiveType() {
         return Type.CRIMSON_SPORES;
-    }
-
-    /* Start of code common to all LivingSporeGrowthBlocks */
-    @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
-        builder.add(ModProperties.CATALYZED);
     }
 
     @Override

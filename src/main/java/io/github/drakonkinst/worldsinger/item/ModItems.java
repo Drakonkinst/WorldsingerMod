@@ -284,6 +284,9 @@ public final class ModItems {
             itemGroup.add(ModBlocks.DEAD_TALL_CRIMSON_SPINES);
             itemGroup.add(ModBlocks.DEAD_CRIMSON_SPINES);
             itemGroup.add(ModBlocks.MAGMA_VENT);
+            itemGroup.add(ModBlocks.ROSEITE_BLOCK);
+            itemGroup.add(ModBlocks.ROSEITE_STAIRS);
+            itemGroup.add(ModBlocks.ROSEITE_SLAB);
         });
     }
 

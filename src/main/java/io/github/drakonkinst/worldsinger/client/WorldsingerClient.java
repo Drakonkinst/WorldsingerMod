@@ -36,6 +36,8 @@ public class WorldsingerClient implements ClientModInitializer {
                 ModBlocks.DEAD_CRIMSON_SNARE, ModBlocks.CRIMSON_SPINES,
                 ModBlocks.DEAD_CRIMSON_SPINES, ModBlocks.TALL_CRIMSON_SPINES,
                 ModBlocks.DEAD_TALL_CRIMSON_SPINES);
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(),
+                ModBlocks.ROSEITE_BLOCK, ModBlocks.ROSEITE_STAIRS, ModBlocks.ROSEITE_SLAB);
 
         // Register particles
         ParticleFactoryRegistry.getInstance()

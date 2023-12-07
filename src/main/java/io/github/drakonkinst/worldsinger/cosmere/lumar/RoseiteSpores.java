@@ -14,8 +14,6 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,11 +32,6 @@ public class RoseiteSpores extends GrowableAetherSpores<RoseiteSporeGrowthEntity
 
     private RoseiteSpores() {
         super(RoseiteSporeGrowthEntity.class);
-    }
-
-    @Override
-    public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
-        // TODO
     }
 
     @Override

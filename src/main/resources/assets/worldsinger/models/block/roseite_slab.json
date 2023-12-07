@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "worldsinger:block/roseite_block",
+    "side": "worldsinger:block/roseite_block",
+    "top": "worldsinger:block/roseite_block"
+  }
+}

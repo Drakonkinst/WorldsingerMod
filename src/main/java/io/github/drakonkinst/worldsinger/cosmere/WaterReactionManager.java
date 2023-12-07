@@ -69,7 +69,8 @@ public final class WaterReactionManager {
                 BlockState blockState = world.getBlockState(pos);
                 if (reactiveBlocks != null) {
                     // Check if water reactive
-                    WaterReactive reactive = WaterReactionManager.getIfWaterReactive(blockState);
+                    WaterReactive reactive = WaterReactionManager.getIfWaterReactive(pos,
+                            blockState);
                     if (reactive != null) {
                         reactiveBlocks.add(Pair.of(pos, reactive));
                     }
@@ -136,8 +137,9 @@ public final class WaterReactionManager {
         return WATER_AMOUNT_FLOWING;
     }
 
-    private static WaterReactive getIfWaterReactive(BlockState state) {
-        if (state.getBlock() instanceof WaterReactiveBlock waterReactiveBlock) {
+    private static WaterReactive getIfWaterReactive(BlockPos pos, BlockState state) {
+        if (state.getBlock() instanceof WaterReactiveBlock waterReactiveBlock
+                && waterReactiveBlock.canReactToWater(pos, state)) {
             return waterReactiveBlock;
         } else if (state.getFluidState()
                 .getFluid() instanceof WaterReactiveFluid waterReactiveFluid) {
@@ -154,7 +156,7 @@ public final class WaterReactionManager {
         for (BlockPos currPos : BlockPos.iterateOutwards(impactPos, horizontalRadius,
                 verticalRadius, horizontalRadius)) {
             BlockState state = world.getBlockState(currPos);
-            WaterReactive reactive = WaterReactionManager.getIfWaterReactive(state);
+            WaterReactive reactive = WaterReactionManager.getIfWaterReactive(currPos, state);
             if (reactive != null && (!reactive.getReactiveType().shouldBeUnique()
                     || encounteredTypes.add(reactive.getReactiveType()))) {
                 reactiveBlocks.add(Pair.of(new BlockPos(currPos), reactive));

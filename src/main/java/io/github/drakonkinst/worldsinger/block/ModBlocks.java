@@ -264,6 +264,18 @@ public final class ModBlocks {
             new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON).ticksRandomly(),
                     ModCauldronBehaviors.ROSEITE_SPORE_CAULDRON_BEHAVIOR,
                     RoseiteSpores.getInstance()), false);
+    public static final Block ROSEITE_BLOCK = register("roseite_block",
+            new RoseiteBlock(FabricBlockSettings.create()
+                    // TODO
+                    .nonOpaque()
+                    // TODO: Balance durability values
+                    .strength(3.0F, 6.0F).ticksRandomly().mapColor(MapColor.TERRACOTTA_PINK)),
+            true);
+    public static final Block ROSEITE_STAIRS = register("roseite_stairs",
+            new RoseiteStairsBlock(ROSEITE_BLOCK.getDefaultState(),
+                    FabricBlockSettings.copyOf(ROSEITE_BLOCK)), true);
+    public static final Block ROSEITE_SLAB = register("roseite_slab",
+            new RoseiteSlabBlock(FabricBlockSettings.copyOf(ROSEITE_BLOCK)), true);
 
     // Midnight Spores
     public static final Block MIDNIGHT_SPORE_SEA = register("midnight_spore_sea",

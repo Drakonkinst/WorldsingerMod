@@ -1,15 +1,14 @@
 package io.github.drakonkinst.worldsinger.block;
 
-import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
-import io.github.drakonkinst.worldsinger.cosmere.lumar.CrimsonSpores;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
-import io.github.drakonkinst.worldsinger.util.math.Int3;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager.Builder;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -17,22 +16,19 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements LivingSporeGrowthBlock {
+public class RoseiteSlabBlock extends SlabBlock implements SporeGrowthBlock, WaterReactiveBlock {
 
-    public static final MapCodec<LivingCrimsonGrowthBlock> CODEC = createCodec(
-            LivingCrimsonGrowthBlock::new);
-    public static final int RECATALYZE_VALUE = 100;
-
-    public LivingCrimsonGrowthBlock(Settings settings) {
+    public RoseiteSlabBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
+        this.setDefaultState(this.getDefaultState()
+                .with(Properties.PERSISTENT, false)
+                .with(ModProperties.CATALYZED, false));
     }
 
-    /* Start of code common to all LivingSporeGrowthBlocks */
     @Override
-    protected void appendProperties(Builder<Block, BlockState> builder) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(Properties.PERSISTENT, ModProperties.CATALYZED);
         super.appendProperties(builder);
-        builder.add(ModProperties.CATALYZED);
     }
 
     @Override
@@ -40,7 +36,8 @@ public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements Livi
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState placementState = super.getPlacementState(ctx);
         if (placementState != null) {
-            placementState = placementState.with(ModProperties.CATALYZED, true);
+            placementState = placementState.with(Properties.PERSISTENT, true)
+                    .with(ModProperties.CATALYZED, true);
         }
         return placementState;
     }
@@ -61,44 +58,37 @@ public class LivingCrimsonGrowthBlock extends CrimsonGrowthBlock implements Livi
 
     @Override
     public boolean hasRandomTicks(BlockState state) {
-        return super.hasRandomTicks(state) || !state.get(ModProperties.CATALYZED);
+        return !state.get(Properties.PERSISTENT) || !state.get(ModProperties.CATALYZED);
     }
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         super.randomTick(state, world, pos, random);
+        // Decay over time
+        if (SporeGrowthBlock.canDecay(world, pos, state, random)
+                && random.nextInt(RoseiteBlock.DECAY_CHANCE) == 0) {
+            world.breakBlock(pos, true);
+        }
+
         if (!state.get(ModProperties.CATALYZED) && world.hasRain(pos.up())) {
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
-    /* End of code common to all LivingSporeGrowthBlocks */
+
+    @Override
+    public boolean canReactToWater(BlockPos pos, BlockState state) {
+        // TODO
+        return false;
+    }
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
-        if (!this.canReactToWater(pos, state)) {
-            return false;
-        }
-
-        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-        CrimsonSpores.getInstance()
-                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE, waterAmount, false,
-                        false, false, Int3.ZERO);
-        return true;
-    }
-
-    @Override
-    public Block getDeadSporeBlock() {
-        return ModBlocks.DEAD_CRIMSON_GROWTH;
+        return !state.get(ModProperties.CATALYZED);
     }
 
     @Override
     public Type getReactiveType() {
-        return Type.CRIMSON_SPORES;
-    }
-
-    @Override
-    protected MapCodec<? extends LivingCrimsonGrowthBlock> getCodec() {
-        return CODEC;
+        return Type.ROSEITE_SPORES;
     }
 }

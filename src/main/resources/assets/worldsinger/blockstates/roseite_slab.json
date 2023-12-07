@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "worldsinger:block/roseite_slab"
+    },
+    "type=double": {
+      "model": "worldsinger:block/roseite_block"
+    },
+    "type=top": {
+      "model": "worldsinger:block/roseite_slab_top"
+    }
+  }
+}
