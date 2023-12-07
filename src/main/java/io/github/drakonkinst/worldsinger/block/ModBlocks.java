@@ -9,6 +9,7 @@ import io.github.drakonkinst.worldsinger.cosmere.lumar.SunlightSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.VerdantSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.ZephyrSpores;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
+import io.github.drakonkinst.worldsinger.registry.ModSoundGroups;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.AbstractBlock;
@@ -35,7 +36,7 @@ public final class ModBlocks {
     public static final Block DEAD_SPORE_BLOCK = register("dead_spore_block",
             new AetherSporeBlock(DeadSpores.getInstance(), FabricBlockSettings.create()
                     // Same as sand
-                    .strength(0.5f).mapColor(MapColor.GRAY).sounds(BlockSoundGroup.SAND)), false);
+                    .strength(0.5f).mapColor(MapColor.GRAY).sounds(ModSoundGroups.SPORES)), false);
     public static final Block DEAD_SPORE_CAULDRON = register("dead_spore_cauldron",
             new SporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
                     ModCauldronBehaviors.DEAD_SPORE_CAULDRON_BEHAVIOR, DeadSpores.getInstance()),
@@ -47,7 +48,7 @@ public final class ModBlocks {
                     .requiresTool()
                     .ticksRandomly()
                     .mapColor(MapColor.LIGHT_GRAY)
-                    .sounds(BlockSoundGroup.WOOD)), true);
+                    .sounds(ModSoundGroups.VERDANT_VINE_BRANCH)), true);
     public static final Block DEAD_VERDANT_VINE_BRANCH = register("dead_verdant_vine_branch",
             new VerdantVineBranchBlock(FabricBlockSettings.create()
                     // 0.5x strength of living version
@@ -57,7 +58,7 @@ public final class ModBlocks {
                     .nonOpaque()
                     .ticksRandomly()
                     .mapColor(MapColor.LIGHT_GRAY)
-                    .sounds(BlockSoundGroup.WOOD)), true);
+                    .sounds(ModSoundGroups.VERDANT_VINE_BRANCH)), true);
     public static final Block DEAD_VERDANT_VINE_SNARE = register("dead_verdant_vine_snare",
             new VerdantVineSnareBlock(
                     FabricBlockSettings.create()
@@ -68,7 +69,7 @@ public final class ModBlocks {
                             .strength(0.4f)
                             .ticksRandomly()
                             .mapColor(MapColor.LIGHT_GRAY)
-                            .sounds(BlockSoundGroup.GRASS)
+                            .sounds(ModSoundGroups.VERDANT_VINE_SNARE)
                             .pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block DEAD_TWISTING_VERDANT_VINES = register("dead_twisting_verdant_vines",
             new TwistingVerdantVineBlock(FabricBlockSettings.create()
@@ -77,7 +78,7 @@ public final class ModBlocks {
                     .noCollision()
                     .ticksRandomly()
                     .mapColor(MapColor.LIGHT_GRAY)
-                    .sounds(BlockSoundGroup.WEEPING_VINES)
+                    .sounds(ModSoundGroups.TWISTING_VERDANT_VINES)
                     .pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block DEAD_TWISTING_VERDANT_VINES_PLANT = register(
             "dead_twisting_verdant_vines_plant",
@@ -87,7 +88,7 @@ public final class ModBlocks {
                     .noCollision()
                     .ticksRandomly()
                     .mapColor(MapColor.LIGHT_GRAY)
-                    .sounds(BlockSoundGroup.WEEPING_VINES)
+                    .sounds(ModSoundGroups.TWISTING_VERDANT_VINES)
                     .pistonBehavior(PistonBehavior.DESTROY)), false);
     public static final Block DEAD_CRIMSON_GROWTH = register("dead_crimson_growth",
             new CrimsonGrowthBlock(FabricBlockSettings.create()
@@ -96,7 +97,7 @@ public final class ModBlocks {
                     .requiresTool()
                     .ticksRandomly()
                     .mapColor(MapColor.LIGHT_GRAY)
-                    .sounds(BlockSoundGroup.DRIPSTONE_BLOCK)), true);
+                    .sounds(ModSoundGroups.CRIMSON_GROWTH)), true);
     public static final Block DEAD_CRIMSON_SPIKE = register("dead_crimson_spike",
             new CrimsonSpikeBlock(
                     ModBlocks.createSettingsWithCustomOffsetter(CrimsonSpikeBlock.getOffsetter())
@@ -108,7 +109,7 @@ public final class ModBlocks {
                             .requiresTool()
                             .solidBlock(Blocks::never)
                             .mapColor(MapColor.LIGHT_GRAY)
-                            .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
+                            .sounds(ModSoundGroups.CRIMSON_SPINE)
                             .pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block DEAD_CRIMSON_SNARE = register("dead_crimson_snare",
             new CrimsonSnareBlock(FabricBlockSettings.create()
@@ -117,7 +118,7 @@ public final class ModBlocks {
                     .solid()
                     .requiresTool()
                     .mapColor(MapColor.LIGHT_GRAY)
-                    .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
+                    .sounds(ModSoundGroups.CRIMSON_SPINE)
                     .pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block DEAD_TALL_CRIMSON_SPINES = register("dead_tall_crimson_spines",
             new TallCrimsonSpinesBlock(FabricBlockSettings.create()
@@ -128,7 +129,7 @@ public final class ModBlocks {
                     .dynamicBounds()
                     .offset(AbstractBlock.OffsetType.XZ)
                     .mapColor(MapColor.LIGHT_GRAY)
-                    .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
+                    .sounds(ModSoundGroups.CRIMSON_SPINE)
                     .pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block DEAD_CRIMSON_SPINES = register("dead_crimson_spines",
             new LivingCrimsonSpinesBlock(FabricBlockSettings.create()
@@ -138,7 +139,7 @@ public final class ModBlocks {
                     .noCollision()
                     .ticksRandomly()
                     .mapColor(MapColor.LIGHT_GRAY)
-                    .sounds(BlockSoundGroup.POINTED_DRIPSTONE)
+                    .sounds(ModSoundGroups.CRIMSON_SPINE)
                     .pistonBehavior(PistonBehavior.DESTROY)), true);
 
     // Verdant Spores
@@ -269,8 +270,10 @@ public final class ModBlocks {
                     // TODO
                     .nonOpaque()
                     // TODO: Balance durability values
-                    .strength(3.0F, 6.0F).ticksRandomly().mapColor(MapColor.TERRACOTTA_PINK)),
-            true);
+                    .strength(3.0F, 6.0F)
+                    .ticksRandomly()
+                    .sounds(ModSoundGroups.ROSEITE)
+                    .mapColor(MapColor.TERRACOTTA_PINK)), true);
     public static final Block ROSEITE_STAIRS = register("roseite_stairs",
             new RoseiteStairsBlock(ROSEITE_BLOCK.getDefaultState(),
                     FabricBlockSettings.copyOf(ROSEITE_BLOCK)), true);
@@ -299,16 +302,16 @@ public final class ModBlocks {
     public static final Block SALTSTONE = register("saltstone",
             new Block(FabricBlockSettings.create().requiresTool()
                     // Slightly harder to break than Netherrack
-                    .strength(0.5f, 6.0f).sounds(BlockSoundGroup.NETHERRACK)), true);
+                    .strength(0.5f, 6.0f).sounds(ModSoundGroups.SALTSTONE)), true);
     public static final Block SALTSTONE_SALT_ORE = register("saltstone_salt_ore",
             new ExperienceDroppingBlock(UniformIntProvider.create(0, 2),
                     FabricBlockSettings.create().requiresTool()
                             // Slightly easier to break than Nether Gold Ore
-                            .strength(2.5f, 3.0f).sounds(BlockSoundGroup.NETHERRACK)), true);
+                            .strength(2.5f, 3.0f).sounds(ModSoundGroups.SALTSTONE)), true);
     public static final Block SALT_BLOCK = register("salt_block",
             new Block(FabricBlockSettings.create().requiresTool()
                     // Same strength as Calcite
-                    .strength(0.75f).sounds(BlockSoundGroup.CALCITE)), true);
+                    .strength(0.75f).sounds(ModSoundGroups.SALT)), true);
     public static final Block SILVER_ORE = register("silver_ore",
             new ExperienceDroppingBlock(ConstantIntProvider.create(0),
                     FabricBlockSettings.create().requiresTool()

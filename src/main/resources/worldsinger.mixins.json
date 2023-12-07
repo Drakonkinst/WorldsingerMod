@@ -51,6 +51,7 @@
     "screen.AnvilScreenHandlerMixin",
     "screen.BrewingStandScreenHandlerFuelSlotMixin",
     "screen.BrewingStandScreenHandlerPotionSlotMixin",
+    "world.ChunkLightProviderMixin",
     "world.WorldMixin",
     "worldgen.CarverMixin",
     "worldgen.ShipwreckGeneratorPieceMixin",

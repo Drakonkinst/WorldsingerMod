@@ -36,6 +36,10 @@ public final class ModBlockTags {
 
     public static final TagKey<Block> FLUIDS_CANNOT_BREAK = ModBlockTags.ofCommon(
             "fluids_cannot_break");
+    // Marks blocks that are not opaque, but should be treated as opaque for lighting.
+    // Needed for non-full blocks similar to Tinted Glass to block light.
+    public static final TagKey<Block> OPAQUE_FOR_LIGHTING = ModBlockTags.ofCommon(
+            "opaque_for_lighting");
 
     private static TagKey<Block> of(String id) {
         return TagKey.of(RegistryKeys.BLOCK, Worldsinger.id(id));
