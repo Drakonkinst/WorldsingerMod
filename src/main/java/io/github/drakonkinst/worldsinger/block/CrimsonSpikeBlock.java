@@ -72,40 +72,6 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
         };
     }
 
-    public CrimsonSpikeBlock(Settings settings) {
-        super(settings);
-        this.setDefaultState(this.getDefaultState()
-                .with(Properties.FACING, Direction.UP)
-                .with(Properties.PERSISTENT, false)
-                .with(Properties.WATERLOGGED, false)
-                .with(ModProperties.DISCRETE_THICKNESS, Thickness.TIP));
-    }
-
-    @Nullable
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        World world = ctx.getWorld();
-        BlockPos pos = ctx.getBlockPos();
-        Direction direction = ctx.getSide();
-        Direction placeDirection = CrimsonSpikeBlock.getDirectionToPlaceAt(world, pos,
-                direction.getOpposite());
-
-        if (placeDirection == null) {
-            return null;
-        }
-
-        Thickness thickness = CrimsonSpikeBlock.getThickness(world, pos, placeDirection);
-        if (thickness == null) {
-            return null;
-        }
-
-        return this.getDefaultState()
-                .with(Properties.FACING, placeDirection)
-                .with(ModProperties.DISCRETE_THICKNESS, thickness)
-                .with(Properties.PERSISTENT, true)
-                .with(Properties.WATERLOGGED, world.isWater(pos));
-    }
-
     @Nullable
     private static Direction getDirectionToPlaceAt(WorldView world, BlockPos pos,
             Direction direction) {
@@ -150,6 +116,54 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
     private static boolean isCrimsonSpikeFacingDirection(BlockState state, Direction direction) {
         return (state.isIn(ModBlockTags.CRIMSON_SPIKE)
                 && state.get(Properties.FACING) == direction);
+    }
+
+    public static boolean isMoving(Entity entity) {
+        boolean isMoving =
+                entity.lastRenderX != entity.getX() || entity.lastRenderY != entity.getY()
+                        || entity.lastRenderZ != entity.getZ();
+        if (isMoving) {
+            double deltaX = Math.abs(entity.getX() - entity.lastRenderX);
+            double deltaY = Math.abs(entity.getY() - entity.lastRenderY);
+            double deltaZ = Math.abs(entity.getZ() - entity.lastRenderZ);
+            return deltaX >= MOVEMENT_THRESHOLD || deltaY >= MOVEMENT_THRESHOLD
+                    || deltaZ >= MOVEMENT_THRESHOLD;
+        }
+        return false;
+    }
+
+    public CrimsonSpikeBlock(Settings settings) {
+        super(settings);
+        this.setDefaultState(this.getDefaultState()
+                .with(Properties.FACING, Direction.UP)
+                .with(Properties.PERSISTENT, false)
+                .with(Properties.WATERLOGGED, false)
+                .with(ModProperties.DISCRETE_THICKNESS, Thickness.TIP));
+    }
+
+    @Nullable
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        World world = ctx.getWorld();
+        BlockPos pos = ctx.getBlockPos();
+        Direction direction = ctx.getSide();
+        Direction placeDirection = CrimsonSpikeBlock.getDirectionToPlaceAt(world, pos,
+                direction.getOpposite());
+
+        if (placeDirection == null) {
+            return null;
+        }
+
+        Thickness thickness = CrimsonSpikeBlock.getThickness(world, pos, placeDirection);
+        if (thickness == null) {
+            return null;
+        }
+
+        return this.getDefaultState()
+                .with(Properties.FACING, placeDirection)
+                .with(ModProperties.DISCRETE_THICKNESS, thickness)
+                .with(Properties.PERSISTENT, true)
+                .with(Properties.WATERLOGGED, world.isWater(pos));
     }
 
     @Override
@@ -236,20 +250,6 @@ public class CrimsonSpikeBlock extends Block implements Waterloggable, SporeGrow
             return;
         }
         entity.damage(ModDamageTypes.createSource(world, ModDamageTypes.SPIKE), 2.0f);
-    }
-
-    public static boolean isMoving(Entity entity) {
-        boolean isMoving =
-                entity.lastRenderX != entity.getX() || entity.lastRenderY != entity.getY()
-                        || entity.lastRenderZ != entity.getZ();
-        if (isMoving) {
-            double deltaX = Math.abs(entity.getX() - entity.lastRenderX);
-            double deltaY = Math.abs(entity.getY() - entity.lastRenderY);
-            double deltaZ = Math.abs(entity.getZ() - entity.lastRenderZ);
-            return deltaX >= MOVEMENT_THRESHOLD || deltaY >= MOVEMENT_THRESHOLD
-                    || deltaZ >= MOVEMENT_THRESHOLD;
-        }
-        return false;
     }
 
     @Override

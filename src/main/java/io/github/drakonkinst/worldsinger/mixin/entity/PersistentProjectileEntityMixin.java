@@ -28,6 +28,15 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
         super(entityType, world);
     }
 
+    @Shadow
+    public abstract boolean isNoClip();
+
+    @Shadow
+    protected abstract boolean shouldFall();
+
+    @Shadow
+    protected abstract void fall();
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void collideWithSolidSpores(CallbackInfo ci) {
         // Spore sea blocks can change solidity without warning, so check if it should fall even if there is no block update
@@ -37,15 +46,6 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntity {
             this.fall();
         }
     }
-
-    @Shadow
-    public abstract boolean isNoClip();
-
-    @Shadow
-    protected abstract boolean shouldFall();
-
-    @Shadow
-    protected abstract void fall();
 
     @ModifyReturnValue(method = "shouldFall", at = @At("RETURN"))
     private boolean doNotFallIfInSolidSpores(boolean shouldFall) {

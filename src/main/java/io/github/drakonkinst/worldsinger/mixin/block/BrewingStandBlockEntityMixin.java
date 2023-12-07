@@ -90,6 +90,9 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
         super(blockEntityType, blockPos, blockState);
     }
 
+    @Shadow
+    public abstract ItemStack getStack(int slot);
+
     @Inject(method = "isValid", at = @At("RETURN"), cancellable = true)
     private void allowCustomPotionsAndFuels(int slot, ItemStack stack,
             CallbackInfoReturnable<Boolean> cir) {
@@ -107,7 +110,4 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
             }
         }
     }
-
-    @Shadow
-    public abstract ItemStack getStack(int slot);
 }

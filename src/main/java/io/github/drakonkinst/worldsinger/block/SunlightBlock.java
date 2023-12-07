@@ -40,6 +40,18 @@ public class SunlightBlock extends StillFluidBlock {
 
     private static final float DAMAGE_PER_TICK = 4.0f;
 
+    private static boolean isTouchingAnyWater(World world, BlockPos pos) {
+        BlockPos.Mutable neighborPos = new BlockPos.Mutable();
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            neighborPos.set(pos.add(direction.getOffsetX(), direction.getOffsetY(),
+                    direction.getOffsetZ()));
+            if (world.isWater(neighborPos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public SunlightBlock(Settings settings) {
         super(ModFluids.SUNLIGHT, settings);
         this.setDefaultState(this.getDefaultState().with(ModProperties.SUNLIGHT_LEVEL, 3));
@@ -72,18 +84,6 @@ public class SunlightBlock extends StillFluidBlock {
             // Will not decay fully if touching water, to halt unnecessary re-catalyzation
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
-    }
-
-    private static boolean isTouchingAnyWater(World world, BlockPos pos) {
-        BlockPos.Mutable neighborPos = new BlockPos.Mutable();
-        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            neighborPos.set(pos.add(direction.getOffsetX(), direction.getOffsetY(),
-                    direction.getOffsetZ()));
-            if (world.isWater(neighborPos)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

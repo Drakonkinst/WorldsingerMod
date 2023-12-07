@@ -59,20 +59,6 @@ public final class WorldsingerConfig {
 
     private static class Serializer implements JsonDeserializer<WorldsingerConfig> {
 
-        @Override
-        public WorldsingerConfig deserialize(JsonElement root, Type type,
-                JsonDeserializationContext context) throws JsonParseException {
-            JsonStack jsonStack = new JsonStack(GSON, root);
-            jsonStack.allow(KEY_FLUIDLOGGABLE_FLUIDS);
-
-            List<String> fluidloggableFluidStrs = jsonStack.streamAs(KEY_FLUIDLOGGABLE_FLUIDS,
-                    String.class).toList();
-            List<Identifier> fluidloggableFluidIds = stringListToIdentifierList(jsonStack,
-                    fluidloggableFluidStrs);
-
-            return new WorldsingerConfig(fluidloggableFluidIds);
-        }
-
         private static List<Identifier> stringListToIdentifierList(JsonStack stack,
                 List<String> strList) {
             List<Identifier> idList = new ArrayList<>(strList.size());
@@ -85,6 +71,20 @@ public final class WorldsingerConfig {
                 }
             }
             return idList;
+        }
+
+        @Override
+        public WorldsingerConfig deserialize(JsonElement root, Type type,
+                JsonDeserializationContext context) throws JsonParseException {
+            JsonStack jsonStack = new JsonStack(GSON, root);
+            jsonStack.allow(KEY_FLUIDLOGGABLE_FLUIDS);
+
+            List<String> fluidloggableFluidStrs = jsonStack.streamAs(KEY_FLUIDLOGGABLE_FLUIDS,
+                    String.class).toList();
+            List<Identifier> fluidloggableFluidIds = stringListToIdentifierList(jsonStack,
+                    fluidloggableFluidStrs);
+
+            return new WorldsingerConfig(fluidloggableFluidIds);
         }
     }
 }

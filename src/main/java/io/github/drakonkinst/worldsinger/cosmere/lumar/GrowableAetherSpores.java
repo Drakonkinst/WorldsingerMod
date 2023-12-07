@@ -24,6 +24,10 @@ public abstract class GrowableAetherSpores<T extends SporeGrowthEntity> extends 
         this.sporeGrowthEntityTypeClass = sporeGrowthEntityTypeClass;
     }
 
+    public abstract EntityType<T> getSporeGrowthEntityType();
+
+    public abstract int getSmallStage();
+
     @Override
     public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
         this.spawnSporeGrowth(world, pos, spores, water, true, false, false, Int3.ZERO);
@@ -70,10 +74,6 @@ public abstract class GrowableAetherSpores<T extends SporeGrowthEntity> extends 
         sporeGrowthData.setWater(sporeGrowthData.getWater() + water);
         return true;
     }
-
-    public abstract EntityType<T> getSporeGrowthEntityType();
-
-    public abstract int getSmallStage();
 
     @Override
     public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,

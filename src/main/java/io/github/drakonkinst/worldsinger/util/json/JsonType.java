@@ -23,7 +23,7 @@ public final class JsonType<T extends JsonElement> {
     public static final JsonType<JsonPrimitive> BOOLEAN = new JsonType<>("JsonBoolean",
             element -> element.isJsonPrimitive() && element.getAsJsonPrimitive().isBoolean(),
             JsonElement::getAsJsonPrimitive, () -> new JsonPrimitive(false));
-    private static final JsonType<?>[] TYPES = {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN};
+    private static final JsonType<?>[] TYPES = { OBJECT, ARRAY, STRING, NUMBER, BOOLEAN };
 
     @SuppressWarnings("unchecked")
     public static <T extends JsonElement> JsonType<? extends T> of(T element) {
@@ -33,10 +33,6 @@ public final class JsonType<T extends JsonElement> {
             }
         }
         throw new IllegalArgumentException();
-    }
-
-    public boolean is(JsonElement element) {
-        return is.test(element);
     }
 
     public final String name;
@@ -50,6 +46,10 @@ public final class JsonType<T extends JsonElement> {
         this.is = is;
         this.cast = cast;
         this.dummy = dummy;
+    }
+
+    public boolean is(JsonElement element) {
+        return is.test(element);
     }
 
     public T cast(JsonElement element) {

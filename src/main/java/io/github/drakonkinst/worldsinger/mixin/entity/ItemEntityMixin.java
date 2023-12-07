@@ -39,6 +39,9 @@ public abstract class ItemEntityMixin extends Entity {
         super(type, world);
     }
 
+    @Shadow
+    protected abstract void applyLavaBuoyancy();
+
     @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ItemEntity;hasNoGravity()Z"))
     private boolean injectCustomFluidCheck(ItemEntity instance, Operation<Boolean> original) {
         double height = this.getStandingEyeHeight() - HEIGHT_OFFSET;
@@ -74,8 +77,5 @@ public abstract class ItemEntityMixin extends Entity {
         this.setVelocity(vec3d.x * HORIZONTAL_BUOYANCY_DRAG, vec3d.y + yVelocityOffset,
                 vec3d.z * HORIZONTAL_BUOYANCY_DRAG);
     }
-
-    @Shadow
-    protected abstract void applyLavaBuoyancy();
 
 }

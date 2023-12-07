@@ -24,7 +24,7 @@ public final class VoxelShapeUtil {
     public static VoxelShape createDirectionAlignedShape(Direction direction, double widthOffset,
             double minHeight, double maxHeight) {
         VoxelShape shape;
-        switch(direction) {
+        switch (direction) {
             case UP -> shape = Block.createCuboidShape(widthOffset, minHeight, widthOffset,
                     MAX_VOXEL - widthOffset, maxHeight, MAX_VOXEL - widthOffset);
             case DOWN ->
@@ -58,7 +58,7 @@ public final class VoxelShapeUtil {
     public static VoxelShape createAxisAlignedShape(Axis axis, double widthOffset,
             double heightOffset) {
         VoxelShape shape;
-        switch(axis) {
+        switch (axis) {
             case Y -> shape = Block.createCuboidShape(widthOffset, heightOffset, widthOffset,
                     MAX_VOXEL - widthOffset, MAX_VOXEL - heightOffset, MAX_VOXEL - widthOffset);
             case X -> shape = Block.createCuboidShape(heightOffset, widthOffset, widthOffset,

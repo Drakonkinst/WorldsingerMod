@@ -39,6 +39,26 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
     private static final int MAX_PLACE_ATTEMPTS = 3;
     private static final int MAX_AGE = 20 * 5;
     private static final int SPORE_DRAIN_NEAR_SPORE_KILLABLE = 50;
+
+    private static void resetCatalyzed(World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        if (state.contains(ModProperties.CATALYZED) && state.get(ModProperties.CATALYZED)) {
+            world.setBlockState(pos, state.with(ModProperties.CATALYZED, false));
+        }
+    }
+
+    public static void breakBlockFromSporeGrowth(World world, BlockPos pos, Entity breakingEntity) {
+        boolean shouldDropLoot = random.nextInt(3) > 0;
+        world.breakBlock(pos, shouldDropLoot, breakingEntity);
+    }
+
+    public static void playPlaceSoundEffect(World world, BlockPos pos, BlockState state) {
+        Vec3d centerPos = pos.toCenterPos();
+        world.playSound(null, centerPos.getX(), centerPos.getY(), centerPos.getZ(),
+                state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0f,
+                0.8f + 0.4f * random.nextFloat(), random.nextLong());
+    }
+
     protected final SporeGrowthComponent sporeGrowthData;
     private final Vector3d currentForceDir = new Vector3d();
     protected Int3 lastDir = Int3.ZERO;
@@ -50,6 +70,25 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         super(entityType, world);
         this.sporeGrowthData = ModComponents.SPORE_GROWTH.get(this);
     }
+
+    protected abstract int getMaxStage();
+
+    protected abstract int getUpdatePeriod();
+
+    protected abstract BlockState getNextBlock();
+
+    protected abstract void updateStage();
+
+    protected abstract boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith);
+
+    protected abstract boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith);
+
+    protected abstract int getWeight(World world, BlockPos pos, Int3 direction,
+            boolean allowPassthrough);
+
+    protected abstract boolean isGrowthBlock(BlockState state);
+
+    protected abstract void onGrowBlock(BlockPos pos, BlockState state);
 
     public void setSporeData(int spores, int water, boolean initialGrowth) {
         sporeGrowthData.setSpores(spores);
@@ -116,15 +155,6 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
     }
 
-    protected abstract int getMaxStage();
-
-    private static void resetCatalyzed(World world, BlockPos pos) {
-        BlockState state = world.getBlockState(pos);
-        if (state.contains(ModProperties.CATALYZED) && state.get(ModProperties.CATALYZED)) {
-            world.setBlockState(pos, state.with(ModProperties.CATALYZED, false));
-        }
-    }
-
     protected boolean shouldRecalculateForces() {
         return true;
     }
@@ -173,8 +203,6 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
     }
 
-    protected abstract int getUpdatePeriod();
-
     protected void drainSpores(int cost) {
         sporeGrowthData.setSpores(sporeGrowthData.getSpores() - cost);
     }
@@ -198,8 +226,6 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
         return false;
     }
-
-    protected abstract BlockState getNextBlock();
 
     private void shiftBlock(Int3 direction) {
         if (direction.isZero()) {
@@ -235,17 +261,8 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         return nextDirection;
     }
 
-    protected abstract void updateStage();
-
     private boolean canMoveThrough() {
         return this.isGrowthBlock(this.getWorld().getBlockState(this.getBlockPos()));
-    }
-
-    protected abstract boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith);
-
-    public static void breakBlockFromSporeGrowth(World world, BlockPos pos, Entity breakingEntity) {
-        boolean shouldDropLoot = random.nextInt(3) > 0;
-        world.breakBlock(pos, shouldDropLoot, breakingEntity);
     }
 
     private boolean growBlock(BlockState state) {
@@ -258,17 +275,12 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         return success;
     }
 
-    protected abstract boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith);
-
     // lastDir is initialized at zero, but cannot become zero again.
     public void setLastDir(Int3 lastDir) {
         if (!lastDir.isZero()) {
             this.lastDir = lastDir;
         }
     }
-
-    protected abstract int getWeight(World world, BlockPos pos, Int3 direction,
-            boolean allowPassthrough);
 
     private Int3 chooseWeighted(List<Int3> candidates, IntList weights, int weightSum) {
 
@@ -289,10 +301,6 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
         return Int3.ZERO;
     }
-
-    protected abstract boolean isGrowthBlock(BlockState state);
-
-    protected abstract void onGrowBlock(BlockPos pos, BlockState state);
 
     public SporeGrowthComponent getSporeGrowthData() {
         return sporeGrowthData;
@@ -335,13 +343,6 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
                     centerPos.getX(), centerPos.getY(), centerPos.getZ(), 100, 0.0, 0.0, 0.0,
                     0.15f);
         }
-    }
-
-    public static void playPlaceSoundEffect(World world, BlockPos pos, BlockState state) {
-        Vec3d centerPos = pos.toCenterPos();
-        world.playSound(null, centerPos.getX(), centerPos.getY(), centerPos.getZ(),
-                state.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0f,
-                0.8f + 0.4f * random.nextFloat(), random.nextLong());
     }
 
     protected boolean shouldDrainWater() {

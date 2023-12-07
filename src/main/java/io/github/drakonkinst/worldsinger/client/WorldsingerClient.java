@@ -13,6 +13,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 
@@ -28,16 +29,29 @@ public class WorldsingerClient implements ClientModInitializer {
         ModFluidRenderers.register();
 
         // Register block render layer
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
-                ModBlocks.VERDANT_VINE_SNARE, ModBlocks.DEAD_VERDANT_VINE_SNARE,
-                ModBlocks.TWISTING_VERDANT_VINES, ModBlocks.DEAD_TWISTING_VERDANT_VINES,
-                ModBlocks.TWISTING_VERDANT_VINES_PLANT, ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
-                ModBlocks.CRIMSON_SPIKE, ModBlocks.DEAD_CRIMSON_SPIKE, ModBlocks.CRIMSON_SNARE,
-                ModBlocks.DEAD_CRIMSON_SNARE, ModBlocks.CRIMSON_SPINES,
-                ModBlocks.DEAD_CRIMSON_SPINES, ModBlocks.TALL_CRIMSON_SPINES,
-                ModBlocks.DEAD_TALL_CRIMSON_SPINES);
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(),
-                ModBlocks.ROSEITE_BLOCK, ModBlocks.ROSEITE_STAIRS, ModBlocks.ROSEITE_SLAB);
+
+        final Block[] cutoutBlocks = {
+                ModBlocks.VERDANT_VINE_SNARE,
+                ModBlocks.DEAD_VERDANT_VINE_SNARE,
+                ModBlocks.TWISTING_VERDANT_VINES,
+                ModBlocks.DEAD_TWISTING_VERDANT_VINES,
+                ModBlocks.TWISTING_VERDANT_VINES_PLANT,
+                ModBlocks.DEAD_TWISTING_VERDANT_VINES_PLANT,
+                ModBlocks.CRIMSON_SPIKE,
+                ModBlocks.DEAD_CRIMSON_SPIKE,
+                ModBlocks.CRIMSON_SNARE,
+                ModBlocks.DEAD_CRIMSON_SNARE,
+                ModBlocks.CRIMSON_SPINES,
+                ModBlocks.DEAD_CRIMSON_SPINES,
+                ModBlocks.TALL_CRIMSON_SPINES,
+                ModBlocks.DEAD_TALL_CRIMSON_SPINES
+        };
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), cutoutBlocks);
+
+        final Block[] translucentBlocks = {
+                ModBlocks.ROSEITE_BLOCK, ModBlocks.ROSEITE_STAIRS, ModBlocks.ROSEITE_SLAB
+        };
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getTranslucent(), translucentBlocks);
 
         // Register particles
         ParticleFactoryRegistry.getInstance()

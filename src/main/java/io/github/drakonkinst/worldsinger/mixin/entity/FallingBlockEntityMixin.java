@@ -55,6 +55,9 @@ public abstract class FallingBlockEntityMixin extends Entity {
         super(type, world);
     }
 
+    @Shadow
+    public abstract BlockState getBlockState();
+
     @Inject(method = "handleFallDamage", at = @At("HEAD"))
     private void destroyAetherSporeBlockOnLanding(float fallDistance, float damageMultiplier,
             DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
@@ -106,9 +109,6 @@ public abstract class FallingBlockEntityMixin extends Entity {
             }
         }
     }
-
-    @Shadow
-    public abstract BlockState getBlockState();
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     private void addSteelAnvilHurtsEntities(NbtCompound nbt, CallbackInfo ci) {

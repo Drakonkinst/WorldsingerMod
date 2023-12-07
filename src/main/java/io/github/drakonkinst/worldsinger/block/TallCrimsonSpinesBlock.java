@@ -98,7 +98,7 @@ public class TallCrimsonSpinesBlock extends Block implements Waterloggable, Spor
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos,
             ShapeContext context) {
-        return switch(state.get(Properties.DOUBLE_BLOCK_HALF)) {
+        return switch (state.get(Properties.DOUBLE_BLOCK_HALF)) {
             case UPPER -> SHAPE_UPPER;
             case LOWER -> SHAPE_LOWER;
         };

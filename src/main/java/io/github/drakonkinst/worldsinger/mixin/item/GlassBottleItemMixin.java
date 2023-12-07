@@ -36,6 +36,9 @@ public abstract class GlassBottleItemMixin extends Item {
         super(settings);
     }
 
+    @Shadow
+    protected abstract ItemStack fill(ItemStack stack, PlayerEntity player, ItemStack outputStack);
+
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/registry/tag/TagKey;)Z"), cancellable = true)
     private void fillSporeBottles(World world, PlayerEntity user, Hand hand,
             CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
@@ -83,7 +86,4 @@ public abstract class GlassBottleItemMixin extends Item {
                 this.fill(itemStack, user, sporeType.getBottledItem().getDefaultStack()),
                 world.isClient()));
     }
-
-    @Shadow
-    protected abstract ItemStack fill(ItemStack stack, PlayerEntity player, ItemStack outputStack);
 }

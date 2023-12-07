@@ -8,21 +8,6 @@ public class EarlyRiser implements Runnable {
 
     private static final String INTERMEDIARY = "intermediary";
 
-    @Override
-    public void run() {
-        MappingResolver remapper = FabricLoader.getInstance().getMappingResolver();
-
-        String pathNodeTypeEnum = remapper.mapClassName(INTERMEDIARY, "net.minecraft.class_7");
-        ClassTinkerers.enumBuilder(pathNodeTypeEnum, float.class)
-                .addEnum("AETHER_SPORE_SEA", -1.0f)
-                .build();
-
-        switch(FabricLoader.getInstance().getEnvironmentType()) {
-            case CLIENT -> loadClient(remapper);
-            case SERVER -> loadServer(remapper);
-        }
-    }
-
     private static void loadClient(MappingResolver remapper) {
         String skyTypeEnum = remapper.mapClassName(INTERMEDIARY,
                 "net.minecraft.class_5294$class_5401");
@@ -35,5 +20,20 @@ public class EarlyRiser implements Runnable {
 
     private static void loadServer(MappingResolver remapper) {
         // Nothing yet
+    }
+
+    @Override
+    public void run() {
+        MappingResolver remapper = FabricLoader.getInstance().getMappingResolver();
+
+        String pathNodeTypeEnum = remapper.mapClassName(INTERMEDIARY, "net.minecraft.class_7");
+        ClassTinkerers.enumBuilder(pathNodeTypeEnum, float.class)
+                .addEnum("AETHER_SPORE_SEA", -1.0f)
+                .build();
+
+        switch (FabricLoader.getInstance().getEnvironmentType()) {
+            case CLIENT -> loadClient(remapper);
+            case SERVER -> loadServer(remapper);
+        }
     }
 }

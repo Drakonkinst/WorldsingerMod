@@ -32,9 +32,9 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
     private static final Identifier[] TEXTURE_MAP = BoatSilverLiningFeatureRenderer.generateTextureMap();
 
     private static Identifier[] generateTextureMap() {
-        String[] entityTypes = {"boat", "chest_boat"};
-        String[] boatVariants = {"boat", "raft"};
-        String[] silverLevels = {"low", "medium", "high", "perfect"};
+        String[] entityTypes = { "boat", "chest_boat" };
+        String[] boatVariants = { "boat", "raft" };
+        String[] silverLevels = { "low", "medium", "high", "perfect" };
         Identifier[] textureMap = new Identifier[entityTypes.length * boatVariants.length
                 * silverLevels.length];
 
@@ -50,29 +50,6 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
         }
 
         return textureMap;
-    }
-
-    private final Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels;
-
-    public BoatSilverLiningFeatureRenderer(
-            FeatureRendererContext<BoatEntity, BoatEntityModel> context,
-            Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels) {
-        super(context);
-        this.texturesToModels = texturesToModels;
-    }
-
-    @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
-            BoatEntity entity, float limbAngle, float limbDistance, float tickDelta,
-            float animationProgress, float headYaw, float headPitch) {
-        int encodedVariant = BoatSilverLiningFeatureRenderer.encodeBoatVariant(entity);
-        if (encodedVariant < 0) {
-            return;
-        }
-
-        Identifier texture = TEXTURE_MAP[encodedVariant];
-        BoatSilverLiningFeatureRenderer.renderModel(this.getModelForBoat(entity), texture, matrices,
-                vertexConsumers, light);
     }
 
     // Boat variant can be represented as a binary number
@@ -100,6 +77,29 @@ public class BoatSilverLiningFeatureRenderer extends FeatureRenderer<BoatEntity,
                 RenderLayer.getEntityCutoutNoCull(texture));
         model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0f, 1.0f, 1.0f,
                 1.0f);
+    }
+
+    private final Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels;
+
+    public BoatSilverLiningFeatureRenderer(
+            FeatureRendererContext<BoatEntity, BoatEntityModel> context,
+            Map<Type, Pair<Identifier, CompositeEntityModel<BoatEntity>>> texturesToModels) {
+        super(context);
+        this.texturesToModels = texturesToModels;
+    }
+
+    @Override
+    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
+            BoatEntity entity, float limbAngle, float limbDistance, float tickDelta,
+            float animationProgress, float headYaw, float headPitch) {
+        int encodedVariant = BoatSilverLiningFeatureRenderer.encodeBoatVariant(entity);
+        if (encodedVariant < 0) {
+            return;
+        }
+
+        Identifier texture = TEXTURE_MAP[encodedVariant];
+        BoatSilverLiningFeatureRenderer.renderModel(this.getModelForBoat(entity), texture, matrices,
+                vertexConsumers, light);
     }
 
     private EntityModel<BoatEntity> getModelForBoat(BoatEntity entity) {

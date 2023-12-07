@@ -46,6 +46,9 @@ public abstract class AbstractBlockStateMixin {
     @Shadow
     public abstract Block getBlock();
 
+    @Shadow
+    protected abstract BlockState asBlockState();
+
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/function/ToIntFunction;applyAsInt(Ljava/lang/Object;)I"))
     private <T> int injectLuminance(ToIntFunction<T> instance, T t) {
         if (t instanceof BlockState state && state.getEntries() != null && state.contains(
@@ -72,9 +75,6 @@ public abstract class AbstractBlockStateMixin {
             world.scheduleFluidTick(pos, fluid, fluid.getTickRate(world));
         }
     }
-
-    @Shadow
-    protected abstract BlockState asBlockState();
 
     @ModifyReturnValue(method =
             "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;"

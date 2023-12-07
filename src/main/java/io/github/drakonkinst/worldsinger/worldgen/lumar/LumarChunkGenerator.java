@@ -48,21 +48,6 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
         return (x, y, z) -> fluidLevel;
     }
 
-    public LumarChunkGenerator(BiomeSource biomeSource,
-            RegistryEntry<ChunkGeneratorSettings> settings) {
-        super(biomeSource, settings, SPORE_SEA_PLACEHOLDER);
-    }
-
-    @Override
-    public BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig, int x, int y,
-            int z) {
-        if (!state.isOf(PLACEHOLDER_BLOCK)) {
-            return state;
-        }
-
-        return LumarChunkGenerator.getSporeSeaBlockAtPos(noiseConfig, x, y, z);
-    }
-
     public static BlockState getSporeSeaBlockAtPos(NoiseConfig noiseConfig, int x, int y, int z) {
         DensityFunction.UnblendedNoisePos noisePos = new DensityFunction.UnblendedNoisePos(x, y, z);
         NoiseRouter noiseRouter = noiseConfig.getNoiseRouter();
@@ -83,6 +68,21 @@ public class LumarChunkGenerator extends CustomNoiseChunkGenerator {
             return CRIMSON_SEA;
         }
         return MIDNIGHT_SEA;
+    }
+
+    public LumarChunkGenerator(BiomeSource biomeSource,
+            RegistryEntry<ChunkGeneratorSettings> settings) {
+        super(biomeSource, settings, SPORE_SEA_PLACEHOLDER);
+    }
+
+    @Override
+    public BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig, int x, int y,
+            int z) {
+        if (!state.isOf(PLACEHOLDER_BLOCK)) {
+            return state;
+        }
+
+        return LumarChunkGenerator.getSporeSeaBlockAtPos(noiseConfig, x, y, z);
     }
 
     @Override

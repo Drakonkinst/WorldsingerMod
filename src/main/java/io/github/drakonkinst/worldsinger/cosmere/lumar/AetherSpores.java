@@ -48,10 +48,8 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
         return -1;
     }
 
-    public abstract int getColor();
-
     public static Type getReactiveTypeFromSpore(AetherSpores sporeType) {
-        return switch(sporeType.getId()) {
+        return switch (sporeType.getId()) {
             case VerdantSpores.ID -> Type.VERDANT_SPORES;
             case CrimsonSpores.ID -> Type.CRIMSON_SPORES;
             case SunlightSpores.ID -> Type.SUNLIGHT_SPORES;
@@ -61,8 +59,6 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
             default -> Type.MISC;
         };
     }
-
-    public abstract int getId();
 
     // Called when an entity enters the spore sea
     public static void onEnterSporeSea(Entity entity) {
@@ -123,6 +119,10 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
         AETHER_SPORE_MAP.put(this.getName(), this);
     }
 
+    public abstract int getColor();
+
+    public abstract int getId();
+
     public abstract String getName();
 
     public abstract void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos,
@@ -143,6 +143,8 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
 
     public abstract int getParticleColor();
 
+    public abstract void doReaction(World world, Vec3d pos, int spores, int water, Random random);
+
     // By default, act as normal
     public void doReactionFromFluidContainer(World world, BlockPos fluidContainerPos, int spores,
             int water, Random random) {
@@ -152,8 +154,6 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
     public final void doReaction(World world, BlockPos pos, int spores, int water, Random random) {
         this.doReaction(world, pos.toCenterPos(), spores, water, random);
     }
-
-    public abstract void doReaction(World world, Vec3d pos, int spores, int water, Random random);
 
     // By default, act as normal
     public void doReactionFromSplashBottle(World world, Vec3d pos, int spores, int water,

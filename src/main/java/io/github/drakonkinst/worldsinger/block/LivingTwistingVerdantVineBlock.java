@@ -24,6 +24,41 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
             LivingTwistingVerdantVineBlock::new);
     private static final int MAX_DEPTH = 3;
 
+    // Works for both bud and stem version
+    public static void growInSameDirection(World world, BlockPos pos, BlockState state,
+            Random random) {
+        if (!state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
+            return;
+        }
+        AbstractVerticalGrowthComponentBlock block = (AbstractVerticalGrowthComponentBlock) state.getBlock();
+        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
+
+        Direction direction = state.get(Properties.VERTICAL_DIRECTION);
+        BlockPos.Mutable outermostPos = pos.mutableCopy();
+        BlockState outermostState;
+
+        int depth = 0;
+        while (true) {
+            do {
+                outermostPos.move(direction);
+                outermostState = world.getBlockState(outermostPos);
+            } while (block.isSamePlant(outermostState));
+
+            if (outermostState.isAir()) {
+                BlockState newState = ModBlocks.TWISTING_VERDANT_VINES.getDefaultState()
+                        .with(Properties.VERTICAL_DIRECTION, direction)
+                        .with(ModProperties.CATALYZED, true);
+                world.setBlockState(outermostPos, newState);
+                SporeGrowthEntity.playPlaceSoundEffect(world, outermostPos, newState);
+
+                if (++depth < MAX_DEPTH && random.nextInt(3) > 0) {
+                    continue;
+                }
+            }
+            break;
+        }
+    }
+
     public LivingTwistingVerdantVineBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
@@ -64,6 +99,7 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
     public boolean hasRandomTicks(BlockState state) {
         return super.hasRandomTicks(state) || !state.get(ModProperties.CATALYZED);
     }
+    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
@@ -72,7 +108,6 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
-    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
@@ -82,41 +117,6 @@ public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock imp
         }
         LivingTwistingVerdantVineBlock.growInSameDirection(world, pos, state, random);
         return true;
-    }
-
-    // Works for both bud and stem version
-    public static void growInSameDirection(World world, BlockPos pos, BlockState state,
-            Random random) {
-        if (!state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
-            return;
-        }
-        AbstractVerticalGrowthComponentBlock block = (AbstractVerticalGrowthComponentBlock) state.getBlock();
-        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-
-        Direction direction = state.get(Properties.VERTICAL_DIRECTION);
-        BlockPos.Mutable outermostPos = pos.mutableCopy();
-        BlockState outermostState;
-
-        int depth = 0;
-        while (true) {
-            do {
-                outermostPos.move(direction);
-                outermostState = world.getBlockState(outermostPos);
-            } while (block.isSamePlant(outermostState));
-
-            if (outermostState.isAir()) {
-                BlockState newState = ModBlocks.TWISTING_VERDANT_VINES.getDefaultState()
-                        .with(Properties.VERTICAL_DIRECTION, direction)
-                        .with(ModProperties.CATALYZED, true);
-                world.setBlockState(outermostPos, newState);
-                SporeGrowthEntity.playPlaceSoundEffect(world, outermostPos, newState);
-
-                if (++depth < MAX_DEPTH && random.nextInt(3) > 0) {
-                    continue;
-                }
-            }
-            break;
-        }
     }
     /* End of code common to all LivingSporeGrowthBlocks */
 

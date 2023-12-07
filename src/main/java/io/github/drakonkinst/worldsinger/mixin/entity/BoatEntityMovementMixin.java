@@ -50,7 +50,7 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
     @Unique
     private static final int UNDER_SPORES_SILVER_PENALTY_TICK = 10;
     @Unique
-    private final boolean[] firstPaddle = {true, true};
+    private final boolean[] firstPaddle = { true, true };
     @Unique
     private boolean inSporeSea;
     @Unique
@@ -70,6 +70,9 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
     public BoatEntityMovementMixin(EntityType<?> type, World world) {
         super(type, world);
     }
+
+    @Shadow
+    public abstract boolean isPaddleMoving(int paddle);
 
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("TAIL"))
     private void cacheSilverData(EntityType<? extends BoatEntity> entityType, World world,
@@ -129,9 +132,6 @@ public abstract class BoatEntityMovementMixin extends VehicleEntity {
             silverData.setSilverDurability(silverData.getSilverDurability() - silverDamage);
         }
     }
-
-    @Shadow
-    public abstract boolean isPaddleMoving(int paddle);
 
     @Unique
     private void checkRowingParticle(ServerWorld world, int paddleIndex) {

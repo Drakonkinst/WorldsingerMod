@@ -26,6 +26,19 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements LivingSp
             LivingVerdantVineBlock::new);
     public static final int RECATALYZE_VALUE = 100;
 
+    public static BlockPos getWaterNeighborPos(BlockView world, BlockPos pos) {
+        BlockPos.Mutable mutable = pos.mutableCopy();
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            mutable.set(pos, direction);
+            BlockState blockState = world.getBlockState(mutable);
+            if (blockState.getFluidState().isIn(FluidTags.WATER)
+                    && !blockState.isSideSolidFullSquare(world, pos, direction.getOpposite())) {
+                return mutable;
+            }
+        }
+        return null;
+    }
+
     public LivingVerdantVineBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(ModProperties.CATALYZED, false));
@@ -66,6 +79,7 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements LivingSp
     public boolean hasRandomTicks(BlockState state) {
         return super.hasRandomTicks(state) || !state.get(ModProperties.CATALYZED);
     }
+    /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
@@ -73,20 +87,6 @@ public class LivingVerdantVineBlock extends VerdantVineBlock implements LivingSp
         if (!state.get(ModProperties.CATALYZED) && world.hasRain(pos.up())) {
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
-    }
-    /* End of code common to all LivingSporeGrowthBlocks */
-
-    public static BlockPos getWaterNeighborPos(BlockView world, BlockPos pos) {
-        BlockPos.Mutable mutable = pos.mutableCopy();
-        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            mutable.set(pos, direction);
-            BlockState blockState = world.getBlockState(mutable);
-            if (blockState.getFluidState().isIn(FluidTags.WATER)
-                    && !blockState.isSideSolidFullSquare(world, pos, direction.getOpposite())) {
-                return mutable;
-            }
-        }
-        return null;
     }
 
     @Override

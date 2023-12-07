@@ -52,6 +52,30 @@ public abstract class LivingEntityMixin extends Entity {
         super(type, world);
     }
 
+    @Shadow
+    public abstract boolean damage(DamageSource source, float amount);
+
+    @Shadow
+    protected abstract boolean shouldSwimInFluids();
+
+    @Shadow
+    protected abstract void swimUpward(TagKey<Fluid> fluid);
+
+    @Shadow
+    public abstract boolean canWalkOnFluid(FluidState state);
+
+    @Shadow
+    public abstract boolean hasStatusEffect(StatusEffect effect);
+
+    @Shadow
+    public abstract boolean isClimbing();
+
+    @Shadow
+    public abstract Vec3d applyFluidMovingSpeed(double gravity, boolean falling, Vec3d motion);
+
+    @Shadow
+    public abstract void updateLimbs(boolean flutter);
+
     @Inject(method = "canWalkOnFluid", at = @At("HEAD"), cancellable = true)
     private void allowWalkingOnSporesDuringRain(FluidState state,
             CallbackInfoReturnable<Boolean> cir) {
@@ -96,9 +120,6 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Shadow
-    public abstract boolean damage(DamageSource source, float amount);
-
     @Inject(method = "tickMovement", at = @At("RETURN"))
     private void allowCustomFluidSwimming(CallbackInfo ci) {
         if (this.jumping && this.shouldSwimInFluids()) {
@@ -118,9 +139,6 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Shadow
-    protected abstract boolean shouldSwimInFluids();
-
     private boolean canSwimUpwards(TagKey<Fluid> fluidTag, double swimHeight,
             FluidState fluidState) {
         double fluidHeight = this.getFluidHeight(fluidTag);
@@ -132,12 +150,6 @@ public abstract class LivingEntityMixin extends Entity {
         }
         return false;
     }
-
-    @Shadow
-    protected abstract void swimUpward(TagKey<Fluid> fluid);
-
-    @Shadow
-    public abstract boolean canWalkOnFluid(FluidState state);
 
     @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isFallFlying()Z"), cancellable = true)
     private void injectCustomFluidPhysics(Vec3d movementInput, CallbackInfo ci) {
@@ -183,9 +195,6 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Shadow
-    public abstract boolean hasStatusEffect(StatusEffect effect);
-
     @Unique
     private void applyFluidPhysics(Vec3d movementInput, float horizontalMovementMultiplier,
             float verticalMovementMultiplier, double gravity, boolean isFalling) {
@@ -216,13 +225,4 @@ public abstract class LivingEntityMixin extends Entity {
         // Remainder of method
         updateLimbs(this instanceof Flutterer);
     }
-
-    @Shadow
-    public abstract boolean isClimbing();
-
-    @Shadow
-    public abstract Vec3d applyFluidMovingSpeed(double gravity, boolean falling, Vec3d motion);
-
-    @Shadow
-    public abstract void updateLimbs(boolean flutter);
 }

@@ -58,31 +58,6 @@ public class ZephyrSpores extends AetherSpores {
         return INSTANCE;
     }
 
-    private ZephyrSpores() {}
-
-    @Override
-    public void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos, int water) {
-        Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity, ModFluidTags.ZEPHYR_SPORES);
-        Vec3d adjustedStartPos = new Vec3d(startPos.getX(), Math.ceil(startPos.getY()),
-                startPos.getZ());
-        this.doReaction(world, adjustedStartPos, LivingAetherSporeBlock.CATALYZE_VALUE, water,
-                world.getRandom());
-    }
-
-    @Override
-    public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
-        float power = Math.min(spores, water) * SPORE_TO_POWER_MULTIPLIER + random.nextFloat();
-        // Push the explosion to the top of the block, so that it is not obstructed by itself
-        Vec3d centerPos = new Vec3d(pos.getX(), Math.ceil(pos.getY()), pos.getZ());
-        ZephyrSpores.explode(world, centerPos, power, KNOCKBACK_MULTIPLIER);
-
-        // Also spawn some spore particles
-        if (world instanceof ServerWorld serverWorld) {
-            SporeParticleSpawner.spawnBlockParticles(serverWorld, ZephyrSpores.getInstance(),
-                    BlockPosUtil.toBlockPos(pos), 1, 1);
-        }
-    }
-
     // Too inefficient to use actual explosion logic since they spend a lot of time calculating blocks,
     // so we'll need our own solution
     public static void explode(World world, Vec3d centerPos, float radius,
@@ -195,6 +170,31 @@ public class ZephyrSpores extends AetherSpores {
                                 explosion.getDestructionType(), explosion.getParticle(),
                                 explosion.getEmitterParticle(), explosion.getSoundEvent()));
             }
+        }
+    }
+
+    private ZephyrSpores() {}
+
+    @Override
+    public void onDeathFromStatusEffect(World world, LivingEntity entity, BlockPos pos, int water) {
+        Vec3d startPos = this.getTopmostSeaPosForEntity(world, entity, ModFluidTags.ZEPHYR_SPORES);
+        Vec3d adjustedStartPos = new Vec3d(startPos.getX(), Math.ceil(startPos.getY()),
+                startPos.getZ());
+        this.doReaction(world, adjustedStartPos, LivingAetherSporeBlock.CATALYZE_VALUE, water,
+                world.getRandom());
+    }
+
+    @Override
+    public void doReaction(World world, Vec3d pos, int spores, int water, Random random) {
+        float power = Math.min(spores, water) * SPORE_TO_POWER_MULTIPLIER + random.nextFloat();
+        // Push the explosion to the top of the block, so that it is not obstructed by itself
+        Vec3d centerPos = new Vec3d(pos.getX(), Math.ceil(pos.getY()), pos.getZ());
+        ZephyrSpores.explode(world, centerPos, power, KNOCKBACK_MULTIPLIER);
+
+        // Also spawn some spore particles
+        if (world instanceof ServerWorld serverWorld) {
+            SporeParticleSpawner.spawnBlockParticles(serverWorld, ZephyrSpores.getInstance(),
+                    BlockPosUtil.toBlockPos(pos), 1, 1);
         }
     }
 

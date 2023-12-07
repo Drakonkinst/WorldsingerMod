@@ -53,6 +53,9 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
         this.customFluidLevelSampler = customFluidLevelSampler;
     }
 
+    public abstract BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig, int x,
+            int y, int z);
+
     @Override
     public int getHeight(int x, int z, Type heightmap, HeightLimitView world,
             NoiseConfig noiseConfig) {
@@ -270,9 +273,6 @@ public abstract class CustomNoiseChunkGenerator extends NoiseChunkGenerator {
         chunkNoiseSampler.stopInterpolation();
         return chunk;
     }
-
-    public abstract BlockState modifyBlockState(BlockState state, NoiseConfig noiseConfig, int x,
-            int y, int z);
 
     protected boolean shouldSkipPostProcessing(AquiferSampler aquiferSampler, FluidState fluidState,
             int y) {

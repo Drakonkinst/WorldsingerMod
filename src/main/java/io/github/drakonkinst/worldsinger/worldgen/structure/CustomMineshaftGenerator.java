@@ -103,7 +103,7 @@ public class CustomMineshaftGenerator {
                 orientation = Direction.NORTH;
             }
             int maxY = random.nextInt(4) == 0 ? 6 : 2;
-            BlockBox blockBox = switch(orientation) {
+            BlockBox blockBox = switch (orientation) {
                 default -> new BlockBox(-1, 0, -4, 3, maxY, 0);
                 case SOUTH -> new BlockBox(-1, 0, 0, 3, maxY, 4);
                 case WEST -> new BlockBox(-4, 0, -1, 0, maxY, 3);
@@ -136,7 +136,7 @@ public class CustomMineshaftGenerator {
         public void fillOpenings(StructurePiece start, StructurePiecesHolder holder,
                 Random random) {
             int i = this.getChainLength();
-            switch(this.direction) {
+            switch (this.direction) {
                 default -> {
                     CustomMineshaftGenerator.pieceGenerator(start, holder, random,
                             this.boundingBox.getMinX() + 1, this.boundingBox.getMinY(),
@@ -289,7 +289,7 @@ public class CustomMineshaftGenerator {
             if (orientation == null) {
                 orientation = Direction.NORTH;
             }
-            BlockBox blockBox = switch(orientation) {
+            BlockBox blockBox = switch (orientation) {
                 default -> new BlockBox(0, -5, -8, 2, 2, 0);
                 case SOUTH -> new BlockBox(0, -5, 0, 2, 2, 8);
                 case WEST -> new BlockBox(-8, -5, 0, 0, 2, 2);
@@ -318,7 +318,7 @@ public class CustomMineshaftGenerator {
             int i = this.getChainLength();
             Direction direction = this.getFacing();
             if (direction != null) {
-                switch(direction) {
+                switch (direction) {
                     default -> CustomMineshaftGenerator.pieceGenerator(start, holder, random,
                             this.boundingBox.getMinX(), this.boundingBox.getMinY(),
                             this.boundingBox.getMinZ() - 1, Direction.NORTH, i);
@@ -359,7 +359,7 @@ public class CustomMineshaftGenerator {
             int i = random.nextInt(3) + 2;
             while (i > 0) {
                 int j = i * 5;
-                BlockBox blockBox = switch(orientation) {
+                BlockBox blockBox = switch (orientation) {
                     default -> new BlockBox(0, 0, -(j - 1), 2, 2, 0);
                     case SOUTH -> new BlockBox(0, 0, 0, 2, 2, j - 1);
                     case WEST -> new BlockBox(-(j - 1), 0, 0, 0, 2, 2);
@@ -372,6 +372,13 @@ public class CustomMineshaftGenerator {
                 --i;
             }
             return null;
+        }
+
+        private static void fillColumn(StructureWorldAccess world, BlockState state,
+                BlockPos.Mutable pos, int startY, int endY) {
+            for (int y = startY; y < endY; ++y) {
+                world.setBlockState(pos.setY(y), state, Block.NOTIFY_LISTENERS);
+            }
         }
 
         private final boolean hasRails;
@@ -406,7 +413,7 @@ public class CustomMineshaftGenerator {
             int variantIndex = random.nextInt(4);
             Direction direction = this.getFacing();
             if (direction != null) {
-                switch(direction) {
+                switch (direction) {
                     default -> {
                         if (variantIndex <= 1) {
                             CustomMineshaftGenerator.pieceGenerator(start, holder, random,
@@ -738,13 +745,6 @@ public class CustomMineshaftGenerator {
 
         private boolean isUpsideSolidFullSquare(WorldView world, BlockPos pos, BlockState state) {
             return state.isSideSolidFullSquare(world, pos, Direction.UP);
-        }
-
-        private static void fillColumn(StructureWorldAccess world, BlockState state,
-                BlockPos.Mutable pos, int startY, int endY) {
-            for (int y = startY; y < endY; ++y) {
-                world.setBlockState(pos.setY(y), state, Block.NOTIFY_LISTENERS);
-            }
         }
 
         private boolean sideCoversSmallSquare(WorldView world, BlockPos pos, BlockState state) {

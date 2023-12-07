@@ -27,10 +27,42 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
     private static final float RADIUS = 0.25f;
     public static final MapCodec<VerdantVineBranchBlock> CODEC = createCodec(
             VerdantVineBranchBlock::new);
-    private static final BooleanProperty[] DIRECTION_PROPERTIES = {DOWN, UP, NORTH, EAST, SOUTH,
-            WEST};
-    private static final Direction[] DIRECTIONS = {Direction.DOWN, Direction.UP, Direction.NORTH,
-            Direction.EAST, Direction.SOUTH, Direction.WEST};
+    private static final BooleanProperty[] DIRECTION_PROPERTIES = {
+            DOWN, UP, NORTH, EAST, SOUTH, WEST
+    };
+    private static final Direction[] DIRECTIONS = {
+            Direction.DOWN,
+            Direction.UP,
+            Direction.NORTH,
+            Direction.EAST,
+            Direction.SOUTH,
+            Direction.WEST
+    };
+
+    private static boolean canConnect(BlockView world, BlockPos pos, BlockState state,
+            Direction direction) {
+        // Can connect to any other branch block
+        if (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
+            return true;
+        }
+
+        // Can connect to snare only if supporting it
+        if (state.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
+            Direction attachDirection = VerdantVineSnareBlock.getDirection(state).getOpposite();
+            return attachDirection == direction;
+        }
+
+        // Can connect to twisting vines only if supporting them
+        if (state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
+            Direction attachDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(
+                    state).getOpposite();
+            return attachDirection == direction;
+        }
+
+        // Can connect to any solid face
+        boolean faceFullSquare = state.isSideSolidFullSquare(world, pos, direction.getOpposite());
+        return faceFullSquare;
+    }
 
     public VerdantVineBranchBlock(Settings settings) {
         super(RADIUS, settings);
@@ -69,31 +101,6 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
             }
         }
         return false;
-    }
-
-    private static boolean canConnect(BlockView world, BlockPos pos, BlockState state,
-            Direction direction) {
-        // Can connect to any other branch block
-        if (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
-            return true;
-        }
-
-        // Can connect to snare only if supporting it
-        if (state.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
-            Direction attachDirection = VerdantVineSnareBlock.getDirection(state).getOpposite();
-            return attachDirection == direction;
-        }
-
-        // Can connect to twisting vines only if supporting them
-        if (state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)) {
-            Direction attachDirection = AbstractVerticalGrowthComponentBlock.getGrowthDirection(
-                    state).getOpposite();
-            return attachDirection == direction;
-        }
-
-        // Can connect to any solid face
-        boolean faceFullSquare = state.isSideSolidFullSquare(world, pos, direction.getOpposite());
-        return faceFullSquare;
     }
 
     @Override

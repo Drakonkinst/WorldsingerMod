@@ -27,6 +27,17 @@ import org.jetbrains.annotations.Nullable;
 public class StillFluidRenderHandler implements FluidRenderHandler {
 
     private static final float Z_FIGHTING_BUFFER = 0.001f;
+
+    private static boolean isSideCovered(BlockView world, BlockPos pos, Direction direction,
+            BlockState state) {
+        if (state.isOpaque()) {
+            VoxelShape voxelShape = VoxelShapes.fullCube();
+            VoxelShape neighborVoxelShape = state.getCullingShape(world, pos.offset(direction));
+            return VoxelShapes.isSideCovered(voxelShape, neighborVoxelShape, direction);
+        }
+        return false;
+    }
+
     protected final Identifier texture;
     protected final Sprite[] sprites;
     protected final boolean shaded;
@@ -158,7 +169,7 @@ public class StillFluidRenderHandler implements FluidRenderHandler {
             double maxX;
             double minZ;
             double maxZ;
-            if (!(switch(direction) {
+            if (!(switch (direction) {
                 case NORTH -> {
                     minX = x;
                     maxX = x + 1.0;
@@ -205,16 +216,6 @@ public class StillFluidRenderHandler implements FluidRenderHandler {
             this.vertex(vertexConsumer, maxX, y + 1.0, maxZ, brightness, maxU, minV, light);
             this.vertex(vertexConsumer, minX, y + 1.0, minZ, brightness, minU, minV, light);
         }
-    }
-
-    private static boolean isSideCovered(BlockView world, BlockPos pos, Direction direction,
-            BlockState state) {
-        if (state.isOpaque()) {
-            VoxelShape voxelShape = VoxelShapes.fullCube();
-            VoxelShape neighborVoxelShape = state.getCullingShape(world, pos.offset(direction));
-            return VoxelShapes.isSideCovered(voxelShape, neighborVoxelShape, direction);
-        }
-        return false;
     }
 
     private int getLight(BlockRenderView world, BlockPos pos) {

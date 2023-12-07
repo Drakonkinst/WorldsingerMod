@@ -25,6 +25,19 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
     public static final MapCodec<TwistingVerdantVineBlock> CODEC = createCodec(
             TwistingVerdantVineBlock::new);
 
+    public static boolean canAttach(BlockState state, BlockState attachCandidate) {
+        // Can attach to other branches
+        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
+            return true;
+        }
+        // Can attach to a snare block if direction matches
+        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
+            return VerdantVineSnareBlock.getDirection(attachCandidate)
+                    == AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
+        }
+        return false;
+    }
+
     public TwistingVerdantVineBlock(Settings settings) {
         super(settings, SHAPE);
         this.setDefaultState(this.getDefaultState()
@@ -76,19 +89,6 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
     @Override
     protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
         return TwistingVerdantVineBlock.canAttach(state, attachCandidate);
-    }
-
-    public static boolean canAttach(BlockState state, BlockState attachCandidate) {
-        // Can attach to other branches
-        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_BRANCH)) {
-            return true;
-        }
-        // Can attach to a snare block if direction matches
-        if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
-            return VerdantVineSnareBlock.getDirection(attachCandidate)
-                    == AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
-        }
-        return false;
     }
 
     @Override

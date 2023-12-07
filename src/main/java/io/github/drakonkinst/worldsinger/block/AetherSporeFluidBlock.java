@@ -40,28 +40,6 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
                     .apply(instance,
                             (fluid1, sporeType, settings1) -> new AetherSporeFluidBlock(sporeType,
                                     settings1)));
-    protected final AetherSpores sporeType;
-
-    public AetherSporeFluidBlock(AetherSpores sporeType, Settings settings) {
-        super(sporeType.getFluid(), settings);
-        this.sporeType = sporeType;
-    }
-
-    @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
-            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (direction == Direction.DOWN) {
-            // If the block beneath is changed, update fluidization
-            world.scheduleBlockTick(pos, this, 5);
-        }
-        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
-                neighborPos);
-    }
-
-    @Override
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        AetherSporeFluidBlock.update(world, pos, state, world.getBlockState(pos.down()));
-    }
 
     // Update fluidization from a source of spores
     public static void update(WorldAccess world, BlockPos pos, BlockState blockState,
@@ -171,6 +149,29 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
         }
 
         return false;
+    }
+
+    protected final AetherSpores sporeType;
+
+    public AetherSporeFluidBlock(AetherSpores sporeType, Settings settings) {
+        super(sporeType.getFluid(), settings);
+        this.sporeType = sporeType;
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction,
+            BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (direction == Direction.DOWN) {
+            // If the block beneath is changed, update fluidization
+            world.scheduleBlockTick(pos, this, 5);
+        }
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos,
+                neighborPos);
+    }
+
+    @Override
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        AetherSporeFluidBlock.update(world, pos, state, world.getBlockState(pos.down()));
     }
 
     public Block getSolidBlock() {

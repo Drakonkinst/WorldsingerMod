@@ -17,6 +17,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(Block.class)
 public abstract class BlockMixin {
 
+    @Shadow
+    protected abstract void setDefaultState(BlockState state);
+
+    @Shadow
+    public abstract BlockState getDefaultState();
+
     @Inject(method = "<init>", at = @At(value = "INVOKE", target =
             "Lnet/minecraft/state/StateManager$Builder;build"
                     + "(Ljava/util/function/Function;Lnet/minecraft/state/StateManager$Factory;)"
@@ -40,10 +46,4 @@ public abstract class BlockMixin {
             setDefaultState(getDefaultState().with(ModProperties.FLUIDLOGGED, 0));
         }
     }
-
-    @Shadow
-    protected abstract void setDefaultState(BlockState state);
-
-    @Shadow
-    public abstract BlockState getDefaultState();
 }

@@ -21,6 +21,11 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractVerticalGrowthComponentBlock extends Block {
 
     public static final DirectionProperty VERTICAL_DIRECTION = Properties.VERTICAL_DIRECTION;
+
+    public static Direction getGrowthDirection(BlockState state) {
+        return state.get(VERTICAL_DIRECTION);
+    }
+
     private final VoxelShape outlineShape;
 
     public AbstractVerticalGrowthComponentBlock(Settings settings, VoxelShape outlineShape) {
@@ -28,6 +33,10 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
         this.outlineShape = outlineShape;
         this.setDefaultState(this.getDefaultState().with(VERTICAL_DIRECTION, Direction.UP));
     }
+
+    protected abstract Block getBud();
+
+    protected abstract Block getStem();
 
     @Override
     @Nullable
@@ -71,10 +80,6 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
         return this.canAttachTo(state, attachedBlockState);
     }
 
-    public static Direction getGrowthDirection(BlockState state) {
-        return state.get(VERTICAL_DIRECTION);
-    }
-
     protected boolean isSamePlant(BlockState state) {
         return state.isOf(this.getBud()) || state.isOf(this.getStem());
     }
@@ -82,10 +87,6 @@ public abstract class AbstractVerticalGrowthComponentBlock extends Block {
     protected boolean canAttachTo(BlockState state, BlockState attachCandidate) {
         return false;
     }
-
-    protected abstract Block getBud();
-
-    protected abstract Block getStem();
 
     @Override
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {

@@ -11,6 +11,9 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(EntityShapeContext.class)
 public abstract class EntityShapeContextMixin implements WorldShapeContextAccess {
 
+    @Shadow
+    public abstract @Nullable Entity getEntity();
+
     @Override
     public @Nullable World worldsinger$getWorld() {
         if (this.getEntity() == null) {
@@ -18,7 +21,4 @@ public abstract class EntityShapeContextMixin implements WorldShapeContextAccess
         }
         return this.getEntity().getWorld();
     }
-
-    @Shadow
-    public abstract @Nullable Entity getEntity();
 }
