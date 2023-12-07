@@ -296,8 +296,9 @@ public final class ModBlocks {
     // Other
     public static final Block MAGMA_VENT = register("magma_vent",
             new VentBlock(FabricBlockSettings.create()
-                    // Same strength as copper deepslate ore
-                    .strength(4.5f, 3.0f).requiresTool().mapColor(MapColor.DEEPSLATE_GRAY)), true);
+                    // Same strength as Obsidian (should not be broken easily)
+                    .strength(50.0F, 1200.0F).requiresTool().mapColor(MapColor.DEEPSLATE_GRAY)),
+            true);
     public static final Block SALTSTONE = register("saltstone",
             new Block(FabricBlockSettings.create().requiresTool()
                     // Slightly harder to break than Netherrack
