@@ -204,7 +204,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     @Override
     protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
         return state.isIn(ModBlockTags.SPORES_CAN_BREAK) || state.isIn(
-                ModBlockTags.ALL_VERDANT_VINES);
+                ModBlockTags.ALL_VERDANT_GROWTH);
     }
 
     @Override
@@ -218,7 +218,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected boolean isGrowthBlock(BlockState state) {
-        return state.isIn(ModBlockTags.ALL_CRIMSON_SPINES);
+        return state.isIn(ModBlockTags.ALL_CRIMSON_GROWTH);
     }
 
     @Override

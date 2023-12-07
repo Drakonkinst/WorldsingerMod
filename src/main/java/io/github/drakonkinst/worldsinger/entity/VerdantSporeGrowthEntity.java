@@ -152,7 +152,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected boolean isGrowthBlock(BlockState state) {
-        return state.isIn(ModBlockTags.ALL_VERDANT_VINES);
+        return state.isIn(ModBlockTags.ALL_VERDANT_GROWTH);
     }
 
     private int getNeighborBonus(World world, BlockPos pos) {
@@ -163,7 +163,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
             mutable.set(pos.offset(direction));
             BlockState state = world.getBlockState(mutable);
-            if (state.isIn(ModBlockTags.ALL_VERDANT_VINES)) {
+            if (state.isIn(ModBlockTags.ALL_VERDANT_GROWTH)) {
                 // Prefer NOT to be adjacent to too many other of the same block
                 if (sporeGrowthData.getStage() == 0 && state.isIn(ModBlockTags.VERDANT_VINE_BLOCK)
                         && sporeGrowthData.getSpores() > SPORE_BRANCH_THICK_THRESHOLD) {

@@ -22,8 +22,9 @@ public final class ModBlockTags {
     public static final TagKey<Block> CRIMSON_SNARE = ModBlockTags.of("crimson_snare");
     public static final TagKey<Block> TALL_CRIMSON_SPINES = ModBlockTags.of("tall_crimson_spines");
     public static final TagKey<Block> CRIMSON_SPINES = ModBlockTags.of("crimson_spines");
-    public static final TagKey<Block> ALL_VERDANT_VINES = ModBlockTags.of("all_verdant_vines");
-    public static final TagKey<Block> ALL_CRIMSON_SPINES = ModBlockTags.of("all_crimson_spines");
+    public static final TagKey<Block> ALL_VERDANT_GROWTH = ModBlockTags.of("all_verdant_growth");
+    public static final TagKey<Block> ALL_CRIMSON_GROWTH = ModBlockTags.of("all_crimson_growth");
+    public static final TagKey<Block> ALL_ROSEITE_GROWTH = ModBlockTags.of("all_roseite_growth");
     public static final TagKey<Block> KILLS_SPORES = ModBlockTags.of("kills_spores");
     public static final TagKey<Block> SPORES_CAN_GROW = ModBlockTags.of("spores_can_grow");
     public static final TagKey<Block> SPORES_CAN_BREAK = ModBlockTags.of("spores_can_break");

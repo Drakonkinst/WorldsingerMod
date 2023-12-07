@@ -92,8 +92,8 @@ public final class ModBlocks {
                     .pistonBehavior(PistonBehavior.DESTROY)), false);
     public static final Block DEAD_CRIMSON_GROWTH = register("dead_crimson_growth",
             new CrimsonGrowthBlock(FabricBlockSettings.create()
-                    // Same strength as coral block
-                    .strength(1.5f, 6.0f)
+                    // Same strength as Coral Block, same blast resistance as Pointed Dripstone
+                    .strength(1.5f, 3.0f)
                     .requiresTool()
                     .ticksRandomly()
                     .mapColor(MapColor.LIGHT_GRAY)
@@ -194,7 +194,7 @@ public final class ModBlocks {
     public static final Block CRIMSON_GROWTH = register("crimson_growth",
             new LivingCrimsonGrowthBlock(FabricBlockSettings.copyOf(ModBlocks.DEAD_CRIMSON_GROWTH)
                     // Double hardness, same resistance as dead version
-                    .strength(3.0f, 6.0f).mapColor(MapColor.RED)), true);
+                    .strength(3.0f, 3.0f).mapColor(MapColor.RED)), true);
     public static final Block CRIMSON_SPIKE = register("crimson_spike",
             new LivingCrimsonSpikeBlock(FabricBlockSettings.copyOf(ModBlocks.DEAD_CRIMSON_SPIKE)
                     // Double hardness, same resistance as dead version
@@ -267,13 +267,12 @@ public final class ModBlocks {
                     RoseiteSpores.getInstance()), false);
     public static final Block ROSEITE_BLOCK = register("roseite_block",
             new RoseiteBlock(FabricBlockSettings.create()
-                    // TODO
                     .nonOpaque()
-                    // TODO: Balance durability values
+                    // Double strength, same blast resistance as Stone
                     .strength(3.0F, 6.0F)
                     .ticksRandomly()
-                    .sounds(ModSoundGroups.ROSEITE)
-                    .mapColor(MapColor.TERRACOTTA_PINK)), true);
+                    .mapColor(MapColor.TERRACOTTA_PINK)
+                    .sounds(ModSoundGroups.ROSEITE)), true);
     public static final Block ROSEITE_STAIRS = register("roseite_stairs",
             new RoseiteStairsBlock(ROSEITE_BLOCK.getDefaultState(),
                     FabricBlockSettings.copyOf(ROSEITE_BLOCK)), true);
