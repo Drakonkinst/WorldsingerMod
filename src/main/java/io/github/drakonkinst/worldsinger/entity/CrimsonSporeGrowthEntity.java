@@ -8,7 +8,6 @@ import io.github.drakonkinst.worldsinger.cosmere.lumar.CrimsonSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleManager;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
-import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import java.util.ArrayList;
@@ -171,6 +170,8 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected boolean shouldRecalculateForces() {
+        // Take external forces into account only when the current direction is undecided
+        // Cannot change direction once decided
         return targetGrowthDirection == null;
     }
 
@@ -222,7 +223,11 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     @Override
-    protected int getUpdatePeriod() {
+    protected int getGrowthDelay() {
+        if (sporeGrowthData.isInitialGrowth()) {
+            return -3;
+        }
+
         int water = sporeGrowthData.getWater();
         int spores = sporeGrowthData.getSpores();
 
@@ -235,8 +240,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         return 5;
     }
 
-    @Override
-    protected void updateStage() {
+    private void updateStage() {
         if (sporeGrowthData.getStage() == 0) {
             if (sporeGrowthData.getWater() < NEXT_STAGE_WATER_THRESHOLD) {
                 sporeGrowthData.addStage(1);
@@ -283,43 +287,17 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         this.doGrowEffects(pos, state, cost, drainsWater, true, true);
 
         // Two attempts to place decorators for extra density
-        // Can only place on full blocks
         if (isFullBlock) {
-            this.attemptPlaceDecorators();
-            this.attemptPlaceDecorators();
+            this.attemptPlaceDecorators(2);
         }
 
         SporeParticleManager.damageEntitiesInBox(this.getWorld(), CrimsonSpores.getInstance(),
                 BoxUtil.createBoxAroundBlock(pos, 1.0), true);
+        this.updateStage();
     }
 
-    private boolean attemptPlaceDecorators() {
-        World world = this.getWorld();
-        if (sporeGrowthData.getSpores() <= 0 || random.nextInt(5) == 0) {
-            return false;
-        }
-        List<Direction> validDirections = new ArrayList<>(6);
-        BlockPos pos = this.getBlockPos();
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            mutable.set(pos.offset(direction));
-            if (this.canPlaceDecorator(world.getBlockState(mutable))) {
-                validDirections.add(direction);
-            }
-        }
-        if (!validDirections.isEmpty()) {
-            Direction direction = validDirections.get(random.nextInt(validDirections.size()));
-            this.placeDecorator(pos.offset(direction), direction);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean canPlaceDecorator(BlockState state) {
-        return state.isIn(ModBlockTags.SPORES_CAN_GROW);
-    }
-
-    private void placeDecorator(BlockPos pos, Direction direction) {
+    @Override
+    protected void placeDecorator(BlockPos pos, Direction direction) {
         if (direction == Direction.UP && random.nextInt(3) == 0 && this.canPlaceDecorator(
                 this.getWorld().getBlockState(pos.up()))) {
             this.placeTallSpines(pos);

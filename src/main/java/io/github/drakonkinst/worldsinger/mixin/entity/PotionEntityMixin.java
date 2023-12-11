@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PotionEntityMixin extends ThrownItemEntity {
 
     @Unique
-    private static final int HORIZONTAL_RADIUS = 4;
+    private static final int HORIZONTAL_RADIUS = 3;
     @Unique
     private static final int VERTICAL_RADIUS = 2;
     @Unique

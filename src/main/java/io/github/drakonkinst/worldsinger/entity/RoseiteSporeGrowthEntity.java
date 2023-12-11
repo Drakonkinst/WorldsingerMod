@@ -8,8 +8,6 @@ import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.BlockHalf;
@@ -83,17 +81,20 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     @Override
-    protected int getUpdatePeriod() {
+    protected int getGrowthDelay() {
+        if (sporeGrowthData.isInitialGrowth()) {
+            return 2;
+        }
         int water = sporeGrowthData.getWater();
         int spores = sporeGrowthData.getSpores();
 
         if (water > spores) {
-            return 10;
+            return 5;
         }
         if (water == spores) {
-            return 14;
+            return 10;
         }
-        return 20;
+        return 15;
     }
 
     @Override
@@ -155,7 +156,7 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
                 horizontalFacing = RoseiteSporeGrowthEntity.getRandomHorizontalDirection();
             } else {
                 half = random.nextBoolean() ? BlockHalf.TOP : BlockHalf.BOTTOM;
-                horizontalFacing = facingDir;
+                horizontalFacing = facingDir.getOpposite();
             }
             return ModBlocks.ROSEITE_STAIRS.getStateWithProperties(state)
                     .with(Properties.BLOCK_HALF, half)
@@ -168,7 +169,7 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
             }
             BlockHalf blockHalf = (slabType == SlabType.TOP) ? BlockHalf.TOP : BlockHalf.BOTTOM;
             Direction horizontalFacing = RoseiteSporeGrowthEntity.getHorizontalDirectionFromDir(
-                    lastDir);
+                    lastDir.opposite());
             return ModBlocks.ROSEITE_STAIRS.getStateWithProperties(state)
                     .with(Properties.BLOCK_HALF, blockHalf)
                     .with(Properties.HORIZONTAL_FACING, horizontalFacing);
@@ -220,11 +221,6 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     @Override
-    protected void updateStage() {
-        // Does not use stages
-    }
-
-    @Override
     protected boolean canBreakHere(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_BREAK);
     }
@@ -241,14 +237,14 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
         int weight = -1;
 
         if (state.isIn(ModBlockTags.ROSEITE_GROWABLE)) {
-            // Heavily prefer to take pre-existing growths
-            weight = 500;
+            // Prefer to take pre-existing growths
+            weight = 125;
         } else if (this.canBreakHere(state)) {
             // Prefer not to break through blocks
             weight = 10;
         } else if (this.canGrowHere(state)) {
             // Can grow through lesser vines
-            weight = 200;
+            weight = 100;
         } else if (allowPassthrough && this.isGrowthBlock(state)) {
             // If allowPassthrough is true, we assume that no actual block will be placed
             weight = 10;
@@ -263,25 +259,16 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
             return 5;
         }
 
-        // Prefer to grow upwards
-        // weight += 30 * direction.y();
-
-        // Prefers to go towards origin
-        // int dirFromOriginX = Integer.signum(sporeGrowthData.getOrigin().getX() - pos.getX());
-        // int dirFromOriginY = Integer.signum(sporeGrowthData.getOrigin().getY() - pos.getY());
-        // int dirFromOriginZ = Integer.signum(sporeGrowthData.getOrigin().getZ() - pos.getZ());
-        // if (direction.y() == dirFromOriginX || direction.y() == dirFromOriginY
-        //         || direction.z() == dirFromOriginZ) {
-        //     weight += 50;
-        // }
+        // Prefer to grow downwards, which helps it seal gaps
+        weight -= 50 * direction.y();
 
         // Bonuses based on neighbors
         weight += this.getNeighborBonus(world, pos);
 
-        // Bonus for moving towards origin
+        // Bonus for moving towards origin, keeping it in a clump
         int bonusDistanceFromOrigin =
                 this.getDistanceFromOrigin(this.getBlockPos()) - this.getDistanceFromOrigin(pos);
-        weight += 10 * bonusDistanceFromOrigin;
+        weight += 50 * bonusDistanceFromOrigin;
 
         // Massive bonus for going along with external force
         double forceModifier = this.getExternalForceModifier(direction);
@@ -313,10 +300,10 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
 
         // Prefer to wrap around itself when possible
         if (numNeighbors > 1) {
-            weightBonus += 150 * (numNeighbors - 1);
+            weightBonus += 10 * (numNeighbors - 1);
         }
         if (hugsBlock) {
-            weightBonus += 100;
+            weightBonus += 15;
         }
         return weightBonus;
     }
@@ -338,38 +325,14 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
         boolean drainsWater = state.getOrEmpty(ModProperties.CATALYZED).orElse(false);
         this.doGrowEffects(pos, state, cost, drainsWater, true, true);
         if (state.isOf(ModBlocks.ROSEITE_BLOCK)) {
-            this.attemptPlaceDecorators();
-            this.attemptPlaceDecorators();
+            this.attemptPlaceDecorators(2);
         }
         SporeParticleManager.damageEntitiesInBlock(this.getWorld(), RoseiteSpores.getInstance(),
                 pos);
     }
 
-    private void attemptPlaceDecorators() {
-        World world = this.getWorld();
-        if (sporeGrowthData.getSpores() <= 0 || random.nextInt(3) == 0) {
-            return;
-        }
-        List<Direction> validDirections = new ArrayList<>(6);
-        BlockPos pos = this.getBlockPos();
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            mutable.set(pos.offset(direction));
-            if (this.canPlaceDecorator(world.getBlockState(mutable))) {
-                validDirections.add(direction);
-            }
-        }
-        if (!validDirections.isEmpty()) {
-            Direction direction = validDirections.get(random.nextInt(validDirections.size()));
-            this.placeDecorator(pos.offset(direction), direction);
-        }
-    }
-
-    private boolean canPlaceDecorator(BlockState state) {
-        return state.isIn(ModBlockTags.SPORES_CAN_GROW);
-    }
-
-    private void placeDecorator(BlockPos pos, Direction direction) {
+    @Override
+    protected void placeDecorator(BlockPos pos, Direction direction) {
         int randomValue = random.nextInt(4);
         Block block;
         if (randomValue == 0) {

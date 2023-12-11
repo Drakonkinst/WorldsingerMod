@@ -15,7 +15,6 @@ import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public class RoseiteSpores extends GrowableAetherSpores<RoseiteSporeGrowthEntity> {
 
@@ -41,7 +40,6 @@ public class RoseiteSpores extends GrowableAetherSpores<RoseiteSporeGrowthEntity
 
     @Override
     public int getSmallStage() {
-        // TODO
         return 0;
     }
 
@@ -101,8 +99,7 @@ public class RoseiteSpores extends GrowableAetherSpores<RoseiteSporeGrowthEntity
     }
 
     @Override
-    public @Nullable BlockState getFluidCollisionState() {
-        // TODO
-        return null;
+    public BlockState getFluidCollisionState() {
+        return ModBlocks.ROSEITE_BLOCK.getDefaultState();
     }
 }

@@ -1,7 +1,9 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.RoseiteSpores;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.util.math.Int3;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -22,6 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class RoseiteStairsBlock extends StairsBlock implements SporeGrowthBlock,
         WaterReactiveBlock {
+
+    public static final int RECATALYZE_VALUE = 75;
 
     public RoseiteStairsBlock(BlockState baseBlockState, Settings settings) {
         super(baseBlockState, settings);
@@ -104,8 +108,16 @@ public class RoseiteStairsBlock extends StairsBlock implements SporeGrowthBlock,
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
-        // TODO
-        return false;
+        if (!this.canReactToWater(pos, state)) {
+            return false;
+        }
+
+        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
+        RoseiteSpores.getInstance()
+                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE, waterAmount, false,
+                        true, false, Int3.ZERO);
+
+        return true;
     }
 
     @Override

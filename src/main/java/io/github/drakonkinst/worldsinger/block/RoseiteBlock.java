@@ -2,7 +2,9 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.RoseiteSpores;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import io.github.drakonkinst.worldsinger.util.math.Int3;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -109,8 +111,16 @@ public class RoseiteBlock extends Block implements SporeGrowthBlock, WaterReacti
     @Override
     public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
             Random random) {
-        // TODO
-        return false;
+        if (!this.canReactToWater(pos, state)) {
+            return false;
+        }
+
+        world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
+        RoseiteSpores.getInstance()
+                .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE, waterAmount, false,
+                        true, false, Int3.ZERO);
+
+        return true;
     }
 
     @Override

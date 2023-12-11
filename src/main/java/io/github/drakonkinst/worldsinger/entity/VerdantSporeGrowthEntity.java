@@ -9,8 +9,6 @@ import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.WallMountedBlock;
@@ -193,8 +191,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         return pos.getManhattanDistance(sporeGrowthData.getOrigin());
     }
 
-    @Override
-    protected void updateStage() {
+    private void updateStage() {
         if (sporeGrowthData.getStage() == 0) {
             // Advance stage if low on water
             if (sporeGrowthData.getWater() <= SPORE_WATER_THRESHOLD) {
@@ -232,9 +229,10 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
                 : COST_VERDANT_VINE_BRANCH;
         boolean drainsWater = state.getOrEmpty(ModProperties.CATALYZED).orElse(false);
         this.doGrowEffects(pos, state, cost, drainsWater, true, true);
-        this.attemptPlaceDecorators();
+        this.attemptPlaceDecorators(1);
         SporeParticleManager.damageEntitiesInBlock(this.getWorld(), VerdantSpores.getInstance(),
                 pos);
+        this.updateStage();
     }
 
     @Override
@@ -243,7 +241,11 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     @Override
-    protected int getUpdatePeriod() {
+    protected int getGrowthDelay() {
+        if (sporeGrowthData.isInitialGrowth()) {
+            return -3;
+        }
+
         int water = sporeGrowthData.getWater();
         int spores = sporeGrowthData.getSpores();
 
@@ -256,33 +258,8 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         return 8;
     }
 
-    private boolean attemptPlaceDecorators() {
-        World world = this.getWorld();
-        if (sporeGrowthData.getSpores() <= 0 || random.nextInt(3) == 0) {
-            return false;
-        }
-        List<Direction> validDirections = new ArrayList<>(6);
-        BlockPos pos = this.getBlockPos();
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
-            mutable.set(pos.offset(direction));
-            if (this.canPlaceDecorator(world.getBlockState(mutable))) {
-                validDirections.add(direction);
-            }
-        }
-        if (!validDirections.isEmpty()) {
-            Direction direction = validDirections.get(random.nextInt(validDirections.size()));
-            this.placeDecorator(pos.offset(direction), direction);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean canPlaceDecorator(BlockState state) {
-        return state.isIn(ModBlockTags.SPORES_CAN_GROW);
-    }
-
-    private void placeDecorator(BlockPos pos, Direction direction) {
+    @Override
+    protected void placeDecorator(BlockPos pos, Direction direction) {
         if ((direction == Direction.UP || direction == Direction.DOWN) && random.nextInt(4) > 0) {
             this.placeTwistingVineChain(pos, direction, 0);
         } else {
