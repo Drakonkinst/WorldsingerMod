@@ -22,6 +22,9 @@
     ],
     "cardinal-components": [
       "io.github.drakonkinst.worldsinger.component.ModComponents"
+    ],
+    "fabric-datagen": [
+      "io.github.drakonkinst.worldsinger.datagen.WorldsingerDataGenerator"
     ]
   },
   "mixins": [
