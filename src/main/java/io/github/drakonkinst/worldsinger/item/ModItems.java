@@ -287,6 +287,10 @@ public final class ModItems {
             itemGroup.add(ModBlocks.ROSEITE_BLOCK);
             itemGroup.add(ModBlocks.ROSEITE_STAIRS);
             itemGroup.add(ModBlocks.ROSEITE_SLAB);
+            itemGroup.add(ModBlocks.ROSEITE_CLUSTER);
+            itemGroup.add(ModBlocks.LARGE_ROSEITE_BUD);
+            itemGroup.add(ModBlocks.MEDIUM_ROSEITE_BUD);
+            itemGroup.add(ModBlocks.SMALL_ROSEITE_BUD);
         });
     }
 

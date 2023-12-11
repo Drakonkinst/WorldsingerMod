@@ -1,0 +1,15 @@
+{
+  "parent": "item/amethyst_bud",
+  "textures": {
+    "layer0": "worldsinger:block/large_roseite_bud"
+  },
+  "display": {
+    "fixed": {
+      "translation": [
+        0,
+        4,
+        0
+      ]
+    }
+  }
+}

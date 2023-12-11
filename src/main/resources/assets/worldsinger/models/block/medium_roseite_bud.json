@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "worldsinger:block/medium_roseite_bud"
+  }
+}

@@ -278,6 +278,26 @@ public final class ModBlocks {
                     FabricBlockSettings.copyOf(ROSEITE_BLOCK)), true);
     public static final Block ROSEITE_SLAB = register("roseite_slab",
             new RoseiteSlabBlock(FabricBlockSettings.copyOf(ROSEITE_BLOCK)), true);
+    public static final Block ROSEITE_CLUSTER = register("roseite_cluster",
+            new RoseiteClusterBlock(7.0F, 3.0F, AbstractBlock.Settings.create()
+                    .mapColor(MapColor.PURPLE)
+                    .solid()
+                    .nonOpaque()
+                    .sounds(ModSoundGroups.ROSEITE)
+                    .strength(1.5F)
+                    .pistonBehavior(PistonBehavior.DESTROY)), true);
+    public static final Block LARGE_ROSEITE_BUD = register("large_roseite_bud",
+            new RoseiteClusterBlock(5.0F, 3.0F,
+                    AbstractBlock.Settings.copy(ROSEITE_CLUSTER).sounds(ModSoundGroups.ROSEITE)),
+            true);
+    public static final Block MEDIUM_ROSEITE_BUD = register("medium_roseite_bud",
+            new RoseiteClusterBlock(4.0F, 3.0F,
+                    AbstractBlock.Settings.copy(ROSEITE_CLUSTER).sounds(ModSoundGroups.ROSEITE)),
+            true);
+    public static final Block SMALL_ROSEITE_BUD = register("small_roseite_bud",
+            new RoseiteClusterBlock(3.0F, 4.0F,
+                    AbstractBlock.Settings.copy(ROSEITE_CLUSTER).sounds(ModSoundGroups.ROSEITE)),
+            true);
 
     // Midnight Spores
     public static final Block MIDNIGHT_SPORE_SEA = register("midnight_spore_sea",

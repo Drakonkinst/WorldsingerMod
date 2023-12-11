@@ -44,7 +44,11 @@ public class WorldsingerClient implements ClientModInitializer {
                 ModBlocks.CRIMSON_SPINES,
                 ModBlocks.DEAD_CRIMSON_SPINES,
                 ModBlocks.TALL_CRIMSON_SPINES,
-                ModBlocks.DEAD_TALL_CRIMSON_SPINES
+                ModBlocks.DEAD_TALL_CRIMSON_SPINES,
+                ModBlocks.ROSEITE_CLUSTER,
+                ModBlocks.LARGE_ROSEITE_BUD,
+                ModBlocks.MEDIUM_ROSEITE_BUD,
+                ModBlocks.SMALL_ROSEITE_BUD
         };
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), cutoutBlocks);
 
