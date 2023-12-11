@@ -36,7 +36,7 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
 
     private static final int DIRECTION_ARRAY_SIZE = 6;
     private static final int MAX_PLACE_ATTEMPTS = 3;
-    private static final int MAX_AGE = 20 * 5;
+    private static final int MAX_AGE_TICKS = 20 * 10;
     private static final int SPORE_DRAIN_NEAR_SPORE_KILLABLE = 50;
 
     // Break a block as if it was broken by a spore growth entity, with a 2 in 3 chance to drop loot
@@ -169,7 +169,7 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
     // maximum age is reached, and if it fails to place a block too many times in a row
     private boolean shouldBeDead() {
         return sporeGrowthData.getStage() > this.getMaxStage() || sporeGrowthData.getSpores() <= 0
-                || sporeGrowthData.getAge() > MAX_AGE || placeAttempts >= MAX_PLACE_ATTEMPTS
+                || sporeGrowthData.getAge() > MAX_AGE_TICKS || placeAttempts >= MAX_PLACE_ATTEMPTS
                 || sporeGrowthData.getWater() <= 0;
     }
 

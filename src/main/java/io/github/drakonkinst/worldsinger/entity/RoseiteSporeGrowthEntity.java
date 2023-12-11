@@ -26,7 +26,7 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
 
     private static final int FORCE_MODIFIER_MULTIPLIER = 20;
 
-    private static final int COST_ROSEITE_BLOCK = 10;
+    private static final int COST_ROSEITE_BLOCK = 9;
     private static final int COST_ROSEITE_STAIRS = 7;
     private static final int COST_ROSEITE_SLAB = 5;
     private static final int COST_ROSEITE_CLUSTER = 4;
