@@ -23,7 +23,6 @@ import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
 
@@ -31,10 +30,6 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
 
     private static final int MAX_TWISTING_VINE_DEPTH_UP = 3;
     private static final int MAX_TWISTING_VINE_DEPTH_DOWN = 7;
-    private static final int VINE_BLOCK_COST = 10;
-    private static final int VINE_BRANCH_COST = 5;
-    private static final int VINE_SNARE_COST = 3;
-    private static final int TWISTING_VINES_COST = 1;
     private static final int SPORE_BRANCH_THRESHOLD_MIN = 50;
     private static final int SPORE_BRANCH_THRESHOLD_MAX = 100;
     private static final int SPORE_BRANCH_THICK_THRESHOLD = 300;
@@ -42,6 +37,11 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
     private static final int WATER_SPLIT_MIN = 1;
     private static final int SPORE_WATER_THRESHOLD = 25;
     private static final int FORCE_MODIFIER_MULTIPLIER = 20;
+
+    private static final int COST_VERDANT_VINE_BLOCK = 10;
+    private static final int COST_VERDANT_VINE_BRANCH = 5;
+    private static final int COST_VERDANT_VINE_SNARE = 3;
+    private static final int COST_TWISTING_VERDANT_VINES = 1;
 
     public VerdantSporeGrowthEntity(EntityType<?> entityType, World world) {
         super(entityType, world);
@@ -89,9 +89,9 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         int weight = 0;
 
         // Prefer not to break through blocks
-        if (this.canBreakHere(state, null)) {
+        if (this.canBreakHere(state)) {
             weight = 10;
-        } else if (this.canGrowHere(state, null)) {
+        } else if (this.canGrowHere(state)) {
             // Can grow through lesser vines
             weight = 200;
         } else if (allowPassthrough && this.isGrowthBlock(state)) {
@@ -138,12 +138,12 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     @Override
-    protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
+    protected boolean canBreakHere(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_BREAK);
     }
 
     @Override
-    protected boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith) {
+    protected boolean canGrowHere(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_GROW) || state.isIn(
                 ModBlockTags.VERDANT_VINE_SNARE) || state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)
                 || (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)
@@ -227,12 +227,14 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     @Override
-    protected void onGrowBlock(BlockPos pos, BlockState state) {
-        int cost = state.isOf(ModBlocks.VERDANT_VINE_BLOCK) ? VINE_BLOCK_COST : VINE_BRANCH_COST;
+    protected void onGrowBlock(BlockPos pos, BlockState state, BlockState originalState) {
+        int cost = state.isOf(ModBlocks.VERDANT_VINE_BLOCK) ? COST_VERDANT_VINE_BLOCK
+                : COST_VERDANT_VINE_BRANCH;
         boolean drainsWater = state.getOrEmpty(ModProperties.CATALYZED).orElse(false);
         this.doGrowEffects(pos, state, cost, drainsWater, true, true);
         this.attemptPlaceDecorators();
-        this.applySporeEffectToEntities(pos);
+        SporeParticleManager.damageEntitiesInBlock(this.getWorld(), VerdantSpores.getInstance(),
+                pos);
     }
 
     @Override
@@ -298,7 +300,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
                 .with(ModProperties.CATALYZED, shouldDrainWater)
                 .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
 
-        boolean success = this.placeBlockWithEffects(pos, state, TWISTING_VINES_COST,
+        boolean success = this.placeBlockWithEffects(pos, state, COST_TWISTING_VERDANT_VINES,
                 shouldDrainWater, false, false);
         if (!success) {
             return;
@@ -338,11 +340,8 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
                 .with(ModProperties.CATALYZED, shouldDrainWater)
                 .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
 
-        this.placeBlockWithEffects(pos, state, VINE_SNARE_COST, shouldDrainWater, false, true);
+        this.placeBlockWithEffects(pos, state, COST_VERDANT_VINE_SNARE, shouldDrainWater, false,
+                true);
     }
 
-    private void applySporeEffectToEntities(BlockPos pos) {
-        SporeParticleManager.damageEntitiesInBlock(this.getWorld(), VerdantSpores.getInstance(),
-                pos);
-    }
 }

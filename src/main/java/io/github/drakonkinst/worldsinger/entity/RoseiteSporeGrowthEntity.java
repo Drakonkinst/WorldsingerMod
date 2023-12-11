@@ -1,16 +1,77 @@
 package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.block.ModBlocks;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.RoseiteSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleManager;
+import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
+import io.github.drakonkinst.worldsinger.util.ModConstants;
+import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.enums.BlockHalf;
+import net.minecraft.block.enums.SlabType;
 import net.minecraft.entity.EntityType;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
 
-    public static final int MAX_STAGE = 1;
+    public static final int MAX_STAGE = 0;
+
+    private static final int FORCE_MODIFIER_MULTIPLIER = 20;
+
+    private static final int COST_ROSEITE_BLOCK = 10;
+    private static final int COST_ROSEITE_STAIRS = 7;
+    private static final int COST_ROSEITE_SLAB = 5;
+    private static final int COST_ROSEITE_CLUSTER = 4;
+    private static final int COST_LARGE_ROSEITE_BUD = 3;
+    private static final int COST_MEDIUM_ROSEITE_BUD = 2;
+    private static final int COST_SMALL_ROSEITE_BUD = 1;
+
+    private static Direction getRandomHorizontalDirection() {
+        return Util.getRandom(ModConstants.HORIZONTAL_DIRECTIONS, RoseiteSporeGrowthEntity.random);
+    }
+
+    private static Direction getHorizontalDirectionFromDir(Int3 lastDir) {
+        Direction randomDir = RoseiteSporeGrowthEntity.getRandomHorizontalDirection();
+        if (lastDir.y() != 0) {
+            return randomDir;
+        }
+        return lastDir.toDirection(randomDir);
+    }
+
+    private static int getCost(BlockState blockState) {
+        if (blockState.isOf(ModBlocks.ROSEITE_BLOCK)) {
+            return COST_ROSEITE_BLOCK;
+        }
+        if (blockState.isOf(ModBlocks.ROSEITE_STAIRS)) {
+            return COST_ROSEITE_STAIRS;
+        }
+        if (blockState.isOf(ModBlocks.ROSEITE_SLAB)) {
+            return COST_ROSEITE_SLAB;
+        }
+        if (blockState.isOf(ModBlocks.ROSEITE_CLUSTER)) {
+            return COST_ROSEITE_CLUSTER;
+        }
+        if (blockState.isOf(ModBlocks.LARGE_ROSEITE_BUD)) {
+            return COST_LARGE_ROSEITE_BUD;
+        }
+        if (blockState.isOf(ModBlocks.MEDIUM_ROSEITE_BUD)) {
+            return COST_MEDIUM_ROSEITE_BUD;
+        }
+        if (blockState.isOf(ModBlocks.SMALL_ROSEITE_BUD)) {
+            return COST_SMALL_ROSEITE_BUD;
+        }
+        return 0;
+    }
 
     public RoseiteSporeGrowthEntity(EntityType<?> entityType, World world) {
         super(entityType, world);
@@ -23,45 +84,311 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected int getUpdatePeriod() {
-        // TODO
-        return 5;
+        int water = sporeGrowthData.getWater();
+        int spores = sporeGrowthData.getSpores();
+
+        if (water > spores) {
+            return 10;
+        }
+        if (water == spores) {
+            return 14;
+        }
+        return 20;
     }
 
     @Override
     protected BlockState getNextBlock() {
-        // TODO
-        return null;
+        BlockState state = getNextBaseBlock();
+        if (state == null) {
+            return null;
+        }
+
+        if (state.contains(ModProperties.FLUIDLOGGED)) {
+            int fluidloggedIndex = Fluidlogged.getFluidIndex(
+                    this.getWorld().getFluidState(this.getBlockPos()).getFluid());
+            state = state.with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
+        }
+        if (this.shouldDrainWater() && state.contains(ModProperties.CATALYZED)) {
+            state = state.with(ModProperties.CATALYZED, true);
+        }
+        return state;
+    }
+
+    private BlockState getNextBaseBlock() {
+        BlockPos pos = this.getBlockPos();
+        World world = this.getWorld();
+        BlockState state = world.getBlockState(pos);
+        boolean doubleStep = random.nextInt(5) == 0;
+
+        if (state.isOf(ModBlocks.SMALL_ROSEITE_BUD) && !doubleStep) {
+            return ModBlocks.MEDIUM_ROSEITE_BUD.getStateWithProperties(state);
+        }
+        if ((state.isOf(ModBlocks.MEDIUM_ROSEITE_BUD) && !doubleStep) || (
+                state.isOf(ModBlocks.SMALL_ROSEITE_BUD) && doubleStep)) {
+            return ModBlocks.LARGE_ROSEITE_BUD.getStateWithProperties(state);
+        }
+        if ((state.isOf(ModBlocks.LARGE_ROSEITE_BUD) && !doubleStep) || (
+                state.isOf(ModBlocks.MEDIUM_ROSEITE_BUD) && doubleStep)) {
+            return ModBlocks.ROSEITE_CLUSTER.getStateWithProperties(state);
+        }
+        if (state.isOf(ModBlocks.ROSEITE_CLUSTER) || state.isOf(ModBlocks.LARGE_ROSEITE_BUD)) {
+            Direction facingDir = state.get(Properties.FACING);
+            if (!state.isOf(ModBlocks.ROSEITE_CLUSTER) || !doubleStep) {
+                // If it should be a slab, attempt to place one
+                if (facingDir == Direction.DOWN) {
+                    return ModBlocks.ROSEITE_SLAB.getStateWithProperties(state)
+                            .with(Properties.SLAB_TYPE, SlabType.TOP);
+                }
+                if (facingDir == Direction.UP) {
+                    return ModBlocks.ROSEITE_SLAB.getStateWithProperties(state)
+                            .with(Properties.SLAB_TYPE, SlabType.BOTTOM);
+                }
+            }
+            // Slab placement failed, so place a stair instead
+            BlockHalf half;
+            Direction horizontalFacing;
+            if (facingDir == Direction.DOWN) {
+                half = BlockHalf.TOP;
+                horizontalFacing = RoseiteSporeGrowthEntity.getRandomHorizontalDirection();
+            } else if (facingDir == Direction.UP) {
+                half = BlockHalf.BOTTOM;
+                horizontalFacing = RoseiteSporeGrowthEntity.getRandomHorizontalDirection();
+            } else {
+                half = random.nextBoolean() ? BlockHalf.TOP : BlockHalf.BOTTOM;
+                horizontalFacing = facingDir;
+            }
+            return ModBlocks.ROSEITE_STAIRS.getStateWithProperties(state)
+                    .with(Properties.BLOCK_HALF, half)
+                    .with(Properties.HORIZONTAL_FACING, horizontalFacing);
+        }
+        if (state.isOf(ModBlocks.ROSEITE_SLAB) && !doubleStep) {
+            SlabType slabType = state.get(Properties.SLAB_TYPE);
+            if (slabType == SlabType.DOUBLE) {
+                return ModBlocks.ROSEITE_BLOCK.getDefaultState();
+            }
+            BlockHalf blockHalf = (slabType == SlabType.TOP) ? BlockHalf.TOP : BlockHalf.BOTTOM;
+            Direction horizontalFacing = RoseiteSporeGrowthEntity.getHorizontalDirectionFromDir(
+                    lastDir);
+            return ModBlocks.ROSEITE_STAIRS.getStateWithProperties(state)
+                    .with(Properties.BLOCK_HALF, blockHalf)
+                    .with(Properties.HORIZONTAL_FACING, horizontalFacing);
+        }
+        if (state.isOf(ModBlocks.ROSEITE_STAIRS) || (state.isOf(ModBlocks.ROSEITE_SLAB)
+                && doubleStep)) {
+            return ModBlocks.ROSEITE_BLOCK.getDefaultState();
+        }
+
+        // Generate a random block
+        if (doubleStep) {
+            return ModBlocks.ROSEITE_BLOCK.getDefaultState();
+        }
+
+        BlockPos belowPos = pos.down();
+        if (world.getBlockState(belowPos).isSideSolidFullSquare(world, belowPos, Direction.UP)) {
+            return ModBlocks.ROSEITE_SLAB.getDefaultState()
+                    .with(Properties.SLAB_TYPE, SlabType.BOTTOM);
+        }
+        BlockPos abovePos = pos.up();
+        if (world.getBlockState(abovePos).isSideSolidFullSquare(world, abovePos, Direction.DOWN)) {
+            return ModBlocks.ROSEITE_SLAB.getDefaultState()
+                    .with(Properties.SLAB_TYPE, SlabType.TOP);
+        }
+
+        BlockHalf blockHalf;
+        if (lastDir.y() > 0) {
+            blockHalf = BlockHalf.TOP;
+        } else if (lastDir.y() < 0) {
+            blockHalf = BlockHalf.BOTTOM;
+        } else {
+            blockHalf = random.nextBoolean() ? BlockHalf.TOP : BlockHalf.BOTTOM;
+        }
+        Direction horizontalFacing = RoseiteSporeGrowthEntity.getHorizontalDirectionFromDir(
+                lastDir);
+        return ModBlocks.ROSEITE_STAIRS.getStateWithProperties(state)
+                .with(Properties.BLOCK_HALF, blockHalf)
+                .with(Properties.HORIZONTAL_FACING, horizontalFacing);
+    }
+
+    @Override
+    protected Int3 getNextDirection(boolean allowPassthrough) {
+        BlockPos currentPos = this.getBlockPos();
+        BlockState currentState = this.getWorld().getBlockState(currentPos);
+        if (currentState.isIn(ModBlockTags.ROSEITE_GROWABLE)) {
+            return Int3.ZERO;
+        }
+        return super.getNextDirection(allowPassthrough);
     }
 
     @Override
     protected void updateStage() {
-        // TODO
+        // Does not use stages
     }
 
     @Override
-    protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
+    protected boolean canBreakHere(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_BREAK);
     }
 
     @Override
-    protected boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith) {
-        return state.isIn(ModBlockTags.SPORES_CAN_GROW);
+    protected boolean canGrowHere(BlockState state) {
+        return state.isIn(ModBlockTags.SPORES_CAN_GROW) || state.isIn(
+                ModBlockTags.ROSEITE_GROWABLE);
     }
 
     @Override
     protected int getWeight(World world, BlockPos pos, Int3 direction, boolean allowPassthrough) {
-        // TODO
-        return 0;
+        BlockState state = world.getBlockState(pos);
+        int weight = -1;
+
+        if (state.isIn(ModBlockTags.ROSEITE_GROWABLE)) {
+            // Heavily prefer to take pre-existing growths
+            weight = 500;
+        } else if (this.canBreakHere(state)) {
+            // Prefer not to break through blocks
+            weight = 10;
+        } else if (this.canGrowHere(state)) {
+            // Can grow through lesser vines
+            weight = 200;
+        } else if (allowPassthrough && this.isGrowthBlock(state)) {
+            // If allowPassthrough is true, we assume that no actual block will be placed
+            weight = 10;
+        }
+
+        if (weight < 0) {
+            return 0;
+        }
+
+        // Heavy penalty for going in the same direction to encourage curved paths
+        if (direction.equals(lastDir)) {
+            return 5;
+        }
+
+        // Prefer to grow upwards
+        // weight += 30 * direction.y();
+
+        // Prefers to go towards origin
+        // int dirFromOriginX = Integer.signum(sporeGrowthData.getOrigin().getX() - pos.getX());
+        // int dirFromOriginY = Integer.signum(sporeGrowthData.getOrigin().getY() - pos.getY());
+        // int dirFromOriginZ = Integer.signum(sporeGrowthData.getOrigin().getZ() - pos.getZ());
+        // if (direction.y() == dirFromOriginX || direction.y() == dirFromOriginY
+        //         || direction.z() == dirFromOriginZ) {
+        //     weight += 50;
+        // }
+
+        // Bonuses based on neighbors
+        weight += this.getNeighborBonus(world, pos);
+
+        // Bonus for moving towards origin
+        int bonusDistanceFromOrigin =
+                this.getDistanceFromOrigin(this.getBlockPos()) - this.getDistanceFromOrigin(pos);
+        weight += 10 * bonusDistanceFromOrigin;
+
+        // Massive bonus for going along with external force
+        double forceModifier = this.getExternalForceModifier(direction);
+        weight += MathHelper.floor(FORCE_MODIFIER_MULTIPLIER * forceModifier);
+
+        // Always have some weight, so it is an options if no other options are good
+        weight = Math.max(1, weight);
+        return weight;
+    }
+
+    private int getNeighborBonus(World world, BlockPos pos) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        int weightBonus = 0;
+        int numNeighbors = 0;
+        boolean hugsBlock = false;
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            mutable.set(pos.offset(direction));
+            BlockState state = world.getBlockState(mutable);
+            if (isGrowthBlock(state)) {
+                numNeighbors++;
+            } else if (state.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)) {
+                // Prefer to move away from the spore sea
+                weightBonus -= 20;
+            } else if (state.isSideSolidFullSquare(world, mutable, direction.getOpposite())) {
+                // Prefer to wrap around blocks
+                hugsBlock = true;
+            }
+        }
+
+        // Prefer to wrap around itself when possible
+        if (numNeighbors > 1) {
+            weightBonus += 150 * (numNeighbors - 1);
+        }
+        if (hugsBlock) {
+            weightBonus += 100;
+        }
+        return weightBonus;
+    }
+
+    private int getDistanceFromOrigin(BlockPos pos) {
+        return pos.getManhattanDistance(sporeGrowthData.getOrigin());
     }
 
     @Override
     protected boolean isGrowthBlock(BlockState state) {
-        // TODO
-        return false;
+        return state.isIn(ModBlockTags.ALL_ROSEITE_GROWTH);
     }
 
     @Override
-    protected void onGrowBlock(BlockPos pos, BlockState state) {
-        // TODO
+    protected void onGrowBlock(BlockPos pos, BlockState state, BlockState originalState) {
+        int cost = Math.max(
+                RoseiteSporeGrowthEntity.getCost(state) - RoseiteSporeGrowthEntity.getCost(
+                        originalState), 0);
+        boolean drainsWater = state.getOrEmpty(ModProperties.CATALYZED).orElse(false);
+        this.doGrowEffects(pos, state, cost, drainsWater, true, true);
+        if (state.isOf(ModBlocks.ROSEITE_BLOCK)) {
+            this.attemptPlaceDecorators();
+            this.attemptPlaceDecorators();
+        }
+        SporeParticleManager.damageEntitiesInBlock(this.getWorld(), RoseiteSpores.getInstance(),
+                pos);
+    }
+
+    private void attemptPlaceDecorators() {
+        World world = this.getWorld();
+        if (sporeGrowthData.getSpores() <= 0 || random.nextInt(3) == 0) {
+            return;
+        }
+        List<Direction> validDirections = new ArrayList<>(6);
+        BlockPos pos = this.getBlockPos();
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        for (Direction direction : ModConstants.CARDINAL_DIRECTIONS) {
+            mutable.set(pos.offset(direction));
+            if (this.canPlaceDecorator(world.getBlockState(mutable))) {
+                validDirections.add(direction);
+            }
+        }
+        if (!validDirections.isEmpty()) {
+            Direction direction = validDirections.get(random.nextInt(validDirections.size()));
+            this.placeDecorator(pos.offset(direction), direction);
+        }
+    }
+
+    private boolean canPlaceDecorator(BlockState state) {
+        return state.isIn(ModBlockTags.SPORES_CAN_GROW);
+    }
+
+    private void placeDecorator(BlockPos pos, Direction direction) {
+        int randomValue = random.nextInt(4);
+        Block block;
+        if (randomValue == 0) {
+            block = ModBlocks.ROSEITE_CLUSTER;
+        } else if (randomValue == 1) {
+            block = ModBlocks.LARGE_ROSEITE_BUD;
+        } else if (randomValue == 2) {
+            block = ModBlocks.MEDIUM_ROSEITE_BUD;
+        } else {
+            block = ModBlocks.SMALL_ROSEITE_BUD;
+        }
+        boolean shouldDrainWater = this.shouldDrainWater();
+        int fluidloggedIndex = Fluidlogged.getFluidIndex(
+                this.getWorld().getFluidState(pos).getFluid());
+        BlockState state = block.getDefaultState()
+                .with(Properties.FACING, direction)
+                .with(ModProperties.CATALYZED, shouldDrainWater)
+                .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
+        this.placeBlockWithEffects(pos, state, RoseiteSporeGrowthEntity.getCost(state),
+                shouldDrainWater, false, false);
     }
 }

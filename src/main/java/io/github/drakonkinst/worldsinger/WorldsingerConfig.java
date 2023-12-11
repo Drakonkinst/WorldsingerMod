@@ -79,10 +79,10 @@ public final class WorldsingerConfig {
             JsonStack jsonStack = new JsonStack(GSON, root);
             jsonStack.allow(KEY_FLUIDLOGGABLE_FLUIDS);
 
-            List<String> fluidloggableFluidStrs = jsonStack.streamAs(KEY_FLUIDLOGGABLE_FLUIDS,
+            List<String> fluidloggableFluidStrings = jsonStack.streamAs(KEY_FLUIDLOGGABLE_FLUIDS,
                     String.class).toList();
-            List<Identifier> fluidloggableFluidIds = stringListToIdentifierList(jsonStack,
-                    fluidloggableFluidStrs);
+            List<Identifier> fluidloggableFluidIds = Serializer.stringListToIdentifierList(
+                    jsonStack, fluidloggableFluidStrings);
 
             return new WorldsingerConfig(fluidloggableFluidIds);
         }

@@ -7,9 +7,9 @@ import net.minecraft.registry.tag.TagKey;
 
 public final class ModEntityTypeTags {
 
-    public static TagKey<EntityType<?>> SPORES_ALWAYS_AFFECT = ModEntityTypeTags.of(
+    public static final TagKey<EntityType<?>> SPORES_ALWAYS_AFFECT = ModEntityTypeTags.of(
             "spores_always_affect");
-    public static TagKey<EntityType<?>> SPORES_NEVER_AFFECT = ModEntityTypeTags.of(
+    public static final TagKey<EntityType<?>> SPORES_NEVER_AFFECT = ModEntityTypeTags.of(
             "spores_never_affect");
     public static TagKey<EntityType<?>> HAS_STEEL = ModEntityTypeTags.of("has_steel");
     public static TagKey<EntityType<?>> HAS_IRON = ModEntityTypeTags.of("has_iron");

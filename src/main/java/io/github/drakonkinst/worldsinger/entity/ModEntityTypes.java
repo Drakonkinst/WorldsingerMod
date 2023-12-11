@@ -24,6 +24,7 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.dimension.DimensionType;
 
+@SuppressWarnings("UnqualifiedStaticUsage")
 public final class ModEntityTypes {
 
     public static final EntityType<VerdantSporeGrowthEntity> VERDANT_SPORE_GROWTH = register(

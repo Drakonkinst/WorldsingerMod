@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.block;
 import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 // Roseite blocks do not have a dead state, and are alive by default
 public class RoseiteBlock extends Block implements SporeGrowthBlock, WaterReactiveBlock {
 
-    public static final MapCodec<RoseiteBlock> CODEC = createCodec(RoseiteBlock::new);
+    public static final MapCodec<RoseiteBlock> CODEC = AbstractBlock.createCodec(RoseiteBlock::new);
     public static final int DECAY_CHANCE = 5;
     public static final int RECATALYZE_VALUE = 100;
 

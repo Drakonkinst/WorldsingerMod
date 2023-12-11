@@ -27,6 +27,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 
+@SuppressWarnings("UnqualifiedStaticUsage")
 public final class ModBlocks {
 
     // Dead Spores
@@ -284,6 +285,7 @@ public final class ModBlocks {
                     .solid()
                     .nonOpaque()
                     .sounds(ModSoundGroups.ROSEITE)
+                    .ticksRandomly()
                     .strength(1.5F)
                     .pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block LARGE_ROSEITE_BUD = register("large_roseite_bud",

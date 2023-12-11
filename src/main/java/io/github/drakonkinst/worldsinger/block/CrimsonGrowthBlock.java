@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -13,7 +14,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class CrimsonGrowthBlock extends Block implements SporeGrowthBlock {
 
-    public static final MapCodec<CrimsonGrowthBlock> CODEC = createCodec(CrimsonGrowthBlock::new);
+    public static final MapCodec<CrimsonGrowthBlock> CODEC = AbstractBlock.createCodec(
+            CrimsonGrowthBlock::new);
 
     public CrimsonGrowthBlock(Settings settings) {
         super(settings);

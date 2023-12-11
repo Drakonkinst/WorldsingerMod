@@ -25,6 +25,7 @@ public final class ModBlockTags {
     public static final TagKey<Block> ALL_VERDANT_GROWTH = ModBlockTags.of("all_verdant_growth");
     public static final TagKey<Block> ALL_CRIMSON_GROWTH = ModBlockTags.of("all_crimson_growth");
     public static final TagKey<Block> ALL_ROSEITE_GROWTH = ModBlockTags.of("all_roseite_growth");
+    public static final TagKey<Block> ROSEITE_GROWABLE = ModBlockTags.of("roseite_growable");
     public static final TagKey<Block> KILLS_SPORES = ModBlockTags.of("kills_spores");
     public static final TagKey<Block> SPORES_CAN_GROW = ModBlockTags.of("spores_can_grow");
     public static final TagKey<Block> SPORES_CAN_BREAK = ModBlockTags.of("spores_can_break");

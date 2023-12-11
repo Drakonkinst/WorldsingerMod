@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -39,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TallCrimsonSpinesBlock extends Block implements Waterloggable, SporeGrowthBlock {
 
-    public static final MapCodec<TallCrimsonSpinesBlock> CODEC = createCodec(
+    public static final MapCodec<TallCrimsonSpinesBlock> CODEC = AbstractBlock.createCodec(
             TallCrimsonSpinesBlock::new);
 
     private static final double OFFSET = 3.0;

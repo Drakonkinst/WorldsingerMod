@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
@@ -18,8 +19,9 @@ public class LivingAetherSporeBlock extends AetherSporeBlock implements SporeKil
 
     public static final MapCodec<LivingAetherSporeBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(AetherSpores.CODEC.fieldOf("sporeType")
-                            .forGetter(LivingAetherSporeBlock::getSporeType), Block.CODEC.fieldOf("block")
-                            .forGetter(LivingAetherSporeBlock::getFluidizedBlock), createSettingsCodec())
+                                    .forGetter(LivingAetherSporeBlock::getSporeType), Block.CODEC.fieldOf("block")
+                                    .forGetter(LivingAetherSporeBlock::getFluidizedBlock),
+                            AbstractBlock.createSettingsCodec())
                     .apply(instance, LivingAetherSporeBlock::new));
 
     public static final int CATALYZE_VALUE = 250;

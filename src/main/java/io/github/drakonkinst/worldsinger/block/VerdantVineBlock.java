@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PillarBlock;
@@ -14,7 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class VerdantVineBlock extends PillarBlock implements SporeGrowthBlock {
 
-    public static final MapCodec<VerdantVineBlock> CODEC = createCodec(VerdantVineBlock::new);
+    public static final MapCodec<VerdantVineBlock> CODEC = AbstractBlock.createCodec(
+            VerdantVineBlock::new);
 
     public VerdantVineBlock(Settings settings) {
         super(settings);

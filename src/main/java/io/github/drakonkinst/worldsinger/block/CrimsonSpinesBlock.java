@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.block;
 import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -31,7 +32,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGrowthBlock {
 
-    public static final MapCodec<CrimsonSpinesBlock> CODEC = createCodec(CrimsonSpinesBlock::new);
+    public static final MapCodec<CrimsonSpinesBlock> CODEC = AbstractBlock.createCodec(
+            CrimsonSpinesBlock::new);
     private static final VoxelShape[] SHAPES = VoxelShapeUtil.createDirectionAlignedShapes(2.0, 0.0,
             11.0);
 

@@ -12,6 +12,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
+@SuppressWarnings("UnqualifiedStaticUsage")
 public final class ModStatusEffects {
 
     public static final StatusEffect VERDANT_SPORES = register("verdant_spores",

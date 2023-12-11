@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import java.util.function.ToIntFunction;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -23,7 +24,8 @@ import net.minecraft.world.World;
 
 public class SunlightBlock extends StillFluidBlock {
 
-    public static final MapCodec<SunlightBlock> CODEC = createCodec(SunlightBlock::new);
+    public static final MapCodec<SunlightBlock> CODEC = AbstractBlock.createCodec(
+            SunlightBlock::new);
     public static final ToIntFunction<BlockState> STATE_TO_LUMINANCE = (state) -> {
         int level = state.get(ModProperties.SUNLIGHT_LEVEL);
         if (level == 1) {

@@ -23,15 +23,15 @@ public abstract class FurnaceFuelMixin {
 
     @ModifyReturnValue(method = "createFuelTimeMap", at = @At("RETURN"))
     private static Map<Item, Integer> addCustomFuel(Map<Item, Integer> map) {
-        addFuel(map, ModItems.SUNLIGHT_SPORES_BUCKET, 100);
-        addFuel(map, ModItems.SUNLIGHT_SPORES_BOTTLE, 8);
+        FurnaceFuelMixin.addFuel(map, ModItems.SUNLIGHT_SPORES_BUCKET, 100);
+        FurnaceFuelMixin.addFuel(map, ModItems.SUNLIGHT_SPORES_BOTTLE, 8);
         return map;
     }
 
     @Unique
     private static void addFuel(Map<Item, Integer> fuelTimes, ItemConvertible item, int numItems) {
         Item item2 = item.asItem();
-        if (isNonFlammableWood(item2)) {
+        if (FurnaceFuelMixin.isNonFlammableWood(item2)) {
             return;
         }
         fuelTimes.put(item2, numItems * NUM_ITEMS_TO_TICKS);
@@ -45,7 +45,7 @@ public abstract class FurnaceFuelMixin {
     @Unique
     private static void addFuel(Map<Item, Integer> fuelTimes, TagKey<Item> tag, int numItems) {
         for (RegistryEntry<Item> registryEntry : Registries.ITEM.iterateEntries(tag)) {
-            if (isNonFlammableWood(registryEntry.value())) {
+            if (FurnaceFuelMixin.isNonFlammableWood(registryEntry.value())) {
                 continue;
             }
             fuelTimes.put(registryEntry.value(), numItems * NUM_ITEMS_TO_TICKS);

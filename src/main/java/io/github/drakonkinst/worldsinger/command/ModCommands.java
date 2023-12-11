@@ -10,7 +10,8 @@ public final class ModCommands {
 
     public static void initialize() {
         CommandRegistrationCallback.EVENT.register(
-                (dispatcher, registryAccess, environment) -> createCommands(dispatcher));
+                (dispatcher, registryAccess, environment) -> ModCommands.createCommands(
+                        dispatcher));
     }
 
     private static void createCommands(CommandDispatcher<ServerCommandSource> dispatcher) {

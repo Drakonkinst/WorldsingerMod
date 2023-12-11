@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.VoxelShapeUtil;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
@@ -22,7 +23,7 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
         Waterloggable, SporeGrowthBlock {
 
     private static final VoxelShape SHAPE = VoxelShapeUtil.createUpwardsCuboid(4.0, 0.0, 15.0);
-    public static final MapCodec<TwistingVerdantVineBlock> CODEC = createCodec(
+    public static final MapCodec<TwistingVerdantVineBlock> CODEC = AbstractBlock.createCodec(
             TwistingVerdantVineBlock::new);
 
     public static boolean canAttach(BlockState state, BlockState attachCandidate) {

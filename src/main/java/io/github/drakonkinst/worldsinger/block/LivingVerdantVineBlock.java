@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.cosmere.lumar.VerdantSpores;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LivingVerdantVineBlock extends VerdantVineBlock implements LivingSporeGrowthBlock {
 
-    public static final MapCodec<LivingVerdantVineBlock> CODEC = createCodec(
+    public static final MapCodec<LivingVerdantVineBlock> CODEC = AbstractBlock.createCodec(
             LivingVerdantVineBlock::new);
     public static final int RECATALYZE_VALUE = 100;
 

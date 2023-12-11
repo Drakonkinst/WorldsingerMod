@@ -85,8 +85,8 @@ public final class BlockPosUtil {
     }
 
     public static int getDistance(BlockPos pos1, BlockPos pos2) {
-        return getDistance(pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(),
-                pos2.getZ());
+        return BlockPosUtil.getDistance(pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(),
+                pos2.getY(), pos2.getZ());
     }
 
     // Effective radius is a square, so use Chebyshev distance.

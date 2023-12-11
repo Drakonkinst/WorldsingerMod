@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.CrimsonSpores;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public class LivingTallCrimsonSpinesBlock extends TallCrimsonSpinesBlock implements
         LivingSporeGrowthBlock {
 
-    public static final MapCodec<LivingTallCrimsonSpinesBlock> CODEC = createCodec(
+    public static final MapCodec<LivingTallCrimsonSpinesBlock> CODEC = AbstractBlock.createCodec(
             LivingTallCrimsonSpinesBlock::new);
     public static final int RECATALYZE_VALUE = 50;
 

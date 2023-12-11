@@ -9,6 +9,7 @@ import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.FluidShapes;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.FluidBlockAccessor;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -34,9 +35,10 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
     // Unused Codec
     public static final MapCodec<AetherSporeFluidBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(FluidBlockAccessor.worldsinger$getFluidCodec()
-                            .fieldOf("fluid")
-                            .forGetter(block -> block.fluid), AetherSpores.CODEC.fieldOf("sporeType")
-                            .forGetter(AetherSporeFluidBlock::getSporeType), createSettingsCodec())
+                                    .fieldOf("fluid")
+                                    .forGetter(block -> block.fluid), AetherSpores.CODEC.fieldOf("sporeType")
+                                    .forGetter(AetherSporeFluidBlock::getSporeType),
+                            AbstractBlock.createSettingsCodec())
                     .apply(instance,
                             (fluid1, sporeType, settings1) -> new AetherSporeFluidBlock(sporeType,
                                     settings1)));
@@ -81,9 +83,9 @@ public class AetherSporeFluidBlock extends FluidBlock implements SporeEmitting {
         }
 
         if (fluidized) {
-            return fluidizeBlock(world, pos, blockState);
+            return AetherSporeFluidBlock.fluidizeBlock(world, pos, blockState);
         } else {
-            return solidifyBlock(world, pos, blockState);
+            return AetherSporeFluidBlock.solidifyBlock(world, pos, blockState);
         }
     }
 

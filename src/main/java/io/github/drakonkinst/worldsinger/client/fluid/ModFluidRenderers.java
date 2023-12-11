@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.fluid.Fluid;
 
+@SuppressWarnings("UnqualifiedStaticUsage")
 @Environment(EnvType.CLIENT)
 public final class ModFluidRenderers {
 

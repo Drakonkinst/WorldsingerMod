@@ -14,6 +14,7 @@ import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntity;
 import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntityData;
 import net.minecraft.entity.vehicle.BoatEntity;
 
+@SuppressWarnings("UnqualifiedStaticUsage")
 public final class ModComponents implements ScoreboardComponentInitializer,
         EntityComponentInitializer {
 

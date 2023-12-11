@@ -6,6 +6,7 @@ import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleSpawner;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import java.util.Optional;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -34,9 +35,10 @@ public class AetherSporeBlock extends FallingBlock implements FluidDrainable, Sp
 
     public static final MapCodec<AetherSporeBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(AetherSpores.CODEC.fieldOf("sporeType")
-                            .forGetter(AetherSporeBlock::getSporeType), Registries.BLOCK.getCodec()
-                            .fieldOf("block")
-                            .forGetter(AetherSporeBlock::getFluidizedBlock), createSettingsCodec())
+                                    .forGetter(AetherSporeBlock::getSporeType), Registries.BLOCK.getCodec()
+                                    .fieldOf("block")
+                                    .forGetter(AetherSporeBlock::getFluidizedBlock),
+                            AbstractBlock.createSettingsCodec())
                     .apply(instance,
                             (sporeType, fluidizedBlock1, settings1) -> new AetherSporeBlock(
                                     sporeType, settings1)));

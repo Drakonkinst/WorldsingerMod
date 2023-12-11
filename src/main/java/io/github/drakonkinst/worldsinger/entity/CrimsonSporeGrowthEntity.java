@@ -23,7 +23,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Quaternionfc;
@@ -34,10 +33,6 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     public static final int MAX_STAGE = 2;
 
     private static final int FORCE_MODIFIER_MULTIPLIER = 20;
-    private static final int FULL_BLOCK_COST = 15;
-    private static final int SPIKE_COST = 10;
-    private static final int TALL_SPINES_COST = 2;
-    private static final int SPINES_COST = 1;
     private static final float MIN_ROTATION = 10.0f * MathHelper.RADIANS_PER_DEGREE;
     private static final float MAX_ROTATION = 45.0f * MathHelper.RADIANS_PER_DEGREE;
     private static final int MAX_ATTEMPTS = 10;
@@ -48,11 +43,16 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     private static final int SPLIT_WATER_MIN = 140;
     private static final int SPLIT_AGE_MAX = 1;
 
+    private static final int COST_CRIMSON_GROWTH = 15;
+    private static final int COST_CRIMSON_SPIKE = 10;
+    private static final int COST_TALL_CRIMSON_SPINES = 2;
+    private static final int COST_CRIMSON_SPINES = 1;
+
     // Using the given cardinal direction as a basis, rotate up to 45 degrees in yaw or pitch.
     private static Vector3f randomizeDirectionFromCardinalDirection(Int3 cardinalDirection) {
         Vector3f direction = new Vector3f(cardinalDirection.x(), cardinalDirection.y(),
                 cardinalDirection.z());
-        Vector3f randomUnitVector = generateRandomUnitVector(direction);
+        Vector3f randomUnitVector = CrimsonSporeGrowthEntity.generateRandomUnitVector(direction);
         Vector3f rotationAxis = randomUnitVector.cross(direction);
         float rotationAngle = random.nextFloat() * (MAX_ROTATION - MIN_ROTATION) + MIN_ROTATION;
         Quaternionfc rotation = new Quaternionf(
@@ -197,18 +197,18 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     private boolean canBreakOrGrow(BlockState state, boolean allowPassthrough) {
-        return this.canBreakHere(state, null) || this.canGrowHere(state, null) || (allowPassthrough
+        return this.canBreakHere(state) || this.canGrowHere(state) || (allowPassthrough
                 && this.isGrowthBlock(state));
     }
 
     @Override
-    protected boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith) {
+    protected boolean canBreakHere(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_BREAK) || state.isIn(
                 ModBlockTags.ALL_VERDANT_GROWTH);
     }
 
     @Override
-    protected boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith) {
+    protected boolean canGrowHere(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_GROW) || state.isIn(ModBlockTags.CRIMSON_SNARE)
                 || state.isIn(ModBlockTags.TALL_CRIMSON_SPINES) || state.isIn(
                 ModBlockTags.CRIMSON_SPINES) || (sporeGrowthData.getStage() == 0 && state.isIn(
@@ -276,9 +276,9 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     @Override
-    protected void onGrowBlock(BlockPos pos, BlockState state) {
+    protected void onGrowBlock(BlockPos pos, BlockState state, BlockState originalState) {
         boolean isFullBlock = state.isOf(ModBlocks.CRIMSON_GROWTH);
-        int cost = isFullBlock ? FULL_BLOCK_COST : SPIKE_COST;
+        int cost = isFullBlock ? COST_CRIMSON_GROWTH : COST_CRIMSON_SPIKE;
         boolean drainsWater = state.getOrEmpty(ModProperties.CATALYZED).orElse(false);
         this.doGrowEffects(pos, state, cost, drainsWater, true, true);
 
@@ -289,7 +289,8 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
             this.attemptPlaceDecorators();
         }
 
-        this.applySporeEffectToEntities(pos);
+        SporeParticleManager.damageEntitiesInBox(this.getWorld(), CrimsonSpores.getInstance(),
+                BoxUtil.createBoxAroundBlock(pos, 1.0), true);
     }
 
     private boolean attemptPlaceDecorators() {
@@ -314,11 +315,6 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         return false;
     }
 
-    private void applySporeEffectToEntities(BlockPos pos) {
-        SporeParticleManager.damageEntitiesInBox(this.getWorld(), CrimsonSpores.getInstance(),
-                BoxUtil.createBoxAroundBlock(pos, 1.0), true);
-    }
-
     private boolean canPlaceDecorator(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_GROW);
     }
@@ -338,7 +334,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
                 .with(ModProperties.CATALYZED, shouldDrainWater);
         // No need to check fluid state since this is handled in placeAt()
         TallCrimsonSpinesBlock.placeAt(this.getWorld(), state, pos, Block.NOTIFY_ALL);
-        this.doGrowEffects(pos, state, TALL_SPINES_COST, shouldDrainWater, false, false);
+        this.doGrowEffects(pos, state, COST_TALL_CRIMSON_SPINES, shouldDrainWater, false, false);
     }
 
     private void placeSpines(BlockPos pos, Direction direction) {
@@ -349,7 +345,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
                 .with(Properties.FACING, direction)
                 .with(ModProperties.CATALYZED, shouldDrainWater)
                 .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
-        this.placeBlockWithEffects(pos, state, SPINES_COST, shouldDrainWater, false, true);
+        this.placeBlockWithEffects(pos, state, COST_CRIMSON_SPINES, shouldDrainWater, false, true);
     }
 
     private void resetTargetGrowthDirection() {

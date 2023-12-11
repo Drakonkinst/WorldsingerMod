@@ -85,11 +85,12 @@ public class StillFluidRenderHandler implements FluidRenderHandler {
         FluidState fluidStateEast = blockStateEast.getFluidState();
         boolean shouldRenderUp =
                 FluidRenderer.shouldRenderSide(world, pos, fluidState, blockState, Direction.UP,
-                        fluidStateUp) && !isSideCovered(world, pos, Direction.UP, blockStateUp);
+                        fluidStateUp) && !StillFluidRenderHandler.isSideCovered(world, pos,
+                        Direction.UP, blockStateUp);
         boolean shouldRenderDown =
                 FluidRenderer.shouldRenderSide(world, pos, fluidState, blockState, Direction.DOWN,
-                        fluidStateDown) && !isSideCovered(world, pos, Direction.DOWN,
-                        blockStateDown);
+                        fluidStateDown) && !StillFluidRenderHandler.isSideCovered(world, pos,
+                        Direction.DOWN, blockStateDown);
         boolean shouldRenderNorth = FluidRenderer.shouldRenderSide(world, pos, fluidState,
                 blockState, Direction.NORTH, fluidStateNorth);
         boolean shouldRenderSouth = FluidRenderer.shouldRenderSide(world, pos, fluidState,
@@ -198,7 +199,7 @@ public class StillFluidRenderHandler implements FluidRenderHandler {
                     maxZ = z + 1.0;
                     yield shouldRenderEast;
                 }
-            }) || isSideCovered(world, pos, direction,
+            }) || StillFluidRenderHandler.isSideCovered(world, pos, direction,
                     world.getBlockState(pos.offset(direction)))) {
                 continue;
             }

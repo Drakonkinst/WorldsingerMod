@@ -158,9 +158,10 @@ public final class SporeParticleManager {
     private static SporeDustParticleEffect getCachedSporeParticleEffect(AetherSpores sporeType,
             float size) {
         // Only cache particle effect if from the AetherSporeType enum
-        int key = hashTwoInts(sporeType.getId(), (int) Math.floor(size * CACHED_SIZE_PRECISION));
+        int key = SporeParticleManager.hashTwoInts(sporeType.getId(),
+                (int) Math.floor(size * CACHED_SIZE_PRECISION));
         return cachedDustParticleEffects.computeIfAbsent(key,
-                k -> createDustParticleEffect(sporeType, size));
+                k -> SporeParticleManager.createDustParticleEffect(sporeType, size));
 
     }
 
@@ -246,7 +247,8 @@ public final class SporeParticleManager {
             sporeType = DeadSpores.getInstance();
         }
 
-        ParticleEffect particleEffect = getCachedSporeParticleEffect(sporeType, particleSize);
+        ParticleEffect particleEffect = SporeParticleManager.getCachedSporeParticleEffect(sporeType,
+                particleSize);
         world.addParticle(particleEffect, x, y, z, 0.0, 0.0, 0.0);
     }
 

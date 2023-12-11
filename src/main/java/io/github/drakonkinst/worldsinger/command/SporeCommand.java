@@ -48,7 +48,8 @@ public class SporeCommand {
 
     public static int spawnSporeParticle(CommandContext<ServerCommandSource> context) {
         String aetherSporeTypeStr = getString(context, "spore_type");
-        Optional<AetherSpores> aetherSporeType = getAetherSporeTypeFromString(aetherSporeTypeStr);
+        Optional<AetherSpores> aetherSporeType = SporeCommand.getAetherSporeTypeFromString(
+                aetherSporeTypeStr);
         if (aetherSporeType.isEmpty()) {
             context.getSource()
                     .sendError(Text.literal(

@@ -32,8 +32,8 @@ public class EarlyRiser implements Runnable {
                 .build();
 
         switch (FabricLoader.getInstance().getEnvironmentType()) {
-            case CLIENT -> loadClient(remapper);
-            case SERVER -> loadServer(remapper);
+            case CLIENT -> EarlyRiser.loadClient(remapper);
+            case SERVER -> EarlyRiser.loadServer(remapper);
         }
     }
 }

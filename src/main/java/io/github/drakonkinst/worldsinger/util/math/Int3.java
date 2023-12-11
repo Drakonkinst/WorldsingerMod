@@ -7,15 +7,15 @@ import net.minecraft.util.math.Direction;
 
 public record Int3(int x, int y, int z) {
 
-    public static Int3 ZERO = new Int3(0, 0, 0);
-    public static Int3 UP = new Int3(0, 1, 0);
-    public static Int3 DOWN = new Int3(0, -1, 0);
-    public static Int3 NORTH = new Int3(0, 0, -1);
-    public static Int3 SOUTH = new Int3(0, 0, 1);
-    public static Int3 WEST = new Int3(-1, 0, 0);
-    public static Int3 EAST = new Int3(1, 0, 0);
-    public static List<Int3> DIAGONAL_3D = Int3.generateDiagonal3d();
-    public static List<Int3> CARDINAL_3D = List.of(UP, DOWN, NORTH, SOUTH, EAST, WEST);
+    public static final Int3 ZERO = new Int3(0, 0, 0);
+    public static final Int3 UP = new Int3(0, 1, 0);
+    public static final Int3 DOWN = new Int3(0, -1, 0);
+    public static final Int3 NORTH = new Int3(0, 0, -1);
+    public static final Int3 SOUTH = new Int3(0, 0, 1);
+    public static final Int3 WEST = new Int3(-1, 0, 0);
+    public static final Int3 EAST = new Int3(1, 0, 0);
+    public static final List<Int3> DIAGONAL_3D = Int3.generateDiagonal3d();
+    public static final List<Int3> CARDINAL_3D = List.of(UP, DOWN, NORTH, SOUTH, EAST, WEST);
 
     private static List<Int3> generateDiagonal3d() {
         List<Int3> list = new ArrayList<>(3 * 3 * 3);

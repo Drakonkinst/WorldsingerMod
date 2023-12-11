@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.util.ModConstants;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ConnectingBlock;
@@ -25,7 +26,7 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
         SporeGrowthBlock {
 
     private static final float RADIUS = 0.25f;
-    public static final MapCodec<VerdantVineBranchBlock> CODEC = createCodec(
+    public static final MapCodec<VerdantVineBranchBlock> CODEC = AbstractBlock.createCodec(
             VerdantVineBranchBlock::new);
     private static final BooleanProperty[] DIRECTION_PROPERTIES = {
             DOWN, UP, NORTH, EAST, SOUTH, WEST
@@ -96,7 +97,8 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
                 continue;
             }
 
-            if (canConnect(world, neighborPos, neighborState, direction.getOpposite())) {
+            if (VerdantVineBranchBlock.canConnect(world, neighborPos, neighborState,
+                    direction.getOpposite())) {
                 return true;
             }
         }
@@ -116,8 +118,8 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
         for (int i = 0; i < DIRECTION_PROPERTIES.length; ++i) {
             neighborPos.set(pos.offset(DIRECTIONS[i]));
             BlockState neighborState = world.getBlockState(neighborPos);
-            boolean canConnect = canConnect(world, neighborPos, neighborState,
-                    DIRECTIONS[i].getOpposite());
+            boolean canConnect = VerdantVineBranchBlock.canConnect(world, neighborPos,
+                    neighborState, DIRECTIONS[i].getOpposite());
             state = state.with(DIRECTION_PROPERTIES[i], canConnect);
         }
         return state;
@@ -140,7 +142,8 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
             world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
-        boolean canConnect = canConnect(world, neighborPos, neighborState, direction.getOpposite());
+        boolean canConnect = VerdantVineBranchBlock.canConnect(world, neighborPos, neighborState,
+                direction.getOpposite());
         return state.with(FACING_PROPERTIES.get(direction), canConnect);
     }
 

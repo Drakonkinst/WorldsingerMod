@@ -46,11 +46,6 @@ public abstract class BoatItemMixin extends Item {
     }
 
     @Override
-    public boolean isNbtSynced() {
-        return super.isNbtSynced();
-    }
-
-    @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip,
             TooltipContext context) {
         SilverLined silverItemData = ModApi.SILVER_LINED_ITEM.find(stack, null);

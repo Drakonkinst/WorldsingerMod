@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.RoseiteSpores;
 import io.github.drakonkinst.worldsinger.item.ModItems;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -39,7 +40,7 @@ public abstract class RoseiteSporeFluid extends LivingAetherSporeFluid {
     @Override
     protected BlockState toBlockState(FluidState fluidState) {
         return ModBlocks.ROSEITE_SPORE_SEA.getDefaultState()
-                .with(Properties.LEVEL_15, getBlockStateLevel(fluidState));
+                .with(Properties.LEVEL_15, FlowableFluid.getBlockStateLevel(fluidState));
     }
 
     public static class Flowing extends RoseiteSporeFluid {

@@ -1,7 +1,6 @@
 {
   "values": [
     "worldsinger:roseite_block",
-    "worldsinger:roseite_stairs",
-    "worldsinger:roseite_slab"
+    "#worldsinger:roseite_growable"
   ]
 }

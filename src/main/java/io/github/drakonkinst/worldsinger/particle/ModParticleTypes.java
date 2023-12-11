@@ -7,6 +7,7 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
+@SuppressWarnings("UnqualifiedStaticUsage")
 public class ModParticleTypes {
 
     public static final ParticleType<SporeDustParticleEffect> SPORE_DUST = register("spore_dust",

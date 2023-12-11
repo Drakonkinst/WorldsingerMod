@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeKillingManager;
 import io.github.drakonkinst.worldsinger.mixin.accessor.FluidBlockAccessor;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FlowableFluid;
@@ -17,9 +18,10 @@ public class LivingAetherSporeFluidBlock extends AetherSporeFluidBlock implement
     // Unused Codec
     public static final MapCodec<LivingAetherSporeFluidBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(FluidBlockAccessor.worldsinger$getFluidCodec()
-                            .fieldOf("fluid")
-                            .forGetter(block -> block.fluid), AetherSpores.CODEC.fieldOf("sporeType")
-                            .forGetter(LivingAetherSporeFluidBlock::getSporeType), createSettingsCodec())
+                                    .fieldOf("fluid")
+                                    .forGetter(block -> block.fluid), AetherSpores.CODEC.fieldOf("sporeType")
+                                    .forGetter(LivingAetherSporeFluidBlock::getSporeType),
+                            AbstractBlock.createSettingsCodec())
                     .apply(instance, LivingAetherSporeFluidBlock::new));
 
     public LivingAetherSporeFluidBlock(FlowableFluid fluid, AetherSpores sporeType,

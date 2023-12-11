@@ -6,6 +6,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
+@SuppressWarnings("UnqualifiedStaticUsage")
 public final class ModFluids {
 
     public static final FlowableFluid DEAD_SPORES = register("dead_spores",

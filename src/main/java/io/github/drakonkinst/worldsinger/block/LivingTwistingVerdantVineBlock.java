@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntity;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public class LivingTwistingVerdantVineBlock extends TwistingVerdantVineBlock implements
         LivingSporeGrowthBlock {
 
-    public static final MapCodec<LivingTwistingVerdantVineBlock> CODEC = createCodec(
+    public static final MapCodec<LivingTwistingVerdantVineBlock> CODEC = AbstractBlock.createCodec(
             LivingTwistingVerdantVineBlock::new);
     private static final int MAX_DEPTH = 3;
 

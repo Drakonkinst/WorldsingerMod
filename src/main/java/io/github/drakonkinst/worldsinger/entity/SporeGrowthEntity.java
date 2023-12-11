@@ -28,7 +28,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 public abstract class SporeGrowthEntity extends MarkerEntity {
@@ -79,16 +78,16 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
 
     protected abstract void updateStage();
 
-    protected abstract boolean canBreakHere(BlockState state, @Nullable BlockState replaceWith);
+    protected abstract boolean canBreakHere(BlockState state);
 
-    protected abstract boolean canGrowHere(BlockState state, @Nullable BlockState replaceWith);
+    protected abstract boolean canGrowHere(BlockState state);
 
     protected abstract int getWeight(World world, BlockPos pos, Int3 direction,
             boolean allowPassthrough);
 
     protected abstract boolean isGrowthBlock(BlockState state);
 
-    protected abstract void onGrowBlock(BlockPos pos, BlockState state);
+    protected abstract void onGrowBlock(BlockPos pos, BlockState state, BlockState originalState);
 
     public void setSporeData(int spores, int water, boolean initialGrowth) {
         sporeGrowthData.setSpores(spores);
@@ -187,7 +186,8 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
             }
         }
 
-        if (this.attemptGrowBlock(this.getNextBlock())) {
+        boolean result = this.attemptGrowBlock(this.getNextBlock());
+        if (result) {
             this.shiftBlock(this.getNextDirection(false));
             this.updateStage();
             placeAttempts = 0;
@@ -213,16 +213,16 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
         BlockPos blockPos = this.getBlockPos();
         BlockState originalState = this.getWorld().getBlockState(blockPos);
-        if (this.canBreakHere(originalState, state)) {
+        if (this.canBreakHere(originalState)) {
             SporeGrowthEntity.breakBlockFromSporeGrowth(this.getWorld(), blockPos, this);
-            return this.growBlock(state);
-        } else if (this.canGrowHere(originalState, state)) {
-            if (!originalState.isAir()) {
-                SporeGrowthEntity.breakBlockFromSporeGrowth(this.getWorld(), blockPos, this);
-            }
-            return this.growBlock(state);
+            return this.growBlock(state, originalState);
+        } else if (this.canGrowHere(originalState)) {
+            // if (!originalState.isAir()) {
+            //     SporeGrowthEntity.breakBlockFromSporeGrowth(this.getWorld(), blockPos, this);
+            // }
+            return this.growBlock(state, originalState);
         } else if (originalState.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS)) {
-            return this.growBlock(state);
+            return this.growBlock(state, originalState);
         }
         return false;
     }
@@ -265,12 +265,12 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         return this.isGrowthBlock(this.getWorld().getBlockState(this.getBlockPos()));
     }
 
-    private boolean growBlock(BlockState state) {
+    private boolean growBlock(BlockState state, BlockState originalState) {
         // Set the block only, let each block handle its own grow effects in onGrowBlock()
         BlockPos pos = this.getBlockPos();
         boolean success = this.getWorld().setBlockState(pos, state);
         if (success) {
-            this.onGrowBlock(pos, state);
+            this.onGrowBlock(pos, state, originalState);
         }
         return success;
     }

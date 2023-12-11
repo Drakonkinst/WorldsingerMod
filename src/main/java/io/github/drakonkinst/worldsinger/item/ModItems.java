@@ -37,6 +37,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+@SuppressWarnings("UnqualifiedStaticUsage")
 public final class ModItems {
 
     // Items
