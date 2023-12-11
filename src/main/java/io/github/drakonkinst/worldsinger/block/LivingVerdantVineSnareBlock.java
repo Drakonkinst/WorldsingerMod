@@ -84,7 +84,7 @@ public class LivingVerdantVineSnareBlock extends VerdantVineSnareBlock implement
         }
 
         world.setBlockState(pos, state.with(ModProperties.CATALYZED, true));
-        Direction direction = VerdantVineSnareBlock.getDirection(state);
+        Direction direction = state.get(Properties.FACING);
         Int3 dir = new Int3(direction.getOffsetX(), direction.getOffsetY(), direction.getOffsetZ());
         VerdantSpores.getInstance()
                 .spawnSporeGrowth(world, pos.toCenterPos(), RECATALYZE_VALUE, waterAmount, false,

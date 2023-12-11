@@ -10,9 +10,6 @@ import io.github.drakonkinst.worldsinger.util.ModConstants;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.WallMountedBlock;
-import net.minecraft.block.enums.BlockFace;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
@@ -298,22 +295,11 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     private void placeSnare(BlockPos pos, Direction direction) {
-        BlockFace blockFace = BlockFace.WALL;
-
-        if (direction == Direction.UP) {
-            direction = Direction.NORTH;
-            blockFace = BlockFace.FLOOR;
-        } else if (direction == Direction.DOWN) {
-            direction = Direction.NORTH;
-            blockFace = BlockFace.CEILING;
-        }
-
         boolean shouldDrainWater = this.shouldDrainWater();
         int fluidloggedIndex = Fluidlogged.getFluidIndex(
                 this.getWorld().getFluidState(pos).getFluid());
         BlockState state = ModBlocks.VERDANT_VINE_SNARE.getDefaultState()
-                .with(HorizontalFacingBlock.FACING, direction)
-                .with(WallMountedBlock.FACE, blockFace)
+                .with(Properties.FACING, direction)
                 .with(ModProperties.CATALYZED, shouldDrainWater)
                 .with(ModProperties.FLUIDLOGGED, fluidloggedIndex);
 

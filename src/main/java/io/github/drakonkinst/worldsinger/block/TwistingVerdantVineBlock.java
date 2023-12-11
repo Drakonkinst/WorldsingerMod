@@ -33,7 +33,7 @@ public class TwistingVerdantVineBlock extends AbstractVerticalGrowthBudBlock imp
         }
         // Can attach to a snare block if direction matches
         if (attachCandidate.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
-            return VerdantVineSnareBlock.getDirection(attachCandidate)
+            return attachCandidate.get(Properties.FACING)
                     == AbstractVerticalGrowthComponentBlock.getGrowthDirection(state);
         }
         return false;

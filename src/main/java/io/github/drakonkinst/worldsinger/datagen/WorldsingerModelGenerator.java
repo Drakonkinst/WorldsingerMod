@@ -70,8 +70,10 @@ public class WorldsingerModelGenerator extends FabricModelProvider {
         registerLeveledCauldron(blockStateModelGenerator, ModBlocks.MIDNIGHT_SPORE_CAULDRON,
                 ModBlocks.MIDNIGHT_SPORE_BLOCK);
 
-        registerCrimsonSpines(blockStateModelGenerator, ModBlocks.CRIMSON_SPINES);
-        registerCrimsonSpines(blockStateModelGenerator, ModBlocks.DEAD_CRIMSON_SPINES);
+        registerUpFacingCrossBlock(blockStateModelGenerator, ModBlocks.CRIMSON_SPINES);
+        registerUpFacingCrossBlock(blockStateModelGenerator, ModBlocks.DEAD_CRIMSON_SPINES);
+        registerUpFacingCrossBlock(blockStateModelGenerator, ModBlocks.VERDANT_VINE_SNARE);
+        registerUpFacingCrossBlock(blockStateModelGenerator, ModBlocks.DEAD_VERDANT_VINE_SNARE);
 
         blockStateModelGenerator.registerAnvil(ModBlocks.STEEL_ANVIL);
         blockStateModelGenerator.registerAnvil(ModBlocks.CHIPPED_STEEL_ANVIL);
@@ -121,7 +123,7 @@ public class WorldsingerModelGenerator extends FabricModelProvider {
         }
     }
 
-    private void registerCrimsonSpines(BlockStateModelGenerator blockStateModelGenerator,
+    private void registerUpFacingCrossBlock(BlockStateModelGenerator blockStateModelGenerator,
             Block block) {
         blockStateModelGenerator.registerItemModel(block);
         blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(block,

@@ -104,8 +104,7 @@ public class CrimsonSpinesBlock extends Block implements Waterloggable, SporeGro
         Direction direction = state.get(Properties.FACING);
         BlockPos attachPos = pos.offset(direction.getOpposite());
         BlockState attachState = world.getBlockState(attachPos);
-        return attachState.isSideSolidFullSquare(world, attachPos, direction) || attachState.isOf(
-                ModBlocks.CRIMSON_SPINES);
+        return attachState.isSideSolidFullSquare(world, attachPos, direction);
     }
 
     @Override

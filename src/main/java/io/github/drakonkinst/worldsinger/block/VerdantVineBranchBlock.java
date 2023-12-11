@@ -49,7 +49,7 @@ public class VerdantVineBranchBlock extends ConnectingBlock implements Waterlogg
 
         // Can connect to snare only if supporting it
         if (state.isIn(ModBlockTags.VERDANT_VINE_SNARE)) {
-            Direction attachDirection = VerdantVineSnareBlock.getDirection(state).getOpposite();
+            Direction attachDirection = state.get(Properties.FACING).getOpposite();
             return attachDirection == direction;
         }
 
