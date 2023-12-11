@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "worldsinger:block/roseite_block",
-    "side": "worldsinger:block/roseite_block",
-    "top": "worldsinger:block/roseite_block"
-  }
-}
