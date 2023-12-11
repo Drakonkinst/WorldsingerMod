@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.block.SporeEmitting;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleManager;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SunlightSpores;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.ZephyrSpores;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
@@ -51,6 +52,13 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
                 entity.setOnFireFor(15);
             }
             entity.setFireTicks(entity.getFireTicks() + 1);
+        }
+
+        if (sporeType.getId() == ZephyrSpores.ID) {
+            // Refill air
+            if (entity.getAir() < entity.getMaxAir()) {
+                entity.setAir(entity.getMaxAir());
+            }
         }
 
         boolean wasDamaged = entity.damage(

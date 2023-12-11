@@ -112,6 +112,11 @@ public class ZephyrSpores extends AetherSpores {
                         DAMAGE_AMOUNT);
             }
 
+            // Refill air
+            if (entity.getAir() < entity.getMaxAir()) {
+                entity.setAir(entity.getMaxAir());
+            }
+
             double distanceMultiplier = Math.sqrt(sqrDistance) / radius;
             double forceX = entity.getX() - centerPos.getX();
             double forceY = entity.getY() - centerPos.getY();

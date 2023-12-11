@@ -102,14 +102,14 @@ public class RoseiteStairsBlock extends StairsBlock implements SporeGrowthBlock,
     }
 
     @Override
-    public boolean canReactToWater(BlockPos pos, BlockState state) {
+    public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
+            Random random) {
         // TODO
         return false;
     }
 
     @Override
-    public boolean reactToWater(World world, BlockPos pos, BlockState state, int waterAmount,
-            Random random) {
+    public boolean canReactToWater(BlockPos pos, BlockState state) {
         return !state.get(ModProperties.CATALYZED);
     }
 
