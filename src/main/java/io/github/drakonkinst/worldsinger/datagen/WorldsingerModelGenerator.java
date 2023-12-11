@@ -5,9 +5,16 @@ import io.github.drakonkinst.worldsinger.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
+import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.data.client.BlockStateModelGenerator;
+import net.minecraft.data.client.BlockStateModelGenerator.TintType;
+import net.minecraft.data.client.BlockStateVariant;
+import net.minecraft.data.client.BlockStateVariantMap;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Models;
+import net.minecraft.data.client.TextureMap;
+import net.minecraft.data.client.VariantSettings;
+import net.minecraft.data.client.VariantsBlockStateSupplier;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemConvertible;
 
@@ -21,6 +28,8 @@ public class WorldsingerModelGenerator extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
+        generateBlockStatesOnly(blockStateModelGenerator);
+
         registerSimpleCubeBlocks(blockStateModelGenerator, new Block[] {
                 ModBlocks.CRIMSON_GROWTH,
                 ModBlocks.DEAD_CRIMSON_GROWTH,
@@ -41,10 +50,61 @@ public class WorldsingerModelGenerator extends FabricModelProvider {
                 ModBlocks.VERDANT_SPORE_BLOCK,
                 ModBlocks.ZEPHYR_SPORE_BLOCK
         });
+
+        registerSimpleCrossBlocks(blockStateModelGenerator, new Block[] {
+                ModBlocks.CRIMSON_SNARE, ModBlocks.DEAD_CRIMSON_SNARE
+        });
+
+        registerLeveledCauldron(blockStateModelGenerator, ModBlocks.DEAD_SPORE_CAULDRON,
+                ModBlocks.DEAD_SPORE_BLOCK);
+        registerLeveledCauldron(blockStateModelGenerator, ModBlocks.VERDANT_SPORE_CAULDRON,
+                ModBlocks.VERDANT_SPORE_BLOCK);
+        registerLeveledCauldron(blockStateModelGenerator, ModBlocks.CRIMSON_SPORE_CAULDRON,
+                ModBlocks.CRIMSON_SPORE_BLOCK);
+        registerLeveledCauldron(blockStateModelGenerator, ModBlocks.ZEPHYR_SPORE_CAULDRON,
+                ModBlocks.ZEPHYR_SPORE_BLOCK);
+        registerLeveledCauldron(blockStateModelGenerator, ModBlocks.SUNLIGHT_SPORE_CAULDRON,
+                ModBlocks.SUNLIGHT_SPORE_BLOCK);
+        registerLeveledCauldron(blockStateModelGenerator, ModBlocks.ROSEITE_SPORE_CAULDRON,
+                ModBlocks.ROSEITE_SPORE_BLOCK);
+        registerLeveledCauldron(blockStateModelGenerator, ModBlocks.MIDNIGHT_SPORE_CAULDRON,
+                ModBlocks.MIDNIGHT_SPORE_BLOCK);
+
+        registerCrimsonSpines(blockStateModelGenerator, ModBlocks.CRIMSON_SPINES);
+        registerCrimsonSpines(blockStateModelGenerator, ModBlocks.DEAD_CRIMSON_SPINES);
+
+        blockStateModelGenerator.registerAnvil(ModBlocks.STEEL_ANVIL);
+        blockStateModelGenerator.registerAnvil(ModBlocks.CHIPPED_STEEL_ANVIL);
+        blockStateModelGenerator.registerAnvil(ModBlocks.DAMAGED_STEEL_ANVIL);
+
+        // Currently uses the same blockstates and models as Amethyst, just with different textures.
+        // Item model must be written by hand
+        blockStateModelGenerator.registerAmethyst(ModBlocks.ROSEITE_CLUSTER);
+        blockStateModelGenerator.registerAmethyst(ModBlocks.LARGE_ROSEITE_BUD);
+        blockStateModelGenerator.registerAmethyst(ModBlocks.MEDIUM_ROSEITE_BUD);
+        blockStateModelGenerator.registerAmethyst(ModBlocks.SMALL_ROSEITE_BUD);
+
+        blockStateModelGenerator.registerDoubleBlock(ModBlocks.TALL_CRIMSON_SPINES,
+                TintType.NOT_TINTED);
+        blockStateModelGenerator.registerDoubleBlock(ModBlocks.DEAD_TALL_CRIMSON_SPINES,
+                TintType.NOT_TINTED);
+
         BlockStateModelGenerator.BlockTexturePool roseiteTexturePool = blockStateModelGenerator.registerCubeAllModelTexturePool(
                 ModBlocks.ROSEITE_BLOCK);
         roseiteTexturePool.stairs(ModBlocks.ROSEITE_STAIRS);
         roseiteTexturePool.slab(ModBlocks.ROSEITE_SLAB);
+    }
+
+    private void generateBlockStatesOnly(BlockStateModelGenerator blockStateModelGenerator) {
+        // registerSimpleState() generates ONLY the blockstate file, nothing else
+        blockStateModelGenerator.registerSimpleState(ModBlocks.DEAD_SPORE_SEA);
+        blockStateModelGenerator.registerSimpleState(ModBlocks.VERDANT_SPORE_SEA);
+        blockStateModelGenerator.registerSimpleState(ModBlocks.CRIMSON_SPORE_SEA);
+        blockStateModelGenerator.registerSimpleState(ModBlocks.ZEPHYR_SPORE_SEA);
+        blockStateModelGenerator.registerSimpleState(ModBlocks.SUNLIGHT_SPORE_SEA);
+        blockStateModelGenerator.registerSimpleState(ModBlocks.ROSEITE_SPORE_SEA);
+        blockStateModelGenerator.registerSimpleState(ModBlocks.MIDNIGHT_SPORE_SEA);
+        blockStateModelGenerator.registerSimpleState(ModBlocks.SUNLIGHT);
     }
 
     private void registerSimpleCubeBlocks(BlockStateModelGenerator blockStateModelGenerator,
@@ -54,16 +114,55 @@ public class WorldsingerModelGenerator extends FabricModelProvider {
         }
     }
 
+    private void registerSimpleCrossBlocks(BlockStateModelGenerator blockStateModelGenerator,
+            Block[] blocks) {
+        for (Block block : blocks) {
+            blockStateModelGenerator.registerTintableCross(block, TintType.NOT_TINTED);
+        }
+    }
+
+    private void registerCrimsonSpines(BlockStateModelGenerator blockStateModelGenerator,
+            Block block) {
+        blockStateModelGenerator.registerItemModel(block);
+        blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(block,
+                        BlockStateVariant.create()
+                                .put(VariantSettings.MODEL,
+                                        Models.CROSS.upload(block, TextureMap.cross(block),
+                                                blockStateModelGenerator.modelCollector)))
+                .coordinate(blockStateModelGenerator.createUpDefaultFacingVariantMap()));
+    }
+
+    private void registerLeveledCauldron(BlockStateModelGenerator blockStateModelGenerator,
+            Block cauldronBlock, Block contentBlock) {
+        blockStateModelGenerator.blockStateCollector.accept(
+                VariantsBlockStateSupplier.create(cauldronBlock)
+                        .coordinate(BlockStateVariantMap.create(LeveledCauldronBlock.LEVEL)
+                                .register(1, BlockStateVariant.create()
+                                        .put(VariantSettings.MODEL,
+                                                Models.TEMPLATE_CAULDRON_LEVEL1.upload(
+                                                        cauldronBlock, "_level1",
+                                                        TextureMap.cauldron(
+                                                                TextureMap.getId(contentBlock)),
+                                                        blockStateModelGenerator.modelCollector)))
+                                .register(2, BlockStateVariant.create()
+                                        .put(VariantSettings.MODEL,
+                                                Models.TEMPLATE_CAULDRON_LEVEL2.upload(
+                                                        cauldronBlock, "_level2",
+                                                        TextureMap.cauldron(
+                                                                TextureMap.getId(contentBlock)),
+                                                        blockStateModelGenerator.modelCollector)))
+                                .register(3, BlockStateVariant.create()
+                                        .put(VariantSettings.MODEL,
+                                                Models.TEMPLATE_CAULDRON_FULL.upload(cauldronBlock,
+                                                        "_full", TextureMap.cauldron(
+                                                                TextureMap.getId(contentBlock)),
+                                                        blockStateModelGenerator.modelCollector)))));
+    }
+
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
         registerGeneratedItems(itemModelGenerator, new ItemConvertible[] {
                 // Can't do blocks because their path leads to block textures.
-                // ModBlocks.CRIMSON_SNARE,
-                // ModBlocks.DEAD_CRIMSON_SNARE,
-                // ModBlocks.CRIMSON_SPINES,
-                // ModBlocks.DEAD_CRIMSON_SPINES,
-                // ModBlocks.TALL_CRIMSON_SPINES,
-                // ModBlocks.DEAD_TALL_CRIMSON_SPINES,
                 // ModBlocks.VERDANT_VINE_SNARE,
                 // ModBlocks.DEAD_VERDANT_VINE_SNARE,
                 // ModBlocks.TWISTING_VERDANT_VINES,

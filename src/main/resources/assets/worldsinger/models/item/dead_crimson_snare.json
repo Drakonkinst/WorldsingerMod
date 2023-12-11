@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "worldsinger:block/dead_crimson_snare"
-  }
-}

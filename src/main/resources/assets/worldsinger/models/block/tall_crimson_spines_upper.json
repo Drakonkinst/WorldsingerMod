@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cross",
-  "textures": {
-    "cross": "worldsinger:block/tall_crimson_spines_upper"
-  }
-}
