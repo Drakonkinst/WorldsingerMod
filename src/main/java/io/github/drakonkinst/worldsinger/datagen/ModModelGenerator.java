@@ -18,8 +18,7 @@ import net.minecraft.data.client.VariantsBlockStateSupplier;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemConvertible;
 
-// Datagen is very limited and only really works for the simplest items and blocks for now.
-// Still, it's worthwhile and saves some work.
+// Datagen is limited and does not work for the more complex items.
 public class ModModelGenerator extends FabricModelProvider {
 
     public ModModelGenerator(FabricDataOutput output) {
@@ -164,11 +163,6 @@ public class ModModelGenerator extends FabricModelProvider {
     @Override
     public void generateItemModels(ItemModelGenerator itemModelGenerator) {
         registerGeneratedItems(itemModelGenerator, new ItemConvertible[] {
-                // Can't do blocks because their path leads to block textures.
-                // ModBlocks.VERDANT_VINE_SNARE,
-                // ModBlocks.DEAD_VERDANT_VINE_SNARE,
-                // ModBlocks.TWISTING_VERDANT_VINES,
-                // ModBlocks.DEAD_TWISTING_VERDANT_VINES,
                 ModItems.VERDANT_VINE,
                 ModItems.CRUDE_IRON,
                 ModItems.RAW_SILVER,
@@ -186,7 +180,8 @@ public class ModModelGenerator extends FabricModelProvider {
                 ModItems.MIDNIGHT_SPORES_BUCKET,
                 ModItems.FLINT_AND_IRON,
                 ModItems.QUARTZ_AND_IRON,
-                ModItems.QUARTZ_AND_STEEL
+                ModItems.QUARTZ_AND_STEEL,
+                ModItems.ROSEITE_CRYSTAL
         });
         registerHandheldItems(itemModelGenerator, new ItemConvertible[] {
                 ModItems.CRIMSON_SPINE,
@@ -217,5 +212,4 @@ public class ModModelGenerator extends FabricModelProvider {
             itemModelGenerator.register(item.asItem(), Models.HANDHELD);
         }
     }
-
 }

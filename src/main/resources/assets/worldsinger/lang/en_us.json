@@ -19,16 +19,19 @@
   "death.attack.drown_spore.player": "%s drowned in spores while trying to escape %s",
   "entity.worldsinger.verdant_spore_growth": "Verdant Spore Growth",
   "entity.worldsinger.crimson_spore_growth": "Crimson Spore Growth",
+  "entity.worldsinger.roseite_spore_growth": "Roseite Spore Growth",
   "effect.worldsinger.verdant_spores": "Verdant Spores",
   "effect.worldsinger.crimson_spores": "Crimson Spores",
   "effect.worldsinger.zephyr_spores": "Zephyr Spores",
   "effect.worldsinger.sunlight_spores": "Sunlight Spores",
   "effect.worldsinger.roseite_spores": "Roseite Spores",
+  "effect.worldsinger.midnight_spores": "Midnight Spores",
   "itemGroup.worldsinger.worldsinger": "Worldsinger",
   "item.silver_lined": "Silver-Lined",
   "item.silver_durability": "Silver Durability: %s / %s",
   "item.worldsinger.verdant_vine": "Verdant Vine",
   "item.worldsinger.crimson_spine": "Crimson Spine",
+  "item.worldsinger.roseite_crystal": "Roseite Crystal",
   "item.worldsinger.dead_spores_bucket": "Bucket of Dead Spores",
   "item.worldsinger.verdant_spores_bucket": "Bucket of Verdant Spores",
   "item.worldsinger.crimson_spores_bucket": "Bucket of Crimson Spores",
@@ -105,6 +108,5 @@
   "block.worldsinger.steel_anvil": "Steel Anvil",
   "block.worldsinger.chipped_steel_anvil": "Chipped Steel Anvil",
   "block.worldsinger.damaged_steel_anvil": "Damaged Steel Anvil",
-  "block.worldsinger.magma_vent": "Magma Vent",
-  "block.worldsinger.sunlight": "Block of Sunlight"
+  "block.worldsinger.magma_vent": "Magma Vent"
 }

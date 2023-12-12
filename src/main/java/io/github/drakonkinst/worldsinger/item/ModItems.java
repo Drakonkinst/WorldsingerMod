@@ -99,6 +99,8 @@ public final class ModItems {
                     .hunger(1).saturationModifier(0.3f).snack().build())));
     public static final Item CRIMSON_SPINE = ModItems.register("crimson_spine",
             new Item(new FabricItemSettings()));
+    public static final Item ROSEITE_CRYSTAL = ModItems.register("roseite_crystal",
+            new Item(new FabricItemSettings()));
     public static final Item SALT = ModItems.register("salt", new Item(new FabricItemSettings()));
 
     // Silver
@@ -292,6 +294,7 @@ public final class ModItems {
             itemGroup.add(ModBlocks.LARGE_ROSEITE_BUD);
             itemGroup.add(ModBlocks.MEDIUM_ROSEITE_BUD);
             itemGroup.add(ModBlocks.SMALL_ROSEITE_BUD);
+            itemGroup.add(ModItems.ROSEITE_CRYSTAL);
         });
     }
 
