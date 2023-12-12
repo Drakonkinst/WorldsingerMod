@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "worldsinger:roseite_crystal"
+    }
+  },
+  "result": {
+    "item": "worldsinger:roseite_block"
+  }
+}

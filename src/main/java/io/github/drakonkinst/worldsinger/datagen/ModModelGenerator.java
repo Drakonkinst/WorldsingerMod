@@ -181,7 +181,8 @@ public class ModModelGenerator extends FabricModelProvider {
                 ModItems.FLINT_AND_IRON,
                 ModItems.QUARTZ_AND_IRON,
                 ModItems.QUARTZ_AND_STEEL,
-                ModItems.ROSEITE_CRYSTAL
+                ModItems.ROSEITE_CRYSTAL,
+                ModItems.ROSEITE_BEAD
         });
         registerHandheldItems(itemModelGenerator, new ItemConvertible[] {
                 ModItems.CRIMSON_SPINE,

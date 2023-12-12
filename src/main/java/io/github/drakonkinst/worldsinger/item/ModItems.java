@@ -101,6 +101,8 @@ public final class ModItems {
             new Item(new FabricItemSettings()));
     public static final Item ROSEITE_CRYSTAL = ModItems.register("roseite_crystal",
             new Item(new FabricItemSettings()));
+    public static final Item ROSEITE_BEAD = ModItems.register("roseite_bead",
+            new Item(new FabricItemSettings()));
     public static final Item SALT = ModItems.register("salt", new Item(new FabricItemSettings()));
 
     // Silver
@@ -295,6 +297,7 @@ public final class ModItems {
             itemGroup.add(ModBlocks.MEDIUM_ROSEITE_BUD);
             itemGroup.add(ModBlocks.SMALL_ROSEITE_BUD);
             itemGroup.add(ModItems.ROSEITE_CRYSTAL);
+            itemGroup.add(ModItems.ROSEITE_BEAD);
         });
     }
 
