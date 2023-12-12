@@ -99,6 +99,11 @@ public final class SporeParticleSpawner {
                 BLOCK_PARTICLE_COUNT, false);
     }
 
+    public static void spawnBrushParticles(ServerWorld world, AetherSpores sporeType,
+            BlockPos blockPos) {
+        SporeParticleSpawner.spawnBlockParticles(world, sporeType, blockPos, 1.0, 1.5);
+    }
+
     public static void spawnSplashPotionParticles(ServerWorld world, AetherSpores sporeType,
             Vec3d pos) {
         Vec3d centerPos = new Vec3d(pos.getX(), pos.getY() - SPLASH_POTION_HEIGHT * 0.5,

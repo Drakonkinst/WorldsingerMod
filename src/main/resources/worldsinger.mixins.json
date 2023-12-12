@@ -46,6 +46,7 @@
     "fluid.FlowableFluidMixin",
     "item.BlockItemMixin",
     "item.BoatItemMixin",
+    "item.BrushItemMixin",
     "item.BucketItemMixin",
     "item.GlassBottleItemMixin",
     "screen.AnvilScreenHandlerMixin",
