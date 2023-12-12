@@ -20,9 +20,9 @@ import net.minecraft.item.ItemConvertible;
 
 // Datagen is very limited and only really works for the simplest items and blocks for now.
 // Still, it's worthwhile and saves some work.
-public class WorldsingerModelGenerator extends FabricModelProvider {
+public class ModModelGenerator extends FabricModelProvider {
 
-    public WorldsingerModelGenerator(FabricDataOutput output) {
+    public ModModelGenerator(FabricDataOutput output) {
         super(output);
     }
 

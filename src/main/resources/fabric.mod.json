@@ -24,7 +24,7 @@
       "io.github.drakonkinst.worldsinger.component.ModComponents"
     ],
     "fabric-datagen": [
-      "io.github.drakonkinst.worldsinger.datagen.WorldsingerDataGenerator"
+      "io.github.drakonkinst.worldsinger.datagen.ModDataGenerator"
     ]
   },
   "mixins": [
