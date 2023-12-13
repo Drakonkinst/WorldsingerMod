@@ -22,9 +22,12 @@ repositories {
 }
 
 loom {
+    splitEnvironmentSourceSets()
+
     mods {
         "worldsinger" {
             sourceSet sourceSets.main
+            sourceSet sourceSets.client
         }
     }
 

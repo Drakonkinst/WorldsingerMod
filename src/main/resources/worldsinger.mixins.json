@@ -61,16 +61,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "client": [
-    "accessor.DimensionEffectsAccessor",
-    "client.BackgroundRendererMixin",
-    "client.BoatEntityRendererMixin",
-    "client.CameraMixin",
-    "client.FeatureRendererMixin",
-    "client.FluidRendererMixin",
-    "client.ItemColorsMixin",
-    "client.LivingEntityRendererMixin",
-    "client.WorldRendererMixin"
-  ]
+  }
 }

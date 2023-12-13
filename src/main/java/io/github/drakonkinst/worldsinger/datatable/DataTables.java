@@ -2,9 +2,6 @@ package io.github.drakonkinst.worldsinger.datatable;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import java.util.Optional;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -16,21 +13,7 @@ import net.minecraft.util.Identifier;
 
 public final class DataTables {
 
-    private static final Identifier DATA_TABLE_PACKET_ID = Worldsinger.id("data_table");
-
-    @Environment(EnvType.CLIENT)
-    public static void initializeClient() {
-        ClientPlayNetworking.registerGlobalReceiver(DATA_TABLE_PACKET_ID,
-                (client, handler, buf, responseSender) -> {
-                    if (DataTableRegistry.INSTANCE == null) {
-                        Worldsinger.LOGGER.error("DataTableRegistry is null on client side");
-                    }
-                    DataTableRegistry.INSTANCE.readPacket(buf);
-                    Worldsinger.LOGGER.info(
-                            "Loaded " + DataTableRegistry.INSTANCE.getDataTableIds().size()
-                                    + " data tables");
-                });
-    }
+    public static final Identifier DATA_TABLE_PACKET_ID = Worldsinger.id("data_table");
 
     public static void initialize() {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA)

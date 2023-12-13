@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(AbstractBlock.Settings.class)
 public abstract class AbstractBlockSettingsMixin implements CustomBlockOffsetterAccess {
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Shadow
     Optional<Offsetter> offsetter;
 

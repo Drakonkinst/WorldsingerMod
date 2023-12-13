@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "io.github.drakonkinst.worldsinger.mixin.client",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "BackgroundRendererMixin",
+    "BoatEntityRendererMixin",
+    "CameraMixin",
+    "FeatureRendererMixin",
+    "FluidRendererMixin",
+    "ItemColorsMixin",
+    "LivingEntityRendererMixin",
+    "WorldRendererMixin",
+    "accessor.DimensionEffectsAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -139,6 +139,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
+    @Unique
     private boolean canSwimUpwards(TagKey<Fluid> fluidTag, double swimHeight,
             FluidState fluidState) {
         double fluidHeight = this.getFluidHeight(fluidTag);
