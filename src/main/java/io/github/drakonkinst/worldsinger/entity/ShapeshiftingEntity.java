@@ -1,11 +1,16 @@
 package io.github.drakonkinst.worldsinger.entity;
 
-import io.github.drakonkinst.worldsinger.Worldsinger;
+import java.util.UUID;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -13,36 +18,93 @@ import org.jetbrains.annotations.Nullable;
 // Might reuse this code for other creatures that can shapeshift later.
 public abstract class ShapeshiftingEntity extends PathAwareEntity implements Shapeshifter {
 
-    protected LivingEntity identity;
+    protected static final TrackedData<NbtCompound> MORPH = DataTracker.registerData(
+            ShapeshiftingEntity.class, TrackedDataHandlerRegistry.NBT_COMPOUND);
+
+    public static final String MORPH_KEY = "Morph";
+
+    protected LivingEntity morph = null;
+    private boolean hasLoadedMorph = false;
 
     protected ShapeshiftingEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
     }
 
-    public void setIdentity(@Nullable LivingEntity identity) {
-        if (identity != null) {
-            Worldsinger.LOGGER.info("SETTING IDENTITY TO " + identity.getName().toString());
-        } else {
-            Worldsinger.LOGGER.info("CLEARING IDENTITY");
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (this.getWorld().isClient() && !hasLoadedMorph) {
+            hasLoadedMorph = true;
+            NbtCompound morphData = this.getMorphData();
+            if (morphData.isEmpty() && morph != null) {
+                this.updateMorph(null);
+            } else if (!morphData.isEmpty()) {
+                if (morph == null) {
+                    Shapeshifter.createEntityFromNbt(this, this.getMorphData());
+                } else {
+                    UUID uuid = morphData.getUuid(Entity.UUID_KEY);
+                    if (!morph.getUuid().equals(uuid)) {
+                        Shapeshifter.createEntityFromNbt(this, this.getMorphData());
+                    }
+                }
+            }
         }
-        this.identity = identity;
+
     }
 
-    public void updateIdentity(@Nullable LivingEntity identity) {
-        Worldsinger.LOGGER.info("B");
-        Worldsinger.LOGGER.info((this.getEyePos().subtract(this.getPos())).toString());
-        this.setIdentity(identity);
+    @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(MORPH, new NbtCompound());
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.put(MORPH_KEY, this.getMorphData());
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        this.setMorphData(nbt.getCompound(MORPH_KEY));
+    }
+
+    public void setMorph(@Nullable LivingEntity morph) {
+        this.morph = morph;
+    }
+
+    private void setMorphDataFromEntity(LivingEntity morph) {
+        NbtCompound nbtCompound = new NbtCompound();
+        if (morph != null) {
+            morph.saveSelfNbt(nbtCompound);
+        }
+        this.setMorphData(nbtCompound);
+    }
+
+    private void setMorphData(NbtCompound nbtCompound) {
+        this.dataTracker.set(MORPH, nbtCompound);
+    }
+
+    public NbtCompound getMorphData() {
+        return this.dataTracker.get(MORPH);
+    }
+
+    public void updateMorph(@Nullable LivingEntity morph) {
+        this.setMorph(morph);
         this.calculateDimensions();
 
         World world = this.getWorld();
         if (!world.isClient() && world instanceof ServerWorld serverWorld) {
-            Shapeshifter.sync(serverWorld, this);
+            this.setMorphDataFromEntity(morph);
+            Shapeshifter.syncToNearbyPlayers(serverWorld, this);
         }
     }
 
     @Nullable
-    public LivingEntity getIdentity() {
-        return identity;
+    public LivingEntity getMorph() {
+        return morph;
     }
 
     @Override
@@ -52,17 +114,17 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
 
     @Override
     public EntityDimensions getDimensions(EntityPose pose) {
-        if (identity == null) {
+        if (morph == null) {
             return super.getDimensions(pose);
         }
-        return identity.getDimensions(pose);
+        return morph.getDimensions(pose);
     }
 
     @Override
     public float getEyeHeight(EntityPose pose) {
-        if (identity == null) {
+        if (morph == null) {
             return super.getEyeHeight(pose);
         }
-        return identity.getEyeHeight(pose);
+        return morph.getEyeHeight(pose);
     }
 }

@@ -34,6 +34,7 @@
     "entity.FallingBlockEntityMixin",
     "entity.FlyingEntityMixin",
     "entity.ItemEntityMixin",
+    "entity.LivingEntityMidnightOverlayAccessMixin",
     "entity.LivingEntityMixin",
     "entity.MobEntityMixin",
     "entity.PersistentProjectileEntityMixin",
@@ -68,6 +69,7 @@
     "client.CameraMixin",
     "client.FluidRendererMixin",
     "client.ItemColorsMixin",
+    "client.LivingEntityRendererMixin",
     "client.WorldRendererMixin"
   ]
 }

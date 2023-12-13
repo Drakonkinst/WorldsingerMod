@@ -1,8 +1,8 @@
 package io.github.drakonkinst.worldsinger.entity;
 
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -30,20 +30,32 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
     public void tick() {
         super.tick();
 
-        if (age % TICK_INTERVAL == 0) {
-            Vec3d pos = this.getPos();
-            HostileEntity nearest = this.getWorld()
-                    .getClosestEntity(HostileEntity.class, TargetPredicate.DEFAULT, this,
-                            pos.getX(), pos.getY(), pos.getZ(),
-                            BoxUtil.createBoxAroundPos(pos.getX(), pos.getY(), pos.getZ(), 16.0));
-            if (nearest != null) {
-                Worldsinger.LOGGER.info(nearest.getName().toString());
-                HostileEntity copy = (HostileEntity) nearest.getType().create(this.getWorld());
-                this.updateIdentity(copy);
-            } else {
-                Worldsinger.LOGGER.info("NO MOB FOUND");
-                this.updateIdentity(null);
+        if (!this.getWorld().isClient()) {
+            // Morphs should only occur from server side
+            if (morph == null) {
+                if (age % TICK_INTERVAL == 0) {
+                    Vec3d pos = this.getPos();
+                    HostileEntity nearest = this.getWorld()
+                            .getClosestEntity(HostileEntity.class, TargetPredicate.DEFAULT, this,
+                                    pos.getX(), pos.getY(), pos.getZ(),
+                                    BoxUtil.createBoxAroundPos(pos.getX(), pos.getY(), pos.getZ(),
+                                            16.0));
+                    if (nearest != null) {
+                        HostileEntity copy = (HostileEntity) nearest.getType()
+                                .create(this.getWorld());
+                        if (copy != null) {
+                            ((MidnightOverlayAccess) copy).worldsinger$setMidnightOverlay(true);
+                        }
+                        this.updateMorph(copy);
+                    }
+                }
             }
         }
+
+    }
+
+    @Override
+    public void onMorphEntitySpawn(LivingEntity morph) {
+        ((MidnightOverlayAccess) morph).worldsinger$setMidnightOverlay(true);
     }
 }

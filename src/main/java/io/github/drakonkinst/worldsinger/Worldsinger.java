@@ -36,6 +36,7 @@ public class Worldsinger implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Initializing Worldsinger...");
 
+        // I'll figure out the proper order for these...one day
         DataTables.initialize();
         Fluidlogged.initialize();
 

@@ -29,14 +29,14 @@ public class MidnightCreatureEntityRenderer extends
     @Override
     public void render(MidnightCreatureEntity entity, float f, float g, MatrixStack matrixStack,
             VertexConsumerProvider vertexConsumerProvider, int i) {
-        LivingEntity identity = entity.getIdentity();
-        if (identity == null) {
+        LivingEntity morph = entity.getMorph();
+        if (morph == null) {
             super.render(entity, f, g, matrixStack, vertexConsumerProvider, i);
             return;
         }
-        EntityRenderer<? super LivingEntity> identityRenderer = MinecraftClient.getInstance()
+        EntityRenderer<? super LivingEntity> morphRenderer = MinecraftClient.getInstance()
                 .getEntityRenderDispatcher()
-                .getRenderer(identity);
-        identityRenderer.render(identity, f, g, matrixStack, vertexConsumerProvider, i);
+                .getRenderer(morph);
+        morphRenderer.render(morph, f, g, matrixStack, vertexConsumerProvider, i);
     }
 }
