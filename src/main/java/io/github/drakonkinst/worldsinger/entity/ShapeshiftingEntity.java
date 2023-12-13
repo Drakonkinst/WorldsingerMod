@@ -16,6 +16,9 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 // Might reuse this code for other creatures that can shapeshift later.
+// Note that even non-player entities might not extend this class; that's why it's important to use
+// the Shapeshifter interface where possible. This is just one example of how this can be saved
+// and loaded.
 public abstract class ShapeshiftingEntity extends PathAwareEntity implements Shapeshifter {
 
     protected static final TrackedData<NbtCompound> MORPH = DataTracker.registerData(
@@ -34,23 +37,27 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
     public void tick() {
         super.tick();
 
+        // When initially loaded on the client side, sync it with the data
         if (this.getWorld().isClient() && !hasLoadedMorph) {
+            checkMorphOnLoad();
             hasLoadedMorph = true;
-            NbtCompound morphData = this.getMorphData();
-            if (morphData.isEmpty() && morph != null) {
-                this.updateMorph(null);
-            } else if (!morphData.isEmpty()) {
-                if (morph == null) {
-                    Shapeshifter.createEntityFromNbt(this, this.getMorphData());
-                } else {
-                    UUID uuid = morphData.getUuid(Entity.UUID_KEY);
-                    if (!morph.getUuid().equals(uuid)) {
-                        Shapeshifter.createEntityFromNbt(this, this.getMorphData());
-                    }
+        }
+    }
+
+    private void checkMorphOnLoad() {
+        NbtCompound morphData = this.getMorphData();
+        if (morphData.isEmpty() && morph != null) {
+            this.updateMorph(null);
+        } else if (!morphData.isEmpty()) {
+            if (morph == null) {
+                Shapeshifter.createEntityFromNbt(this, morphData);
+            } else {
+                UUID uuid = morphData.getUuid(Entity.UUID_KEY);
+                if (!morph.getUuid().equals(uuid)) {
+                    Shapeshifter.createEntityFromNbt(this, morphData);
                 }
             }
         }
-
     }
 
     @Override
@@ -69,6 +76,7 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.setMorphData(nbt.getCompound(MORPH_KEY));
+        this.setMorphFromData();
     }
 
     public void setMorph(@Nullable LivingEntity morph) {
@@ -81,6 +89,11 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
             morph.saveSelfNbt(nbtCompound);
         }
         this.setMorphData(nbtCompound);
+    }
+
+    private void setMorphFromData() {
+        NbtCompound morphNbt = this.getMorphData();
+        Shapeshifter.createEntityFromNbt(this, morphNbt);
     }
 
     private void setMorphData(NbtCompound nbtCompound) {

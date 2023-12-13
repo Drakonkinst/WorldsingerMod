@@ -11,6 +11,7 @@ import net.minecraft.data.client.BlockStateModelGenerator.TintType;
 import net.minecraft.data.client.BlockStateVariant;
 import net.minecraft.data.client.BlockStateVariantMap;
 import net.minecraft.data.client.ItemModelGenerator;
+import net.minecraft.data.client.ModelIds;
 import net.minecraft.data.client.Models;
 import net.minecraft.data.client.TextureMap;
 import net.minecraft.data.client.VariantSettings;
@@ -28,6 +29,7 @@ public class ModModelGenerator extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
         generateBlockStatesOnly(blockStateModelGenerator);
+        generateItemModelsOnly(blockStateModelGenerator);
 
         registerSimpleCubeBlocks(blockStateModelGenerator, new Block[] {
                 ModBlocks.CRIMSON_GROWTH,
@@ -106,6 +108,11 @@ public class ModModelGenerator extends FabricModelProvider {
         blockStateModelGenerator.registerSimpleState(ModBlocks.ROSEITE_SPORE_SEA);
         blockStateModelGenerator.registerSimpleState(ModBlocks.MIDNIGHT_SPORE_SEA);
         blockStateModelGenerator.registerSimpleState(ModBlocks.SUNLIGHT);
+    }
+
+    private void generateItemModelsOnly(BlockStateModelGenerator blockStateModelGenerator) {
+        blockStateModelGenerator.registerParentedItemModel(ModItems.MIDNIGHT_CREATURE_SPAWN_EGG,
+                ModelIds.getMinecraftNamespacedItem("template_spawn_egg"));
     }
 
     private void registerSimpleCubeBlocks(BlockStateModelGenerator blockStateModelGenerator,

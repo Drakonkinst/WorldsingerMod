@@ -67,6 +67,7 @@
     "client.BackgroundRendererMixin",
     "client.BoatEntityRendererMixin",
     "client.CameraMixin",
+    "client.FeatureRendererMixin",
     "client.FluidRendererMixin",
     "client.ItemColorsMixin",
     "client.LivingEntityRendererMixin",
