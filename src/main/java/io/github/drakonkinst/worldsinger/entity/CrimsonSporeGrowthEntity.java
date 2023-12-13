@@ -128,7 +128,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     @Override
     protected BlockState getNextBlock() {
         BlockState state = null;
-        int stage = sporeGrowthData.getStage();
+        int stage = this.getStage();
         if (stage == 0) {
             state = ModBlocks.CRIMSON_GROWTH.getDefaultState();
         } else if (stage == 1) {
@@ -160,9 +160,9 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     @Override
     protected Int3 getNextDirection(boolean allowPassthrough) {
         this.updateTargetGrowthDirection();
-        if (sporeGrowthData.getStage() == 0) {
+        if (this.getStage() == 0) {
             return this.getNextDirectionForGrowthBlock(allowPassthrough);
-        } else if (sporeGrowthData.getStage() == 1) {
+        } else if (this.getStage() == 1) {
             return this.getNextDirectionForSpikeBlock(allowPassthrough);
         }
         return super.getNextDirection(allowPassthrough);
@@ -212,8 +212,8 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     protected boolean canGrowHere(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_GROW) || state.isIn(ModBlockTags.CRIMSON_SNARE)
                 || state.isIn(ModBlockTags.TALL_CRIMSON_SPINES) || state.isIn(
-                ModBlockTags.CRIMSON_SPINES) || (sporeGrowthData.getStage() == 0 && state.isIn(
-                ModBlockTags.CRIMSON_SPIKE)) || (sporeGrowthData.getStage() == 2 && state.isIn(
+                ModBlockTags.CRIMSON_SPINES) || (this.getStage() == 0 && state.isIn(
+                ModBlockTags.CRIMSON_SPIKE)) || (this.getStage() == 2 && state.isIn(
                 ModBlockTags.CRIMSON_SPIKE));
     }
 
@@ -224,12 +224,12 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected int getGrowthDelay() {
-        if (sporeGrowthData.isInitialGrowth()) {
+        if (this.isInitialGrowth()) {
             return -3;
         }
 
-        int water = sporeGrowthData.getWater();
-        int spores = sporeGrowthData.getSpores();
+        int water = this.getWater();
+        int spores = this.getSpores();
 
         if (water > spores) {
             return 3;
@@ -241,35 +241,32 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     private void updateStage() {
-        if (sporeGrowthData.getStage() == 0) {
-            if (sporeGrowthData.getWater() < NEXT_STAGE_WATER_THRESHOLD) {
-                sporeGrowthData.addStage(1);
-            } else if (sporeGrowthData.getSpores() < NEXT_STAGE_SPORE_THRESHOLD
-                    && random.nextInt(3) == 0) {
-                sporeGrowthData.addStage(1);
+        if (this.getStage() == 0) {
+            if (this.getWater() < NEXT_STAGE_WATER_THRESHOLD) {
+                this.addStage(1);
+            } else if (this.getSpores() < NEXT_STAGE_SPORE_THRESHOLD && random.nextInt(3) == 0) {
+                this.addStage(1);
             }
-        } else if (sporeGrowthData.getStage() == 2) {
+        } else if (this.getStage() == 2) {
             // Add one beyond the max, effectively killing it
-            sporeGrowthData.addStage(1);
+            this.addStage(1);
         }
 
         // Split branches
-        if (sporeGrowthData.getSpores() >= SPLIT_SPORE_MIN
-                && sporeGrowthData.getWater() >= SPLIT_WATER_MIN
-                && sporeGrowthData.getAge() < SPLIT_AGE_MAX) {
+        if (this.getSpores() >= SPLIT_SPORE_MIN && this.getWater() >= SPLIT_WATER_MIN
+                && age < SPLIT_AGE_MAX) {
             this.createSplitBranch();
         }
     }
 
     private void createSplitBranch() {
         float proportion = 0.25f + random.nextFloat() * 0.25f;
-        int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
-        int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
+        int numSpores = MathHelper.ceil(this.getSpores() * proportion);
+        int numWater = MathHelper.ceil(this.getWater() * proportion);
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
         CrimsonSpores.getInstance()
                 .spawnSporeGrowth(this.getWorld(), spawnPos, numSpores, numWater,
-                        sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true,
-                        Int3.UP);
+                        this.isInitialGrowth(), this.getStage() > 0, true, Int3.UP);
         this.drainSpores(numSpores);
         this.drainWater(numWater);
     }
@@ -365,13 +362,13 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
         float minDistanceSq = Float.MAX_VALUE;
         int minDistanceIndex = 0;
         World world = this.getWorld();
-        BlockPos origin = sporeGrowthData.getOrigin();
+        BlockPos originPos = this.getOrigin();
         BlockPos.Mutable candidatePos = new BlockPos.Mutable();
         for (int i = 0; i < directionCandidates.size(); ++i) {
             Int3 direction = directionCandidates.get(i);
             candidatePos.set(currPos.getX() + direction.x(), currPos.getY() + direction.y(),
                     currPos.getZ() + direction.z());
-            float distanceSq = this.getDistanceSqToTargetDir(origin, candidatePos);
+            float distanceSq = this.getDistanceSqToTargetDir(originPos, candidatePos);
             if (distanceSq < minDistanceSq) {
                 minDistanceSq = distanceSq;
                 minDistanceIndex = i;
@@ -400,7 +397,7 @@ public class CrimsonSporeGrowthEntity extends SporeGrowthEntity {
             return primaryDirection;
         } else {
             // If entity cannot go in primary direction, turn into a splinter by advancing the stage
-            sporeGrowthData.addStage(1);
+            this.addStage(1);
             return Int3.ZERO;
         }
     }

@@ -82,11 +82,11 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected int getGrowthDelay() {
-        if (sporeGrowthData.isInitialGrowth()) {
+        if (this.isInitialGrowth()) {
             return 2;
         }
-        int water = sporeGrowthData.getWater();
-        int spores = sporeGrowthData.getSpores();
+        int water = this.getWater();
+        int spores = this.getSpores();
 
         if (water > spores) {
             return 5;
@@ -309,7 +309,7 @@ public class RoseiteSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     private int getDistanceFromOrigin(BlockPos pos) {
-        return pos.getManhattanDistance(sporeGrowthData.getOrigin());
+        return pos.getManhattanDistance(this.getOrigin());
     }
 
     @Override

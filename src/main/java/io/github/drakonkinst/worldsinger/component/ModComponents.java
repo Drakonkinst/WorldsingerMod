@@ -10,8 +10,6 @@ import dev.onyxstudios.cca.api.v3.scoreboard.ScoreboardComponentInitializer;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.entity.SilverLinedBoatEntityData;
-import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntity;
-import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntityData;
 import net.minecraft.entity.vehicle.BoatEntity;
 
 @SuppressWarnings("UnqualifiedStaticUsage")
@@ -22,8 +20,6 @@ public final class ModComponents implements ScoreboardComponentInitializer,
             SeetheComponent.class);
     public static final ComponentKey<SilverLinedComponent> SILVER_LINED = register("silver_lined",
             SilverLinedComponent.class);
-    public static final ComponentKey<SporeGrowthComponent> SPORE_GROWTH = register("spore_growth",
-            SporeGrowthComponent.class);
 
     private static <T extends Component> ComponentKey<T> register(String id, Class<T> clazz) {
         return ComponentRegistry.getOrCreate(Worldsinger.id(id), clazz);
@@ -37,6 +33,5 @@ public final class ModComponents implements ScoreboardComponentInitializer,
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
         registry.registerFor(BoatEntity.class, SILVER_LINED, SilverLinedBoatEntityData::new);
-        registry.registerFor(SporeGrowthEntity.class, SPORE_GROWTH, SporeGrowthEntityData::new);
     }
 }

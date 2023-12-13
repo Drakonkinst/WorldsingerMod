@@ -1,8 +1,6 @@
 package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.component.ModComponents;
-import io.github.drakonkinst.worldsinger.component.SporeGrowthComponent;
 import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeGrowthMovement;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeKillingManager;
@@ -16,7 +14,8 @@ import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MarkerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
@@ -30,9 +29,17 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
 
-public abstract class SporeGrowthEntity extends MarkerEntity {
+public abstract class SporeGrowthEntity extends ServerSideEntity {
 
     protected static final Random random = Random.create();
+
+    private static final String WATER_REMAINING_KEY = "WaterRemaining";
+    private static final String SPORES_REMAINING_KEY = "SporesRemaining";
+    private static final String STAGE_KEY = "Stage";
+    private static final String ORIGIN_X_KEY = "OriginX";
+    private static final String ORIGIN_Y_KEY = "OriginY";
+    private static final String ORIGIN_Z_KEY = "OriginZ";
+    private static final String INITIAL_GROWTH_KEY = "InitialGrowth";
 
     private static final int DIRECTION_ARRAY_SIZE = 6;
     private static final int MAX_PLACE_ATTEMPTS = 3;
@@ -61,7 +68,14 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
     }
 
-    protected final SporeGrowthComponent sporeGrowthData;
+    // NBT data
+    private int waterRemaining;
+    private int sporesRemaining;
+    private short stage = 0;
+    private boolean isInitialGrowth;
+    private BlockPos origin;
+
+    // Volatile data
     private final Vector3d currentForceDir = new Vector3d();
     protected Int3 lastDir = Int3.ZERO;
     private int placeAttempts = 0;
@@ -70,7 +84,6 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
 
     public SporeGrowthEntity(EntityType<?> entityType, World world) {
         super(entityType, world);
-        this.sporeGrowthData = ModComponents.SPORE_GROWTH.get(this);
     }
 
     /* Spore-Specific Methods */
@@ -113,14 +126,41 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
     /* Internal Methods */
 
     @Override
+    protected void readCustomDataFromNbt(NbtCompound nbt) {
+        this.waterRemaining = nbt.getInt(WATER_REMAINING_KEY);
+        this.sporesRemaining = nbt.getInt(SPORES_REMAINING_KEY);
+        this.isInitialGrowth = nbt.getBoolean(INITIAL_GROWTH_KEY);
+        this.stage = nbt.getShort(STAGE_KEY);
+        if (nbt.contains(ORIGIN_X_KEY, NbtElement.INT_TYPE)) {
+            int x = nbt.getInt(ORIGIN_X_KEY);
+            int y = nbt.getInt(ORIGIN_Y_KEY);
+            int z = nbt.getInt(ORIGIN_Z_KEY);
+            this.origin = new BlockPos(x, y, z);
+        }
+    }
+
+    @Override
+    protected void writeCustomDataToNbt(NbtCompound nbt) {
+        nbt.putInt(WATER_REMAINING_KEY, this.waterRemaining);
+        nbt.putInt(SPORES_REMAINING_KEY, this.sporesRemaining);
+        nbt.putBoolean(INITIAL_GROWTH_KEY, this.isInitialGrowth);
+        nbt.putShort(STAGE_KEY, this.stage);
+        if (this.origin != null) {
+            nbt.putInt(ORIGIN_X_KEY, this.origin.getX());
+            nbt.putInt(ORIGIN_Y_KEY, this.origin.getY());
+            nbt.putInt(ORIGIN_Z_KEY, this.origin.getZ());
+        }
+    }
+
+    @Override
     public void tick() {
-        if (sporeGrowthData.getOrigin() == null) {
-            sporeGrowthData.setOrigin(this.getBlockPos());
+        if (this.getOrigin() == null) {
+            this.setOrigin(this.getBlockPos());
         }
 
         if (!this.getWorld().isClient()) {
             if (this.shouldBeDead()) {
-                if (sporeGrowthData.getSpores() > 0) {
+                if (this.getSpores() > 0) {
                     this.onEarlyDiscard();
                 }
                 this.discard();
@@ -147,7 +187,7 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         int growthDelay = this.getGrowthDelay();
         if (growthDelay > 0) {
             // Slower growths update once every few ticks
-            if ((sporeGrowthData.getAge() + this.getId()) % growthDelay == 0) {
+            if ((age + this.getId()) % growthDelay == 0) {
                 if (this.shouldRecalculateForces()) {
                     this.recalculateForces();
                 }
@@ -168,9 +208,8 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
     // Spore Growth Entities should die if past the maximum stage, if out of spores or water, if
     // maximum age is reached, and if it fails to place a block too many times in a row
     private boolean shouldBeDead() {
-        return sporeGrowthData.getStage() > this.getMaxStage() || sporeGrowthData.getSpores() <= 0
-                || sporeGrowthData.getAge() > MAX_AGE_TICKS || placeAttempts >= MAX_PLACE_ATTEMPTS
-                || sporeGrowthData.getWater() <= 0;
+        return this.getStage() > this.getMaxStage() || this.getSpores() <= 0 || age > MAX_AGE_TICKS
+                || placeAttempts >= MAX_PLACE_ATTEMPTS || this.getWater() <= 0;
     }
 
     // Calculates external forces like Steel and Iron
@@ -197,11 +236,10 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
         }
 
         // Absorb nearby water
-        if (sporeGrowthData.getWater() < sporeGrowthData.getSpores() && world.getFluidState(pos)
-                .isIn(FluidTags.WATER)) {
+        if (this.getWater() < this.getSpores() && world.getFluidState(pos).isIn(FluidTags.WATER)) {
             int waterAbsorbed = WaterReactionManager.absorbWaterAtBlock(world, pos);
             if (waterAbsorbed > 0) {
-                sporeGrowthData.setWater(sporeGrowthData.getWater() + waterAbsorbed);
+                this.setWater(this.getWater() + waterAbsorbed);
             }
         }
 
@@ -288,18 +326,27 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
 
     /* External Methods */
 
-    // Allows spore growth data to be set outside the entity
-    public void setSporeData(int spores, int water, boolean initialGrowth) {
-        sporeGrowthData.setSpores(spores);
-        sporeGrowthData.setWater(water);
-        sporeGrowthData.setInitialGrowth(initialGrowth);
+    public void setWater(int water) {
+        if (this.waterRemaining < Integer.MAX_VALUE) {
+            this.waterRemaining = Math.max(0, water);
+        }
+    }
+
+    public void setSpores(int spores) {
+        if (this.sporesRemaining < Integer.MAX_VALUE) {
+            this.sporesRemaining = Math.max(0, spores);
+        }
+    }
+
+    public void setInitialGrowth(boolean flag) {
+        this.isInitialGrowth = flag;
     }
 
     // Allows initial stage to be set outside the entity
     // Only works if entity has not progressed a stage yet
     public void setInitialStage(int stage) {
-        if (sporeGrowthData.getStage() == 0) {
-            sporeGrowthData.addStage(stage);
+        if (this.getStage() == 0) {
+            this.addStage(stage);
         }
     }
 
@@ -340,16 +387,26 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
     }
 
     protected void drainSpores(int cost) {
-        sporeGrowthData.setSpores(sporeGrowthData.getSpores() - cost);
+        this.setSpores(this.getSpores() - cost);
     }
 
     protected void drainWater(int cost) {
-        sporeGrowthData.setWater(sporeGrowthData.getWater() - cost);
+        this.setWater(this.getWater() - cost);
+    }
+
+    protected void addStage(int stageIncrement) {
+        if (stageIncrement > 0) {
+            this.stage += (short) stageIncrement;
+        }
+    }
+
+    protected void setOrigin(BlockPos pos) {
+        origin = pos;
     }
 
     protected boolean shouldDrainWater() {
-        int spores = sporeGrowthData.getSpores();
-        int water = sporeGrowthData.getWater();
+        int spores = this.getSpores();
+        int water = this.getWater();
         if (water >= spores) {
             return true;
         }
@@ -373,7 +430,7 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
     // that the block can be placed there.
     protected void attemptPlaceDecorators(int numIterations) {
         World world = this.getWorld();
-        if (sporeGrowthData.getSpores() <= 0 || random.nextInt(5) == 0) {
+        if (this.getSpores() <= 0 || random.nextInt(5) == 0) {
             return;
         }
 
@@ -430,7 +487,23 @@ public abstract class SporeGrowthEntity extends MarkerEntity {
 
     /* Getters */
 
-    public SporeGrowthComponent getSporeGrowthData() {
-        return sporeGrowthData;
+    public int getWater() {
+        return waterRemaining;
+    }
+
+    public int getSpores() {
+        return sporesRemaining;
+    }
+
+    public int getStage() {
+        return stage;
+    }
+
+    public boolean isInitialGrowth() {
+        return isInitialGrowth;
+    }
+
+    public BlockPos getOrigin() {
+        return origin;
     }
 }

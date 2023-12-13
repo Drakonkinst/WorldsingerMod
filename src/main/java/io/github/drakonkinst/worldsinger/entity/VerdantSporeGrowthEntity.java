@@ -45,10 +45,10 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
     @Override
     protected BlockState getNextBlock() {
         BlockState state = null;
-        if (sporeGrowthData.getStage() == 0) {
+        if (this.getStage() == 0) {
             state = ModBlocks.VERDANT_VINE_BLOCK.getDefaultState()
                     .with(Properties.AXIS, this.getPlacementAxis());
-        } else if (sporeGrowthData.getStage() == 1) {
+        } else if (this.getStage() == 1) {
             VerdantVineBranchBlock block = (VerdantVineBranchBlock) ModBlocks.VERDANT_VINE_BRANCH;
             state = block.withConnectionProperties(this.getWorld(), this.getBlockPos());
         }
@@ -107,9 +107,10 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
         weight += 30 * direction.y();
 
         // Prefers to go in the same direction away from the origin
-        int dirFromOriginX = Integer.signum(pos.getX() - sporeGrowthData.getOrigin().getX());
-        int dirFromOriginY = Integer.signum(pos.getY() - sporeGrowthData.getOrigin().getY());
-        int dirFromOriginZ = Integer.signum(pos.getZ() - sporeGrowthData.getOrigin().getZ());
+        BlockPos originPos = this.getOrigin();
+        int dirFromOriginX = Integer.signum(pos.getX() - originPos.getX());
+        int dirFromOriginY = Integer.signum(pos.getY() - originPos.getY());
+        int dirFromOriginZ = Integer.signum(pos.getZ() - originPos.getZ());
         if (direction.y() == dirFromOriginX || direction.y() == dirFromOriginY
                 || direction.z() == dirFromOriginZ) {
             weight += 50;
@@ -141,8 +142,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
     protected boolean canGrowHere(BlockState state) {
         return state.isIn(ModBlockTags.SPORES_CAN_GROW) || state.isIn(
                 ModBlockTags.VERDANT_VINE_SNARE) || state.isIn(ModBlockTags.TWISTING_VERDANT_VINES)
-                || (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH)
-                && sporeGrowthData.getStage() == 0);
+                || (state.isIn(ModBlockTags.VERDANT_VINE_BRANCH) && this.getStage() == 0);
     }
 
     @Override
@@ -160,8 +160,8 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
             BlockState state = world.getBlockState(mutable);
             if (state.isIn(ModBlockTags.ALL_VERDANT_GROWTH)) {
                 // Prefer NOT to be adjacent to too many other of the same block
-                if (sporeGrowthData.getStage() == 0 && state.isIn(ModBlockTags.VERDANT_VINE_BLOCK)
-                        && sporeGrowthData.getSpores() > SPORE_BRANCH_THICK_THRESHOLD) {
+                if (this.getStage() == 0 && state.isIn(ModBlockTags.VERDANT_VINE_BLOCK)
+                        && this.getSpores() > SPORE_BRANCH_THICK_THRESHOLD) {
                     // Allow thick branches
                     continue;
                 }
@@ -185,37 +185,35 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
     }
 
     private int getDistanceFromOrigin(BlockPos pos) {
-        return pos.getManhattanDistance(sporeGrowthData.getOrigin());
+        return pos.getManhattanDistance(this.getOrigin());
     }
 
     private void updateStage() {
-        if (sporeGrowthData.getStage() == 0) {
+        if (this.getStage() == 0) {
             // Advance stage if low on water
-            if (sporeGrowthData.getWater() <= SPORE_WATER_THRESHOLD) {
-                sporeGrowthData.addStage(1);
-            } else if (sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MIN || (
-                    sporeGrowthData.getSpores() <= SPORE_BRANCH_THRESHOLD_MAX
-                            && random.nextInt(5) == 0)) {
+            if (this.getWater() <= SPORE_WATER_THRESHOLD) {
+                this.addStage(1);
+            } else if (this.getSpores() <= SPORE_BRANCH_THRESHOLD_MIN || (
+                    this.getSpores() <= SPORE_BRANCH_THRESHOLD_MAX && random.nextInt(5) == 0)) {
                 // Chance to advance stage if low on spores
-                sporeGrowthData.addStage(1);
+                this.addStage(1);
             }
         }
 
-        if (sporeGrowthData.getSpores() >= SPORE_SPLIT_MIN
-                && sporeGrowthData.getWater() >= WATER_SPLIT_MIN && random.nextInt(10) == 0) {
+        if (this.getSpores() >= SPORE_SPLIT_MIN && this.getWater() >= WATER_SPLIT_MIN
+                && random.nextInt(10) == 0) {
             this.createSplitBranch();
         }
     }
 
     private void createSplitBranch() {
         float proportion = 0.25f + random.nextFloat() * 0.25f;
-        int numSpores = MathHelper.ceil(sporeGrowthData.getSpores() * proportion);
-        int numWater = MathHelper.ceil(sporeGrowthData.getWater() * proportion);
+        int numSpores = MathHelper.ceil(this.getSpores() * proportion);
+        int numWater = MathHelper.ceil(this.getWater() * proportion);
         Vec3d spawnPos = this.getBlockPos().toCenterPos();
         VerdantSpores.getInstance()
                 .spawnSporeGrowth(this.getWorld(), spawnPos, numSpores, numWater,
-                        sporeGrowthData.isInitialGrowth(), sporeGrowthData.getStage() > 0, true,
-                        Int3.ZERO);
+                        this.isInitialGrowth(), this.getStage() > 0, true, Int3.ZERO);
         this.drainSpores(numSpores);
         this.drainWater(numWater);
     }
@@ -239,12 +237,12 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
 
     @Override
     protected int getGrowthDelay() {
-        if (sporeGrowthData.isInitialGrowth()) {
+        if (this.isInitialGrowth()) {
             return -3;
         }
 
-        int water = sporeGrowthData.getWater();
-        int spores = sporeGrowthData.getSpores();
+        int water = this.getWater();
+        int spores = this.getSpores();
 
         if (water > spores) {
             return 5;
@@ -288,7 +286,7 @@ public class VerdantSporeGrowthEntity extends SporeGrowthEntity {
             return;
         }
         BlockPos nextPos = pos.offset(direction);
-        if (sporeGrowthData.getSpores() > 0 && this.canPlaceDecorator(world.getBlockState(nextPos))
+        if (this.getSpores() > 0 && this.canPlaceDecorator(world.getBlockState(nextPos))
                 && random.nextInt(5) > 0) {
             this.placeTwistingVineChain(nextPos, direction, depth + 1);
         }

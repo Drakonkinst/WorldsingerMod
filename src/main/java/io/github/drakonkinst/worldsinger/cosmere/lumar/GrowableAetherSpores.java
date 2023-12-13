@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
-import io.github.drakonkinst.worldsinger.component.SporeGrowthComponent;
 import io.github.drakonkinst.worldsinger.entity.SporeGrowthEntity;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
@@ -46,7 +45,9 @@ public abstract class GrowableAetherSpores<T extends SporeGrowthEntity> extends 
             return;
         }
         entity.setPosition(pos);
-        entity.setSporeData(spores, water, initialGrowth);
+        entity.setSpores(spores);
+        entity.setWater(water);
+        entity.setInitialGrowth(initialGrowth);
         entity.setLastDir(lastDir);
         if (isSmall) {
             entity.setInitialStage(this.getSmallStage());
@@ -59,19 +60,15 @@ public abstract class GrowableAetherSpores<T extends SporeGrowthEntity> extends 
             boolean isInitial, boolean isSmall) {
         Box box = BoxUtil.createBoxAroundPos(pos, COMBINE_GROWTH_MAX_RADIUS);
         List<T> nearbySporeGrowthEntities = world.getEntitiesByClass(sporeGrowthEntityTypeClass,
-                box, sporeGrowthEntity -> {
-                    SporeGrowthComponent sporeGrowthData = sporeGrowthEntity.getSporeGrowthData();
-                    return sporeGrowthData.getAge() == 0
-                            && sporeGrowthData.isInitialGrowth() == isInitial
-                            && (sporeGrowthData.getStage() == 1) == isSmall;
-                });
+                box, sporeGrowthEntity -> sporeGrowthEntity.age == 0
+                        && sporeGrowthEntity.isInitialGrowth() == isInitial
+                        && (sporeGrowthEntity.getStage() == 1) == isSmall);
         if (nearbySporeGrowthEntities.isEmpty()) {
             return false;
         }
         T existingSporeGrowthEntity = nearbySporeGrowthEntities.get(0);
-        SporeGrowthComponent sporeGrowthData = existingSporeGrowthEntity.getSporeGrowthData();
-        sporeGrowthData.setSpores(sporeGrowthData.getSpores() + spores);
-        sporeGrowthData.setWater(sporeGrowthData.getWater() + water);
+        existingSporeGrowthEntity.setSpores(existingSporeGrowthEntity.getSpores() + spores);
+        existingSporeGrowthEntity.setWater(existingSporeGrowthEntity.getWater() + water);
         return true;
     }
 
