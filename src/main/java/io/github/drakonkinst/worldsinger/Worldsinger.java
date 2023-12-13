@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.ModCauldronBehaviors;
 import io.github.drakonkinst.worldsinger.command.ModCommands;
 import io.github.drakonkinst.worldsinger.datatable.DataTables;
+import io.github.drakonkinst.worldsinger.entity.ModAttributeRegistry;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
@@ -45,6 +46,7 @@ public class Worldsinger implements ModInitializer {
         ModBlocks.initialize();
         ModItems.initialize();
         ModEntityTypes.initialize();
+        ModAttributeRegistry.initialize();
         ModCommands.initialize();
         ModPotions.register();
         ModCauldronBehaviors.register();

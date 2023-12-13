@@ -52,6 +52,11 @@ public final class ModEntityTypes {
                     .trackRangeChunks(4)
                     .trackedUpdateRate(10)
                     .build());
+    public static final EntityType<MidnightCreatureEntity> MIDNIGHT_CREATURE = register(
+            "midnight_creature",
+            FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, MidnightCreatureEntity::new)
+                    .dimensions(EntityDimensions.changing(1.0f, 1.0f))
+                    .build());
 
     public static void initialize() {
         // Overwrite chicken spawn restriction
@@ -75,7 +80,6 @@ public final class ModEntityTypes {
                     && world.getBaseLightLevel(pos, 0) > 8;
         }
         return AnimalEntity.isValidNaturalSpawn(type, world, spawnReason, pos, random);
-
     }
 
     private static <T extends Entity> EntityType<T> register(String id, EntityType<T> entityType) {
