@@ -12,6 +12,8 @@
     "accessor.FlowableFluidInvoker",
     "accessor.FluidBlockAccessor",
     "accessor.LandPathNodeMakerInvoker",
+    "accessor.LimbAnimatorAccessor",
+    "accessor.LivingEntityAccessor",
     "accessor.SpawnRestrictionAccessor",
     "block.AbstractBlockSettingsMixin",
     "block.AbstractBlockStateMixin",

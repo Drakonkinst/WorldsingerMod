@@ -1,15 +1,12 @@
 package io.github.drakonkinst.worldsinger.mixin.client;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.drakonkinst.worldsinger.entity.MidnightOverlayAccess;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import io.github.drakonkinst.worldsinger.entity.render.MidnightCreatureEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory.Context;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,19 +19,17 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
         super(ctx);
     }
 
-    @WrapOperation(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/model/EntityModel;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;IIFFFF)V"))
-    private void renderModelWithMidnightOverlay(M instance, MatrixStack matrices,
-            VertexConsumer vertices, int light, int overlay, float red, float green, float blue,
-            float alpha, Operation<Void> original, T livingEntity, float f, float g,
-            MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        boolean hasMidnightOverlay = ((MidnightOverlayAccess) livingEntity).worldsinger$hasMidnightOverlay();
+    @ModifyReturnValue(method = "getOverlay", at = @At("RETURN"))
+    private static int renderModelWithMidnightOverlay(int original, LivingEntity entity,
+            float whiteOverlayProgress) {
+        boolean hasMidnightOverlay = ((MidnightOverlayAccess) entity).worldsinger$hasMidnightOverlay();
         if (hasMidnightOverlay) {
-            original.call(instance, matrices, vertices, light, overlay,
-                    MidnightOverlayAccess.DARKNESS_MULTIPLIER,
-                    MidnightOverlayAccess.DARKNESS_MULTIPLIER,
-                    MidnightOverlayAccess.DARKNESS_MULTIPLIER, alpha);
-        } else {
-            original.call(instance, matrices, vertices, light, overlay, red, green, blue, alpha);
+            boolean shouldFlashRed = entity.hurtTime > 0 || entity.deathTime > 0;
+            if (shouldFlashRed) {
+                return MidnightCreatureEntityRenderer.MIDNIGHT_OVERLAY_HURT_UV;
+            }
+            return MidnightCreatureEntityRenderer.MIDNIGHT_OVERLAY_UV;
         }
+        return original;
     }
 }

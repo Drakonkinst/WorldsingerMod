@@ -6,10 +6,10 @@
     "BackgroundRendererMixin",
     "BoatEntityRendererMixin",
     "CameraMixin",
-    "FeatureRendererMixin",
     "FluidRendererMixin",
     "ItemColorsMixin",
     "LivingEntityRendererMixin",
+    "OverlayTextureMixin",
     "WorldRendererMixin",
     "accessor.DimensionEffectsAccessor"
   ],

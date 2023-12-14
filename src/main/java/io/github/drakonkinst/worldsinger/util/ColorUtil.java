@@ -19,5 +19,12 @@ public final class ColorUtil {
         return blue / MAX_COLOR_VALUE;
     }
 
+    // Packs a color in ABGR format
+    // Colors should be 0-255
+    public static int colorToInt(int red, int green, int blue, int alpha) {
+        alpha = 255 - alpha;
+        return (alpha << 24) + (blue << 16) + (green << 8) + red;
+    }
+
     private ColorUtil() {}
 }

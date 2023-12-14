@@ -70,6 +70,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
 
     @Override
     public void onMorphEntitySpawn(LivingEntity morph) {
+        super.onMorphEntitySpawn(morph);
         ((MidnightOverlayAccess) morph).worldsinger$setMidnightOverlay(true);
     }
 

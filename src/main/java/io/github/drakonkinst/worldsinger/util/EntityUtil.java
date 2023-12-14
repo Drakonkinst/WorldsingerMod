@@ -17,7 +17,7 @@ public final class EntityUtil {
     }
 
     private static boolean notFirstUpdate(Entity entity) {
-        return !((EntityAccessor) entity).isFirstUpdate();
+        return !((EntityAccessor) entity).worldsinger$isFirstUpdate();
     }
 
     public static boolean isSubmergedInSporeSea(Entity entity) {
