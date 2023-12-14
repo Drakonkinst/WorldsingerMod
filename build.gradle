@@ -51,13 +51,13 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    include(implementation('com.github.Chocohead:Fabric-ASM:v2.3'))
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:$cardinalComponentsVersion"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:$cardinalComponentsVersion"
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:$cardinalComponentsVersion"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:$cardinalComponentsVersion"
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-scoreboard:$cardinalComponentsVersion"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-scoreboard:$cardinalComponentsVersion"
+    include(implementation("com.github.Chocohead:Fabric-ASM:${fabric_asm_version}"))
+    include(modImplementation("com.github.Drakonkinst:DataTables:${data_tables_version}"))
+
+    // Cardinal Components
+    include(modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cardinal_components_version}"))
+    include(modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cardinal_components_version}"))
+    include(modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-scoreboard:${cardinal_components_version}"))
 }
 
 processResources {

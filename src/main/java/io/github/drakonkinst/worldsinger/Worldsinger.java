@@ -4,7 +4,6 @@ import io.github.drakonkinst.worldsinger.api.ModApi;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.ModCauldronBehaviors;
 import io.github.drakonkinst.worldsinger.command.ModCommands;
-import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.entity.ModAttributeRegistry;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
@@ -37,7 +36,6 @@ public class Worldsinger implements ModInitializer {
         LOGGER.info("Initializing Worldsinger...");
 
         // I'll figure out the proper order for these...one day
-        DataTables.initialize();
         Fluidlogged.initialize();
 
         ModProperties.initialize();

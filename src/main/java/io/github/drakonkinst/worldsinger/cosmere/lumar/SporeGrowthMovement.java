@@ -1,10 +1,10 @@
 package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
+import io.github.drakonkinst.datatables.DataTable;
+import io.github.drakonkinst.datatables.DataTableRegistry;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.cosmere.MetalQueryManager;
-import io.github.drakonkinst.worldsinger.datatable.DataTable;
-import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.registry.ModDataTables;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
@@ -31,7 +31,8 @@ public final class SporeGrowthMovement {
     }
 
     private static void calcBlockExternalForce(World world, BlockPos pos, Vector3d force) {
-        DataTable metalContentTable = DataTables.get(ModDataTables.BLOCK_METAL_CONTENT);
+        DataTable metalContentTable = DataTableRegistry.INSTANCE.get(
+                ModDataTables.BLOCK_METAL_CONTENT);
 
         int minX = pos.getX() - MAX_SEARCH_RADIUS;
         int minY = pos.getY() - MAX_SEARCH_RADIUS;
@@ -84,8 +85,10 @@ public final class SporeGrowthMovement {
     }
 
     private static void calcEntityExternalForce(World world, BlockPos pos, Vector3d force) {
-        DataTable metalContentTable = DataTables.get(ModDataTables.ENTITY_METAL_CONTENT);
-        DataTable armorMetalContentTable = DataTables.get(ModDataTables.ARMOR_METAL_CONTENT);
+        DataTable metalContentTable = DataTableRegistry.INSTANCE.get(
+                ModDataTables.ENTITY_METAL_CONTENT);
+        DataTable armorMetalContentTable = DataTableRegistry.INSTANCE.get(
+                ModDataTables.ARMOR_METAL_CONTENT);
         Box box = BoxUtil.createBoxAroundBlock(pos, MAX_SEARCH_RADIUS);
         double forceX = 0;
         double forceY = 0;

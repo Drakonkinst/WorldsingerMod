@@ -1,11 +1,11 @@
 package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
+import io.github.drakonkinst.datatables.DataTable;
+import io.github.drakonkinst.datatables.DataTableRegistry;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
-import io.github.drakonkinst.worldsinger.datatable.DataTable;
-import io.github.drakonkinst.worldsinger.datatable.DataTables;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
@@ -79,7 +79,7 @@ public final class SporeKillingManager {
     }
 
     public static boolean isSporeKillingBlockNearby(World world, BlockPos pos) {
-        DataTable dataTable = DataTables.get(ModDataTables.SPORE_KILLING_RADIUS);
+        DataTable dataTable = DataTableRegistry.INSTANCE.get(ModDataTables.SPORE_KILLING_RADIUS);
         for (BlockPos currentPos : BlockPos.iterateOutwards(pos, MAX_BLOCK_RADIUS, MAX_BLOCK_RADIUS,
                 MAX_BLOCK_RADIUS)) {
             BlockState blockState = world.getBlockState(currentPos);
@@ -135,7 +135,7 @@ public final class SporeKillingManager {
 
     public static boolean isSporeKillingBlockNearbyForRange(World world, int minX, int minY,
             int minZ, int maxX, int maxY, int maxZ) {
-        DataTable dataTable = DataTables.get(ModDataTables.SPORE_KILLING_RADIUS);
+        DataTable dataTable = DataTableRegistry.INSTANCE.get(ModDataTables.SPORE_KILLING_RADIUS);
 
         int searchMinX = minX - MAX_BLOCK_RADIUS;
         int searchMinY = minY - MAX_BLOCK_RADIUS;
