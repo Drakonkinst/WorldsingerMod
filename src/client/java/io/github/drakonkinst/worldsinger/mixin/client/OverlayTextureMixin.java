@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /* This mixin modifies OverlayTexture to fill unused rows with additional colors. More can be added
- * as needed. Vanilla uses row 3 for the red hurt animation, and
+ * as needed. Vanilla uses row 3 for the red hurt animation, and row 10 for flashing TNT.
  *
  * If we REALLY need more colors, we can even use individual pixels. This has a higher chance to
  * break though, and we don't need more colors than current.

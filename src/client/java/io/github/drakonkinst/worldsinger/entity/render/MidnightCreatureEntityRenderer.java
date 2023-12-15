@@ -26,10 +26,9 @@ import net.minecraft.util.Identifier;
 public class MidnightCreatureEntityRenderer extends
         MobEntityRenderer<MidnightCreatureEntity, MidnightCreatureEntityModel> {
 
-    // TODO: Recolor to nicer colors
-    public static final int MIDNIGHT_OVERLAY_COLOR = ColorUtil.colorToInt(0, 0, 0, 255);
+    public static final int MIDNIGHT_OVERLAY_COLOR = ColorUtil.colorToInt(0, 0, 0, 251);
     public static final int MIDNIGHT_OVERLAY_UV = OverlayTexture.packUv(0, 0);
-    public static final int MIDNIGHT_OVERLAY_HURT_COLOR = ColorUtil.colorToInt(255, 0, 0, 255);
+    public static final int MIDNIGHT_OVERLAY_HURT_COLOR = ColorUtil.colorToInt(176, 0, 0, 251);
     public static final int MIDNIGHT_OVERLAY_HURT_UV = OverlayTexture.packUv(0, 1);
 
     public MidnightCreatureEntityRenderer(EntityRendererFactory.Context context) {
