@@ -9,6 +9,7 @@
     "minecraft:wither_skeleton",
     "minecraft:stray",
     "minecraft:skeleton_horse",
-    "minecraft:wither"
+    "minecraft:wither",
+    "worldsinger:midnight_creature"
   ]
 }

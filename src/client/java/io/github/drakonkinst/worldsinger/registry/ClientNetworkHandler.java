@@ -40,7 +40,7 @@ public final class ClientNetworkHandler {
 
                     if (entityNbt != null) {
                         entityNbt.putString(Entity.ID_KEY, entityId);
-                        Shapeshifter.createEntityFromNbt(shapeshifter, entityNbt);
+                        Shapeshifter.createEntityFromNbt(shapeshifter, entityNbt, true);
                     }
                 });
     }

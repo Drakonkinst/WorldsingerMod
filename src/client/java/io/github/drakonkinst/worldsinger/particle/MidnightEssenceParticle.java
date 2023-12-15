@@ -24,7 +24,7 @@ public class MidnightEssenceParticle extends AnimatedParticle {
         this.scale = 0.3f;
         this.setColor(RED, GREEN, BLUE);
         this.setAlpha(ALPHA);
-        this.maxAge = 60 + this.random.nextInt(12);
+        this.maxAge = 100 + this.random.nextInt(20);
         this.setSpriteForAge(spriteProvider);
     }
 

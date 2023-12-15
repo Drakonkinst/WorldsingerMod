@@ -3,7 +3,9 @@ package io.github.drakonkinst.worldsinger.entity;
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
+import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import java.util.List;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.WanderAroundGoal;
@@ -16,6 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class MidnightCreatureEntity extends ShapeshiftingEntity {
@@ -23,6 +26,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
     private static final int IMITATE_NEAREST_INTERVAL = 20 * 5;
     private static final int AMBIENT_PARTICLE_INTERVAL = 10;
     private static final int NUM_DAMAGE_PARTICLES = 16;
+    private static final int NUM_TRANSFORM_PARTICLES = 32;
     private static final String MORPHED_TRANSLATION_KEY = Util.createTranslationKey("entity",
             Worldsinger.id("midnight_creature.morphed"));
 
@@ -30,6 +34,23 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
         return MobEntity.createMobAttributes()
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3F)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0);
+    }
+
+    public static void spawnMidnightParticle(World world, Entity entity, Random random,
+            double velocity) {
+        Vec3d pos = EntityUtil.getRandomPointInBoundingBox(entity, random);
+        double velocityX = velocity * random.nextGaussian();
+        double velocityY = velocity * random.nextGaussian();
+        double velocityZ = velocity * random.nextGaussian();
+        world.addParticle(ModParticleTypes.MIDNIGHT_ESSENCE, pos.getX(), pos.getY(), pos.getZ(),
+                velocityX, velocityY, velocityZ);
+    }
+
+    public static void spawnMidnightParticles(World world, Entity entity, Random random,
+            double velocity, int count) {
+        for (int i = 0; i < count; ++i) {
+            MidnightCreatureEntity.spawnMidnightParticle(world, entity, random, velocity);
+        }
     }
 
     public MidnightCreatureEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
@@ -57,32 +78,15 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
 
         if (!this.firstUpdate && this.getWorld().isClient()
                 && this.age % AMBIENT_PARTICLE_INTERVAL == 0 && random.nextInt(3) != 0) {
-            Vec3d pos = this.getRandomParticleSpawnPoint();
-            this.getWorld()
-                    .addParticle(ModParticleTypes.MIDNIGHT_ESSENCE, pos.getX(), pos.getY(),
-                            pos.getZ(), 0.1 * random.nextGaussian(), 0.1 * random.nextGaussian(),
-                            0.1 * random.nextGaussian());
+            MidnightCreatureEntity.spawnMidnightParticle(this.getWorld(), this, random, 0.1);
         }
     }
 
     @Override
     public void onDamaged(DamageSource damageSource) {
         super.onDamaged(damageSource);
-        for (int i = 0; i < NUM_DAMAGE_PARTICLES; ++i) {
-            Vec3d pos = this.getRandomParticleSpawnPoint();
-            this.getWorld()
-                    .addParticle(ModParticleTypes.MIDNIGHT_ESSENCE, pos.getX(), pos.getY(),
-                            pos.getZ(), 0.25 * random.nextGaussian(), 0.25 * random.nextGaussian(),
-                            0.25 * random.nextGaussian());
-        }
-    }
-
-    private Vec3d getRandomParticleSpawnPoint() {
-        Box box = this.getBoundingBox();
-        double x = box.minX + (box.maxX - box.minX) * random.nextDouble();
-        double y = box.minY + (box.maxY - box.minY) * random.nextDouble();
-        double z = box.minZ + (box.maxZ - box.minZ) * random.nextDouble();
-        return new Vec3d(x, y, z);
+        MidnightCreatureEntity.spawnMidnightParticles(this.getWorld(), this, random, 0.25,
+                MidnightCreatureEntity.NUM_DAMAGE_PARTICLES);
     }
 
     private void imitateNearestEntity() {
@@ -125,6 +129,15 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
     public void onMorphEntitySpawn(LivingEntity morph) {
         super.onMorphEntitySpawn(morph);
         ((MidnightOverlayAccess) morph).worldsinger$setMidnightOverlay(true);
+    }
+
+    @Override
+    public void afterMorphEntitySpawn(LivingEntity morph, boolean showTransformEffects) {
+        super.afterMorphEntitySpawn(morph, showTransformEffects);
+        if (showTransformEffects) {
+            MidnightCreatureEntity.spawnMidnightParticles(this.getWorld(), this, random, 0.2,
+                    NUM_TRANSFORM_PARTICLES);
+        }
     }
 
     @Override

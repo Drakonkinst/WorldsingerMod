@@ -1,16 +1,12 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
-import com.google.common.collect.ImmutableMap;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
-import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleManager;
-import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
-import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.SunlightFluid;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
-import java.util.Map;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Flutterer;
@@ -35,20 +31,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class LivingEntityCustomFluidMovementMixin extends Entity {
 
-    @Unique
-    private static final Map<TagKey<Fluid>, StatusEffect> FLUID_TO_STATUS_EFFECT = ImmutableMap.of(
-            ModFluidTags.VERDANT_SPORES, ModStatusEffects.VERDANT_SPORES,
-            ModFluidTags.CRIMSON_SPORES, ModStatusEffects.CRIMSON_SPORES,
-            ModFluidTags.ZEPHYR_SPORES, ModStatusEffects.ZEPHYR_SPORES,
-            ModFluidTags.SUNLIGHT_SPORES, ModStatusEffects.SUNLIGHT_SPORES,
-            ModFluidTags.ROSEITE_SPORES, ModStatusEffects.ROSEITE_SPORES,
-            ModFluidTags.MIDNIGHT_SPORES, ModStatusEffects.MIDNIGHT_SPORES);
     @Shadow
     protected boolean jumping;
 
-    public LivingEntityMixin(EntityType<?> type, World world) {
+    public LivingEntityCustomFluidMovementMixin(EntityType<?> type, World world) {
         super(type, world);
     }
 
@@ -99,24 +87,11 @@ public abstract class LivingEntityMixin extends Entity {
                     playerEntity.isCreative() || playerEntity.isSpectator())) {
                 return;
             }
-            applySporeSeaEffects();
+            AetherSpores.applySporeSeaEffects((LivingEntity) (Object) this);
 
             // Also take suffocation damage, mainly for dead spores
             this.damage(ModDamageTypes.createSource(this.getWorld(), ModDamageTypes.DROWN_SPORE),
                     1.0f);
-        }
-    }
-
-    @Unique
-    private void applySporeSeaEffects() {
-        if (this.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
-            return;
-        }
-        for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
-            if (this.isSubmergedIn(entry.getKey())) {
-                SporeParticleManager.applySporeEffect((LivingEntity) (Object) this,
-                        entry.getValue(), SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);
-            }
         }
     }
 

@@ -47,7 +47,8 @@ public interface Shapeshifter {
         return buf;
     }
 
-    static void createEntityFromNbt(Shapeshifter shapeshifter, NbtCompound morphNbt) {
+    static void createEntityFromNbt(Shapeshifter shapeshifter, NbtCompound morphNbt,
+            boolean showTransformEffects) {
         Optional<EntityType<?>> type = EntityType.fromNbt(morphNbt);
         if (type.isPresent()) {
             LivingEntity morph = shapeshifter.getMorph();
@@ -59,6 +60,7 @@ public interface Shapeshifter {
                 shapeshifter.onMorphEntitySpawn(morph);
                 morph.readNbt(morphNbt);
                 shapeshifter.updateMorph(morph);
+                shapeshifter.afterMorphEntitySpawn(morph, showTransformEffects);
             }
         }
     }
@@ -69,6 +71,11 @@ public interface Shapeshifter {
     void updateMorph(@Nullable LivingEntity morph);
 
     default void onMorphEntitySpawn(LivingEntity morph) {
+        // Do nothing
+    }
+
+    // showTransformEffects = whether the entity has just spawned. Used to determine whether particles should spawn or not.
+    default void afterMorphEntitySpawn(LivingEntity morph, boolean showTransformEffects) {
         // Do nothing
     }
 

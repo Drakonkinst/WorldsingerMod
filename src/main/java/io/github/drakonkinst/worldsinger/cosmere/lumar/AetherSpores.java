@@ -1,14 +1,17 @@
 package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
 import io.github.drakonkinst.worldsinger.cosmere.WaterReactive.Type;
+import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
+import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
+import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.item.SporeBottleItem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.minecraft.block.Block;
@@ -36,6 +39,14 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
     private static final Map<String, AetherSpores> AETHER_SPORE_MAP = new Object2ObjectArrayMap<>();
     public static final Codec<AetherSpores> CODEC = Codecs.idChecked(AetherSpores::getName,
             AETHER_SPORE_MAP::get);
+
+    private static final Map<TagKey<Fluid>, StatusEffect> FLUID_TO_STATUS_EFFECT = ImmutableMap.of(
+            ModFluidTags.VERDANT_SPORES, ModStatusEffects.VERDANT_SPORES,
+            ModFluidTags.CRIMSON_SPORES, ModStatusEffects.CRIMSON_SPORES,
+            ModFluidTags.ZEPHYR_SPORES, ModStatusEffects.ZEPHYR_SPORES,
+            ModFluidTags.SUNLIGHT_SPORES, ModStatusEffects.SUNLIGHT_SPORES,
+            ModFluidTags.ROSEITE_SPORES, ModStatusEffects.ROSEITE_SPORES,
+            ModFluidTags.MIDNIGHT_SPORES, ModStatusEffects.MIDNIGHT_SPORES);
 
     public static Map<String, AetherSpores> getAetherSporeMap() {
         return AETHER_SPORE_MAP;
@@ -104,15 +115,18 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
             SporeParticleSpawner.spawnFootstepParticles(serverWorld,
                     sporeEmittingBlock.getSporeType(), entity);
         }
-
     }
 
-    public static Optional<AetherSpores> getSporeTypeFromBlock(BlockState state) {
-        Block block = state.getBlock();
-        if (block instanceof SporeEmitting sporeEmittingBlock) {
-            return Optional.of(sporeEmittingBlock.getSporeType());
+    public static void applySporeSeaEffects(LivingEntity entity) {
+        if (entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
+            return;
         }
-        return Optional.empty();
+        for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
+            if (entity.isSubmergedIn(entry.getKey())) {
+                SporeParticleManager.applySporeEffect(entity, entry.getValue(),
+                        SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);
+            }
+        }
     }
 
     protected AetherSpores() {

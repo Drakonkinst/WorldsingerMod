@@ -79,11 +79,11 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
             this.updateMorph(null);
         } else if (!morphData.isEmpty()) {
             if (morph == null) {
-                Shapeshifter.createEntityFromNbt(this, morphData);
+                Shapeshifter.createEntityFromNbt(this, morphData, false);
             } else {
                 UUID uuid = morphData.getUuid(Entity.UUID_KEY);
                 if (!morph.getUuid().equals(uuid)) {
-                    Shapeshifter.createEntityFromNbt(this, morphData);
+                    Shapeshifter.createEntityFromNbt(this, morphData, false);
                 }
             }
         }
@@ -128,7 +128,7 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
 
     private void setMorphFromData() {
         NbtCompound morphNbt = this.getMorphData();
-        Shapeshifter.createEntityFromNbt(this, morphNbt);
+        Shapeshifter.createEntityFromNbt(this, morphNbt, false);
     }
 
     private void setMorphData(NbtCompound nbtCompound) {
