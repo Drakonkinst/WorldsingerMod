@@ -15,6 +15,8 @@ public final class ModEntityTypeTags {
             "spores_never_affect");
     public static TagKey<EntityType<?>> HAS_STEEL = ModEntityTypeTags.ofCommon("has_steel");
     public static TagKey<EntityType<?>> HAS_IRON = ModEntityTypeTags.ofCommon("has_iron");
+    public static TagKey<EntityType<?>> MIDNIGHT_CREATURES_CANNOT_IMITATE = ModEntityTypeTags.ofCommon(
+            "midnight_creatures_cannot_imitate");
 
     private static TagKey<EntityType<?>> of(String id) {
         return TagKey.of(RegistryKeys.ENTITY_TYPE, Worldsinger.id(id));

@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.mixin.client;
+package io.github.drakonkinst.worldsinger.mixin.client.render.entity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.drakonkinst.worldsinger.entity.MidnightOverlayAccess;

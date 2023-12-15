@@ -3,6 +3,19 @@
   "values": [
     "worldsinger:midnight_creature",
     "minecraft:wither",
-    "minecraft:ender_dragon"
+    "minecraft:ender_dragon",
+    "minecraft:allay",
+    "minecraft:vex",
+    "minecraft:ghast",
+    "minecraft:slime",
+    "minecraft:magma_cube",
+    "minecraft:frog",
+    "minecraft:cod",
+    "minecraft:salmon",
+    "minecraft:pufferfish",
+    "minecraft:guardian",
+    "minecraft:elder_guardian",
+    "minecraft:squid",
+    "minecraft:glow_squid"
   ]
 }

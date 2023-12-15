@@ -1,6 +1,5 @@
-package io.github.drakonkinst.worldsinger;
+package io.github.drakonkinst.worldsinger.particle;
 
-import io.github.drakonkinst.worldsinger.particle.SporeDustParticleEffect;
 import net.minecraft.client.particle.AbstractDustParticle;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
