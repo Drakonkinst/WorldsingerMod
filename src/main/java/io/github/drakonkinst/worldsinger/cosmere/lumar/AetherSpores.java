@@ -10,6 +10,7 @@ import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.item.SporeBottleItem;
+import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Map;
 import java.util.Set;
@@ -118,14 +119,20 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
     }
 
     public static void applySporeSeaEffects(LivingEntity entity) {
-        if (entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
-            return;
-        }
-        for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
-            if (entity.isSubmergedIn(entry.getKey())) {
-                SporeParticleManager.applySporeEffect(entity, entry.getValue(),
-                        SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);
+        if (!entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
+            for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
+                if (entity.isSubmergedIn(entry.getKey())) {
+                    SporeParticleManager.applySporeEffect(entity, entry.getValue(),
+                            SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);
+                }
             }
+        }
+
+        if (!entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_SUFFOCATE)) {
+            // Also take suffocation damage, mainly for dead spores
+            entity.damage(
+                    ModDamageTypes.createSource(entity.getWorld(), ModDamageTypes.DROWN_SPORE),
+                    1.0f);
         }
     }
 

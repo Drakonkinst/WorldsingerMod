@@ -28,7 +28,7 @@ public class MidnightCreatureEntityRenderer extends
 
     public static final int MIDNIGHT_OVERLAY_COLOR = ColorUtil.colorToInt(0, 0, 0, 251);
     public static final int MIDNIGHT_OVERLAY_UV = OverlayTexture.packUv(0, 0);
-    public static final int MIDNIGHT_OVERLAY_HURT_COLOR = ColorUtil.colorToInt(176, 0, 0, 251);
+    public static final int MIDNIGHT_OVERLAY_HURT_COLOR = ColorUtil.colorToInt(150, 0, 0, 251);
     public static final int MIDNIGHT_OVERLAY_HURT_UV = OverlayTexture.packUv(0, 1);
 
     public MidnightCreatureEntityRenderer(EntityRendererFactory.Context context) {
@@ -87,6 +87,7 @@ public class MidnightCreatureEntityRenderer extends
         }
 
         // Equip held items and armor
+        // Note: Should not run these if using visual equipment
         morph.equipStack(EquipmentSlot.MAINHAND, entity.getEquippedStack(EquipmentSlot.MAINHAND));
         morph.equipStack(EquipmentSlot.OFFHAND, entity.getEquippedStack(EquipmentSlot.OFFHAND));
         morph.equipStack(EquipmentSlot.HEAD, entity.getEquippedStack(EquipmentSlot.HEAD));
@@ -95,7 +96,7 @@ public class MidnightCreatureEntityRenderer extends
         morph.equipStack(EquipmentSlot.FEET, entity.getEquippedStack(EquipmentSlot.FEET));
 
         if (morph instanceof MobEntity) {
-            ((MobEntity) morph).setAttacking(entity.isUsingItem());
+            ((MobEntity) morph).setAttacking(entity.isAttacking());
         }
 
         // Assign pose

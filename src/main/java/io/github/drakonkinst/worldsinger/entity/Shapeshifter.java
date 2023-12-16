@@ -5,7 +5,11 @@ import io.netty.buffer.Unpooled;
 import java.util.Optional;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.PhantomEntity;
+import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientCommonPacketListener;
@@ -47,12 +51,13 @@ public interface Shapeshifter {
         return buf;
     }
 
-    static void createEntityFromNbt(Shapeshifter shapeshifter, NbtCompound morphNbt,
+    static void createMorphFromNbt(Shapeshifter shapeshifter, NbtCompound morphNbt,
             boolean showTransformEffects) {
         Optional<EntityType<?>> type = EntityType.fromNbt(morphNbt);
         if (type.isPresent()) {
             LivingEntity morph = shapeshifter.getMorph();
-            if (morph == null || !type.get().equals(shapeshifter.toEntity().getType())) {
+            if (morph == null || !type.get().equals(morph.getType())) {
+                // TODO: Players have no entity factory and cannot be created, so this is null?
                 morph = (LivingEntity) type.get().create(shapeshifter.toEntity().getWorld());
             }
 
@@ -62,6 +67,54 @@ public interface Shapeshifter {
                 shapeshifter.updateMorph(morph);
                 shapeshifter.afterMorphEntitySpawn(morph, showTransformEffects);
             }
+        }
+    }
+
+    static void createMorphFromEntity(Shapeshifter shapeshifter, LivingEntity toCopy,
+            boolean showTransformEffects) {
+        LivingEntity morph = shapeshifter.getMorph();
+
+        if (morph == null || toCopy.getType().equals(morph.getType())) {
+            morph = (LivingEntity) toCopy.getType().create(shapeshifter.toEntity().getWorld());
+        }
+
+        if (morph != null) {
+            shapeshifter.onMorphEntitySpawn(morph);
+            Shapeshifter.copyVariantData(shapeshifter, morph, toCopy);
+            shapeshifter.updateMorph(morph);
+            shapeshifter.afterMorphEntitySpawn(morph, showTransformEffects);
+        }
+    }
+
+    // Can add more variant data here
+    // Assumes morph and toCopy are of the same type
+    private static void copyVariantData(Shapeshifter shapeshifter, LivingEntity morph,
+            LivingEntity toCopy) {
+        // Baby
+        if (morph instanceof MobEntity mobMorph && toCopy instanceof MobEntity mobToCopy) {
+            mobMorph.setBaby(mobToCopy.isBaby());
+        }
+
+        // Slime/Magma Cube Size
+        if (morph instanceof SlimeEntity slimeMorph && toCopy instanceof SlimeEntity slimeToCopy) {
+            slimeMorph.setSize(slimeToCopy.getSize(), false);
+        }
+
+        // Phantom Size
+        if (morph instanceof PhantomEntity phantomMorph
+                && toCopy instanceof PhantomEntity phantomToCopy) {
+            phantomMorph.setPhantomSize(phantomToCopy.getPhantomSize());
+        }
+
+        if (shapeshifter.copyEquipmentVisuals()) {
+            // Equipped items
+            morph.equipStack(EquipmentSlot.MAINHAND,
+                    toCopy.getEquippedStack(EquipmentSlot.MAINHAND));
+            morph.equipStack(EquipmentSlot.OFFHAND, toCopy.getEquippedStack(EquipmentSlot.OFFHAND));
+            morph.equipStack(EquipmentSlot.HEAD, toCopy.getEquippedStack(EquipmentSlot.HEAD));
+            morph.equipStack(EquipmentSlot.CHEST, toCopy.getEquippedStack(EquipmentSlot.CHEST));
+            morph.equipStack(EquipmentSlot.LEGS, toCopy.getEquippedStack(EquipmentSlot.LEGS));
+            morph.equipStack(EquipmentSlot.FEET, toCopy.getEquippedStack(EquipmentSlot.FEET));
         }
     }
 
@@ -77,6 +130,10 @@ public interface Shapeshifter {
     // showTransformEffects = whether the entity has just spawned. Used to determine whether particles should spawn or not.
     default void afterMorphEntitySpawn(LivingEntity morph, boolean showTransformEffects) {
         // Do nothing
+    }
+
+    default boolean copyEquipmentVisuals() {
+        return false;
     }
 
     @Nullable LivingEntity getMorph();

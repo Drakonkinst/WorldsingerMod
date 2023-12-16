@@ -5,7 +5,6 @@ import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.fluid.AetherSporeFluid;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.SunlightFluid;
-import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -88,10 +87,6 @@ public abstract class LivingEntityCustomFluidMovementMixin extends Entity {
                 return;
             }
             AetherSpores.applySporeSeaEffects((LivingEntity) (Object) this);
-
-            // Also take suffocation damage, mainly for dead spores
-            this.damage(ModDamageTypes.createSource(this.getWorld(), ModDamageTypes.DROWN_SPORE),
-                    1.0f);
         }
     }
 

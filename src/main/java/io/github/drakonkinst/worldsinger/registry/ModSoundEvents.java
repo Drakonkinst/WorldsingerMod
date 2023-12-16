@@ -18,9 +18,13 @@ public final class ModSoundEvents {
     public static final SoundEvent BLOCK_SPORE_BLOCK_PLACE = SoundEvents.BLOCK_POWDER_SNOW_PLACE;
     public static final SoundEvent BLOCK_SUNLIGHT_EVAPORATE = SoundEvents.BLOCK_FIRE_EXTINGUISH;
     public static final SoundEvent BLOCK_SUNLIGHT_SPORE_BLOCK_CATALYZE = SoundEvents.ITEM_FIRECHARGE_USE;
+    public static final SoundEvent BLOCK_ZEPHYR_SEA_CATALYZE = SoundEvents.ENTITY_GENERIC_EXPLODE;
     public static final SoundEvent ENTITY_BOAT_PADDLE_SPORE_SEA = SoundEvents.BLOCK_SAND_BREAK;
     public static final SoundEvent ENTITY_BOAT_LINE_SILVER = SoundEvents.ENTITY_IRON_GOLEM_REPAIR;
-    public static final SoundEvent BLOCK_ZEPHYR_SEA_CATALYZE = SoundEvents.ENTITY_GENERIC_EXPLODE;
+    public static final SoundEvent ENTITY_MIDNIGHT_CREATURE_AMBIENT = SoundEvents.ENTITY_BREEZE_IDLE_GROUND;
+    public static final SoundEvent ENTITY_MIDNIGHT_CREATURE_HURT = SoundEvents.ENTITY_BREEZE_HURT;
+    public static final SoundEvent ENTITY_MIDNIGHT_CREATURE_DEATH = SoundEvents.ENTITY_BREEZE_DEATH;
+    public static final SoundEvent ENTITY_MIDNIGHT_CREATURE_TRANSFORM = SoundEvents.ENTITY_BREEZE_SLIDE;
 
     public static void initialize() {}
 

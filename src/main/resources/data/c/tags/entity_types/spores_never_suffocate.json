@@ -1,15 +1,6 @@
 {
-  "description": "Mobs that do not consist of anything water-based and thus do not catalyze spores",
+  "description": "Mobs that will not be suffocated by spores",
   "values": [
-    "minecraft:iron_golem",
-    "minecraft:allay",
-    "minecraft:vex",
-    "minecraft:blaze",
-    "minecraft:skeleton",
-    "minecraft:wither_skeleton",
-    "minecraft:stray",
-    "minecraft:skeleton_horse",
-    "minecraft:wither",
     "worldsinger:midnight_creature"
   ]
 }
