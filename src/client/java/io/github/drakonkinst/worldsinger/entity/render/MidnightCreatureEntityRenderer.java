@@ -20,6 +20,7 @@ import net.minecraft.entity.LimbAnimator;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PhantomEntity;
+import net.minecraft.entity.passive.SchoolingFishEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 
@@ -42,11 +43,11 @@ public class MidnightCreatureEntityRenderer extends
     }
 
     @Override
-    public void render(MidnightCreatureEntity entity, float f, float g, MatrixStack matrixStack,
-            VertexConsumerProvider vertexConsumerProvider, int i) {
+    public void render(MidnightCreatureEntity entity, float f, float tickDelta,
+            MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
         LivingEntity morph = entity.getMorph();
         if (morph == null) {
-            super.render(entity, f, g, matrixStack, vertexConsumerProvider, i);
+            super.render(entity, f, tickDelta, matrixStack, vertexConsumerProvider, i);
             return;
         }
 
@@ -75,7 +76,8 @@ public class MidnightCreatureEntityRenderer extends
         morph.setVelocity(entity.getVelocity());
 
         ((EntityAccessor) morph).worldsinger$setVehicle(entity.getVehicle());
-        ((EntityAccessor) morph).worldsinger$setTouchingWater(entity.isTouchingWater());
+        ((EntityAccessor) morph).worldsinger$setTouchingWater(
+                entity.isTouchingWater() || morph instanceof SchoolingFishEntity);
 
         // Pitch for Phantoms is inverted
         if (morph instanceof PhantomEntity) {
@@ -113,6 +115,6 @@ public class MidnightCreatureEntityRenderer extends
         EntityRenderer<? super LivingEntity> morphRenderer = MinecraftClient.getInstance()
                 .getEntityRenderDispatcher()
                 .getRenderer(morph);
-        morphRenderer.render(morph, f, g, matrixStack, vertexConsumerProvider, i);
+        morphRenderer.render(morph, f, tickDelta, matrixStack, vertexConsumerProvider, i);
     }
 }

@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
-public class MetalQueryManager {
+public final class MetalQueryManager {
 
     private static final int HELD_ITEM_METAL_VALUE = 1;
     private static final int USING_SHIELD_BONUS = 2;
@@ -54,4 +54,6 @@ public class MetalQueryManager {
         return MetalQueryManager.getMetalContentForEntity(entity, Metals.STEEL, entityDataTable,
                 armorDataTable);
     }
+
+    private MetalQueryManager() {}
 }

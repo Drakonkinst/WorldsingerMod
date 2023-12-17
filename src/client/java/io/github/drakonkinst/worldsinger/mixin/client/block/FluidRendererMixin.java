@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.mixin.client.render.block;
+package io.github.drakonkinst.worldsinger.mixin.client.block;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

@@ -27,6 +27,12 @@ public final class EntityUtil {
         return EntityUtil.isSubmergedInFluid(entity, ModFluidTags.AETHER_SPORES);
     }
 
+    // Used as a metric of how big an entity is, used for a variety of size-based
+    // calculations. Volume is not a great value here, as it is cubic.
+    public static float getSize(Entity entity) {
+        return entity.getWidth() * entity.getHeight();
+    }
+
     public static boolean isSubmergedInFluid(Entity entity, TagKey<Fluid> fluidTag) {
         return EntityUtil.notFirstUpdate(entity) && entity.isSubmergedIn(fluidTag);
     }

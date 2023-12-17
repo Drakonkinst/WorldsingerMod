@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.mixin.client;
+package io.github.drakonkinst.worldsinger.mixin.client.entity;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.drakonkinst.worldsinger.entity.render.MidnightCreatureEntityRenderer;

@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.mixin.client.render.entity;
+package io.github.drakonkinst.worldsinger.mixin.client.entity;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;

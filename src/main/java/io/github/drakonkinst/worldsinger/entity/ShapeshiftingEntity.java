@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.entity;
 
-import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
-import io.github.drakonkinst.worldsinger.mixin.accessor.LivingEntityAccessor;
+import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
@@ -12,7 +11,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
@@ -22,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 // Note that even non-player entities might not extend this class; that's why it's important to use
 // the Shapeshifter interface where possible. This is just one example of how this can be saved
 // and loaded.
+// Morphs do not tick, so any visual updates need to be called manually.
 public abstract class ShapeshiftingEntity extends PathAwareEntity implements Shapeshifter {
 
     protected static final TrackedData<NbtCompound> MORPH = DataTracker.registerData(
@@ -50,27 +49,25 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
     }
 
     private void tickMorph() {
-        if (this.getWorld().isClient() || morph == null) {
+        if (morph == null) {
             return;
         }
 
-        morph.setPos(this.getX(), this.getY(), this.getZ());
-        morph.setHeadYaw(this.getHeadYaw());
-        morph.setJumping(this.jumping);
-        morph.setSprinting(this.isSprinting());
-        morph.setStuckArrowCount(this.getStuckArrowCount());
-        morph.setSneaking(this.isSneaking());
-        morph.setSwimming(this.isSwimming());
-        morph.setCurrentHand(this.getActiveHand());
-        morph.setPose(this.getPose());
-
-        if (morph instanceof TameableEntity tameableEntity) {
-            tameableEntity.setInSittingPose(this.isSneaking());
-            tameableEntity.setSitting(this.isSneaking());
+        if (this.getWorld().isClient()) {
+            ShapeshiftingManager.tickMorphClient(morph, random);
+        } else {
+            ShapeshiftingManager.tickMorphServer(this, morph);
         }
+    }
 
-        ((EntityAccessor) morph).worldsinger$setFlag(FALL_FLYING_FLAG_INDEX, this.isFallFlying());
-        ((LivingEntityAccessor) morph).worldsinger$tickActiveItemStack();
+    // Make attacking animations play for entities that don't use the arms
+    @Override
+    public boolean tryAttack(Entity target) {
+        // Should always be true
+        if (this.getWorld() instanceof ServerWorld world) {
+            ShapeshiftingManager.onAttackServer(world, this);
+        }
+        return super.tryAttack(target);
     }
 
     private void checkMorphOnLoad() {
@@ -79,20 +76,14 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
             this.updateMorph(null);
         } else if (!morphData.isEmpty()) {
             if (morph == null) {
-                Shapeshifter.createMorphFromNbt(this, morphData, false);
+                ShapeshiftingManager.createMorphFromNbt(this, morphData, false);
             } else {
                 UUID uuid = morphData.getUuid(Entity.UUID_KEY);
                 if (!morph.getUuid().equals(uuid)) {
-                    Shapeshifter.createMorphFromNbt(this, morphData, false);
+                    ShapeshiftingManager.createMorphFromNbt(this, morphData, false);
                 }
             }
         }
-    }
-
-    @Override
-    public void onMorphEntitySpawn(LivingEntity morph) {
-        morph.setInvulnerable(true);
-        morph.setNoGravity(true);
     }
 
     @Override
@@ -128,7 +119,7 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
 
     private void setMorphFromData() {
         NbtCompound morphNbt = this.getMorphData();
-        Shapeshifter.createMorphFromNbt(this, morphNbt, false);
+        ShapeshiftingManager.createMorphFromNbt(this, morphNbt, false);
     }
 
     private void setMorphData(NbtCompound nbtCompound) {
@@ -146,7 +137,7 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
         World world = this.getWorld();
         if (!world.isClient() && world instanceof ServerWorld serverWorld) {
             this.setMorphDataFromEntity(morph);
-            Shapeshifter.syncToNearbyPlayers(serverWorld, this);
+            ShapeshiftingManager.syncToNearbyPlayers(serverWorld, this);
         }
     }
 

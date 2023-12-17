@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.mixin.client;
+package io.github.drakonkinst.worldsinger.mixin.client.item;
 
 import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.item.ModItems;

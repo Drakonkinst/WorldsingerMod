@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.mixin.client.render.world;
+package io.github.drakonkinst.worldsinger.mixin.client.world;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.blaze3d.platform.GlStateManager;

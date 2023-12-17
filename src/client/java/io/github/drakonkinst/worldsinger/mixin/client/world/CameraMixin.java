@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.mixin.client;
+package io.github.drakonkinst.worldsinger.mixin.client.world;
 
 import io.github.drakonkinst.worldsinger.CameraPosAccess;
 import io.github.drakonkinst.worldsinger.ModClientEnums;

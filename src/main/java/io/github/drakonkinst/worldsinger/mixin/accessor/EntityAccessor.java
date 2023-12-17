@@ -8,6 +8,11 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(Entity.class)
 public interface EntityAccessor {
 
+    @Accessor("FALL_FLYING_FLAG_INDEX")
+    static int worldsinger$getFallFlyingIndex() {
+        throw new UnsupportedOperationException();
+    }
+
     @Accessor("firstUpdate")
     boolean worldsinger$isFirstUpdate();
 

@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.mixin.client.render.entity;
+package io.github.drakonkinst.worldsinger.mixin.client.entity;
 
 import io.github.drakonkinst.worldsinger.entity.MidnightOverlayAccess;
 import net.minecraft.client.render.VertexConsumerProvider;

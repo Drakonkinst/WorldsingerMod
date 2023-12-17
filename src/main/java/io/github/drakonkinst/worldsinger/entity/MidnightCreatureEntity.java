@@ -1,13 +1,16 @@
 package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
+import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.util.ModEnums.PathNodeType;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -19,6 +22,7 @@ import net.minecraft.entity.ai.goal.RevengeGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.WanderAroundGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
@@ -26,6 +30,8 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.entity.passive.PufferfishEntity;
+import net.minecraft.entity.passive.SchoolingFishEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -33,6 +39,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
@@ -51,10 +58,36 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
             ModStatusEffects.SUNLIGHT_SPORES, ModStatusEffects.VERDANT_SPORES,
             ModStatusEffects.ZEPHYR_SPORES);
 
+    // Defines attributes for a Zombie-sized Midnight Creature. These values will be scaled
+    // based on relative entity size, and then clamped.
+    // Note that attack damage can be further multiplier between 5/6x and 3/2x its original value,
+    // based on difficulty.
+    private static final double DEFAULT_MOVEMENT_SPEED = 0.25;
+    private static final double DEFAULT_ATTACK_DAMAGE = 3.0;
+    private static final double DEFAULT_MAX_HEALTH = 20.0;
+    private static final double MAX_HEALTH_SIZE_MULTIPLIER = 17;
+    private static final double ATTACK_DAMAGE_SIZE_MULTIPLIER = 2.5;
+
+    private static final float MIN_MAX_HEALTH = 8.0f;       // Same as Silverfish
+    private static final float MAX_MAX_HEALTH = 100.0f;     // Same as Ravager
+    private static final float MIN_ATTACK_DAMAGE = 3.0f;    // Same as Zombie
+    private static final float MAX_ATTACK_DAMAGE = 12.0f;   // Same as Ravager
+
     public static DefaultAttributeContainer.Builder createMidnightCreatureAttributes() {
         return MobEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3F)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0);
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, DEFAULT_MAX_HEALTH);
+    }
+
+    public static double getMaxHealthForVolume(float volume) {
+        double value = volume * MAX_HEALTH_SIZE_MULTIPLIER;
+        return MathHelper.clamp(Math.round(value), MIN_MAX_HEALTH, MAX_MAX_HEALTH);
+    }
+
+    public static double getAttackDamageForVolume(float volume) {
+        double value = volume * ATTACK_DAMAGE_SIZE_MULTIPLIER;
+        return MathHelper.clamp(Math.round(value), MIN_ATTACK_DAMAGE, MAX_ATTACK_DAMAGE);
     }
 
     public static void spawnMidnightParticle(World world, Entity entity, Random random,
@@ -85,7 +118,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
     @Override
     protected void initGoals() {
         this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.0, true));
+        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.4, true));
         this.goalSelector.add(3, new WanderAroundGoal(this, 1.0));
         this.goalSelector.add(4, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(4, new LookAroundGoal(this));
@@ -130,13 +163,13 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
     private void imitateNearestEntity() {
         LivingEntity nearest = getNearestEntityToImitate();
         if (nearest != null) {
-            Shapeshifter.createMorphFromEntity(this, nearest, true);
+            ShapeshiftingManager.createMorphFromEntity(this, nearest, true);
         }
     }
 
     private LivingEntity getNearestEntityToImitate() {
         Vec3d pos = this.getPos();
-        Box box = BoxUtil.createBoxAroundPos(pos, 16.0);
+        Box box = BoxUtil.createBoxAroundPos(pos, 32.0);
 
         // LivingEntity nearest = this.getWorld()
         //         .getClosestEntity(LivingEntity.class, TargetPredicate.DEFAULT, this, pos.getX(),
@@ -166,6 +199,12 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
     public void onMorphEntitySpawn(LivingEntity morph) {
         super.onMorphEntitySpawn(morph);
         ((MidnightOverlayAccess) morph).worldsinger$setMidnightOverlay(true);
+        if (morph instanceof PufferfishEntity pufferfishEntity) {
+            pufferfishEntity.setPuffState(PufferfishEntity.FULLY_PUFFED);
+        } else if (morph instanceof SchoolingFishEntity) {
+            // Don't turn on its side
+            ((EntityAccessor) morph).worldsinger$setTouchingWater(true);
+        }
     }
 
     @Override
@@ -176,6 +215,38 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
                     NUM_TRANSFORM_PARTICLES);
             // TODO: This doesn't actually make any sound
             this.playSound(ModSoundEvents.ENTITY_MIDNIGHT_CREATURE_TRANSFORM, 1.0f, 1.0f);
+        }
+
+        updateStats(morph, showTransformEffects);
+    }
+
+    private void updateStats(LivingEntity morph, boolean showTransformEffects) {
+        EntityAttributeInstance movementSpeedAttribute = this.getAttributeInstance(
+                EntityAttributes.GENERIC_MOVEMENT_SPEED);
+        EntityAttributeInstance maxHealthAttribute = this.getAttributeInstance(
+                EntityAttributes.GENERIC_MAX_HEALTH);
+        EntityAttributeInstance attackDamageAttribute = this.getAttributeInstance(
+                EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        Objects.requireNonNull(movementSpeedAttribute);
+        Objects.requireNonNull(maxHealthAttribute);
+        Objects.requireNonNull(attackDamageAttribute);
+
+        if (morph == null) {
+            movementSpeedAttribute.setBaseValue(0.0);
+            maxHealthAttribute.setBaseValue(DEFAULT_MAX_HEALTH);
+            attackDamageAttribute.setBaseValue(DEFAULT_ATTACK_DAMAGE);
+            return;
+        }
+        float volume = EntityUtil.getSize(morph);
+        double maxHealth = MidnightCreatureEntity.getMaxHealthForVolume(volume);
+        double attackDamage = MidnightCreatureEntity.getAttackDamageForVolume(volume);
+        // Speed is the same for all mobs
+        movementSpeedAttribute.setBaseValue(DEFAULT_MOVEMENT_SPEED);
+        maxHealthAttribute.setBaseValue(maxHealth);
+        attackDamageAttribute.setBaseValue(attackDamage);
+
+        if (showTransformEffects) {
+            this.setHealth(this.getMaxHealth());
         }
     }
 

@@ -3,18 +3,18 @@
   "package": "io.github.drakonkinst.worldsinger.mixin.client",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "CameraMixin",
-    "ItemColorsMixin",
-    "OverlayTextureMixin",
     "accessor.DimensionEffectsAccessor",
     "accessor.EntityRendererAccessor",
-    "render.block.FluidRendererMixin",
-    "render.entity.BoatEntityRendererMixin",
-    "render.entity.EntityRenderDispatcherMixin",
-    "render.entity.EyesFeatureRendererMixin",
-    "render.entity.LivingEntityRendererMixin",
-    "render.world.BackgroundRendererMixin",
-    "render.world.WorldRendererMixin"
+    "block.FluidRendererMixin",
+    "entity.BoatEntityRendererMixin",
+    "entity.EntityRenderDispatcherMixin",
+    "entity.EyesFeatureRendererMixin",
+    "entity.LivingEntityRendererMixin",
+    "entity.OverlayTextureMixin",
+    "item.ItemColorsMixin",
+    "world.BackgroundRendererMixin",
+    "world.CameraMixin",
+    "world.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
