@@ -49,7 +49,8 @@ public class ModModelGenerator extends FabricModelProvider {
                 ModBlocks.STEEL_BLOCK,
                 ModBlocks.SUNLIGHT_SPORE_BLOCK,
                 ModBlocks.VERDANT_SPORE_BLOCK,
-                ModBlocks.ZEPHYR_SPORE_BLOCK
+                ModBlocks.ZEPHYR_SPORE_BLOCK,
+                ModBlocks.MIDNIGHT_ESSENCE
         });
 
         registerSimpleCrossBlocks(blockStateModelGenerator, new Block[] {

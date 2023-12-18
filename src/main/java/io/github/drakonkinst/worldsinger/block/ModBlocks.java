@@ -314,6 +314,16 @@ public final class ModBlocks {
             new LivingSporeCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON).ticksRandomly(),
                     ModCauldronBehaviors.MIDNIGHT_SPORE_CAULDRON_BEHAVIOR,
                     MidnightSpores.getInstance()), false);
+    public static final Block MIDNIGHT_ESSENCE = register("midnight_essence",
+            new MidnightEssenceBlock(FabricBlockSettings.create()
+                    // Impossible to break, but can be destroyed
+                    .strength(-1.0f, 0.5f)
+                    .dropsNothing()
+                    .replaceable()
+                    .noBlockBreakParticles()
+                    .solidBlock(Blocks::never)
+                    .sounds(ModSoundGroups.MIDNIGHT_ESSENCE)
+                    .pistonBehavior(PistonBehavior.DESTROY)), true);
 
     // Other
     public static final Block MAGMA_VENT = register("magma_vent",

@@ -304,6 +304,7 @@ public final class ModItems {
             itemGroup.add(ModItems.ROSEITE_BEAD);
 
             itemGroup.add(ModItems.MIDNIGHT_CREATURE_SPAWN_EGG);
+            itemGroup.add(ModBlocks.MIDNIGHT_ESSENCE);
         });
     }
 
