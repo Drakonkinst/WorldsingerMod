@@ -1,10 +1,11 @@
-package io.github.drakonkinst.worldsinger.registry;
+package io.github.drakonkinst.worldsinger.network;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.entity.Shapeshifter;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -15,7 +16,7 @@ public final class ClientNetworkHandler {
         ClientPlayNetworking.registerGlobalReceiver(
                 ShapeshiftingManager.SHAPESHIFTER_SYNC_PACKET_ID,
                 (client, handler, buf, responseSender) -> {
-                    ClientNetworkHandler.handleShapeshifterSyncPacket(client, buf);
+                    ClientNetworkHandler.handleShapeshifterSyncPacket(client, buf, handler);
                 });
         ClientPlayNetworking.registerGlobalReceiver(
                 ShapeshiftingManager.SHAPESHIFTER_ATTACK_PACKET_ID,
@@ -24,7 +25,8 @@ public final class ClientNetworkHandler {
                 });
     }
 
-    private static void handleShapeshifterSyncPacket(MinecraftClient client, PacketByteBuf buf) {
+    private static void handleShapeshifterSyncPacket(MinecraftClient client, PacketByteBuf buf,
+            ClientPlayNetworkHandler handler) {
         final int id = buf.readVarInt();
         final String entityId = buf.readString();
         final NbtCompound entityNbt = buf.readNbt();

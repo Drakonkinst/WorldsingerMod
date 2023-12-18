@@ -41,11 +41,11 @@ public abstract class ShapeshiftingEntityRenderer<T extends ShapeshiftingEntity,
     }
 
     @Override
-    public void render(T entity, float f, float tickDelta, MatrixStack matrixStack,
-            VertexConsumerProvider vertexConsumerProvider, int i) {
+    public void render(T entity, float yaw, float tickDelta, MatrixStack matrices,
+            VertexConsumerProvider vertexConsumers, int light) {
         LivingEntity morph = entity.getMorph();
         if (morph == null) {
-            super.render(entity, f, tickDelta, matrixStack, vertexConsumerProvider, i);
+            super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
             return;
         }
 
@@ -105,6 +105,11 @@ public abstract class ShapeshiftingEntityRenderer<T extends ShapeshiftingEntity,
         EntityRenderer<? super LivingEntity> morphRenderer = MinecraftClient.getInstance()
                 .getEntityRenderDispatcher()
                 .getRenderer(morph);
-        morphRenderer.render(morph, f, tickDelta, matrixStack, vertexConsumerProvider, i);
+        morphRenderer.render(morph, yaw, tickDelta, matrices, vertexConsumers, light);
+
+        if (entity.shouldRenderNameTag() && this.hasLabel(entity)) {
+            this.renderLabelIfPresent(entity, entity.getDisplayName(), matrices, vertexConsumers,
+                    light);
+        }
     }
 }

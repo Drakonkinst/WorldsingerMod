@@ -19,8 +19,12 @@ public interface Shapeshifter {
         // Do nothing
     }
 
-    default boolean copyEquipmentVisuals() {
+    default boolean shouldCopyEquipmentVisuals() {
         return false;
+    }
+
+    default boolean shouldRenderNameTag() {
+        return true;
     }
 
     @Nullable LivingEntity getMorph();

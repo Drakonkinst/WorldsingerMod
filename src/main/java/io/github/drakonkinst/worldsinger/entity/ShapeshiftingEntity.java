@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.entity;
 
+import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
-import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 // Note that even non-player entities might not extend this class; that's why it's important to use
 // the Shapeshifter interface where possible. This is just one example of how this can be saved
 // and loaded.
-// Morphs do not tick, so any visual updates need to be called manually.
+// Morphs do not tick, so any visual updates need to be called manually. Morph NBT is NOT synced.
 public abstract class ShapeshiftingEntity extends PathAwareEntity implements Shapeshifter {
 
     protected static final TrackedData<NbtCompound> MORPH = DataTracker.registerData(
@@ -75,14 +75,7 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
         if (morphData.isEmpty() && morph != null) {
             this.updateMorph(null);
         } else if (!morphData.isEmpty()) {
-            if (morph == null) {
-                ShapeshiftingManager.createMorphFromNbt(this, morphData, false);
-            } else {
-                UUID uuid = morphData.getUuid(Entity.UUID_KEY);
-                if (!morph.getUuid().equals(uuid)) {
-                    ShapeshiftingManager.createMorphFromNbt(this, morphData, false);
-                }
-            }
+            ShapeshiftingManager.createMorphFromNbt(this, morphData, false);
         }
     }
 
@@ -112,7 +105,10 @@ public abstract class ShapeshiftingEntity extends PathAwareEntity implements Sha
     private void setMorphDataFromEntity(LivingEntity morph) {
         NbtCompound nbtCompound = new NbtCompound();
         if (morph != null) {
-            morph.saveSelfNbt(nbtCompound);
+            boolean saved = morph.saveSelfNbt(nbtCompound);
+            if (!saved) {
+                Worldsinger.LOGGER.warn("Unable to save data for morph");
+            }
         }
         this.setMorphData(nbtCompound);
     }

@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.api.ModApi;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.ModCauldronBehaviors;
 import io.github.drakonkinst.worldsinger.command.ModCommands;
+import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingBridge;
 import io.github.drakonkinst.worldsinger.entity.ModAttributeRegistry;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
@@ -34,6 +35,8 @@ public class Worldsinger implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("Initializing Worldsinger...");
+
+        ShapeshiftingBridge bridge = new ShapeshiftingBridge();
 
         // I'll figure out the proper order for these...one day
         Fluidlogged.initialize();

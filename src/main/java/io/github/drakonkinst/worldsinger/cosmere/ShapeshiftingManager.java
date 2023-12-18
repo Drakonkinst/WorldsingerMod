@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.cosmere;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.entity.PlayerMorphDummy;
 import io.github.drakonkinst.worldsinger.entity.Shapeshifter;
 import io.github.drakonkinst.worldsinger.mixin.accessor.BatEntityInvoker;
 import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
@@ -11,6 +12,7 @@ import io.github.drakonkinst.worldsinger.mixin.accessor.RavagerEntityAccessor;
 import io.github.drakonkinst.worldsinger.mixin.accessor.ShulkerEntityAccessor;
 import io.netty.buffer.Unpooled;
 import java.util.Optional;
+import java.util.UUID;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -27,6 +29,7 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.TropicalFishEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientCommonPacketListener;
@@ -37,10 +40,12 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 
 public final class ShapeshiftingManager {
 
     public static final String EMPTY_MORPH = "minecraft:empty";
+    public static final String ID_PLAYER = "minecraft:player";
     public static final Identifier SHAPESHIFTER_SYNC_PACKET_ID = Worldsinger.id(
             "shapeshifter_sync");
     public static final Identifier SHAPESHIFTER_ATTACK_PACKET_ID = Worldsinger.id(
@@ -97,36 +102,54 @@ public final class ShapeshiftingManager {
 
     public static void createMorphFromNbt(Shapeshifter shapeshifter, NbtCompound morphNbt,
             boolean showTransformEffects) {
-        Optional<EntityType<?>> type = EntityType.fromNbt(morphNbt);
-        if (type.isPresent()) {
-            LivingEntity morph = shapeshifter.getMorph();
-            if (morph == null || !type.get().equals(morph.getType())) {
-                // TODO: Players have no entity factory and cannot be created, so this is null?
-                morph = (LivingEntity) type.get().create(shapeshifter.toEntity().getWorld());
-            }
+        Optional<EntityType<?>> optionalType = EntityType.fromNbt(morphNbt);
+        if (optionalType.isEmpty()) {
+            return;
+        }
+        EntityType<?> type = optionalType.get();
 
-            if (morph != null) {
-                ShapeshiftingManager.onMorphEntitySpawn(shapeshifter, morph);
-                morph.readNbt(morphNbt);
-                shapeshifter.updateMorph(morph);
-                shapeshifter.afterMorphEntitySpawn(morph, showTransformEffects);
+        LivingEntity morph = shapeshifter.getMorph();
+        if (morph == null || !type.equals(morph.getType())) {
+            World world = shapeshifter.toEntity().getWorld();
+            if (type.equals(EntityType.PLAYER)) {
+                UUID playerUuid = morphNbt.getUuid(PlayerMorphDummy.KEY_PLAYER);
+                String playerName = morphNbt.getString(PlayerMorphDummy.KEY_PLAYER_NAME);
+                morph = ShapeshiftingBridge.getInstance()
+                        .createPlayerMorph(world, playerUuid, playerName);
+            } else {
+                morph = (LivingEntity) type.create(world);
             }
+        }
+
+        if (morph != null) {
+            ShapeshiftingManager.onMorphEntitySpawn(shapeshifter, morph);
+            morph.readNbt(morphNbt);
+            shapeshifter.updateMorph(morph);
+            shapeshifter.afterMorphEntitySpawn(morph, showTransformEffects);
+        } else {
+            Worldsinger.LOGGER.warn("Failed to create morph for type " + type);
         }
     }
 
     public static void createMorphFromEntity(Shapeshifter shapeshifter, LivingEntity toCopy,
             boolean showTransformEffects) {
         LivingEntity morph = shapeshifter.getMorph();
-
         if (morph == null || toCopy.getType().equals(morph.getType())) {
-            morph = (LivingEntity) toCopy.getType().create(shapeshifter.toEntity().getWorld());
+            World world = shapeshifter.toEntity().getWorld();
+            if (toCopy instanceof PlayerEntity) {
+                morph = ShapeshiftingBridge.getInstance()
+                        .createPlayerMorph(world, toCopy.getUuid(), toCopy.getName().getString());
+            } else {
+                morph = (LivingEntity) toCopy.getType().create(world);
+            }
         }
-
         if (morph != null) {
             ShapeshiftingManager.onMorphEntitySpawn(shapeshifter, morph);
             ShapeshiftingManager.copyVariantData(shapeshifter, morph, toCopy);
             shapeshifter.updateMorph(morph);
             shapeshifter.afterMorphEntitySpawn(morph, showTransformEffects);
+        } else {
+            Worldsinger.LOGGER.warn("Failed to create morph for type " + toCopy.getType());
         }
     }
 
@@ -167,7 +190,7 @@ public final class ShapeshiftingManager {
 
         // TODO: Other entity variants (Villager, Parrot, Cat, Axolotl)
 
-        if (shapeshifter.copyEquipmentVisuals()) {
+        if (shapeshifter.shouldCopyEquipmentVisuals()) {
             // Equipped items
             morph.equipStack(EquipmentSlot.MAINHAND,
                     toCopy.getEquippedStack(EquipmentSlot.MAINHAND));
