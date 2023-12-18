@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ItemEntity.class)
-public abstract class ItemEntityMixin extends Entity {
+public abstract class ItemEntityCustomFluidMovementMixin extends Entity {
 
     @Unique
     private static final float HEIGHT_OFFSET = 1.0f / 9.0f;
@@ -35,7 +35,7 @@ public abstract class ItemEntityMixin extends Entity {
     @Unique
     private static final double MAX_VERTICAL_VELOCITY = MAX_VERTICAL_VELOCITY_VANILLA * 4;
 
-    public ItemEntityMixin(EntityType<?> type, World world) {
+    public ItemEntityCustomFluidMovementMixin(EntityType<?> type, World world) {
         super(type, world);
     }
 

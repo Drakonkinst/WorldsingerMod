@@ -44,7 +44,8 @@
     "cardinal-components": [
       "worldsinger:lumar_seethe",
       "worldsinger:silver_lined",
-      "worldsinger:spore_growth"
+      "worldsinger:spore_growth",
+      "worldsinger:thirst_manager"
     ]
   },
   "accessWidener": "worldsinger.accesswidener"
