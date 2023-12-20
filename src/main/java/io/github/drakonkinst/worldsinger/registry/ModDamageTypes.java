@@ -21,6 +21,7 @@ public final class ModDamageTypes {
     public static final RegistryKey<DamageType> SPIKE = ModDamageTypes.of("spike");
     public static final RegistryKey<DamageType> SPIKE_FALL = ModDamageTypes.of("spike_fall");
     public static final RegistryKey<DamageType> DROWN_SPORE = ModDamageTypes.of("drown_spore");
+    public static final RegistryKey<DamageType> THIRST = ModDamageTypes.of("thirst");
 
     // TODO: Create custom damage type
     public static final RegistryKey<DamageType> SUNLIGHT = ModDamageTypes.of(

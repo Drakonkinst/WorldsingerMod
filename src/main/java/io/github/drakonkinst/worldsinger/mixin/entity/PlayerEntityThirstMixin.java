@@ -24,7 +24,7 @@ public abstract class PlayerEntityThirstMixin extends LivingEntity {
     // other alternatives.
     @Inject(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"))
     private void addThirstExhaustion(float exhaustion, CallbackInfo ci) {
-        ModComponents.THIRST_MANAGER.get(this).addExhaustion(exhaustion);
+        ModComponents.THIRST_MANAGER.get(this).addDehydration(exhaustion);
     }
 
     // private void addHungerExhaustionOnly()

@@ -11,13 +11,13 @@ public interface ThirstManagerComponent extends AutoSyncedComponent, ServerTicki
     void drink(Item item, ItemStack stack);
 
     // Add exhaustion like hunger, which can lead to water loss
-    void addExhaustion(float exhaustion);
+    void addDehydration(float exhaustion);
 
     // Directly add water
-    void addWater(int water);
+    void add(int water);
 
     // Directly remove water
-    void removeWater(int water);
+    void remove(int water, boolean isNatural);
 
     int getWaterLevel();
 }
