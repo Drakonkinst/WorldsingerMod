@@ -27,6 +27,8 @@ public final class ModStatusEffects {
             new SporeStatusEffect(RoseiteSpores.getInstance(), ModDamageTypes.ROSEITE_SPORE));
     public static final StatusEffect MIDNIGHT_SPORES = register("midnight_spores",
             new SporeStatusEffect(MidnightSpores.getInstance(), ModDamageTypes.MIDNIGHT_ESSENCE));
+    public static final StatusEffect THIRST = register("thirst",
+            new ThirstStatusEffect(0.005f, 0xb7d39d));
 
     private static <T extends StatusEffect> T register(String id, T statusEffect) {
         Registry.register(Registries.STATUS_EFFECT, Worldsinger.id(id), statusEffect);

@@ -17,6 +17,8 @@ public final class ModItemTags {
 
     public static final TagKey<Item> SILVER_INGOTS = ModItemTags.ofCommon("silver_ingots");
     public static final TagKey<Item> SHIELDS = ModItemTags.ofCommon("shields");
+    public static final TagKey<Item> CHANCE_TO_GIVE_THIRST = ModItemTags.ofCommon(
+            "chance_to_give_thirst");
 
     private static TagKey<Item> of(String id) {
         return TagKey.of(RegistryKeys.ITEM, Worldsinger.id(id));

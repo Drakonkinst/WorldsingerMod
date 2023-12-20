@@ -60,10 +60,10 @@ public class ThirstManager implements ThirstManagerComponent {
         if (thirstLevel < MIN_NATURAL_THIRST && entity instanceof PlayerEntity player
                 && !player.isCreative()) {
             player.addStatusEffect(
-                    new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 10, 0, false, false,
+                    new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 60, 0, false, false,
                             false));
             player.addStatusEffect(
-                    new StatusEffectInstance(StatusEffects.WEAKNESS, 10, 0, false, false, false));
+                    new StatusEffectInstance(StatusEffects.WEAKNESS, 60, 0, false, false, false));
         }
 
         // Start taking damage
