@@ -26,8 +26,8 @@ public class ThirstManager implements ThirstManagerComponent {
 
     // Constants that probably won't change
     private static final int MAX_THIRST_LEVEL = 20;
-    private static final float MAX_EXHAUSTION = 4.0f;
-    private static final float EXHAUSTION_PER_WATER_LEVEL = 4.0f;
+    private static final float MAX_EXHAUSTION = 40.0f;
+    private static final float DEHYDRATION_PER_THIRST_LEVEL = 4.0f;
     private static final int DAMAGE_TICK_INTERVAL = 80;
     private static final float MIN_HEALTH_ON_EASY = 10.0f;
     private static final float MIN_HEALTH_ON_NORMAL = 1.0f;
@@ -50,9 +50,11 @@ public class ThirstManager implements ThirstManagerComponent {
 
     @Override
     public void serverTick() {
-        if (dehydration > EXHAUSTION_PER_WATER_LEVEL) {
-            dehydration -= EXHAUSTION_PER_WATER_LEVEL;
-            remove(1, true);
+        if (dehydration > DEHYDRATION_PER_THIRST_LEVEL) {
+            dehydration -= DEHYDRATION_PER_THIRST_LEVEL;
+            if (thirstLevel > MIN_NATURAL_THIRST) {
+                remove(1);
+            }
         }
 
         // Use MIN_NATURAL_THIRST as the threshold after which you get negative effects from dehydration.
@@ -90,32 +92,21 @@ public class ThirstManager implements ThirstManagerComponent {
 
     @Override
     public void add(int water) {
-        int nextThirstLevel = Math.min(thirstLevel + water, MAX_THIRST_LEVEL);
-        boolean hasChanged = nextThirstLevel != thirstLevel;
-        thirstLevel = nextThirstLevel;
-        if (hasChanged) {
-            ModComponents.THIRST_MANAGER.sync(entity);
-        }
+        thirstLevel = Math.min(thirstLevel + water, MAX_THIRST_LEVEL);
+        ModComponents.THIRST_MANAGER.sync(entity);
     }
 
     @Override
-    public void remove(int water, boolean isNatural) {
-        int nextThirstLevel = thirstLevel - water;
-        if (isNatural) {
-            nextThirstLevel = Math.max(MIN_NATURAL_THIRST, nextThirstLevel);
-        }
-        nextThirstLevel = Math.max(0, nextThirstLevel);
-        boolean hasChanged = nextThirstLevel != thirstLevel;
-        thirstLevel = nextThirstLevel;
-        if (hasChanged) {
-            ModComponents.THIRST_MANAGER.sync(entity);
-        }
+    public void remove(int water) {
+        thirstLevel = Math.max(0, thirstLevel - water);
+        ModComponents.THIRST_MANAGER.sync(entity);
     }
 
     @Override
     public void addDehydration(float dehydration) {
-        float nextDehydration = this.dehydration + dehydration * DRAIN_MULTIPLIER;
-        this.dehydration = Math.min(nextDehydration, MAX_EXHAUSTION);
+        this.dehydration = Math.min(this.dehydration + dehydration * DRAIN_MULTIPLIER,
+                MAX_EXHAUSTION);
+        ModComponents.THIRST_MANAGER.sync(entity);
     }
 
     public void drink(Item item, ItemStack stack) {
@@ -128,7 +119,7 @@ public class ThirstManager implements ThirstManagerComponent {
         if (water > 0) {
             add(water);
         } else {
-            remove(water, false);
+            remove(-water);
         }
     }
 

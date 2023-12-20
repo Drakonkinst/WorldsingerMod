@@ -13,6 +13,7 @@ import io.github.drakonkinst.worldsinger.cosmere.lumar.ZephyrSpores;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.material.ModArmorMaterials;
 import io.github.drakonkinst.worldsinger.material.ModToolMaterials;
+import io.github.drakonkinst.worldsinger.registry.ModFoodComponents;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -102,7 +103,8 @@ public final class ModItems {
             new Item(new FabricItemSettings()));
     public static final Item ROSEITE_BEAD = register("roseite_bead",
             new Item(new FabricItemSettings()));
-    public static final Item SALT = register("salt", new Item(new FabricItemSettings()));
+    public static final Item SALT = register("salt",
+            new Item(new FabricItemSettings().food(ModFoodComponents.SALT)));
 
     // Silver
     public static final Item RAW_SILVER = register("raw_silver",
