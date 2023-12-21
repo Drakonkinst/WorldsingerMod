@@ -13,9 +13,18 @@ public final class ModEventHandlers {
         FinishConsumingItemCallback.EVENT.register(((entity, stack) -> {
             if (entity instanceof PlayerEntity player) {
                 ModComponents.THIRST_MANAGER.get(player).drink(stack.getItem(), stack);
-                if (stack.isIn(ModItemTags.CHANCE_TO_GIVE_THIRST)) {
-                    player.addStatusEffect(
-                            new StatusEffectInstance(ModStatusEffects.THIRST, 600, 0));
+
+                // Status effects should only be added on server side
+                if (!entity.getWorld().isClient()) {
+                    if (stack.isIn(ModItemTags.ALWAYS_GIVE_THIRST)) {
+                        player.addStatusEffect(
+                                new StatusEffectInstance(ModStatusEffects.THIRST, 600, 0));
+                    }
+                    if (stack.isIn(ModItemTags.CHANCE_TO_GIVE_THIRST)
+                            && entity.getWorld().getRandom().nextInt(5) != 0) {
+                        player.addStatusEffect(
+                                new StatusEffectInstance(ModStatusEffects.THIRST, 600, 0));
+                    }
                 }
             }
         }));

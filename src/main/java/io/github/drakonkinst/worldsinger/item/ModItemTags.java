@@ -17,6 +17,8 @@ public final class ModItemTags {
 
     public static final TagKey<Item> SILVER_INGOTS = ModItemTags.ofCommon("silver_ingots");
     public static final TagKey<Item> SHIELDS = ModItemTags.ofCommon("shields");
+    public static final TagKey<Item> ALWAYS_GIVE_THIRST = ModItemTags.ofCommon(
+            "always_give_thirst");
     public static final TagKey<Item> CHANCE_TO_GIVE_THIRST = ModItemTags.ofCommon(
             "chance_to_give_thirst");
 

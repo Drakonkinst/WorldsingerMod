@@ -53,6 +53,12 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
         return AETHER_SPORE_MAP;
     }
 
+    public static void clearAllSporeEffects(LivingEntity entity) {
+        for (StatusEffect statusEffect : FLUID_TO_STATUS_EFFECT.values()) {
+            entity.removeStatusEffect(statusEffect);
+        }
+    }
+
     public static int getBottleColor(ItemStack stack) {
         if (stack.getItem() instanceof SporeBottleItem sporeBottleItem) {
             return sporeBottleItem.getSporeType().getColor();

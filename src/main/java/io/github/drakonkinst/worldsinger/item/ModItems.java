@@ -104,7 +104,7 @@ public final class ModItems {
     public static final Item ROSEITE_BEAD = register("roseite_bead",
             new Item(new FabricItemSettings()));
     public static final Item SALT = register("salt",
-            new Item(new FabricItemSettings().food(ModFoodComponents.SALT)));
+            new SaltItem(new FabricItemSettings().food(ModFoodComponents.SALT)));
 
     // Silver
     public static final Item RAW_SILVER = register("raw_silver",
