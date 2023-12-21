@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
@@ -37,13 +38,13 @@ public class SporeBottleItem extends PotionItem implements SporeEmitting {
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         FinishConsumingItemCallback.EVENT.invoker().onConsume(user, stack);
-        
+
         PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity) user : null;
         if (playerEntity instanceof ServerPlayerEntity serverPlayerEntity) {
             Criteria.CONSUME_ITEM.trigger(serverPlayerEntity, stack);
         }
         if (!world.isClient) {
-            StatusEffect statusEffect = sporeType.getStatusEffect();
+            RegistryEntry<StatusEffect> statusEffect = sporeType.getStatusEffect();
             if (statusEffect == null) {
                 user.damage(ModDamageTypes.createSource(world, ModDamageTypes.DROWN_SPORE),
                         SPORE_DEFAULT_DAMAGE);

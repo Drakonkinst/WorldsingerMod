@@ -15,7 +15,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.world.event.GameEvent;
 
 public final class ModCauldronBehaviors {
@@ -127,7 +127,7 @@ public final class ModCauldronBehaviors {
                                 1.0f, 1.0f);
                         world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
                     }
-                    return ActionResult.success(world.isClient);
+                    return ItemActionResult.success(world.isClient);
                 });
         behavior.put(Items.BUCKET,
                 (state, world, pos, player, hand, stack) -> CauldronBehavior.emptyCauldron(state,
@@ -146,11 +146,11 @@ public final class ModCauldronBehaviors {
                         1.0f);
                 world.emitGameEvent(null, GameEvent.FLUID_PICKUP, pos);
             }
-            return ActionResult.success(world.isClient);
+            return ItemActionResult.success(world.isClient);
         });
         behavior.put(bottledItem, (state, world, pos, player, hand, stack) -> {
             if (state.get(LeveledCauldronBlock.LEVEL) == 3) {
-                return ActionResult.PASS;
+                return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
             if (!world.isClient) {
                 player.setStackInHand(hand,
@@ -162,7 +162,7 @@ public final class ModCauldronBehaviors {
                         1.0f);
                 world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
-            return ActionResult.success(world.isClient);
+            return ItemActionResult.success(world.isClient);
         });
     }
 

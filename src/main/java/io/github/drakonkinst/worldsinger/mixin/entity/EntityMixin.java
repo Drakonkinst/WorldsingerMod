@@ -40,6 +40,23 @@ public abstract class EntityMixin {
     @Shadow
     public abstract World getWorld();
 
+    @Inject(method = "stepOnBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;emitGameEvent(Lnet/minecraft/registry/entry/RegistryEntry;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/world/event/GameEvent$Emitter;)V"))
+    private void spawnParticlesOnStep(BlockPos pos, BlockState state, boolean playSound,
+            boolean emitEvent, Vec3d movement, CallbackInfoReturnable<Boolean> cir) {
+        AetherSpores.onStepOnSpores((Entity) (Object) this);
+    }
+
+    @WrapOperation(method = "spawnSprintingParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getRenderType()Lnet/minecraft/block/BlockRenderType;"))
+    private BlockRenderType showSprintingParticlesForCustomFluid(BlockState instance,
+            Operation<BlockRenderType> original) {
+        World world = this.getWorld();
+        if (!instance.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS) || LumarSeethe.areSporesFluidized(
+                world)) {
+            return original.call(instance);
+        }
+        return BlockRenderType.MODEL;
+    }
+    
     @ModifyReturnValue(method = "updateWaterState", at = @At("RETURN"))
     private boolean allowCustomFluidToPushEntity(boolean isTouchingAnyFluid) {
         // All custom fluid logic should run every time this is called, no early returns.
@@ -63,22 +80,5 @@ public abstract class EntityMixin {
         }
 
         return isTouchingAnyFluid;
-    }
-
-    @WrapOperation(method = "spawnSprintingParticles", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getRenderType()Lnet/minecraft/block/BlockRenderType;"))
-    private BlockRenderType showSprintingParticlesForCustomFluid(BlockState instance,
-            Operation<BlockRenderType> original) {
-        World world = this.getWorld();
-        if (!instance.isIn(ModBlockTags.AETHER_SPORE_SEA_BLOCKS) || LumarSeethe.areSporesFluidized(
-                world)) {
-            return original.call(instance);
-        }
-        return BlockRenderType.MODEL;
-    }
-
-    @Inject(method = "stepOnBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;emitGameEvent(Lnet/minecraft/world/event/GameEvent;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/world/event/GameEvent$Emitter;)V"))
-    private void spawnParticlesOnStep(BlockPos pos, BlockState state, boolean playSound,
-            boolean emitEvent, Vec3d movement, CallbackInfoReturnable<Boolean> cir) {
-        AetherSpores.onStepOnSpores((Entity) (Object) this);
     }
 }

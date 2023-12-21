@@ -17,6 +17,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Vec3d;
@@ -52,7 +53,7 @@ public abstract class LivingEntityCustomFluidMovementMixin extends Entity {
     public abstract boolean canWalkOnFluid(FluidState state);
 
     @Shadow
-    public abstract boolean hasStatusEffect(StatusEffect effect);
+    public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
 
     @Shadow
     public abstract boolean isClimbing();

@@ -16,12 +16,12 @@ public class ThirstStatusEffect extends StatusEffect {
     }
 
     @Override
-    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-        super.applyUpdateEffect(entity, amplifier);
+    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (entity instanceof PlayerEntity player) {
             ModComponents.THIRST_MANAGER.get(player)
                     .addDehydration(drainMultiplier * (float) (amplifier + 1));
         }
+        return true;
     }
 
     @Override

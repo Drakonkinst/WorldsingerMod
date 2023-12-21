@@ -8,6 +8,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.item.Item;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -66,7 +67,7 @@ public class DeadSpores extends AetherSpores {
 
     @Override
     @Nullable
-    public StatusEffect getStatusEffect() {
+    public RegistryEntry<StatusEffect> getStatusEffect() {
         return null;
     }
 

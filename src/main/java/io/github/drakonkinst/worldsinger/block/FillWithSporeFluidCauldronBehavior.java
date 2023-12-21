@@ -10,8 +10,8 @@ import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -26,8 +26,8 @@ public class FillWithSporeFluidCauldronBehavior extends FillWithFluidCauldronBeh
     }
 
     @Override
-    public ActionResult interact(BlockState state, World world, BlockPos pos, PlayerEntity player,
-            Hand hand, ItemStack stack) {
+    public ItemActionResult interact(BlockState state, World world, BlockPos pos,
+            PlayerEntity player, Hand hand, ItemStack stack) {
         if (SporeKillingManager.isSporeKillingBlockNearby(world, pos)) {
             return CauldronBehavior.fillCauldron(world, pos, player, hand, stack,
                     deadSporeCauldronBlock.get()

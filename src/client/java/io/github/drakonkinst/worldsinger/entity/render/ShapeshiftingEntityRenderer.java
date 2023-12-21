@@ -109,7 +109,7 @@ public abstract class ShapeshiftingEntityRenderer<T extends ShapeshiftingEntity,
 
         if (entity.shouldRenderNameTag() && this.hasLabel(entity)) {
             this.renderLabelIfPresent(entity, entity.getDisplayName(), matrices, vertexConsumers,
-                    light);
+                    light, tickDelta);
         }
     }
 }

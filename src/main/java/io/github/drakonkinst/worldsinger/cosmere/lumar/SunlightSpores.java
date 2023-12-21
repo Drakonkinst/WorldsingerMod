@@ -27,6 +27,7 @@ import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -282,7 +283,7 @@ public class SunlightSpores extends AetherSpores {
     }
 
     @Override
-    public StatusEffect getStatusEffect() {
+    public RegistryEntry<StatusEffect> getStatusEffect() {
         return ModStatusEffects.SUNLIGHT_SPORES;
     }
 

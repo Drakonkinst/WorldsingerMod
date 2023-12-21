@@ -12,6 +12,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleEffect;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -174,7 +175,7 @@ public final class SporeParticleManager {
         }
 
         // Retrieve status effect
-        StatusEffect statusEffect = sporeType.getStatusEffect();
+        RegistryEntry<StatusEffect> statusEffect = sporeType.getStatusEffect();
         if (statusEffect == null) {
             Worldsinger.LOGGER.error(
                     "SporeType does not have associated status effect: " + sporeType.getId());
@@ -233,8 +234,8 @@ public final class SporeParticleManager {
     }
 
     // Apply spore status effect to the entity for the duration
-    public static void applySporeEffect(LivingEntity entity, StatusEffect statusEffect,
-            int duration) {
+    public static void applySporeEffect(LivingEntity entity,
+            RegistryEntry<StatusEffect> statusEffect, int duration) {
         entity.addStatusEffect(new StatusEffectInstance(statusEffect, duration, 0, true, true));
     }
 

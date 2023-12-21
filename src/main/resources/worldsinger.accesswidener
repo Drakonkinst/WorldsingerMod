@@ -4,3 +4,5 @@ accessible class net/minecraft/world/gen/densityfunction/DensityFunctionTypes$Be
 accessible class net/minecraft/entity/SpawnRestriction$Entry
 accessible class net/minecraft/entity/effect/HungerStatusEffect
 extendable class net/minecraft/world/gen/chunk/NoiseChunkGenerator
+extendable method net/minecraft/entity/Entity getEyeHeight (Lnet/minecraft/entity/EntityPose;)F
+extendable method net/minecraft/entity/LivingEntity getDimensions (Lnet/minecraft/entity/EntityPose;)Lnet/minecraft/entity/EntityDimensions;

@@ -33,6 +33,7 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.PufferfishEntity;
 import net.minecraft.entity.passive.SchoolingFishEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -52,7 +53,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
     private static final int NUM_TRANSFORM_PARTICLES = 32;
     private static final String MORPHED_NAME_TRANSLATION_KEY = Util.createTranslationKey("entity",
             Worldsinger.id("midnight_creature.morphed"));
-    private static final Set<StatusEffect> IMMUNE_TO = Set.of(StatusEffects.WITHER,
+    private static final Set<RegistryEntry<StatusEffect>> IMMUNE_TO = Set.of(StatusEffects.WITHER,
             StatusEffects.POISON, StatusEffects.HUNGER, ModStatusEffects.CRIMSON_SPORES,
             ModStatusEffects.MIDNIGHT_SPORES, ModStatusEffects.ROSEITE_SPORES,
             ModStatusEffects.SUNLIGHT_SPORES, ModStatusEffects.VERDANT_SPORES,
@@ -254,7 +255,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
     // TODO: Investigate better solutions
     @Override
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        StatusEffect effectType = effect.getEffectType();
+        RegistryEntry<StatusEffect> effectType = effect.getEffectType();
         if (IMMUNE_TO.contains(effectType)) {
             return false;
         }

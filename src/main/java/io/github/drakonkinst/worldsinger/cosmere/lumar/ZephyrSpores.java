@@ -26,6 +26,7 @@ import net.minecraft.item.Item;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -229,7 +230,7 @@ public class ZephyrSpores extends AetherSpores {
     }
 
     @Override
-    public StatusEffect getStatusEffect() {
+    public RegistryEntry<StatusEffect> getStatusEffect() {
         return ModStatusEffects.ZEPHYR_SPORES;
     }
 

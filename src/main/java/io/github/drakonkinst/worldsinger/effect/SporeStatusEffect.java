@@ -42,9 +42,9 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
     }
 
     @Override
-    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (!SporeParticleManager.sporesCanAffect(entity)) {
-            return;
+            return false;
         }
 
         if (sporeType.getId() == SunlightSpores.ID) {
@@ -71,6 +71,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
         if (wasDamaged && entity.isDead()) {
             onDeathEffect(entity);
         }
+        return true;
     }
 
     private void onDeathEffect(LivingEntity entity) {

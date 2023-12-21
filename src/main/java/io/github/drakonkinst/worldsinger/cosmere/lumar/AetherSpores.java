@@ -24,6 +24,7 @@ import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.dynamic.Codecs;
@@ -41,7 +42,7 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
     public static final Codec<AetherSpores> CODEC = Codecs.idChecked(AetherSpores::getName,
             AETHER_SPORE_MAP::get);
 
-    private static final Map<TagKey<Fluid>, StatusEffect> FLUID_TO_STATUS_EFFECT = ImmutableMap.of(
+    private static final Map<TagKey<Fluid>, RegistryEntry<StatusEffect>> FLUID_TO_STATUS_EFFECT = ImmutableMap.of(
             ModFluidTags.VERDANT_SPORES, ModStatusEffects.VERDANT_SPORES,
             ModFluidTags.CRIMSON_SPORES, ModStatusEffects.CRIMSON_SPORES,
             ModFluidTags.ZEPHYR_SPORES, ModStatusEffects.ZEPHYR_SPORES,
@@ -54,7 +55,7 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
     }
 
     public static void clearAllSporeEffects(LivingEntity entity) {
-        for (StatusEffect statusEffect : FLUID_TO_STATUS_EFFECT.values()) {
+        for (RegistryEntry<StatusEffect> statusEffect : FLUID_TO_STATUS_EFFECT.values()) {
             entity.removeStatusEffect(statusEffect);
         }
     }
@@ -126,7 +127,7 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
 
     public static void applySporeSeaEffects(LivingEntity entity) {
         if (!entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
-            for (Map.Entry<TagKey<Fluid>, StatusEffect> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
+            for (Map.Entry<TagKey<Fluid>, RegistryEntry<StatusEffect>> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
                 if (entity.isSubmergedIn(entry.getKey())) {
                     SporeParticleManager.applySporeEffect(entity, entry.getValue(),
                             SporeParticleManager.SPORE_EFFECT_DURATION_TICKS_DEFAULT);
@@ -166,7 +167,7 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
     public abstract FlowableFluid getFluid();
 
     @Nullable
-    public abstract StatusEffect getStatusEffect();
+    public abstract RegistryEntry<StatusEffect> getStatusEffect();
 
     public abstract int getParticleColor();
 
