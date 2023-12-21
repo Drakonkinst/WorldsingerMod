@@ -17,7 +17,15 @@ repositories {
     }
     maven {
         name = "Ladysnake Mods"
-        url = 'https://maven.ladysnake.org/releases'
+        url = "https://maven.ladysnake.org/releases"
+    }
+    maven {
+        name = "ModMenu"
+        url = "https://maven.terraformersmc.com/releases"
+    }
+    maven {
+        name = "Xander Maven"
+        url = "https://maven.isxander.dev/releases"
     }
 }
 
@@ -51,13 +59,29 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    include(implementation("com.github.Chocohead:Fabric-ASM:${fabric_asm_version}"))
-    include(modImplementation("com.github.Drakonkinst:DataTables:${data_tables_version}"))
+    include(implementation("com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"))
+    include(modImplementation("com.github.Drakonkinst:DataTables:${project.data_tables_version}")) {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    // Mod Menu Integration (Optional)
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+    // YACL (Optional)
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}") {
+        exclude group: "net.fabricmc"
+    }
 
     // Cardinal Components
-    include(modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cardinal_components_version}"))
-    include(modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cardinal_components_version}"))
-    include(modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-scoreboard:${cardinal_components_version}"))
+    include(modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}")) {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    include(modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}")) {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    include(modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-scoreboard:${project.cardinal_components_version}")) {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 }
 
 processResources {
