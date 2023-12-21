@@ -65,7 +65,7 @@ dependencies {
     }
 
     // Mod Menu Integration (Optional)
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     // YACL (Optional)
     modCompileOnly("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}") {
