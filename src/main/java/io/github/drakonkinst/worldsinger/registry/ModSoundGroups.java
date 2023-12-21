@@ -13,7 +13,7 @@ public final class ModSoundGroups {
     public static final BlockSoundGroup VERDANT_VINE_BRANCH = BlockSoundGroup.WOOD;
     public static final BlockSoundGroup VERDANT_VINE_SNARE = BlockSoundGroup.GRASS;
     public static final BlockSoundGroup TWISTING_VERDANT_VINES = BlockSoundGroup.WEEPING_VINES;
-    public static final BlockSoundGroup MIDNIGHT_ESSENCE = BlockSoundGroup.INTENTIONALLY_EMPTY;
+    public static final BlockSoundGroup MIDNIGHT_ESSENCE = BlockSoundGroup.SOUL_SAND;
 
     private ModSoundGroups() {}
 }

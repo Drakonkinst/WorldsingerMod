@@ -319,7 +319,6 @@ public final class ModBlocks {
                     // Impossible to break, but can be destroyed
                     .strength(-1.0f, 0.5f)
                     .dropsNothing()
-                    .replaceable()
                     .noBlockBreakParticles()
                     .solidBlock(Blocks::never)
                     .sounds(ModSoundGroups.MIDNIGHT_ESSENCE)

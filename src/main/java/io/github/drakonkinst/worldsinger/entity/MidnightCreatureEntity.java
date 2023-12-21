@@ -11,7 +11,9 @@ import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.util.ModEnums.PathNodeType;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -25,6 +27,9 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -44,8 +49,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class MidnightCreatureEntity extends ShapeshiftingEntity {
+
+    private static final TrackedData<Optional<UUID>> CONTROLLER_UUID = DataTracker.registerData(
+            MidnightCreatureEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
 
     private static final int IMITATE_NEAREST_INTERVAL = 20 * 5;
     private static final int AMBIENT_PARTICLE_INTERVAL = 10;
@@ -108,12 +117,25 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
         }
     }
 
+    @Nullable
+    private LivingEntity controller;
+
     public MidnightCreatureEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
         this.experiencePoints = 5;
 
         // Set to same penalty as water
         this.setPathfindingPenalty(PathNodeType.AETHER_SPORE_SEA, 8.0F);
+    }
+
+    public MidnightCreatureEntity(World world) {
+        this(ModEntityTypes.MIDNIGHT_CREATURE, world);
+    }
+
+    @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(CONTROLLER_UUID, Optional.empty());
     }
 
     @Override
@@ -124,7 +146,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
         this.goalSelector.add(4, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(4, new LookAroundGoal(this));
 
-        this.targetSelector.add(3, new RevengeGoal(this));
+        this.targetSelector.add(3, new RevengeGoal(this).setGroupRevenge());
     }
 
     @Override

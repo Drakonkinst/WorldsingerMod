@@ -54,8 +54,9 @@ public final class ModEntityTypes {
                     .build());
     public static final EntityType<MidnightCreatureEntity> MIDNIGHT_CREATURE = register(
             "midnight_creature",
-            FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, MidnightCreatureEntity::new)
-                    .dimensions(EntityDimensions.changing(1.0f, 1.0f))
+            FabricEntityTypeBuilder.<MidnightCreatureEntity>create(SpawnGroup.CREATURE,
+                            MidnightCreatureEntity::new)
+                    .dimensions(EntityDimensions.changing(0.98f, 0.98f))
                     .build());
 
     public static void initialize() {

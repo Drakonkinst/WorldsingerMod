@@ -21,8 +21,8 @@ import net.minecraft.util.Hand;
 public abstract class ShapeshiftingEntityRenderer<T extends ShapeshiftingEntity, M extends EntityModel<T>> extends
         MobEntityRenderer<T, M> {
 
-    public ShapeshiftingEntityRenderer(Context context, M entityModel, float f) {
-        super(context, entityModel, f);
+    public ShapeshiftingEntityRenderer(Context context, M entityModel, float shadowRadius) {
+        super(context, entityModel, shadowRadius);
     }
 
     protected void configureEquipment(T entity, LivingEntity morph) {
@@ -40,12 +40,17 @@ public abstract class ShapeshiftingEntityRenderer<T extends ShapeshiftingEntity,
         return entity.isTouchingWater();
     }
 
+    protected void renderDefault(T entity, float yaw, float tickDelta, MatrixStack matrices,
+            VertexConsumerProvider vertexConsumers, int light) {
+        super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
+    }
+
     @Override
     public void render(T entity, float yaw, float tickDelta, MatrixStack matrices,
             VertexConsumerProvider vertexConsumers, int light) {
         LivingEntity morph = entity.getMorph();
         if (morph == null) {
-            super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
+            renderDefault(entity, yaw, tickDelta, matrices, vertexConsumers, light);
             return;
         }
 
