@@ -138,7 +138,7 @@ public class ThirstManager implements ThirstManagerComponent {
     }
 
     @Override
-    public int getWaterLevel() {
+    public int get() {
         return thirstLevel;
     }
 }

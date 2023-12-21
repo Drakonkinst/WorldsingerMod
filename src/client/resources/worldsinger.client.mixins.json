@@ -11,6 +11,7 @@
     "entity.EyesFeatureRendererMixin",
     "entity.LivingEntityRendererMixin",
     "entity.OverlayTextureMixin",
+    "gui.InGameHudMixin",
     "item.ItemColorsMixin",
     "world.BackgroundRendererMixin",
     "world.CameraMixin",

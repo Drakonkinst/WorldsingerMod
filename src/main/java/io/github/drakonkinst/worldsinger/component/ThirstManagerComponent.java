@@ -19,5 +19,5 @@ public interface ThirstManagerComponent extends AutoSyncedComponent, ServerTicki
     // Directly remove water
     void remove(int water);
 
-    int getWaterLevel();
+    int get();
 }
