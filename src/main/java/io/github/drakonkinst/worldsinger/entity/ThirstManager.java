@@ -141,4 +141,9 @@ public class ThirstManager implements ThirstManagerComponent {
     public int get() {
         return thirstLevel;
     }
+
+    @Override
+    public boolean isFull() {
+        return thirstLevel >= MAX_THIRST_LEVEL;
+    }
 }
