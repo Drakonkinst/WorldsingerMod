@@ -15,6 +15,7 @@ public class ModParticleTypes {
             true, SporeDustParticleEffect.PARAMETERS_FACTORY);
 
     public static final DefaultParticleType MIDNIGHT_ESSENCE = register("midnight_essence", false);
+    public static final DefaultParticleType MIDNIGHT_TRAIL = register("midnight_trail", false);
 
     public static void initialize() {}
 

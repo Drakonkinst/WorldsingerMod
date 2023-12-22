@@ -9,6 +9,7 @@ public class ModParticleManager {
 
         registry.register(ModParticleTypes.SPORE_DUST, SporeDustParticle.Factory::new);
         registry.register(ModParticleTypes.MIDNIGHT_ESSENCE, MidnightEssenceParticle.Factory::new);
+        registry.register(ModParticleTypes.MIDNIGHT_TRAIL, MidnightTrailParticle.Factory::new);
     }
 
     private ModParticleManager() {}

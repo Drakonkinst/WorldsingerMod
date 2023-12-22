@@ -34,7 +34,7 @@ public class ThirstManager implements ThirstManagerComponent {
 
     // Constants that can possibly change for balancing
     private static final int MIN_NATURAL_THIRST = 6;
-    private static final float DRAIN_MULTIPLIER = 1.25f;
+    private static final float DRAIN_MULTIPLIER = 0.75f;
     private static final float DAMAGE_FROM_THIRST = 1.0f;
 
     private final LivingEntity entity;
