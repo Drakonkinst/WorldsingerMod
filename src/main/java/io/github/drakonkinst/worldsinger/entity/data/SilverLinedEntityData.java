@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.entity;
+package io.github.drakonkinst.worldsinger.entity.data;
 
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;

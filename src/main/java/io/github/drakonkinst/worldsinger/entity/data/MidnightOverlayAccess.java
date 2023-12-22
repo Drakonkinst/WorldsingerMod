@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.entity;
+package io.github.drakonkinst.worldsinger.entity.data;
 
 public interface MidnightOverlayAccess {
 

@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.SpawnRestrictionAccessor;
 import io.github.drakonkinst.worldsinger.worldgen.dimension.ModDimensionTypes;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
@@ -69,6 +70,10 @@ public final class ModEntityTypes {
                 .put(EntityType.CHICKEN,
                         new Entry(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, Location.ON_GROUND,
                                 (SpawnPredicate<ChickenEntity>) ModEntityTypes::canChickensSpawn));
+
+        // Register attributes
+        FabricDefaultAttributeRegistry.register(ModEntityTypes.MIDNIGHT_CREATURE,
+                MidnightCreatureEntity.createMidnightCreatureAttributes());
     }
 
     private static boolean canChickensSpawn(EntityType<ChickenEntity> type, WorldAccess world,

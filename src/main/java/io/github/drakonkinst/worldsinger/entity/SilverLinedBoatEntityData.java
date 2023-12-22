@@ -1,5 +1,6 @@
 package io.github.drakonkinst.worldsinger.entity;
 
+import io.github.drakonkinst.worldsinger.entity.data.SilverLinedEntityData;
 import net.minecraft.entity.vehicle.BoatEntity;
 
 public class SilverLinedBoatEntityData extends SilverLinedEntityData {

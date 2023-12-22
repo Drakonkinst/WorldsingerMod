@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
-import io.github.drakonkinst.worldsinger.entity.MidnightOverlayAccess;
+import io.github.drakonkinst.worldsinger.entity.data.MidnightOverlayAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

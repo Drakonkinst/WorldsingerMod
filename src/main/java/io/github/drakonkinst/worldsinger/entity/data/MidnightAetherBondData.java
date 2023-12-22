@@ -1,5 +1,6 @@
-package io.github.drakonkinst.worldsinger.entity;
+package io.github.drakonkinst.worldsinger.entity.data;
 
+import io.github.drakonkinst.worldsinger.entity.MidnightCreatureEntity;
 import it.unimi.dsi.fastutil.ints.Int2LongMap;
 import it.unimi.dsi.fastutil.ints.Int2LongMap.Entry;
 import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;

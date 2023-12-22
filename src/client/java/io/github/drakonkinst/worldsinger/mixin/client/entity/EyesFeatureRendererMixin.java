@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.client.entity;
 
-import io.github.drakonkinst.worldsinger.entity.MidnightOverlayAccess;
+import io.github.drakonkinst.worldsinger.entity.data.MidnightOverlayAccess;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.EyesFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;

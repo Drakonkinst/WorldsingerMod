@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.client.entity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import io.github.drakonkinst.worldsinger.entity.MidnightOverlayAccess;
+import io.github.drakonkinst.worldsinger.entity.data.MidnightOverlayAccess;
 import io.github.drakonkinst.worldsinger.entity.render.MidnightCreatureEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory.Context;

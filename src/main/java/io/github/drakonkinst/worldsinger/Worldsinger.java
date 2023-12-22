@@ -5,8 +5,8 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.ModCauldronBehaviors;
 import io.github.drakonkinst.worldsinger.command.ModCommands;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingBridge;
-import io.github.drakonkinst.worldsinger.entity.ModAttributeRegistry;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
+import io.github.drakonkinst.worldsinger.entity.ai.ModSensors;
 import io.github.drakonkinst.worldsinger.event.ModEventHandlers;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
@@ -49,7 +49,6 @@ public class Worldsinger implements ModInitializer {
         ModBlocks.initialize();
         ModItems.initialize();
         ModEntityTypes.initialize();
-        ModAttributeRegistry.initialize();
         ModCommands.initialize();
         ModPotions.register();
         ModCauldronBehaviors.register();
@@ -58,6 +57,7 @@ public class Worldsinger implements ModInitializer {
         ModStructurePieceTypes.initialize();
         ModStructureTypes.initialize();
         ModEventHandlers.register();
+        ModSensors.initialize();
 
         ModApi.initialize();
     }

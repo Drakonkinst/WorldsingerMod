@@ -1,7 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.entity;
 
-import io.github.drakonkinst.worldsinger.entity.MidnightAetherBondAccess;
-import io.github.drakonkinst.worldsinger.entity.MidnightAetherBondData;
+import io.github.drakonkinst.worldsinger.entity.data.MidnightAetherBondAccess;
+import io.github.drakonkinst.worldsinger.entity.data.MidnightAetherBondData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
