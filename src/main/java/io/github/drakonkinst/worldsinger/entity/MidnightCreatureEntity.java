@@ -21,9 +21,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
@@ -188,6 +190,9 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
         this.goalSelector.add(4, new LookAroundGoal(this));
 
         this.targetSelector.add(3, new RevengeGoal(this).setGroupRevenge());
+        this.targetSelector.add(4,
+                new UncontrolledActiveTargetGoal<>(this, LivingEntity.class, true,
+                        entity -> !entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)));
     }
 
     // Tick
@@ -354,7 +359,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
                     NUM_TRANSFORM_PARTICLES);
             this.getWorld()
                     .playSoundFromEntity(this, ModSoundEvents.ENTITY_MIDNIGHT_CREATURE_TRANSFORM,
-                            this.getSoundCategory(), 1.0f, 1.0f);
+                            this.getSoundCategory(), 2.0f, 1.0f);
         }
 
         updateStats(morph, showTransformEffects);
@@ -544,5 +549,28 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity {
 
     public int getMidnightEssenceAmount() {
         return midnightEssenceAmount;
+    }
+
+    public static class UncontrolledActiveTargetGoal<T extends LivingEntity> extends
+            ActiveTargetGoal<T> {
+
+        MidnightCreatureEntity entity;
+
+        public UncontrolledActiveTargetGoal(MidnightCreatureEntity entity, Class<T> targetClass,
+                boolean checkVisibility, @Nullable Predicate<LivingEntity> targetPredicate) {
+            super(entity, targetClass, 10, checkVisibility, false, targetPredicate);
+            this.entity = entity;
+        }
+
+        @Override
+        public boolean canStart() {
+            return entity.getControllerUuid() != null && super.canStart();
+        }
+
+        @Override
+        public boolean shouldContinue() {
+            return this.targetPredicate != null ? this.targetPredicate.test(this.mob,
+                    this.targetEntity) : super.shouldContinue();
+        }
     }
 }

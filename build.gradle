@@ -27,6 +27,10 @@ repositories {
         name = "Xander Maven"
         url = "https://maven.isxander.dev/releases"
     }
+    maven {
+        name = "SmartBrainLib (SBL) Maven Repo"
+        url = "https://dl.cloudsmith.io/public/tslat/sbl/maven/"
+    }
 }
 
 loom {
@@ -63,6 +67,8 @@ dependencies {
     include(modImplementation("com.github.Drakonkinst:DataTables:${project.data_tables_version}")) {
         exclude(group: "net.fabricmc")
     }
+
+    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${project.sbl_version}"
 
     // Mod Menu Integration (Optional)
     modApi("com.terraformersmc:modmenu:${project.modmenu_version}") {

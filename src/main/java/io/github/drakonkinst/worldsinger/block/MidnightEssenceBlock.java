@@ -3,9 +3,11 @@ package io.github.drakonkinst.worldsinger.block;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
 import io.github.drakonkinst.worldsinger.entity.MidnightCreatureEntity;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -41,6 +43,8 @@ public class MidnightEssenceBlock extends Block {
         entity.setPosition(new Vec3d(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5));
         entity.setController(player);
         world.spawnEntity(entity);
+        world.playSound(null, pos, ModSoundEvents.ENTITY_MIDNIGHT_CREATURE_AMBIENT,
+                SoundCategory.BLOCKS, 1.0f, 1.0f);
         return ActionResult.success(true);
     }
 }
