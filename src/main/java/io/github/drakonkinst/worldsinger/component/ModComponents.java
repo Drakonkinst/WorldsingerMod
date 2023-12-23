@@ -12,6 +12,7 @@ import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.entity.SilverLinedBoatEntityData;
 import io.github.drakonkinst.worldsinger.entity.ThirstManager;
+import io.github.drakonkinst.worldsinger.entity.data.MidnightAetherBondData;
 import net.minecraft.entity.vehicle.BoatEntity;
 
 @SuppressWarnings("UnqualifiedStaticUsage")
@@ -24,6 +25,8 @@ public final class ModComponents implements ScoreboardComponentInitializer,
             SilverLinedComponent.class);
     public static final ComponentKey<ThirstManagerComponent> THIRST_MANAGER = register(
             "thirst_manager", ThirstManagerComponent.class);
+    public static final ComponentKey<MidnightAetherBondComponent> MIDNIGHT_AETHER_BOND = register(
+            "midnight_aether_bond", MidnightAetherBondComponent.class);
 
     private static <T extends Component> ComponentKey<T> register(String id, Class<T> clazz) {
         return ComponentRegistry.getOrCreate(Worldsinger.id(id), clazz);
@@ -40,5 +43,7 @@ public final class ModComponents implements ScoreboardComponentInitializer,
         // Should be reset upon death
         registry.registerForPlayers(THIRST_MANAGER, ThirstManager::new,
                 RespawnCopyStrategy.LOSSLESS_ONLY);
+        // Should be reset upon death
+        registry.registerForPlayers(MIDNIGHT_AETHER_BOND, MidnightAetherBondData::new);
     }
 }

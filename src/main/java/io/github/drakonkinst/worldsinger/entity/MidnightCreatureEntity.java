@@ -2,13 +2,12 @@ package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.component.MidnightAetherBondComponent;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ai.NearbyRepellentSensor;
-import io.github.drakonkinst.worldsinger.entity.data.MidnightAetherBondAccess;
-import io.github.drakonkinst.worldsinger.entity.data.MidnightAetherBondData;
 import io.github.drakonkinst.worldsinger.entity.data.MidnightOverlayAccess;
 import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
@@ -349,7 +348,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private void drainWaterFromHost(PlayerEntity host) {
         ThirstManagerComponent thirstManager = ModComponents.THIRST_MANAGER.get(host);
         int currentWaterLevel = thirstManager.get();
-        MidnightAetherBondData bondData = ((MidnightAetherBondAccess) host).worldsinger$getMidnightAetherBondData();
+        MidnightAetherBondComponent bondData = ModComponents.MIDNIGHT_AETHER_BOND.get(host);
         if (currentWaterLevel <= 0) {
             bondData.removeBond(this.getId());
             resetController();
@@ -377,7 +376,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
             } else {
                 PlayerEntity formerController = this.getWorld().getPlayerByUuid(newControllerUuid);
                 if (formerController != null) {
-                    ((MidnightAetherBondAccess) formerController).worldsinger$getMidnightAetherBondData()
+                    ModComponents.MIDNIGHT_AETHER_BOND.get(formerController)
                             .removeBond(this.getId());
                 }
             }
