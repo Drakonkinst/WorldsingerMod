@@ -53,6 +53,7 @@
     "entity.PlayerEntityThirstMixin",
     "entity.PotionEntityMixin",
     "entity.ProjectileUtilMixin",
+    "entity.ServerPlayerEntityDeathMixin",
     "entity.VehicleEntityMixin",
     "entity.ai.BirdPathNodeMakerMixin",
     "entity.ai.LandPathNodeMakerMixin",

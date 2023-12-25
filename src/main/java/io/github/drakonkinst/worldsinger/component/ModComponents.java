@@ -43,7 +43,8 @@ public final class ModComponents implements ScoreboardComponentInitializer,
         // Should be reset upon death
         registry.registerForPlayers(THIRST_MANAGER, ThirstManager::new,
                 RespawnCopyStrategy.LOSSLESS_ONLY);
-        // Should be reset upon death
-        registry.registerForPlayers(MIDNIGHT_AETHER_BOND, MidnightAetherBondData::new);
+        // Custom handling upon death
+        registry.registerForPlayers(MIDNIGHT_AETHER_BOND, MidnightAetherBondData::new,
+                RespawnCopyStrategy.ALWAYS_COPY);
     }
 }

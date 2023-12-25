@@ -1,6 +1,5 @@
 package io.github.drakonkinst.worldsinger.entity.data;
 
-import dev.onyxstudios.cca.api.v3.entity.PlayerComponent;
 import io.github.drakonkinst.worldsinger.component.MidnightAetherBondComponent;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.entity.MidnightCreatureEntity;
@@ -12,9 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 
-@SuppressWarnings("UnstableApiUsage")
-public class MidnightAetherBondData implements MidnightAetherBondComponent,
-        PlayerComponent<MidnightAetherBondData> {
+public class MidnightAetherBondData implements MidnightAetherBondComponent {
 
     private static final String BOND_COUNT_KEY = "Bonds";
     // TODO: Can add logic for possession here
@@ -38,13 +35,6 @@ public class MidnightAetherBondData implements MidnightAetherBondComponent,
             clearExpiredEntries();
             updateTicks = 0;
         }
-    }
-
-    @Override
-    public void copyForRespawn(MidnightAetherBondData original, boolean lossless,
-            boolean keepInventory, boolean sameCharacter) {
-        original.onDeath();
-        PlayerComponent.super.copyForRespawn(original, lossless, keepInventory, sameCharacter);
     }
 
     @Override
@@ -80,8 +70,8 @@ public class MidnightAetherBondData implements MidnightAetherBondComponent,
         ModComponents.MIDNIGHT_AETHER_BOND.sync(player);
     }
 
-    private void onDeath() {
-        clearExpiredEntries();
+    @Override
+    public void onDeath() {
         World world = player.getWorld();
         for (Entry entry : expiryMap.int2LongEntrySet()) {
             Entity entity = world.getEntityById(entry.getIntKey());
@@ -90,6 +80,8 @@ public class MidnightAetherBondData implements MidnightAetherBondComponent,
             }
         }
         expiryMap.clear();
+        bondCount = 0;
+        ModComponents.MIDNIGHT_AETHER_BOND.sync(player);
     }
 
     @Override
