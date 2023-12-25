@@ -168,6 +168,9 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         super(entityType, world);
         this.experiencePoints = 5;
 
+        // Allow it to swim
+        this.getNavigation().setCanSwim(true);
+
         // Set to same penalty as water
         this.setPathfindingPenalty(PathNodeType.AETHER_SPORE_SEA, 8.0F);
     }
@@ -194,6 +197,8 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private UUID getControllerUuid() {
         return this.dataTracker.get(CONTROLLER_UUID).orElse(null);
     }
+
+    // AI
 
     @Override
     protected Brain.Profile<?> createBrainProfile() {
