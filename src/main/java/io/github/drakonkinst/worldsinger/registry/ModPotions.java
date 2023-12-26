@@ -7,7 +7,7 @@ import net.minecraft.recipe.BrewingRecipeRegistry;
 
 public final class ModPotions {
 
-    public static void register() {
+    public static void initialize() {
         BrewingRecipeRegistry.registerPotionType(ModItems.DEAD_SPORES_BOTTLE);
         BrewingRecipeRegistry.registerPotionType(ModItems.DEAD_SPORES_SPLASH_BOTTLE);
         BrewingRecipeRegistry.registerPotionType(ModItems.VERDANT_SPORES_BOTTLE);

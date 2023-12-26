@@ -37,6 +37,7 @@
     "compat.smartbrainlib.ExtendedTargetingConditionsPatchMixin",
     "compat.smartbrainlib.FloatToSurfaceOfFluidMixin",
     "compat.smartbrainlib.NearbyLivingEntitySensorPatchMixin",
+    "compat.smartbrainlib.SetRetaliateTargetPatchMixin",
     "compat.smartbrainlib.TargetOrRetaliatePatchMixin",
     "effect.HungerStatusEffectThirstMixin",
     "entity.BoatEntityMovementMixin",

@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public final class ModEventHandlers {
 
     // TODO: Consider moving each event to its relevant feature, i.e. a ThirstManager
-    public static void register() {
+    public static void initialize() {
         FinishConsumingItemCallback.EVENT.register(((entity, stack) -> {
             if (entity instanceof PlayerEntity player) {
                 ModComponents.THIRST_MANAGER.get(player).drink(stack.getItem(), stack);

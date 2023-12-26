@@ -7,6 +7,8 @@ import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
+import io.github.drakonkinst.worldsinger.entity.ai.FollowControllerBehavior;
+import io.github.drakonkinst.worldsinger.entity.ai.ModMemoryModuleTypes;
 import io.github.drakonkinst.worldsinger.entity.ai.NearbyRepellentSensor;
 import io.github.drakonkinst.worldsinger.entity.ai.NearestAttackableSensor;
 import io.github.drakonkinst.worldsinger.entity.ai.StudyTargetBehavior;
@@ -88,7 +90,7 @@ import net.tslat.smartbrainlib.util.SensoryUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class MidnightCreatureEntity extends ShapeshiftingEntity implements
-        SmartBrainOwner<MidnightCreatureEntity>, Monster {
+        SmartBrainOwner<MidnightCreatureEntity>, Controllable, Monster {
 
     // NBT
     public static final String MIDNIGHT_ESSENCE_AMOUNT_KEY = "MidnightEssenceAmount";
@@ -103,6 +105,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private static final int IMITATE_NEAREST_INTERVAL = 20 * 5;
     private static final int DRAIN_INTERVAL_TICKS = 20 * 3;
     private static final int ANGER_TIME = 20 * 30;
+    private static final float SPRINTING_MULTIPLIER = 1.4f;
     private static final Set<RegistryEntry<StatusEffect>> IMMUNE_TO = Set.of(StatusEffects.WITHER,
             StatusEffects.POISON, StatusEffects.HUNGER, ModStatusEffects.CRIMSON_SPORES,
             ModStatusEffects.MIDNIGHT_SPORES, ModStatusEffects.ROSEITE_SPORES,
@@ -192,17 +195,19 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         this.dataTracker.startTracking(CONTROLLER_UUID, Optional.empty());
     }
 
-    private void setControllerUuid(UUID uuid) {
+    @Override
+    public void setControllerUuid(UUID uuid) {
         if (uuid == null) {
             this.dataTracker.set(CONTROLLER_UUID, Optional.empty());
-            BrainUtils.clearMemory(this, MemoryModuleType.LIKED_PLAYER);
+            BrainUtils.clearMemory(this, ModMemoryModuleTypes.HAS_CONTROLLER);
         } else {
             this.dataTracker.set(CONTROLLER_UUID, Optional.of(uuid));
-            BrainUtils.setMemory(this, MemoryModuleType.LIKED_PLAYER, uuid);
+            BrainUtils.setMemory(this, ModMemoryModuleTypes.HAS_CONTROLLER, true);
         }
     }
 
-    private UUID getControllerUuid() {
+    @Override
+    public UUID getControllerUuid() {
         return this.dataTracker.get(CONTROLLER_UUID).orElse(null);
     }
 
@@ -256,8 +261,9 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     @Override
     public BrainActivityGroup<? extends MidnightCreatureEntity> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(new LookAtTarget<>(), new MoveToWalkTarget<>(),
-                new FloatToSurfaceOfFluid<>());
+        return BrainActivityGroup.coreTasks(new FloatToSurfaceOfFluid<>(), new LookAtTarget<>(),
+                new FollowControllerBehavior<>().speedMod(SPRINTING_MULTIPLIER),
+                new MoveToWalkTarget<>());
     }
 
     @SuppressWarnings("unchecked")
@@ -297,8 +303,8 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                                 return player.getUuid().equals(entity.getControllerUuid());
                             }
                             return false;
-                        }), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.4f),
-                new FirstApplicableBehaviour<>(
+                        }), new SetWalkTargetToAttackTarget<>().speedMod(
+                        (owner, target) -> SPRINTING_MULTIPLIER), new FirstApplicableBehaviour<>(
                         new StudyTargetBehavior<MidnightCreatureEntity>(100).canStudy(
                                 (entity, target) ->
                                         // TODO

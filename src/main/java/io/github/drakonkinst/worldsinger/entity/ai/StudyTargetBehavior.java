@@ -24,7 +24,7 @@ public class StudyTargetBehavior<E extends MobEntity> extends DelayedBehaviour<E
     private static final List<Pair<MemoryModuleType<?>, MemoryModuleState>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
             Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_PRESENT),
             Pair.of(MemoryModuleType.UNIVERSAL_ANGER, MemoryModuleState.VALUE_ABSENT),
-            Pair.of(MemoryModuleType.LIKED_PLAYER, MemoryModuleState.VALUE_ABSENT),
+            Pair.of(ModMemoryModuleTypes.HAS_CONTROLLER, MemoryModuleState.VALUE_ABSENT),
             Pair.of(MemoryModuleType.HURT_BY, MemoryModuleState.VALUE_ABSENT));
 
     public StudyTargetBehavior(int studyTicks) {
