@@ -8,6 +8,8 @@ import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ai.NearbyRepellentSensor;
+import io.github.drakonkinst.worldsinger.entity.ai.NearestAttackableSensor;
+import io.github.drakonkinst.worldsinger.entity.ai.StudyTargetBehavior;
 import io.github.drakonkinst.worldsinger.entity.data.MidnightOverlayAccess;
 import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
@@ -48,6 +50,7 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.PufferfishEntity;
 import net.minecraft.entity.passive.SchoolingFishEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundCategory;
@@ -73,13 +76,15 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRetaliateTarget;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.util.BrainUtils;
+import net.tslat.smartbrainlib.util.SensoryUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class MidnightCreatureEntity extends ShapeshiftingEntity implements
@@ -97,6 +102,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     // Behavior
     private static final int IMITATE_NEAREST_INTERVAL = 20 * 5;
     private static final int DRAIN_INTERVAL_TICKS = 20 * 3;
+    private static final int ANGER_TIME = 20 * 30;
     private static final Set<RegistryEntry<StatusEffect>> IMMUNE_TO = Set.of(StatusEffects.WITHER,
             StatusEffects.POISON, StatusEffects.HUNGER, ModStatusEffects.CRIMSON_SPORES,
             ModStatusEffects.MIDNIGHT_SPORES, ModStatusEffects.ROSEITE_SPORES,
@@ -189,8 +195,10 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private void setControllerUuid(UUID uuid) {
         if (uuid == null) {
             this.dataTracker.set(CONTROLLER_UUID, Optional.empty());
+            BrainUtils.clearMemory(this, MemoryModuleType.LIKED_PLAYER);
         } else {
             this.dataTracker.set(CONTROLLER_UUID, Optional.of(uuid));
+            BrainUtils.setMemory(this, MemoryModuleType.LIKED_PLAYER, uuid);
         }
     }
 
@@ -199,6 +207,9 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     }
 
     // AI
+    // To avoid creating new memory module types, we take advantage of existing ones
+    // LIKED_PLAYER is used to refer to the controller UUID
+    // UNIVERSAL_ANGER is used when the mob has been provoked and should not stop to study targets
 
     @Override
     protected Brain.Profile<?> createBrainProfile() {
@@ -213,21 +224,32 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     @Override
     public Map<Activity, BrainActivityGroup<? extends MidnightCreatureEntity>> getAdditionalTasks() {
         // TODO
-        return SmartBrainOwner.super.getAdditionalTasks();
+        // return Map.of(ModActivities.FIGHT_TAMED,
+        //         new BrainActivityGroup<>(ModActivities.FIGHT_TAMED), ModActivities.IDLE_TAMED,
+        //         new BrainActivityGroup<>(ModActivities.IDLE_TAMED));
+        return Collections.emptyMap();
     }
 
     @Override
     public List<Activity> getActivityPriorities() {
         // TODO
+
         return SmartBrainOwner.super.getActivityPriorities();
     }
 
     @Override
     public List<? extends ExtendedSensor<? extends MidnightCreatureEntity>> getSensors() {
-        return ObjectArrayList.of(
-                new NearbyLivingEntitySensor<MidnightCreatureEntity>().setPredicate(
-                        (target, entity) -> !target.getType()
-                                .isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)), new HurtBySensor<>(),
+        return ObjectArrayList.of(new NearbyLivingEntitySensor<>(),
+                new NearestAttackableSensor<MidnightCreatureEntity>().setPredicate(
+                        (target, entity) -> {
+                            if (target.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
+                                return false;
+                            }
+                            if (target.getUuid().equals(entity.getControllerUuid())) {
+                                return false;
+                            }
+                            return SensoryUtils.isEntityAttackable(entity, target);
+                        }), new HurtBySensor<>(),
                 new NearbyRepellentSensor<MidnightCreatureEntity>().setPredicate(
                         (blockState, entity) -> blockState.isIn(ModBlockTags.HAS_SILVER)));
     }
@@ -242,33 +264,50 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     @Override
     public BrainActivityGroup<? extends MidnightCreatureEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<>(
-                        new TargetOrRetaliate<MidnightCreatureEntity>().alertAlliesWhen(
-                                (owner, attacker) -> true).isAllyIf((owner, ally) -> {
-                            // Not an ally if not another Midnight Creature Entity
-                            if (!(ally instanceof MidnightCreatureEntity midnightCreatureAlly)) {
-                                return false;
-                            }
+                new SetRetaliateTarget<MidnightCreatureEntity>().alertAlliesWhen(
+                        (owner, attacker) -> true).isAllyIf((owner, ally) -> {
+                    if (!(ally instanceof MidnightCreatureEntity midnightAlly)) {
+                        return false;
+                    }
 
-                            // Not an ally if controlled by a different player
-                            if (midnightCreatureAlly.getControllerUuid() != null
-                                    && midnightCreatureAlly.getControllerUuid()
-                                    != owner.getControllerUuid()) {
-                                return false;
-                            }
+                    // Not an ally if controlled by another player
+                    if (midnightAlly.getControllerUuid() != null
+                            && midnightAlly.getControllerUuid() != owner.getControllerUuid()) {
+                        return false;
+                    }
 
-                            // Not an ally if already targeting
-                            Entity lastHurtBy = BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY);
-                            return lastHurtBy == null || !ally.isTeammate(lastHurtBy);
-                        }), new SetPlayerLookTarget<>(), new SetRandomLookTarget<>()),
-                new OneRandomBehaviour<>(new SetRandomWalkTarget<>(),
-                        new Idle<>().runFor(entity -> entity.getRandom().nextBetween(30, 60))));
+                    // Not an ally if already targeting
+                    Entity lastHurtBy = BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY);
+                    return lastHurtBy == null || !ally.isTeammate(lastHurtBy);
+                }), new SetAttackTarget<MidnightCreatureEntity>(), new SetPlayerLookTarget<>(),
+                new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>(),
+                new Idle<>().runFor(entity -> entity.getRandom().nextBetween(30, 60))));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends MidnightCreatureEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(new InvalidateAttackTarget<>(),
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.4f),
-                new AnimatableMeleeAttack<>(0));
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<MidnightCreatureEntity>().invalidateIf(
+                        (entity, target) -> {
+                            if (target instanceof PlayerEntity player) {
+                                if (player.isCreative() || player.isSpectator()) {
+                                    return true;
+                                }
+                                return player.getUuid().equals(entity.getControllerUuid());
+                            }
+                            return false;
+                        }), new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.4f),
+                new FirstApplicableBehaviour<>(
+                        new StudyTargetBehavior<MidnightCreatureEntity>(100).canStudy(
+                                (entity, target) ->
+                                        // TODO
+                                        target.getMainHandStack().isOf(Items.WATER_BUCKET)
+                                                || target.getOffHandStack()
+                                                .isOf(Items.WATER_BUCKET)).whenStopping(entity -> {
+                            BrainUtils.setForgettableMemory(entity,
+                                    MemoryModuleType.UNIVERSAL_ANGER, true, ANGER_TIME);
+                        }), new AnimatableMeleeAttack<MidnightCreatureEntity>(0)));
     }
 
     // Tick
