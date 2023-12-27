@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.entity.ai;
+package io.github.drakonkinst.worldsinger.entity.ai.sensor;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;

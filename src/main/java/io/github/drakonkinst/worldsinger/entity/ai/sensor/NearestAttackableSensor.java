@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.entity.ai;
+package io.github.drakonkinst.worldsinger.entity.ai.sensor;
 
 import java.util.Collections;
 import java.util.List;

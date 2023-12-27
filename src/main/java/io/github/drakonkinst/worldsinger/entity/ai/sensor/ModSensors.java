@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.entity.ai;
+package io.github.drakonkinst.worldsinger.entity.ai.sensor;
 
 import java.util.function.Supplier;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
