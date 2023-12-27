@@ -7,11 +7,10 @@ import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
-import io.github.drakonkinst.worldsinger.entity.ai.FollowControllerBehavior;
-import io.github.drakonkinst.worldsinger.entity.ai.ModMemoryModuleTypes;
 import io.github.drakonkinst.worldsinger.entity.ai.NearbyRepellentSensor;
 import io.github.drakonkinst.worldsinger.entity.ai.NearestAttackableSensor;
-import io.github.drakonkinst.worldsinger.entity.ai.StudyTargetBehavior;
+import io.github.drakonkinst.worldsinger.entity.ai.behavior.OptionalAttackTarget;
+import io.github.drakonkinst.worldsinger.entity.ai.behavior.StudyTarget;
 import io.github.drakonkinst.worldsinger.entity.data.MidnightOverlayAccess;
 import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
@@ -46,11 +45,14 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.CreeperEntity;
+import net.minecraft.entity.mob.GhastEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.PufferfishEntity;
 import net.minecraft.entity.passive.SchoolingFishEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -74,6 +76,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeA
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowEntity;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
@@ -114,7 +117,6 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     // Attributes
     private static final double DEFAULT_MOVEMENT_SPEED = 0.25;
-    private static final double DEFAULT_ATTACK_DAMAGE = 3.0;
     private static final double DEFAULT_MAX_HEALTH = 20.0;
     private static final double MAX_HEALTH_SIZE_MULTIPLIER = 17;
     private static final double ATTACK_DAMAGE_SIZE_MULTIPLIER = 2.5;
@@ -132,9 +134,11 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private static final float MOUTH_OFFSET = -0.2f;
 
     public static DefaultAttributeContainer.Builder createMidnightCreatureAttributes() {
+        // Before transforming, should not be able to move or attack
         return MobEntity.createMobAttributes()
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, DEFAULT_ATTACK_DAMAGE)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 0.0)
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, DEFAULT_MAX_HEALTH);
     }
 
@@ -169,9 +173,8 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private ControlLevel controlLevel = ControlLevel.OUT_OF_CONTROL;
     private int midnightEssenceAmount = 0;
     private int drainIntervalTicks = 0;
-    // Cached controller entity used for client rendering, kept in sync with controller UUID
     @Nullable
-    private PlayerEntity clientController;
+    private PlayerEntity controller;
 
     public MidnightCreatureEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
@@ -199,11 +202,24 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     public void setControllerUuid(UUID uuid) {
         if (uuid == null) {
             this.dataTracker.set(CONTROLLER_UUID, Optional.empty());
-            BrainUtils.clearMemory(this, ModMemoryModuleTypes.HAS_CONTROLLER);
         } else {
             this.dataTracker.set(CONTROLLER_UUID, Optional.of(uuid));
-            BrainUtils.setMemory(this, ModMemoryModuleTypes.HAS_CONTROLLER, true);
         }
+    }
+
+    @Override
+    public PlayerEntity getController() {
+        UUID controllerUUID = getControllerUuid();
+        if (controller == null && controllerUUID != null) {
+            controller = this.getWorld().getPlayerByUuid(controllerUUID);
+        }
+        if (controller != null && controller.isRemoved()) {
+            controller = null;
+        }
+        if (controller != null && controllerUUID == null) {
+            controller = null;
+        }
+        return controller;
     }
 
     @Override
@@ -244,7 +260,10 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     @Override
     public List<? extends ExtendedSensor<? extends MidnightCreatureEntity>> getSensors() {
-        return ObjectArrayList.of(new NearbyLivingEntitySensor<>(),
+        return ObjectArrayList.of(
+                // Keep track of all nearby entities (used to pick a transform target)
+                new NearbyLivingEntitySensor<>(),
+                // Filter NEAREST_ATTACKABLE from tracked nearby entities
                 new NearestAttackableSensor<MidnightCreatureEntity>().setPredicate(
                         (target, entity) -> {
                             if (target.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
@@ -254,7 +273,10 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                                 return false;
                             }
                             return SensoryUtils.isEntityAttackable(entity, target);
-                        }), new HurtBySensor<>(),
+                        }),
+                // Track who hurt the mob to retaliate
+                new HurtBySensor<>(),
+                // TODO: Avoid silver
                 new NearbyRepellentSensor<MidnightCreatureEntity>().setPredicate(
                         (blockState, entity) -> blockState.isIn(ModBlockTags.HAS_SILVER)));
     }
@@ -262,38 +284,73 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     @Override
     public BrainActivityGroup<? extends MidnightCreatureEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(new FloatToSurfaceOfFluid<>(), new LookAtTarget<>(),
-                new FollowControllerBehavior<>().speedMod(SPRINTING_MULTIPLIER),
+                new FollowEntity<MidnightCreatureEntity, LivingEntity>().following(
+                                MidnightCreatureEntity::getController)
+                        // Does not have as strict of a follow distance.
+                        .stopFollowingWithin(8.0f).speedMod(SPRINTING_MULTIPLIER),
                 new MoveToWalkTarget<>());
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends MidnightCreatureEntity> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(new FirstApplicableBehaviour<>(
-                new SetRetaliateTarget<MidnightCreatureEntity>().alertAlliesWhen(
-                        (owner, attacker) -> true).isAllyIf((owner, ally) -> {
-                    if (!(ally instanceof MidnightCreatureEntity midnightAlly)) {
-                        return false;
-                    }
+        return BrainActivityGroup.idleTasks(
+                // Set attack target
+                new FirstApplicableBehaviour<>(
+                        // Target the controller's attacker or target if controlled
+                        new OptionalAttackTarget<MidnightCreatureEntity>(false).targetFinder(
+                                entity -> {
+                                    PlayerEntity controller = entity.getController();
+                                    if (controller == null) {
+                                        return null;
+                                    }
+                                    LivingEntity attacker = controller.getAttacker();
+                                    if (attacker != null && canAttackWithController(attacker,
+                                            controller)) {
+                                        return attacker;
+                                    }
+                                    LivingEntity attacking = controller.getAttacking();
+                                    if (attacking != null && canAttackWithController(attacking,
+                                            controller)) {
+                                        return attacking;
+                                    }
+                                    return null;
+                                }).attackPredicate(entity -> entity.getControllerUuid() != null),
+                        // Retaliate against attackers
+                        new SetRetaliateTarget<MidnightCreatureEntity>().alertAlliesWhen(
+                                (owner, attacker) -> true).isAllyIf((owner, ally) -> {
+                            if (!(ally instanceof MidnightCreatureEntity midnightAlly)) {
+                                return false;
+                            }
 
-                    // Not an ally if controlled by another player
-                    if (midnightAlly.getControllerUuid() != null
-                            && midnightAlly.getControllerUuid() != owner.getControllerUuid()) {
-                        return false;
-                    }
+                            // Not an ally if controlled by another player
+                            if (midnightAlly.getControllerUuid() != null
+                                    && midnightAlly.getControllerUuid()
+                                    != owner.getControllerUuid()) {
+                                return false;
+                            }
 
-                    // Not an ally if already targeting
-                    Entity lastHurtBy = BrainUtils.getMemory(ally, MemoryModuleType.HURT_BY_ENTITY);
-                    return lastHurtBy == null || !ally.isTeammate(lastHurtBy);
-                }), new SetAttackTarget<MidnightCreatureEntity>(), new SetPlayerLookTarget<>(),
-                new SetRandomLookTarget<>()), new OneRandomBehaviour<>(new SetRandomWalkTarget<>(),
-                new Idle<>().runFor(entity -> entity.getRandom().nextBetween(30, 60))));
+                            // Not an ally if already targeting
+                            Entity lastHurtBy = BrainUtils.getMemory(ally,
+                                    MemoryModuleType.HURT_BY_ENTITY);
+                            return lastHurtBy == null || !ally.isTeammate(lastHurtBy);
+                        }),
+                        // Attack NEAREST_ATTACKABLE if uncontrolled
+                        new SetAttackTarget<MidnightCreatureEntity>().attackPredicate(
+                                entity -> entity.getControllerUuid() == null),
+                        // Look at a player
+                        new SetPlayerLookTarget<>(),
+                        // Look somewhere random
+                        new SetRandomLookTarget<>()),
+                new OneRandomBehaviour<>(new SetRandomWalkTarget<>(),
+                        new Idle<>().runFor(entity -> entity.getRandom().nextBetween(30, 60))));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends MidnightCreatureEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
+                // Invalidate target if they become the mob's controller or become untargetable
                 new InvalidateAttackTarget<MidnightCreatureEntity>().invalidateIf(
                         (entity, target) -> {
                             if (target instanceof PlayerEntity player) {
@@ -303,17 +360,59 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                                 return player.getUuid().equals(entity.getControllerUuid());
                             }
                             return false;
-                        }), new SetWalkTargetToAttackTarget<>().speedMod(
-                        (owner, target) -> SPRINTING_MULTIPLIER), new FirstApplicableBehaviour<>(
-                        new StudyTargetBehavior<MidnightCreatureEntity>(100).canStudy(
-                                (entity, target) ->
-                                        // TODO
-                                        target.getMainHandStack().isOf(Items.WATER_BUCKET)
-                                                || target.getOffHandStack()
-                                                .isOf(Items.WATER_BUCKET)).whenStopping(entity -> {
+                        }),
+                // Sprint towards target
+                new SetWalkTargetToAttackTarget<>().speedMod(
+                        (owner, target) -> SPRINTING_MULTIPLIER),
+                // Begin attack
+                new FirstApplicableBehaviour<>(
+                        // If not aggro-ed and target is holding water, study them
+                        new StudyTarget<MidnightCreatureEntity>(100).canStudy((entity, target) -> {
+                            if (entity.getControllerUuid() != null) {
+                                return false;
+                            }
+                            // TODO Make more robust
+                            return target.getMainHandStack().isOf(Items.WATER_BUCKET)
+                                    || target.getOffHandStack().isOf(Items.WATER_BUCKET);
+                        }).whenStopping(entity -> {
                             BrainUtils.setForgettableMemory(entity,
                                     MemoryModuleType.UNIVERSAL_ANGER, true, ANGER_TIME);
-                        }), new AnimatableMeleeAttack<MidnightCreatureEntity>(0)));
+                        }),
+                        // Start attacking
+                        new AnimatableMeleeAttack<MidnightCreatureEntity>(0)));
+    }
+
+    private boolean canAttackWithController(LivingEntity target, LivingEntity controller) {
+        // Stop hitting yourself and never hit the controller
+        if (this.equals(target) || controller.equals(target)) {
+            return false;
+        }
+
+        // Like other mobs, never attack Creeper
+        // Don't bother attacking Ghast since it flies
+        if (target instanceof CreeperEntity || target instanceof GhastEntity) {
+            return false;
+        }
+
+        // Don't hit animals tamed by the controller
+        if (target instanceof TameableEntity tamedEntity) {
+            return !tamedEntity.isTamed() || !controller.equals(tamedEntity.getOwner());
+        }
+
+        // Don't hit other mobs controlled by the controller
+        if (target instanceof Controllable controllable) {
+            PlayerEntity otherController = controllable.getController();
+            return otherController == null || !otherController.equals(controller);
+        }
+
+        // Don't hit players on the same team
+        if (target instanceof PlayerEntity playerTarget
+                && controller instanceof PlayerEntity playerController
+                && !playerController.shouldDamagePlayer(playerTarget)) {
+            return false;
+        }
+
+        return true;
     }
 
     // Tick
@@ -341,11 +440,11 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
             if (controllerUuid != null) {
                 ++drainIntervalTicks;
                 if (drainIntervalTicks >= DRAIN_INTERVAL_TICKS) {
-                    PlayerEntity player = world.getPlayerByUuid(controllerUuid);
-                    if (player == null) {
+                    PlayerEntity controller = getController();
+                    if (controller == null) {
                         resetController();
                     } else {
-                        drainWaterFromHost(player);
+                        drainWaterFromHost(controller);
                     }
                     drainIntervalTicks = 0;
                 }
@@ -364,19 +463,10 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         }
 
         // Update client controller
-        UUID controllerUuid = getControllerUuid();
-        if (clientController == null && controllerUuid != null) {
-            clientController = this.getWorld().getPlayerByUuid(controllerUuid);
-        } else if (clientController != null) {
-            if (controllerUuid == null) {
-                clientController = null;
-            } else {
-                clientController = this.getWorld().getPlayerByUuid(controllerUuid);
-            }
-        }
+        PlayerEntity controller = getController();
 
-        if (clientController != null) {
-            Vec3d start = clientController.getEyePos().add(0.0, MOUTH_OFFSET, 0.0);
+        if (controller != null) {
+            Vec3d start = controller.getEyePos().add(0.0, MOUTH_OFFSET, 0.0);
             Vec3d destination = this.getPos().add(0.0, this.getHeight() / 2.0, 0.0f);
             Vec3d direction = destination.subtract(start).normalize();
             addTrailParticle(start, destination, 0, direction);
@@ -424,7 +514,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
             if (currentControllerUuid.equals(newControllerUuid)) {
                 return;
             } else {
-                PlayerEntity formerController = this.getWorld().getPlayerByUuid(newControllerUuid);
+                PlayerEntity formerController = getController();
                 if (formerController != null) {
                     ModComponents.MIDNIGHT_AETHER_BOND.get(formerController)
                             .removeBond(this.getId());
@@ -489,6 +579,8 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private void updateStats(LivingEntity morph, boolean showTransformEffects) {
         EntityAttributeInstance movementSpeedAttribute = this.getAttributeInstance(
                 EntityAttributes.GENERIC_MOVEMENT_SPEED);
+        EntityAttributeInstance knockbackResistanceAttribute = this.getAttributeInstance(
+                EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE);
         EntityAttributeInstance maxHealthAttribute = this.getAttributeInstance(
                 EntityAttributes.GENERIC_MAX_HEALTH);
         EntityAttributeInstance attackDamageAttribute = this.getAttributeInstance(
@@ -496,11 +588,13 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         Objects.requireNonNull(movementSpeedAttribute);
         Objects.requireNonNull(maxHealthAttribute);
         Objects.requireNonNull(attackDamageAttribute);
+        Objects.requireNonNull(knockbackResistanceAttribute);
 
         if (morph == null) {
             movementSpeedAttribute.setBaseValue(0.0);
+            knockbackResistanceAttribute.setBaseValue(1.0);
             maxHealthAttribute.setBaseValue(DEFAULT_MAX_HEALTH);
-            attackDamageAttribute.setBaseValue(DEFAULT_ATTACK_DAMAGE);
+            attackDamageAttribute.setBaseValue(0.0);
             return;
         }
         float volume = EntityUtil.getSize(morph);
@@ -508,6 +602,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         double attackDamage = MidnightCreatureEntity.getAttackDamageForVolume(volume);
         // Speed is the same for all mobs
         movementSpeedAttribute.setBaseValue(DEFAULT_MOVEMENT_SPEED);
+        knockbackResistanceAttribute.setBaseValue(0.0);
         maxHealthAttribute.setBaseValue(maxHealth);
         attackDamageAttribute.setBaseValue(attackDamage);
 
@@ -585,7 +680,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         if (nbt.contains(CONTROLLER_KEY)) {
             UUID controllerUuid = nbt.getUuid(CONTROLLER_KEY);
             setControllerUuid(controllerUuid);
-            PlayerEntity player = this.getWorld().getPlayerByUuid(controllerUuid);
+            PlayerEntity player = getController();
             if (player != null) {
                 setController(player);
             }

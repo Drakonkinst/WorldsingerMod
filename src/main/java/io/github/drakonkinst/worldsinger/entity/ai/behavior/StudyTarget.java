@@ -1,4 +1,4 @@
-package io.github.drakonkinst.worldsinger.entity.ai;
+package io.github.drakonkinst.worldsinger.entity.ai.behavior;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -14,7 +14,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.DelayedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class StudyTargetBehavior<E extends MobEntity> extends DelayedBehaviour<E> {
+public class StudyTarget<E extends MobEntity> extends DelayedBehaviour<E> {
 
     @Nullable
     protected LivingEntity target = null;
@@ -24,14 +24,13 @@ public class StudyTargetBehavior<E extends MobEntity> extends DelayedBehaviour<E
     private static final List<Pair<MemoryModuleType<?>, MemoryModuleState>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
             Pair.of(MemoryModuleType.ATTACK_TARGET, MemoryModuleState.VALUE_PRESENT),
             Pair.of(MemoryModuleType.UNIVERSAL_ANGER, MemoryModuleState.VALUE_ABSENT),
-            Pair.of(ModMemoryModuleTypes.HAS_CONTROLLER, MemoryModuleState.VALUE_ABSENT),
             Pair.of(MemoryModuleType.HURT_BY, MemoryModuleState.VALUE_ABSENT));
 
-    public StudyTargetBehavior(int studyTicks) {
+    public StudyTarget(int studyTicks) {
         super(studyTicks);
     }
 
-    public StudyTargetBehavior<E> canStudy(BiPredicate<E, LivingEntity> predicate) {
+    public StudyTarget<E> canStudy(BiPredicate<E, LivingEntity> predicate) {
         this.canStudyPredicate = predicate;
         return this;
     }

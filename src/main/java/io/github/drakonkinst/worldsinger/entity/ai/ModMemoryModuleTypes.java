@@ -10,7 +10,7 @@ import net.minecraft.registry.Registry;
 @SuppressWarnings("UnqualifiedStaticUsage")
 public class ModMemoryModuleTypes {
 
-    public static final MemoryModuleType<Boolean> HAS_CONTROLLER = register("has_controller");
+    // public static final MemoryModuleType<Boolean> HAS_CONTROLLER = register("has_controller");
 
     public static void initialize() {
     }
