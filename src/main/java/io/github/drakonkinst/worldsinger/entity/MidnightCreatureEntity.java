@@ -32,7 +32,6 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -185,6 +184,8 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
         // Set to same penalty as water
         this.setPathfindingPenalty(PathNodeType.AETHER_SPORE_SEA, 8.0F);
+        this.setPathfindingPenalty(PathNodeType.DANGER_SILVER, 8.0F);
+        this.setPathfindingPenalty(PathNodeType.DAMAGE_SILVER, -1.0F);
     }
 
     public MidnightCreatureEntity(World world) {
@@ -229,7 +230,6 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     // AI
     // To avoid creating new memory module types, we take advantage of existing ones
-    // LIKED_PLAYER is used to refer to the controller UUID
     // UNIVERSAL_ANGER is used when the mob has been provoked and should not stop to study targets
 
     @Override
@@ -240,22 +240,6 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     @Override
     protected void mobTick() {
         this.tickBrain(this);
-    }
-
-    @Override
-    public Map<Activity, BrainActivityGroup<? extends MidnightCreatureEntity>> getAdditionalTasks() {
-        // TODO
-        // return Map.of(ModActivities.FIGHT_TAMED,
-        //         new BrainActivityGroup<>(ModActivities.FIGHT_TAMED), ModActivities.IDLE_TAMED,
-        //         new BrainActivityGroup<>(ModActivities.IDLE_TAMED));
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public List<Activity> getActivityPriorities() {
-        // TODO
-
-        return SmartBrainOwner.super.getActivityPriorities();
     }
 
     @Override
@@ -275,10 +259,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                             return SensoryUtils.isEntityAttackable(entity, target);
                         }),
                 // Track who hurt the mob to retaliate
-                new HurtBySensor<>(),
-                // TODO: Avoid silver
-                new NearbyRepellentSensor<MidnightCreatureEntity>().setPredicate(
-                        (blockState, entity) -> blockState.isIn(ModBlockTags.HAS_SILVER)));
+                new HurtBySensor<>()
     }
 
     @Override

@@ -29,6 +29,9 @@ public class EarlyRiser implements Runnable {
         String pathNodeTypeEnum = remapper.mapClassName(INTERMEDIARY, "net.minecraft.class_7");
         ClassTinkerers.enumBuilder(pathNodeTypeEnum, float.class)
                 .addEnum("AETHER_SPORE_SEA", -1.0f)
+                .addEnum("BLOCKING_SILVER", -1.0f)
+                .addEnum("DANGER_SILVER", 0.0f) // Should be 8.0f for mobs scared of silver
+                .addEnum("DAMAGE_SILVER", 0.0f) // Should be -1.0f for mobs scared of silver
                 .build();
 
         switch (FabricLoader.getInstance().getEnvironmentType()) {

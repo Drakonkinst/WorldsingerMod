@@ -1,6 +1,6 @@
 package io.github.drakonkinst.worldsinger.mixin.entity.ai;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.pathing.PathNodeMaker;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.BlockView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,30 +22,54 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LandPathNodeMaker.class)
 public abstract class LandPathNodeMakerMixin extends PathNodeMaker {
 
-    @ModifyReturnValue(method = "getCommonNodeType", at = @At("RETURN"))
-    private static PathNodeType addModBlocksNodeTypes(PathNodeType original, BlockView world,
-            BlockPos pos) {
+    // Modded logic takes precedence for modded blocks, so inject from head and cancel
+    // is more efficient (if less syntactically nice) than @ModifyReturnValue
+    @Inject(method = "getCommonNodeType", at = @At("HEAD"), cancellable = true)
+    private static void addModBlocksNodeTypes(BlockView world, BlockPos pos,
+            CallbackInfoReturnable<PathNodeType> cir) {
         BlockState state = world.getBlockState(pos);
 
         if (state.isOf(ModBlocks.SUNLIGHT)) {
-            return PathNodeType.LAVA;
+            cir.setReturnValue(PathNodeType.LAVA);
+            return;
         }
 
         if (state.isIn(ModBlockTags.CRIMSON_SPIKE) || state.isIn(ModBlockTags.TALL_CRIMSON_SPINES)
                 || state.isIn(ModBlockTags.AETHER_SPORE_BLOCKS)) {
-            return PathNodeType.DAMAGE_CAUTIOUS;
+            cir.setReturnValue(PathNodeType.DAMAGE_CAUTIOUS);
+            return;
         }
 
         if (state.isIn(ModBlockTags.CRIMSON_SPINES) || state.isIn(ModBlockTags.CRIMSON_SNARE)) {
-            return PathNodeType.DAMAGE_OTHER;
+            cir.setReturnValue(PathNodeType.DAMAGE_OTHER);
+            return;
+        }
+
+        // Any silver blocks that cannot be walked through
+        if (state.isIn(ModBlockTags.SILVER_WALKABLE)) {
+            cir.setReturnValue(ModEnums.PathNodeType.BLOCKING_SILVER);
+            return;
+        }
+
+        // Any silver blocks that can be walked through
+        if (state.isIn(ModBlockTags.HAS_SILVER)) {
+            cir.setReturnValue(ModEnums.PathNodeType.DAMAGE_SILVER);
+            return;
         }
 
         FluidState fluidState = world.getFluidState(pos);
         if (fluidState.isIn(ModFluidTags.AETHER_SPORES)) {
-            return ModEnums.PathNodeType.AETHER_SPORE_SEA;
+            cir.setReturnValue(ModEnums.PathNodeType.AETHER_SPORE_SEA);
         }
+    }
 
-        return original;
+    // Specifically runs after DANGER_OTHER and DANGER_FIRE, which should take precedence
+    @Inject(method = "getNodeTypeFromNeighbors", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/BlockView;getFluidState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/fluid/FluidState;"), cancellable = true)
+    private static void addSilverNodeTypes(BlockView world, Mutable pos, PathNodeType nodeType,
+            CallbackInfoReturnable<PathNodeType> cir, @Local BlockState blockState) {
+        if (blockState.isIn(ModBlockTags.HAS_SILVER)) {
+            cir.setReturnValue(ModEnums.PathNodeType.DANGER_SILVER);
+        }
     }
 
     @Inject(method = "getLandNodeType", at = @At("HEAD"), cancellable = true)
@@ -58,6 +83,9 @@ public abstract class LandPathNodeMakerMixin extends PathNodeMaker {
                     world, pos.down());
             if (pathNodeTypeBelow == ModEnums.PathNodeType.AETHER_SPORE_SEA) {
                 cir.setReturnValue(ModEnums.PathNodeType.AETHER_SPORE_SEA);
+            }
+            if (pathNodeTypeBelow == ModEnums.PathNodeType.BLOCKING_SILVER) {
+                cir.setReturnValue(ModEnums.PathNodeType.DAMAGE_SILVER);
             }
         }
     }

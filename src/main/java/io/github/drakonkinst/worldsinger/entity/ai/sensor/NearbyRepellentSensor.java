@@ -14,6 +14,7 @@ import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.PredicateSensor;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
+// Now unused, but keeping it around
 public class NearbyRepellentSensor<E extends LivingEntity> extends PredicateSensor<BlockState, E> {
 
     private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(

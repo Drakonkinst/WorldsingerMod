@@ -1,7 +1,5 @@
 {
   "values": [
-    "#c:silver_blocks",
-    "#c:raw_silver_blocks",
-    "#c:silver_ores"
+    "#worldsinger:silver_walkable"
   ]
 }
