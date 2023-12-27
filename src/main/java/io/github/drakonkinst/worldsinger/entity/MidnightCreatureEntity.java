@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
-import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.component.MidnightAetherBondComponent;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
@@ -9,7 +8,6 @@ import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ai.behavior.OptionalAttackTarget;
 import io.github.drakonkinst.worldsinger.entity.ai.behavior.StudyTarget;
-import io.github.drakonkinst.worldsinger.entity.ai.sensor.NearbyRepellentSensor;
 import io.github.drakonkinst.worldsinger.entity.ai.sensor.NearestAttackableSensor;
 import io.github.drakonkinst.worldsinger.entity.data.MidnightOverlayAccess;
 import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
@@ -259,7 +257,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                             return SensoryUtils.isEntityAttackable(entity, target);
                         }),
                 // Track who hurt the mob to retaliate
-                new HurtBySensor<>()
+                new HurtBySensor<>());
     }
 
     @Override
