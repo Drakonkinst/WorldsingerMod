@@ -186,19 +186,19 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
             List<LivingEntity> nearbyEntities, List<Pair<BlockPos, BlockState>> nearbyBlocks) {
         LivingEntity nearestEntity = getPlayerMorphTarget(controller, nearbyEntities);
         if (nearestEntity != null) {
-            int midnightEssenceRequired = getMidnightEssenceRequired(nearestEntity);
+            int essenceRequired = getMidnightEssenceRequired(nearestEntity);
             int currentAmount = midnightCreature.getMidnightEssenceAmount();
 
             // If not enough essence, attempt to absorb more from the environment
-            if (midnightEssenceRequired > currentAmount) {
+            if (essenceRequired > currentAmount) {
                 calculateNearbyAbsorbables(controller, nearbyEntities, nearbyBlocks);
-                int needed = midnightEssenceRequired - currentAmount;
+                int needed = essenceRequired - currentAmount;
                 if (absorbableAmount >= needed && absorbUpTo(midnightCreature, needed)) {
                     currentAmount = midnightCreature.getMidnightEssenceAmount();
                 }
             }
 
-            if (midnightEssenceRequired <= currentAmount) {
+            if (currentAmount >= essenceRequired) {
                 // Transform!
                 ShapeshiftingManager.createMorphFromEntity(midnightCreature, nearestEntity, true);
             }
@@ -218,7 +218,7 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
         if (absorbUpTo(midnightCreature, essenceRequired - currentAmount)) {
             currentAmount = midnightCreature.getMidnightEssenceAmount();
         }
-        if (currentAmount <= essenceRequired) {
+        if (currentAmount >= essenceRequired) {
             ShapeshiftingManager.createMorphFromEntity(midnightCreature, nearestEntity, true);
         }
     }
@@ -229,6 +229,7 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
             return false;
         }
 
+        int currentAmount = midnightCreature.getMidnightEssenceAmount();
         int absorbed = 0;
         // Absorb blocks first, then entities.
         for (BlockPos pos : nearbyAbsorbableBlocks) {
@@ -241,6 +242,7 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
                         ABSORB_PARTICLE_VELOCITY);
             }
             if (absorbed >= maxAmount) {
+                midnightCreature.setMidnightEssenceAmount(currentAmount + absorbed);
                 return true;
             }
         }
@@ -253,9 +255,11 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
                     ABSORB_PARTICLE_VELOCITY);
             absorbable.discard();
             if (absorbed >= maxAmount) {
+                midnightCreature.setMidnightEssenceAmount(currentAmount + absorbed);
                 return true;
             }
         }
+        midnightCreature.setMidnightEssenceAmount(currentAmount + absorbed);
         return false;
     }
 }

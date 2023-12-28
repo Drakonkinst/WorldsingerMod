@@ -254,6 +254,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                 // Track nearby
                 new ConditionalNearbyBlocksSensor<MidnightCreatureEntity>().shouldRun(
                                 entity -> entity.getMorph() == null)
+                        .setRadius(4.0)
                         .setPredicate((blockState, entity) -> blockState.isOf(
                                 ModBlocks.MIDNIGHT_ESSENCE)));
     }
