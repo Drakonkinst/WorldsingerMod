@@ -111,10 +111,5 @@ public final class BlockPosUtil {
         return dir;
     }
 
-    public static Vec3d getEntityCenter(Entity entity) {
-        Vec3d pos = entity.getPos();
-        return new Vec3d(pos.getX(), pos.getY() + entity.getHeight() * 0.5, pos.getZ());
-    }
-
     private BlockPosUtil() {}
 }

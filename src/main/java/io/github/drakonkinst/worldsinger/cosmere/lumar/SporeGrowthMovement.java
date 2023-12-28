@@ -8,6 +8,7 @@ import io.github.drakonkinst.worldsinger.cosmere.MetalQueryManager;
 import io.github.drakonkinst.worldsinger.registry.ModDataTables;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.BoxUtil;
+import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -97,7 +98,7 @@ public final class SporeGrowthMovement {
         List<LivingEntity> nearbyLivingEntities = world.getEntitiesByClass(LivingEntity.class, box,
                 LivingEntity::isAlive);
         for (LivingEntity entity : nearbyLivingEntities) {
-            Vec3d entityCenter = BlockPosUtil.getEntityCenter(entity);
+            Vec3d entityCenter = EntityUtil.getCenterPos(entity);
             Vec3d blockCenter = pos.toCenterPos();
             if (BlockPosUtil.isInvestitureBlocked(world, entityCenter, blockCenter)) {
                 continue;
@@ -139,7 +140,7 @@ public final class SporeGrowthMovement {
         List<AbstractMinecartEntity> nearbyMinecarts = world.getEntitiesByClass(
                 AbstractMinecartEntity.class, box, Entity::isAlive);
         for (AbstractMinecartEntity entity : nearbyMinecarts) {
-            Vec3d entityCenter = BlockPosUtil.getEntityCenter(entity);
+            Vec3d entityCenter = EntityUtil.getCenterPos(entity);
             Vec3d blockCenter = pos.toCenterPos();
             if (BlockPosUtil.isInvestitureBlocked(world, entityCenter, blockCenter)) {
                 continue;

@@ -8,6 +8,7 @@ import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightCreatureManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
+import io.github.drakonkinst.worldsinger.entity.ai.behavior.MidnightCreatureImitation;
 import io.github.drakonkinst.worldsinger.entity.ai.behavior.OptionalAttackTarget;
 import io.github.drakonkinst.worldsinger.entity.ai.behavior.StudyTarget;
 import io.github.drakonkinst.worldsinger.entity.ai.sensor.NearestAttackableSensor;
@@ -115,7 +116,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
             Worldsinger.id("midnight_creature.morphed"));
 
     // Behavior
-    private static final int IMITATE_NEAREST_INTERVAL = 20 * 5;
+
     private static final int ANGER_TIME = 20 * 30;
     private static final float SPRINTING_MULTIPLIER = 1.4f;
     private static final Set<RegistryEntry<StatusEffect>> IMMUNE_TO = Set.of(StatusEffects.WITHER,
@@ -136,6 +137,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     // private ControlLevel controlLevel = ControlLevel.OUT_OF_CONTROL;
     private int midnightEssenceAmount = 0;
     private int drainIntervalTicks = 0;
+
     private int maxDrainInterval = MidnightCreatureManager.MAX_DRAIN_INTERVAL_TICKS;
     private int minBribe = 1;
     @Nullable
@@ -252,6 +254,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     @Override
     public BrainActivityGroup<? extends MidnightCreatureEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(new FloatToSurfaceOfFluid<>(), new LookAtTarget<>(),
+                new MidnightCreatureImitation<>(),
                 new FollowEntity<MidnightCreatureEntity, LivingEntity>().following(
                                 MidnightCreatureEntity::getController)
                         // Does not have as strict of a follow distance.
@@ -393,17 +396,6 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
         World world = this.getWorld();
 
-        // Mainly for testing. This behavior will likely need additional logic
-        // TODO replace with behavior
-        if (!world.isClient() && !this.firstUpdate) {
-            // Morphs should only occur from server side
-            if (morph == null) {
-                if (age % IMITATE_NEAREST_INTERVAL == 0) {
-                    imitateNearestEntity();
-                }
-            }
-        }
-
         if (world.isClient() && !this.firstUpdate) {
             tickParticleEffects();
         }
@@ -420,7 +412,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
         if (controller != null) {
             Vec3d start = controller.getEyePos().add(0.0, MOUTH_OFFSET, 0.0);
-            Vec3d destination = this.getPos().add(0.0, this.getHeight() / 2.0, 0.0f);
+            Vec3d destination = EntityUtil.getCenterPos(this);
             Vec3d direction = destination.subtract(start).normalize();
             addTrailParticle(start, destination, 0, direction);
             addTrailParticle(start, destination, NUM_TRAIL_PARTICLES / 2, direction);

@@ -11,6 +11,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +58,28 @@ public final class EntityUtil {
         EntityAttributeInstance instance = entity.getAttributeInstance(attribute);
         Objects.requireNonNull(instance);
         return instance;
+    }
+
+    public static Vec3d getRotationVector(Entity entity) {
+        return EntityUtil.getRotationVector(entity.getPitch(), entity.getYaw());
+    }
+
+    public static Vec3d getLookRotationVector(Entity entity) {
+        return EntityUtil.getRotationVector(entity.getPitch(), entity.getHeadYaw());
+    }
+
+    public static Vec3d getRotationVector(float pitch, float yaw) {
+        float pitchRadians = pitch * MathHelper.RADIANS_PER_DEGREE;
+        float yawRadians = -yaw * MathHelper.RADIANS_PER_DEGREE;
+        float cosPitch = MathHelper.cos(pitchRadians);
+        float sinPitch = MathHelper.sin(pitchRadians);
+        float cosYaw = MathHelper.cos(yawRadians);
+        float sinYaw = MathHelper.sin(yawRadians);
+        return new Vec3d(sinYaw * cosPitch, -sinPitch, cosYaw * cosPitch);
+    }
+
+    public static Vec3d getCenterPos(Entity entity) {
+        return new Vec3d(entity.getX(), entity.getY() + entity.getHeight() * 0.5, entity.getZ());
     }
 
     private EntityUtil() {}

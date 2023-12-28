@@ -56,12 +56,6 @@ public class StudyTarget<E extends MobEntity> extends DelayedBehaviour<E> {
     }
 
     @Override
-    protected void tick(E entity) {
-        // TODO: Not sure if this is needed
-        // LookTargetUtil.lookAt(entity, this.target);
-    }
-
-    @Override
     protected List<Pair<MemoryModuleType<?>, MemoryModuleState>> getMemoryRequirements() {
         return MEMORY_REQUIREMENTS;
     }
