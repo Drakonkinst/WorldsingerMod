@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.component.MidnightAetherBondComponent;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
@@ -27,6 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -103,7 +105,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     // Behavior
     private static final int IMITATE_NEAREST_INTERVAL = 20 * 5;
-    private static final int DRAIN_INTERVAL_TICKS = 20 * 3;
+
     private static final int ANGER_TIME = 20 * 30;
     private static final float SPRINTING_MULTIPLIER = 1.4f;
     private static final Set<RegistryEntry<StatusEffect>> IMMUNE_TO = Set.of(StatusEffects.WITHER,
@@ -121,6 +123,10 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private static final float MAX_MAX_HEALTH = 100.0f;     // Same as Ravager
     private static final float MIN_ATTACK_DAMAGE = 3.0f;    // Same as Zombie
     private static final float MAX_ATTACK_DAMAGE = 12.0f;   // Same as Ravager
+    private static final int MIN_DRAIN_INTERVAL_TICKS = 20;
+    private static final int DRAIN_INTERVAL_MULTIPLIER = -8;
+    private static final int MAX_DRAIN_INTERVAL_TICKS = 80;
+    private static final float DAMAGE_FROM_SILVER = 4.0f;
 
     // Particles
     private static final int AMBIENT_PARTICLE_INTERVAL = 10;
@@ -149,6 +155,12 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         return MathHelper.clamp(Math.round(value), MIN_ATTACK_DAMAGE, MAX_ATTACK_DAMAGE);
     }
 
+    public static int getDrainIntervalForVolume(float volume) {
+        int sizeStage = MathHelper.floor(volume * 2.0f);
+        return Math.max(MAX_DRAIN_INTERVAL_TICKS + DRAIN_INTERVAL_MULTIPLIER * sizeStage,
+                MIN_DRAIN_INTERVAL_TICKS);
+    }
+
     public static void spawnMidnightParticle(World world, Entity entity, Random random,
             double velocity) {
         Vec3d pos = EntityUtil.getRandomPointInBoundingBox(entity, random);
@@ -170,6 +182,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private ControlLevel controlLevel = ControlLevel.OUT_OF_CONTROL;
     private int midnightEssenceAmount = 0;
     private int drainIntervalTicks = 0;
+    private int maxDrainInterval = MAX_DRAIN_INTERVAL_TICKS;
     @Nullable
     private PlayerEntity controller;
 
@@ -237,6 +250,27 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     @Override
     protected void mobTick() {
+        // Drain water
+        UUID controllerUuid = getControllerUuid();
+        if (controllerUuid != null) {
+            ++drainIntervalTicks;
+            if (drainIntervalTicks >= maxDrainInterval) {
+                PlayerEntity controller = getController();
+                if (controller == null) {
+                    resetController();
+                } else {
+                    drainWaterFromHost(controller);
+                }
+                drainIntervalTicks = 0;
+            }
+        }
+
+        BlockState standingBlock = this.getSteppingBlockState();
+        if (standingBlock.isIn(ModBlockTags.HAS_SILVER)) {
+            this.damage(this.getDamageSources().magic(), DAMAGE_FROM_SILVER);
+        }
+
+        // Brain logic
         this.tickBrain(this);
     }
 
@@ -405,27 +439,12 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         World world = this.getWorld();
 
         // Mainly for testing. This behavior will likely need additional logic
+        // TODO replace with behavior
         if (!world.isClient() && !this.firstUpdate) {
             // Morphs should only occur from server side
             if (morph == null) {
                 if (age % IMITATE_NEAREST_INTERVAL == 0) {
                     imitateNearestEntity();
-                }
-            }
-        }
-
-        if (!world.isClient()) {
-            UUID controllerUuid = getControllerUuid();
-            if (controllerUuid != null) {
-                ++drainIntervalTicks;
-                if (drainIntervalTicks >= DRAIN_INTERVAL_TICKS) {
-                    PlayerEntity controller = getController();
-                    if (controller == null) {
-                        resetController();
-                    } else {
-                        drainWaterFromHost(controller);
-                    }
-                    drainIntervalTicks = 0;
                 }
             }
         }
@@ -584,6 +603,9 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         knockbackResistanceAttribute.setBaseValue(0.0);
         maxHealthAttribute.setBaseValue(maxHealth);
         attackDamageAttribute.setBaseValue(attackDamage);
+        maxDrainInterval = MidnightCreatureEntity.getDrainIntervalForVolume(volume);
+
+        Worldsinger.LOGGER.info("VOLUME " + volume + " -> " + maxDrainInterval);
 
         if (showTransformEffects) {
             this.setHealth(this.getMaxHealth());
