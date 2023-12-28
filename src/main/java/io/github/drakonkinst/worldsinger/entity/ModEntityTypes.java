@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightCreatureManager;
 import io.github.drakonkinst.worldsinger.mixin.accessor.SpawnRestrictionAccessor;
 import io.github.drakonkinst.worldsinger.worldgen.dimension.ModDimensionTypes;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -73,7 +74,7 @@ public final class ModEntityTypes {
 
         // Register attributes
         FabricDefaultAttributeRegistry.register(ModEntityTypes.MIDNIGHT_CREATURE,
-                MidnightCreatureEntity.createMidnightCreatureAttributes());
+                MidnightCreatureManager.createMidnightCreatureAttributes());
     }
 
     private static boolean canChickensSpawn(EntityType<ChickenEntity> type, WorldAccess world,

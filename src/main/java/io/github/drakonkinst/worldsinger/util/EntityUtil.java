@@ -2,12 +2,18 @@ package io.github.drakonkinst.worldsinger.util;
 
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
+import java.util.Objects;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
+import org.jetbrains.annotations.NotNull;
 
 public final class EntityUtil {
 
@@ -43,6 +49,14 @@ public final class EntityUtil {
         double y = box.minY + (box.maxY - box.minY) * random.nextDouble();
         double z = box.minZ + (box.maxZ - box.minZ) * random.nextDouble();
         return new Vec3d(x, y, z);
+    }
+
+    @NotNull
+    public static EntityAttributeInstance getRequiredAttributeInstance(LivingEntity entity,
+            RegistryEntry<EntityAttribute> attribute) {
+        EntityAttributeInstance instance = entity.getAttributeInstance(attribute);
+        Objects.requireNonNull(instance);
+        return instance;
     }
 
     private EntityUtil() {}

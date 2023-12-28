@@ -57,7 +57,11 @@ public class ThirstStatusBar {
         }
     }
 
+    // TODO: Add an option for players to show it all the time
+    // TODO: Should typically show when equipping a water-based power
+    // TODO: Or maybe when holding an item that changes thirst?
     public static boolean shouldRenderThirstBar(PlayerEntity player) {
-        return true;
+        return ModComponents.THIRST_MANAGER.get(player).isCritical()
+                || ModComponents.MIDNIGHT_AETHER_BOND.get(player).getBondCount() > 0;
     }
 }

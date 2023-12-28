@@ -42,6 +42,7 @@ public class MidnightEssenceBlock extends Block {
         entity.setMidnightEssenceAmount(1);
         entity.setPosition(new Vec3d(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5));
         entity.setController(player);
+        entity.acceptWaterBribe(player, MidnightCreatureEntity.INITIAL_BRIBE);
         world.spawnEntity(entity);
         world.playSound(null, pos, ModSoundEvents.ENTITY_MIDNIGHT_CREATURE_AMBIENT,
                 SoundCategory.BLOCKS, 1.0f, 1.0f);

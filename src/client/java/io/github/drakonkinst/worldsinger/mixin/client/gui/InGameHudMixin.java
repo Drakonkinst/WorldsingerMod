@@ -23,9 +23,11 @@ public abstract class InGameHudMixin {
         if (player == null) {
             return;
         }
-        this.client.getProfiler().push("thirst");
-        ThirstStatusBar.renderThirstStatusBar(client, context, player);
-        this.client.getProfiler().push("pop");
+        if (ThirstStatusBar.shouldRenderThirstBar(player)) {
+            this.client.getProfiler().push("thirst");
+            ThirstStatusBar.renderThirstStatusBar(client, context, player);
+            this.client.getProfiler().pop();
+        }
     }
 
     // Currently, this method is only used to get the number of health rows the player's mount has,

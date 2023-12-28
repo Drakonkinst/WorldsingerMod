@@ -2,6 +2,7 @@ package io.github.drakonkinst.worldsinger.entity.data;
 
 import io.github.drakonkinst.worldsinger.component.MidnightAetherBondComponent;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightCreatureManager;
 import io.github.drakonkinst.worldsinger.entity.MidnightCreatureEntity;
 import it.unimi.dsi.fastutil.ints.Int2LongMap;
 import it.unimi.dsi.fastutil.ints.Int2LongMap.Entry;
@@ -16,7 +17,7 @@ public class MidnightAetherBondData implements MidnightAetherBondComponent {
     private static final String BOND_COUNT_KEY = "Bonds";
     // TODO: Can add logic for possession here
 
-    private static final int EXPIRY_TIME = 20 * 3 * 2;
+    private static final int EXPIRY_TIME = MidnightCreatureManager.MAX_DRAIN_INTERVAL_TICKS * 2;
     private static final int UPDATE_INTERVAL = 20;
 
     private final PlayerEntity player;

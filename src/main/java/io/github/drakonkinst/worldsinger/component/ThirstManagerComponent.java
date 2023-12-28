@@ -22,4 +22,6 @@ public interface ThirstManagerComponent extends AutoSyncedComponent, ServerTicki
     int get();
 
     boolean isFull();
+
+    boolean isCritical();
 }

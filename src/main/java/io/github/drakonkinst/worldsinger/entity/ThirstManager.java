@@ -146,4 +146,9 @@ public class ThirstManager implements ThirstManagerComponent {
     public boolean isFull() {
         return thirstLevel >= MAX_THIRST_LEVEL;
     }
+
+    @Override
+    public boolean isCritical() {
+        return thirstLevel <= MIN_NATURAL_THIRST;
+    }
 }
