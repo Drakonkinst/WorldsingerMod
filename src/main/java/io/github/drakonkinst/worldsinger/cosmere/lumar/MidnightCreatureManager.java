@@ -40,24 +40,24 @@ public final class MidnightCreatureManager {
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, DEFAULT_MAX_HEALTH);
     }
 
-    public static double getMaxHealthForVolume(float volume) {
-        double value = volume * MAX_HEALTH_SIZE_MULTIPLIER;
+    public static double getMaxHealthForSize(float size) {
+        double value = size * MAX_HEALTH_SIZE_MULTIPLIER;
         return MathHelper.clamp(Math.round(value), MIN_MAX_HEALTH, MAX_MAX_HEALTH);
     }
 
-    public static double getAttackDamageForVolume(float volume) {
-        double value = volume * ATTACK_DAMAGE_SIZE_MULTIPLIER;
+    public static double getAttackDamageForSize(float size) {
+        double value = size * ATTACK_DAMAGE_SIZE_MULTIPLIER;
         return MathHelper.clamp(Math.round(value), MIN_ATTACK_DAMAGE, MAX_ATTACK_DAMAGE);
     }
 
-    public static int getDrainIntervalForVolume(float volume) {
-        int sizeStage = MathHelper.floor(volume * 2.0f);
+    public static int getDrainIntervalForSize(float size) {
+        int sizeStage = MathHelper.floor(size * 2.0f);
         return Math.max(MAX_DRAIN_INTERVAL_TICKS + DRAIN_INTERVAL_MULTIPLIER * sizeStage,
                 MIN_DRAIN_INTERVAL_TICKS);
     }
 
-    public static int getMinBribeForVolume(float volume) {
-        return MathHelper.floor(volume * 2.0f);
+    public static int getMinBribeForSize(float size) {
+        return MathHelper.floor(size * 2.0f);
     }
 
     public static int getWaterAmountPerUnit(ItemStack stack) {

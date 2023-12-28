@@ -133,7 +133,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private static final float MOUTH_OFFSET = -0.2f;
 
     private final Object2IntMap<UUID> waterBribes = new Object2IntOpenHashMap<>();
-    private ControlLevel controlLevel = ControlLevel.OUT_OF_CONTROL;
+    // private ControlLevel controlLevel = ControlLevel.OUT_OF_CONTROL;
     private int midnightEssenceAmount = 0;
     private int drainIntervalTicks = 0;
     private int maxDrainInterval = MidnightCreatureManager.MAX_DRAIN_INTERVAL_TICKS;
@@ -498,7 +498,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         }
 
         setControllerUuid(newControllerUuid);
-        this.controlLevel = ControlLevel.NORMAL;
+        // this.controlLevel = ControlLevel.NORMAL;
         this.getWorld()
                 .playSound(player, this.getX(), this.getY(), this.getZ(),
                         ModSoundEvents.ENTITY_MIDNIGHT_CREATURE_BOND, this.getSoundCategory(), 1.0f,
@@ -514,7 +514,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
             waterBribes.removeInt(controllerUuid);
         }
         setControllerUuid(null);
-        this.controlLevel = ControlLevel.OUT_OF_CONTROL;
+        // this.controlLevel = ControlLevel.OUT_OF_CONTROL;
     }
 
     public void acceptWaterBribe(PlayerEntity player, int waterAmount) {
@@ -579,15 +579,15 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
             return;
         }
         float volume = EntityUtil.getSize(morph);
-        double maxHealth = MidnightCreatureManager.getMaxHealthForVolume(volume);
-        double attackDamage = MidnightCreatureManager.getAttackDamageForVolume(volume);
+        double maxHealth = MidnightCreatureManager.getMaxHealthForSize(volume);
+        double attackDamage = MidnightCreatureManager.getAttackDamageForSize(volume);
         // Speed is the same for all mobs
         movementSpeedAttribute.setBaseValue(MidnightCreatureManager.DEFAULT_MOVEMENT_SPEED);
         knockbackResistanceAttribute.setBaseValue(0.0);
         maxHealthAttribute.setBaseValue(maxHealth);
         attackDamageAttribute.setBaseValue(attackDamage);
-        maxDrainInterval = MidnightCreatureManager.getDrainIntervalForVolume(volume);
-        minBribe = MidnightCreatureManager.getMinBribeForVolume(volume);
+        maxDrainInterval = MidnightCreatureManager.getDrainIntervalForSize(volume);
+        minBribe = MidnightCreatureManager.getMinBribeForSize(volume);
 
         if (showTransformEffects) {
             this.setHealth(this.getMaxHealth());
@@ -658,6 +658,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                 NbtCompound nbtEntry = new NbtCompound();
                 nbtEntry.putUuid(UUID_KEY, uuidEntry.getKey());
                 nbtEntry.putInt(BRIBE_KEY, uuidEntry.getIntValue());
+                waterBribesList.add(nbtEntry);
             });
             nbt.put(BRIBES_KEY, waterBribesList);
         }
