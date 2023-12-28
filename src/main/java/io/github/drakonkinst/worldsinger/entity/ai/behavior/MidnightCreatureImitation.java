@@ -1,19 +1,21 @@
 package io.github.drakonkinst.worldsinger.entity.ai.behavior;
 
 import com.mojang.datafixers.util.Pair;
+import io.github.drakonkinst.worldsinger.Worldsinger;
+import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.entity.MidnightCreatureEntity;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypeTags;
+import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -29,14 +31,17 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
 
     private static final List<Pair<MemoryModuleType<?>, MemoryModuleState>> MEMORY_REQUIREMENTS = ObjectArrayList.of(
             Pair.of(MemoryModuleType.MOBS, MemoryModuleState.VALUE_PRESENT),
-            Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryModuleState.VALUE_PRESENT));
-
+            Pair.of(SBLMemoryTypes.NEARBY_BLOCKS.get(), MemoryModuleState.REGISTERED));
     private static final int IMITATION_ATTEMPT_INTERVAL = 20;
     private static final double LOOK_NEAR_THRESHOLD = 1.0 - 0.025;
-    private int imitationAttemptTicks = IMITATION_ATTEMPT_INTERVAL;
+    private static final int ABSORB_PARTICLE_COUNT = 10;
+    private static final double ABSORB_PARTICLE_VELOCITY = 0.1f;
+
+    private int imitationAttemptTicks = 0;
     private int imitationAttemptsRemaining = 6;
     private boolean shouldRecalculateAbsorbables = true;
     private final List<MidnightCreatureEntity> nearbyAbsorbableEntities = new ArrayList<>();
+    private final List<BlockPos> nearbyAbsorbableBlocks = new ArrayList<>();
     private int absorbableAmount = 0;
 
     @Override
@@ -55,9 +60,9 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
         if (imitationAttemptTicks >= IMITATION_ATTEMPT_INTERVAL) {
             imitationAttemptTicks = 0;
             BrainUtils.withMemory(entity, MemoryModuleType.MOBS, nearbyEntities -> {
-                BrainUtils.withMemory(entity, SBLMemoryTypes.NEARBY_BLOCKS.get(), nearbyBlocks -> {
-                    attemptImitation(entity, nearbyEntities, nearbyBlocks);
-                });
+                List<Pair<BlockPos, BlockState>> nearbyBlocks = BrainUtils.memoryOrDefault(entity,
+                        SBLMemoryTypes.NEARBY_BLOCKS.get(), Collections::emptyList);
+                attemptImitation(entity, nearbyEntities, nearbyBlocks);
             });
         }
     }
@@ -81,15 +86,19 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
         }
 
         nearbyAbsorbableEntities.clear();
+        nearbyAbsorbableBlocks.clear();
         absorbableAmount = nearbyBlocks.size();
         for (LivingEntity entity : nearbyEntities) {
             if (entity instanceof MidnightCreatureEntity midnightCreatureEntity && (
                     controller == null
                             || midnightCreatureEntity.getControllerUuid() == controller.getUuid())
-                    && midnightCreatureEntity.getMorph() == null) {
+                    && midnightCreatureEntity.getMorph() == null && !entity.isRemoved()) {
                 nearbyAbsorbableEntities.add(midnightCreatureEntity);
                 absorbableAmount += midnightCreatureEntity.getMidnightEssenceAmount();
             }
+        }
+        for (Pair<BlockPos, BlockState> pair : nearbyBlocks) {
+            nearbyAbsorbableBlocks.add(pair.getFirst());
         }
         shouldRecalculateAbsorbables = false;
     }
@@ -106,7 +115,7 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
         double nearestEntityDistanceSq = Double.MAX_VALUE;
 
         for (LivingEntity entity : nearbyEntities) {
-            if (!entity.getType().isIn(ModEntityTypeTags.MIDNIGHT_CREATURES_CANNOT_IMITATE)) {
+            if (entity.getType().isIn(ModEntityTypeTags.MIDNIGHT_CREATURES_CANNOT_IMITATE)) {
                 continue;
             }
             Vec3d entityPos = EntityUtil.getCenterPos(entity);
@@ -132,12 +141,15 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
         double nearestEntityDistanceSq = Double.MAX_VALUE;
         Vec3d pos = midnightCreature.getPos();
         for (LivingEntity entity : nearbyEntities) {
-            if (!entity.getType().isIn(ModEntityTypeTags.MIDNIGHT_CREATURES_CANNOT_IMITATE)) {
+            if (entity.getType().isIn(ModEntityTypeTags.MIDNIGHT_CREATURES_CANNOT_IMITATE)) {
                 continue;
             }
             double distSq = entity.getPos().squaredDistanceTo(pos);
             if (distSq < nearestEntityDistanceSq) {
                 int essenceRequired = getMidnightEssenceRequired(entity);
+                Worldsinger.LOGGER.info(
+                        "ENTITY " + entity.getType().toString() + " -> " + essenceRequired + " " + (
+                                essenceRequired <= midnightEssenceAmount));
                 if (essenceRequired <= midnightEssenceAmount) {
                     nearestEntity = entity;
                     nearestEntityDistanceSq = distSq;
@@ -174,8 +186,6 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
             List<LivingEntity> nearbyEntities, List<Pair<BlockPos, BlockState>> nearbyBlocks) {
         LivingEntity nearestEntity = getPlayerMorphTarget(controller, nearbyEntities);
         if (nearestEntity != null) {
-            nearestEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 20));
-
             int midnightEssenceRequired = getMidnightEssenceRequired(nearestEntity);
             int currentAmount = midnightCreature.getMidnightEssenceAmount();
 
@@ -183,7 +193,7 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
             if (midnightEssenceRequired > currentAmount) {
                 calculateNearbyAbsorbables(controller, nearbyEntities, nearbyBlocks);
                 int needed = midnightEssenceRequired - currentAmount;
-                if (absorbableAmount >= needed && absorbUpTo(needed)) {
+                if (absorbableAmount >= needed && absorbUpTo(midnightCreature, needed)) {
                     currentAmount = midnightCreature.getMidnightEssenceAmount();
                 }
             }
@@ -205,7 +215,7 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
             return;
         }
         int essenceRequired = getMidnightEssenceRequired(nearestEntity);
-        if (absorbUpTo(essenceRequired - currentAmount)) {
+        if (absorbUpTo(midnightCreature, essenceRequired - currentAmount)) {
             currentAmount = midnightCreature.getMidnightEssenceAmount();
         }
         if (currentAmount <= essenceRequired) {
@@ -213,16 +223,39 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
         }
     }
 
-    // Returns true if anything was absorbed, and the midnight essence amount was changed
-    private boolean absorbUpTo(int amount) {
-        if (amount <= 0) {
+    // Returns true if anything was absorbed, and the midnight essence maxAmount was changed
+    private boolean absorbUpTo(E midnightCreature, int maxAmount) {
+        if (maxAmount <= 0 || !(midnightCreature.getWorld() instanceof ServerWorld world)) {
             return false;
         }
 
-        int remaining = amount;
-
+        int absorbed = 0;
         // Absorb blocks first, then entities.
-        // TODO
-        return true;
+        for (BlockPos pos : nearbyAbsorbableBlocks) {
+            if (world.getBlockState(pos).isOf(ModBlocks.MIDNIGHT_ESSENCE)) {
+                world.removeBlock(pos, false);
+                absorbed += 1;
+                Vec3d centerPos = pos.toCenterPos();
+                world.spawnParticles(ModParticleTypes.MIDNIGHT_ESSENCE, centerPos.getX(),
+                        centerPos.getY(), centerPos.getZ(), ABSORB_PARTICLE_COUNT, 0.5, 0.5, 0.5,
+                        ABSORB_PARTICLE_VELOCITY);
+            }
+            if (absorbed >= maxAmount) {
+                return true;
+            }
+        }
+
+        for (MidnightCreatureEntity absorbable : nearbyAbsorbableEntities) {
+            absorbed += absorbable.getMidnightEssenceAmount();
+            Vec3d centerPos = EntityUtil.getCenterPos(absorbable);
+            world.spawnParticles(ModParticleTypes.MIDNIGHT_ESSENCE, centerPos.getX(),
+                    centerPos.getY(), centerPos.getZ(), ABSORB_PARTICLE_COUNT, 0.5, 0.5, 0.5,
+                    ABSORB_PARTICLE_VELOCITY);
+            absorbable.discard();
+            if (absorbed >= maxAmount) {
+                return true;
+            }
+        }
+        return false;
     }
 }

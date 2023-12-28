@@ -644,7 +644,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        if (this.getMorph() != null) {
+        if (this.getMorph() == null) {
             nbt.putInt(MIDNIGHT_ESSENCE_AMOUNT_KEY, midnightEssenceAmount);
         }
         UUID controllerUuid = getControllerUuid();
@@ -666,7 +666,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        if (this.getMorph() != null) {
+        if (this.getMorph() == null) {
             this.midnightEssenceAmount = nbt.getInt(MIDNIGHT_ESSENCE_AMOUNT_KEY);
         }
         if (nbt.contains(CONTROLLER_KEY, NbtElement.INT_ARRAY_TYPE)) {
