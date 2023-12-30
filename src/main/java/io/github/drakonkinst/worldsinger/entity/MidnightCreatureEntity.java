@@ -97,7 +97,7 @@ import net.tslat.smartbrainlib.util.SensoryUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class MidnightCreatureEntity extends ShapeshiftingEntity implements
-        SmartBrainOwner<MidnightCreatureEntity>, Controllable, Monster {
+        SmartBrainOwner<MidnightCreatureEntity>, Controllable, Monster, SilverVulnerable {
 
     // NBT
     public static final String MIDNIGHT_ESSENCE_AMOUNT_KEY = "MidnightEssenceAmount";

@@ -151,7 +151,7 @@ public final class ModItems {
     public static final Item QUARTZ_AND_IRON = register("quartz_and_iron",
             new FaultyFirestarterItem(0.33f, new FabricItemSettings().maxDamage(88)));
     public static final Item SILVER_KNIFE = register("silver_knife",
-            new KnifeItem(1.0f, -2.0f, ModToolMaterials.SILVER, new FabricItemSettings()));
+            new SilverKnifeItem(1.0f, -2.0f, new FabricItemSettings()));
 
     // Admin
     public static final Item MIDNIGHT_CREATURE_SPAWN_EGG = register("midnight_creature_spawn_egg",

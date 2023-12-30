@@ -1,6 +1,7 @@
 package io.github.drakonkinst.worldsinger.mixin.accessor;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
@@ -16,4 +17,7 @@ public interface LivingEntityAccessor {
 
     @Accessor("jumping")
     boolean worldsinger$isJumping();
+
+    @Invoker("applyDamage")
+    void worldsinger$applyDamage(DamageSource source, float amount);
 }
