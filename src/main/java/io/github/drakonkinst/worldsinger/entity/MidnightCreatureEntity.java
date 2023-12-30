@@ -6,7 +6,6 @@ import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.component.MidnightAetherBondComponent;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
-import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightCreatureManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
@@ -16,10 +15,10 @@ import io.github.drakonkinst.worldsinger.entity.ai.behavior.StudyTarget;
 import io.github.drakonkinst.worldsinger.entity.ai.sensor.ConditionalNearbyBlocksSensor;
 import io.github.drakonkinst.worldsinger.entity.ai.sensor.NearestAttackableSensor;
 import io.github.drakonkinst.worldsinger.entity.data.MidnightOverlayAccess;
+import io.github.drakonkinst.worldsinger.item.ModItemTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
-import io.github.drakonkinst.worldsinger.util.BoxUtil;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.util.ModEnums.PathNodeType;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -57,7 +56,6 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -71,7 +69,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -355,9 +352,10 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                             if (entity.getControllerUuid() != null) {
                                 return false;
                             }
-                            // TODO Make more robust
-                            return target.getMainHandStack().isOf(Items.WATER_BUCKET)
-                                    || target.getOffHandStack().isOf(Items.WATER_BUCKET);
+                            return target.getMainHandStack()
+                                    .isIn(ModItemTags.TEMPTS_MIDNIGHT_CREATURES)
+                                    || target.getOffHandStack()
+                                    .isIn(ModItemTags.TEMPTS_MIDNIGHT_CREATURES);
                         }).whenStopping(entity -> {
                             BrainUtils.setForgettableMemory(entity,
                                     MemoryModuleType.UNIVERSAL_ANGER, true, ANGER_TIME);
@@ -622,41 +620,6 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                     halfWidth, DISPEL_PARTICLE_VELOCITY);
         }
         this.discard();
-    }
-
-    private void imitateNearestEntity() {
-        LivingEntity nearest = getNearestEntityToImitate();
-        if (nearest != null) {
-            ShapeshiftingManager.createMorphFromEntity(this, nearest, true);
-        }
-    }
-
-    private LivingEntity getNearestEntityToImitate() {
-        Vec3d pos = this.getPos();
-        Box box = BoxUtil.createBoxAroundPos(pos, 32.0);
-
-        // LivingEntity nearest = this.getWorld()
-        //         .getClosestEntity(LivingEntity.class, TargetPredicate.DEFAULT, this, pos.getX(),
-        //                 pos.getY(), pos.getZ(), box);
-
-        List<LivingEntity> candidates = this.getWorld()
-                .getEntitiesByClass(LivingEntity.class, box, entity -> !entity.getType()
-                        .isIn(ModEntityTypeTags.MIDNIGHT_CREATURES_CANNOT_IMITATE));
-        if (candidates.isEmpty()) {
-            return null;
-        }
-
-        LivingEntity nearest = candidates.get(0);
-        double minDistanceSq = Float.MAX_VALUE;
-
-        for (LivingEntity candidate : candidates) {
-            double distanceSq = candidate.getPos().squaredDistanceTo(this.getPos());
-            if (distanceSq < minDistanceSq) {
-                nearest = candidate;
-                minDistanceSq = distanceSq;
-            }
-        }
-        return nearest;
     }
 
     // This is only run on the client-side

@@ -3,6 +3,7 @@ package io.github.drakonkinst.worldsinger.cosmere.lumar;
 import io.github.drakonkinst.worldsinger.entity.MidnightCreatureEntity;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -18,8 +19,6 @@ public final class MidnightCreatureManager {
 
     public static final int MIN_DRAIN_INTERVAL_TICKS = 20;
     public static final int MAX_DRAIN_INTERVAL_TICKS = 80;
-    public static final int MIN_BRIBE_AMOUNT = 1;
-    public static final int MAX_BRIBE_AMOUNT = 10;
 
     public static final double DEFAULT_MOVEMENT_SPEED = 0.25;
     public static final double DEFAULT_MAX_HEALTH = 20.0;
@@ -64,7 +63,7 @@ public final class MidnightCreatureManager {
         if (stack.isOf(Items.POTION)) {
             return MidnightCreatureEntity.POTION_BRIBE;
         }
-        if (stack.isOf(Items.WATER_BUCKET)) {
+        if (stack.isIn(ConventionalItemTags.WATER_BUCKETS)) {
             return MidnightCreatureEntity.WATER_BUCKET_BRIBE;
         }
         return 0;

@@ -15,6 +15,8 @@ public final class ModItemTags {
     public static final TagKey<Item> HAS_IRON = ModItemTags.of("has_iron");
     public static final TagKey<Item> BREWING_STAND_FUELS = ModItemTags.of("brewing_stand_fuels");
     public static final TagKey<Item> KILLS_SPORE_GROWTHS = ModItemTags.of("kills_spore_growths");
+    public static final TagKey<Item> TEMPTS_MIDNIGHT_CREATURES = ModItemTags.of(
+            "kills_spore_growths");
 
     public static final TagKey<Item> SILVER_INGOTS = ModItemTags.ofCommon("silver_ingots");
     public static final TagKey<Item> SHIELDS = ModItemTags.ofCommon("shields");

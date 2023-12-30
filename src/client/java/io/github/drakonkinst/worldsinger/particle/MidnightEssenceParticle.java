@@ -8,11 +8,6 @@ import net.minecraft.particle.DefaultParticleType;
 
 public class MidnightEssenceParticle extends MidnightParticle {
 
-    private static final float RED = 0.0f;
-    private static final float GREEN = 0.0f;
-    private static final float BLUE = 0.0f;
-    private static final float ALPHA = 0.0f;
-
     protected MidnightEssenceParticle(ClientWorld world, double x, double y, double z,
             double velocityX, double velocityY, double velocityZ, SpriteProvider spriteProvider) {
         super(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider);
