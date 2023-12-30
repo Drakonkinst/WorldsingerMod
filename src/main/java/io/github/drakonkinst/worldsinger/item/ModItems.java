@@ -150,6 +150,8 @@ public final class ModItems {
             new FaultyFirestarterItem(0.33f, new FabricItemSettings().maxDamage(64)));
     public static final Item QUARTZ_AND_IRON = register("quartz_and_iron",
             new FaultyFirestarterItem(0.33f, new FabricItemSettings().maxDamage(88)));
+    public static final Item SILVER_KNIFE = register("silver_knife",
+            new KnifeItem(1.0f, -2.0f, ModToolMaterials.SILVER, new FabricItemSettings()));
 
     // Admin
     public static final Item MIDNIGHT_CREATURE_SPAWN_EGG = register("midnight_creature_spawn_egg",
@@ -307,6 +309,8 @@ public final class ModItems {
 
             itemGroup.add(ModItems.MIDNIGHT_CREATURE_SPAWN_EGG);
             itemGroup.add(ModBlocks.MIDNIGHT_ESSENCE);
+
+            itemGroup.add(ModItems.SILVER_KNIFE);
         });
     }
 

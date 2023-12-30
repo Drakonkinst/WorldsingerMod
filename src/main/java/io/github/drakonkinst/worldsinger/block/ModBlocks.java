@@ -133,7 +133,7 @@ public final class ModBlocks {
                     .sounds(ModSoundGroups.CRIMSON_SPINE)
                     .pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block DEAD_CRIMSON_SPINES = register("dead_crimson_spines",
-            new LivingCrimsonSpinesBlock(FabricBlockSettings.create()
+            new CrimsonSpinesBlock(FabricBlockSettings.create()
                     // Same as Amethyst Bud
                     .strength(1.5f)
                     .solid()

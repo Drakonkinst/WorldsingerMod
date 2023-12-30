@@ -198,7 +198,8 @@ public class ModModelGenerator extends FabricModelProvider {
                 ModItems.STEEL_PICKAXE,
                 ModItems.STEEL_HOE,
                 ModItems.STEEL_SHOVEL,
-                ModItems.STEEL_SWORD
+                ModItems.STEEL_SWORD,
+                ModItems.SILVER_KNIFE
         });
 
         // Adds armor trim models as well, which we didn't have before

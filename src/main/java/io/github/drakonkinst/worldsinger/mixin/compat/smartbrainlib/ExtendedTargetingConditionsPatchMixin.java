@@ -6,8 +6,10 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.tslat.smartbrainlib.object.ExtendedTargetingConditions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
 
+@Pseudo
 @Mixin(ExtendedTargetingConditions.class)
 public abstract class ExtendedTargetingConditionsPatchMixin {
 
@@ -18,7 +20,7 @@ public abstract class ExtendedTargetingConditionsPatchMixin {
      * @author Drakonkinst
      * @reason Temporary fix to patch to 1.20.5 snapshots
      */
-    @Overwrite
+    @Overwrite(remap = false)
     public ExtendedTargetingConditions withFollowRange() {
         return this.withRange(
                 entity -> entity.getAttributeInstance(EntityAttributes.GENERIC_FOLLOW_RANGE) != null

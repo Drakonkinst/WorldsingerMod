@@ -8,9 +8,11 @@ import net.minecraft.server.world.ServerWorld;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 
 // Same change as StayAboveWaterTask
+@Pseudo
 @Mixin(FloatToSurfaceOfFluid.class)
 public abstract class FloatToSurfaceOfFluidMixin<E extends MobEntity> extends ExtendedBehaviour<E> {
 

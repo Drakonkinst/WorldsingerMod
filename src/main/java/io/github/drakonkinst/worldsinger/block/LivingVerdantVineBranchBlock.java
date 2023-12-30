@@ -2,16 +2,22 @@ package io.github.drakonkinst.worldsinger.block;
 
 import com.mojang.serialization.MapCodec;
 import io.github.drakonkinst.worldsinger.cosmere.WaterReactionManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeKillingManager;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.VerdantSpores;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
 import io.github.drakonkinst.worldsinger.util.math.Int3;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager.Builder;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -74,6 +80,23 @@ public class LivingVerdantVineBranchBlock extends VerdantVineBranchBlock impleme
             this.reactToWater(world, pos, state, Integer.MAX_VALUE, random);
         }
     }
+
+    @Override
+    public void onBlockBreakStart(BlockState state, World world, BlockPos pos,
+            PlayerEntity player) {
+        SporeKillingManager.killSporeGrowthUsingTool(world, this, state, pos, player,
+                Hand.MAIN_HAND);
+    }
+
+    @Override
+    public ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world,
+            BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (SporeKillingManager.killSporeGrowthUsingTool(world, this, state, pos, player, hand)) {
+            return ItemActionResult.success(true);
+        }
+        return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
     /* End of code common to all LivingSporeGrowthBlocks */
 
     @Override

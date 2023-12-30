@@ -2,13 +2,17 @@ package io.github.drakonkinst.worldsinger.cosmere.lumar;
 
 import io.github.drakonkinst.datatables.DataTable;
 import io.github.drakonkinst.datatables.DataTableRegistry;
+import io.github.drakonkinst.worldsinger.api.ModApi;
+import io.github.drakonkinst.worldsinger.block.LivingSporeGrowthBlock;
 import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.SporeKillable;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.SilverLinedComponent;
+import io.github.drakonkinst.worldsinger.cosmere.SilverLined;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluidTags;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
+import io.github.drakonkinst.worldsinger.item.ModItemTags;
 import io.github.drakonkinst.worldsinger.registry.ModDataTables;
 import io.github.drakonkinst.worldsinger.util.BlockPosUtil;
 import io.github.drakonkinst.worldsinger.util.ModProperties;
@@ -16,8 +20,12 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -28,6 +36,31 @@ public final class SporeKillingManager {
 
     public static final int MAX_BLOCK_RADIUS = 5;
     public static final double BOAT_RADIUS = 2.0;
+
+    public static boolean killSporeGrowthUsingTool(World world, LivingSporeGrowthBlock sporeGrowth,
+            BlockState state, BlockPos pos, PlayerEntity player, Hand hand) {
+        // Always mine with mainhand, so check if is the right item
+        ItemStack stack = player.getStackInHand(hand);
+        if (stack.isIn(ModItemTags.KILLS_SPORE_GROWTHS)) {
+            // Damage the tool
+            SilverLined silverLinedData = ModApi.SILVER_LINED_ITEM.find(stack, null);
+            if (silverLinedData != null) {
+                if (silverLinedData.getSilverDurability() <= 0) {
+                    return false;
+                }
+                // It is silver-lined, so decrement the silver durability
+                silverLinedData.setSilverDurability(silverLinedData.getSilverDurability() - 1);
+            } else {
+                // Assume it is a tool and damage its durability
+                stack.damage(1, player, e -> e.sendEquipmentBreakStatus(
+                        hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
+            }
+            // Kill the block
+            world.setBlockState(pos, SporeKillingManager.convertToDeadVariant(sporeGrowth, state));
+            return true;
+        }
+        return false;
+    }
 
     public static int killNearbySpores(World world, BlockPos pos, int radius) {
         int numKilled = 0;

@@ -9,7 +9,11 @@ import net.minecraft.recipe.Ingredient;
 
 public enum ModToolMaterials implements ToolMaterial {
 
-    STEEL(MiningLevels.IRON, 484, 6.5f, 2.0f, 16, () -> Ingredient.ofItems(ModItems.STEEL_INGOT));
+    // Steel is identical to Iron, but has more durability and slightly more enchantability
+    STEEL(MiningLevels.IRON, 484, 6.5f, 2.0f, 16, () -> Ingredient.ofItems(ModItems.STEEL_INGOT)),
+    // Silver is similar to Gold, but does not mine as fast and has more durability
+    // Not planned to support a full toolset for silver
+    SILVER(MiningLevels.WOOD, 181, 6.0F, 0.0F, 22, () -> Ingredient.ofItems(ModItems.SILVER_INGOT));
 
     private final int miningLevel;
     private final int itemDurability;
