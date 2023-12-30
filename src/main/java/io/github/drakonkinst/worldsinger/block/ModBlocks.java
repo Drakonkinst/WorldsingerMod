@@ -320,6 +320,7 @@ public final class ModBlocks {
                     .strength(-1.0f, 0.5f)
                     .dropsNothing()
                     .noBlockBreakParticles()
+                    .ticksRandomly()
                     .solidBlock(Blocks::never)
                     .sounds(ModSoundGroups.MIDNIGHT_ESSENCE)
                     .pistonBehavior(PistonBehavior.DESTROY)), true);
