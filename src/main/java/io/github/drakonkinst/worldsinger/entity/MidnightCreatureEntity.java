@@ -70,6 +70,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -600,6 +601,17 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     // Discards the mob (without dropping XP) in a puff of particles
     public void dispel(ServerWorld world, boolean playEffects) {
+        if (this.getMorph() == null) {
+            // Attempt to place itself back as a block
+            BlockPos pos = this.getBlockPos();
+            if (world.getBlockState(pos).isAir()) {
+                world.setBlockState(pos, ModBlocks.MIDNIGHT_ESSENCE.getDefaultState());
+                this.discard();
+                return;
+            }
+        }
+
+        // If it cannot revert to block form, play a dispelling animation
         if (playEffects) {
             // Spawn particles across their bounding box
             float halfWidth = this.getWidth() * 0.5f;

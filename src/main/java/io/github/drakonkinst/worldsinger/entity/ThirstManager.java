@@ -149,6 +149,6 @@ public class ThirstManager implements ThirstManagerComponent {
 
     @Override
     public boolean isCritical() {
-        return thirstLevel <= MIN_NATURAL_THIRST;
+        return thirstLevel < MIN_NATURAL_THIRST;
     }
 }

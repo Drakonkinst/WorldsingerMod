@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Enchantment.class)
-public class EnchantmentTargetMixin {
+public class EnchantmentMixin {
 
     @Shadow
     @Final
