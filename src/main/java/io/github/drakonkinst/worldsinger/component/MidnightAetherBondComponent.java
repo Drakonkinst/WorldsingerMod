@@ -10,7 +10,9 @@ public interface MidnightAetherBondComponent extends AutoSyncedComponent, Server
     void removeBond(int id);
 
     void onDeath();
-    
+
+    void dispelAllBonds(boolean playEffects);
+
     int getBondCount();
 
     default boolean hasAnyBonds() {

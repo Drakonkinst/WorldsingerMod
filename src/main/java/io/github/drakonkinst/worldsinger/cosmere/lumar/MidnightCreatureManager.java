@@ -77,7 +77,8 @@ public final class MidnightCreatureManager {
         return stack.getRecipeRemainder();
     }
 
-    public static void spawnMidnightParticle(World world, Entity entity, Random random,
+    // Client-side only
+    public static void addMidnightParticle(World world, Entity entity, Random random,
             double velocity) {
         Vec3d pos = EntityUtil.getRandomPointInBoundingBox(entity, random);
         double velocityX = velocity * random.nextGaussian();
@@ -87,10 +88,11 @@ public final class MidnightCreatureManager {
                 velocityX, velocityY, velocityZ);
     }
 
-    public static void spawnMidnightParticles(World world, Entity entity, Random random,
+    // Client-side only
+    public static void addMidnightParticles(World world, Entity entity, Random random,
             double velocity, int count) {
         for (int i = 0; i < count; ++i) {
-            MidnightCreatureManager.spawnMidnightParticle(world, entity, random, velocity);
+            MidnightCreatureManager.addMidnightParticle(world, entity, random, velocity);
         }
     }
 

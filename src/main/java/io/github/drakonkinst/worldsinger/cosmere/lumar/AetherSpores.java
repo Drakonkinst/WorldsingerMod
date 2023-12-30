@@ -20,6 +20,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -126,7 +127,7 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
     }
 
     public static void applySporeSeaEffects(LivingEntity entity) {
-        if (!entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
+        if (AetherSpores.sporesCanAffect(entity)) {
             for (Map.Entry<TagKey<Fluid>, RegistryEntry<StatusEffect>> entry : FLUID_TO_STATUS_EFFECT.entrySet()) {
                 if (entity.isSubmergedIn(entry.getKey())) {
                     SporeParticleManager.applySporeEffect(entity, entry.getValue(),
@@ -141,6 +142,16 @@ public abstract class AetherSpores implements Comparable<AetherSpores> {
                     ModDamageTypes.createSource(entity.getWorld(), ModDamageTypes.DROWN_SPORE),
                     1.0f);
         }
+    }
+
+    public static boolean sporesCanAffect(Entity entity) {
+        // Allow data-driven way to prevent spore entities
+        if (entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
+            return false;
+        }
+        // Players in creative or spectator cannot be affected
+        return !(entity instanceof PlayerEntity playerEntity) || (!playerEntity.isCreative()
+                && !playerEntity.isSpectator());
     }
 
     protected AetherSpores() {

@@ -19,7 +19,6 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.registry.SBLMemoryTypes;
@@ -74,9 +73,7 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
 
     // Midnight Essence required directly ties to their bounding box, rounded to the nearest block
     private int getMidnightEssenceRequired(LivingEntity entity) {
-        int width = MathHelper.ceil(entity.getWidth());
-        int height = MathHelper.ceil(entity.getHeight());
-        return width * width * height;
+        return EntityUtil.getBlocksInBoundingBox(entity);
     }
 
     private void calculateNearbyAbsorbables(@Nullable PlayerEntity controller,

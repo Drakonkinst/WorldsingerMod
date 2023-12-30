@@ -2,7 +2,6 @@ package io.github.drakonkinst.worldsinger.effect;
 
 import io.github.drakonkinst.worldsinger.block.SporeEmitting;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
-import io.github.drakonkinst.worldsinger.cosmere.lumar.SporeParticleManager;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.SunlightSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.ZephyrSpores;
 import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
@@ -43,7 +42,7 @@ public class SporeStatusEffect extends StatusEffect implements SporeEmitting {
 
     @Override
     public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
-        if (!SporeParticleManager.sporesCanAffect(entity)) {
+        if (!AetherSpores.sporesCanAffect(entity)) {
             return false;
         }
 

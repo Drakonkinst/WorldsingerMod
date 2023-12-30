@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
@@ -185,7 +184,7 @@ public final class SporeParticleManager {
         // Gather all candidate entities
         Vec3d centerPos = box.getCenter();
         List<LivingEntity> entitiesInRange = world.getEntitiesByClass(LivingEntity.class, box,
-                entity -> SporeParticleManager.sporesCanAffect(entity) && (
+                entity -> AetherSpores.sporesCanAffect(entity) && (
                         entity.getType().isIn(ModEntityTypeTags.SPORES_ALWAYS_AFFECT)
                                 || box.contains(entity.getEyePos())));
 
@@ -221,16 +220,6 @@ public final class SporeParticleManager {
         // Calculate color and create particle effect
         Vector3f particleColor = Vec3d.unpackRgb(sporeType.getParticleColor()).toVector3f();
         return new SporeDustParticleEffect(particleColor, size);
-    }
-
-    public static boolean sporesCanAffect(Entity entity) {
-        // Allow data-driven way to prevent spore entities
-        if (entity.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
-            return false;
-        }
-        // Players in creative or spectator cannot be affected
-        return !(entity instanceof PlayerEntity playerEntity) || (!playerEntity.isCreative()
-                && !playerEntity.isSpectator());
     }
 
     // Apply spore status effect to the entity for the duration

@@ -82,5 +82,12 @@ public final class EntityUtil {
         return new Vec3d(entity.getX(), entity.getY() + entity.getHeight() * 0.5, entity.getZ());
     }
 
+    // Gets the number of fully open blocks needed to fit this entity, rounded up
+    public static int getBlocksInBoundingBox(Entity entity) {
+        int width = MathHelper.ceil(entity.getWidth());
+        int height = MathHelper.ceil(entity.getHeight());
+        return width * width * height;
+    }
+
     private EntityUtil() {}
 }

@@ -4,12 +4,15 @@ import io.github.drakonkinst.worldsinger.component.MidnightAetherBondComponent;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightCreatureManager;
 import io.github.drakonkinst.worldsinger.entity.MidnightCreatureEntity;
+import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import it.unimi.dsi.fastutil.ints.Int2LongMap;
 import it.unimi.dsi.fastutil.ints.Int2LongMap.Entry;
 import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 
 public class MidnightAetherBondData implements MidnightAetherBondComponent {
@@ -79,6 +82,28 @@ public class MidnightAetherBondData implements MidnightAetherBondComponent {
             if (entity instanceof MidnightCreatureEntity midnightCreature) {
                 midnightCreature.forgetAboutPlayer(player);
             }
+        }
+        expiryMap.clear();
+        bondCount = 0;
+        ModComponents.MIDNIGHT_AETHER_BOND.sync(player);
+    }
+
+    @Override
+    public void dispelAllBonds(boolean playEffects) {
+        if (!(player.getWorld() instanceof ServerWorld world)) {
+            return;
+        }
+        boolean shouldPlayEffects = playEffects && !expiryMap.isEmpty();
+        for (Entry entry : expiryMap.int2LongEntrySet()) {
+            Entity entity = world.getEntityById(entry.getIntKey());
+            if (entity instanceof MidnightCreatureEntity midnightCreature) {
+                midnightCreature.dispel(world, playEffects);
+            }
+        }
+        if (shouldPlayEffects) {
+            world.playSound(null, player.getX(), player.getY(), player.getZ(),
+                    ModSoundEvents.ENTITY_MIDNIGHT_CREATURE_BOND_BREAK, SoundCategory.PLAYERS, 1.0f,
+                    0.5f);
         }
         expiryMap.clear();
         bondCount = 0;

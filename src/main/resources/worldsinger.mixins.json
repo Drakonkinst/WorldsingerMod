@@ -62,6 +62,7 @@
     "entity.ai.MeleeAttackGoalFixMixin",
     "entity.ai.StayAboveWaterTaskMixin",
     "entity.ai.SwimGoalMixin",
+    "event.EntityHurtPlayerCriterionServerPlayerHurtMixin",
     "fluid.FlowableFluidMixin",
     "item.BlockItemMixin",
     "item.BoatItemMixin",

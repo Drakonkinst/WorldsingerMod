@@ -7,6 +7,7 @@ import io.github.drakonkinst.worldsinger.component.MidnightAetherBondComponent;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
+import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightCreatureManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
 import io.github.drakonkinst.worldsinger.entity.ai.behavior.MidnightCreatureImitation;
@@ -61,6 +62,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -134,6 +136,8 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private static final int NUM_TRAIL_PARTICLES = 16;
     private static final float TRAIL_PARTICLE_SPEED = 0.1f;
     private static final float MOUTH_OFFSET = -0.2f;
+    private static final int DISPEL_PARTICLES_PER_BLOCK = 10;
+    private static final float DISPEL_PARTICLE_VELOCITY = 0.01f;
 
     private final Object2IntMap<UUID> waterBribes = new Object2IntOpenHashMap<>();
     // private ControlLevel controlLevel = ControlLevel.OUT_OF_CONTROL;
@@ -241,7 +245,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                 // Filter NEAREST_ATTACKABLE from tracked nearby entities
                 new NearestAttackableSensor<MidnightCreatureEntity>().setPredicate(
                         (target, entity) -> {
-                            if (target.getType().isIn(ModEntityTypeTags.SPORES_NEVER_AFFECT)) {
+                            if (!AetherSpores.sporesCanAffect(target)) {
                                 return false;
                             }
                             if (target.getUuid().equals(entity.getControllerUuid())) {
@@ -412,7 +416,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private void tickParticleEffects() {
         // Ambient particles
         if (this.age % AMBIENT_PARTICLE_INTERVAL == 0 && random.nextInt(3) != 0) {
-            MidnightCreatureManager.spawnMidnightParticle(this.getWorld(), this, random, 0.1);
+            MidnightCreatureManager.addMidnightParticle(this.getWorld(), this, random, 0.1);
         }
 
         // Update client controller
@@ -551,7 +555,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     public void afterMorphEntitySpawn(LivingEntity morph, boolean showTransformEffects) {
         super.afterMorphEntitySpawn(morph, showTransformEffects);
         if (showTransformEffects && this.getWorld().isClient()) {
-            MidnightCreatureManager.spawnMidnightParticles(this.getWorld(), this, random, 0.2,
+            MidnightCreatureManager.addMidnightParticles(this.getWorld(), this, random, 0.2,
                     NUM_TRANSFORM_PARTICLES);
             this.getWorld()
                     .playSoundFromEntity(this, ModSoundEvents.ENTITY_MIDNIGHT_CREATURE_TRANSFORM,
@@ -594,6 +598,20 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         }
     }
 
+    // Discards the mob (without dropping XP) in a puff of particles
+    public void dispel(ServerWorld world, boolean playEffects) {
+        if (playEffects) {
+            // Spawn particles across their bounding box
+            float halfWidth = this.getWidth() * 0.5f;
+            float halfHeight = this.getHeight() * 0.5f;
+            int numParticles = EntityUtil.getBlocksInBoundingBox(this) * DISPEL_PARTICLES_PER_BLOCK;
+            world.spawnParticles(ModParticleTypes.MIDNIGHT_ESSENCE, this.getX(),
+                    this.getY() + halfHeight, this.getZ(), numParticles, halfWidth, halfHeight,
+                    halfWidth, DISPEL_PARTICLE_VELOCITY);
+        }
+        this.discard();
+    }
+
     private void imitateNearestEntity() {
         LivingEntity nearest = getNearestEntityToImitate();
         if (nearest != null) {
@@ -629,11 +647,11 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         return nearest;
     }
 
-    // Overrides
+    // This is only run on the client-side
     @Override
     public void onDamaged(DamageSource damageSource) {
         super.onDamaged(damageSource);
-        MidnightCreatureManager.spawnMidnightParticles(this.getWorld(), this, random, 0.25,
+        MidnightCreatureManager.addMidnightParticles(this.getWorld(), this, random, 0.25,
                 MidnightCreatureEntity.NUM_DAMAGE_PARTICLES);
     }
 
@@ -691,12 +709,9 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         this.midnightEssenceAmount = midnightEssenceAmount;
     }
 
-    // Hacky way of disabling certain status effects. Clashes a bit with the entity tag for spore effects, etc.
-    // TODO: Investigate better solutions
     @Override
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        RegistryEntry<StatusEffect> effectType = effect.getEffectType();
-        if (IMMUNE_TO.contains(effectType)) {
+        if (IMMUNE_TO.contains(effect.getEffectType())) {
             return false;
         }
         return super.canHaveStatusEffect(effect);
