@@ -114,8 +114,7 @@ public final class ShapeshiftingManager {
             if (type.equals(EntityType.PLAYER)) {
                 UUID playerUuid = morphNbt.getUuid(PlayerMorphDummy.KEY_PLAYER);
                 String playerName = morphNbt.getString(PlayerMorphDummy.KEY_PLAYER_NAME);
-                morph = ShapeshiftingBridge.getInstance()
-                        .createPlayerMorph(world, playerUuid, playerName);
+                morph = Worldsinger.PROXY.createPlayerMorph(world, playerUuid, playerName);
             } else {
                 morph = (LivingEntity) type.create(world);
             }
@@ -137,8 +136,8 @@ public final class ShapeshiftingManager {
         if (morph == null || toCopy.getType().equals(morph.getType())) {
             World world = shapeshifter.toEntity().getWorld();
             if (toCopy instanceof PlayerEntity) {
-                morph = ShapeshiftingBridge.getInstance()
-                        .createPlayerMorph(world, toCopy.getUuid(), toCopy.getName().getString());
+                morph = Worldsinger.PROXY.createPlayerMorph(world, toCopy.getUuid(),
+                        toCopy.getName().getString());
             } else {
                 morph = (LivingEntity) toCopy.getType().create(world);
             }

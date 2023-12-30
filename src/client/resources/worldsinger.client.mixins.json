@@ -13,8 +13,12 @@
     "entity.OverlayTextureMixin",
     "gui.InGameHudMixin",
     "item.ItemColorsMixin",
+    "network.ClientPlayerInteractionManagerMixin",
+    "network.GameOptionsMixin",
+    "network.MinecraftClientMixin",
     "world.BackgroundRendererMixin",
     "world.CameraMixin",
+    "world.GameRendererMixin",
     "world.WorldRendererMixin"
   ],
   "injectors": {

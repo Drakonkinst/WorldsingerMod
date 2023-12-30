@@ -1,17 +1,23 @@
 package io.github.drakonkinst.worldsinger.network;
 
 import com.mojang.authlib.GameProfile;
-import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingBridge;
+import io.github.drakonkinst.worldsinger.entity.CameraPossessable;
 import java.util.UUID;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
 
-public class ShapeshiftingClientBridge extends ShapeshiftingBridge {
+public class ClientProxy extends CommonProxy {
+
+    private static final Perspective[] PERSPECTIVES = Perspective.values();
+
+    private Perspective previousPerspective = Perspective.FIRST_PERSON;
 
     @Override
     public LivingEntity createPlayerMorph(World world, UUID uuid, String playerName) {
@@ -38,5 +44,22 @@ public class ShapeshiftingClientBridge extends ShapeshiftingBridge {
     // But this works for now
     private LivingEntity createDefaultPlayer(ClientWorld world, UUID uuid, String playerName) {
         return new OtherClientPlayerEntity(world, new GameProfile(uuid, playerName));
+    }
+
+    public void setRenderViewEntity(Entity entity) {
+        previousPerspective = MinecraftClient.getInstance().options.getPerspective();
+        MinecraftClient.getInstance().setCameraEntity(entity);
+        if (entity instanceof CameraPossessable cameraPossessable) {
+            int perspectiveOrdinal = cameraPossessable.getDefaultPerspective();
+            if (perspectiveOrdinal > -1) {
+                MinecraftClient.getInstance().options.setPerspective(
+                        PERSPECTIVES[perspectiveOrdinal]);
+            }
+        }
+    }
+
+    public void resetRenderViewEntity() {
+        MinecraftClient.getInstance().setCameraEntity(MinecraftClient.getInstance().player);
+        MinecraftClient.getInstance().options.setPerspective(previousPerspective);
     }
 }

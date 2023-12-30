@@ -4,7 +4,6 @@ import io.github.drakonkinst.worldsinger.api.ModApi;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.block.ModCauldronBehaviors;
 import io.github.drakonkinst.worldsinger.command.ModCommands;
-import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingBridge;
 import io.github.drakonkinst.worldsinger.entity.ModEntityTypes;
 import io.github.drakonkinst.worldsinger.entity.ai.ModActivities;
 import io.github.drakonkinst.worldsinger.entity.ai.ModMemoryModuleTypes;
@@ -13,6 +12,7 @@ import io.github.drakonkinst.worldsinger.event.ModEventHandlers;
 import io.github.drakonkinst.worldsinger.fluid.Fluidlogged;
 import io.github.drakonkinst.worldsinger.fluid.ModFluids;
 import io.github.drakonkinst.worldsinger.item.ModItems;
+import io.github.drakonkinst.worldsinger.network.CommonProxy;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
 import io.github.drakonkinst.worldsinger.registry.ModDispenserBehaviors;
 import io.github.drakonkinst.worldsinger.registry.ModPotions;
@@ -31,6 +31,8 @@ public class Worldsinger implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(ModConstants.MOD_ID);
 
+    public static CommonProxy PROXY;
+
     public static Identifier id(String id) {
         return new Identifier(ModConstants.MOD_ID, id);
     }
@@ -38,8 +40,7 @@ public class Worldsinger implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("Initializing Worldsinger...");
-
-        ShapeshiftingBridge bridge = new ShapeshiftingBridge();
+        PROXY = new CommonProxy();
 
         // I'll figure out the proper order for these...one day
         Fluidlogged.initialize();

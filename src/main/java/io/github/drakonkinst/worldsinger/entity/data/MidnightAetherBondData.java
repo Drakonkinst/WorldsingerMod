@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 public class MidnightAetherBondData implements MidnightAetherBondComponent {
 
     private static final String BOND_COUNT_KEY = "Bonds";
+    private static final String POSSESSING_KEY = "Possessing";
     // TODO: Can add logic for possession here
 
     private static final int EXPIRY_TIME = MidnightCreatureManager.MAX_DRAIN_INTERVAL_TICKS * 2;

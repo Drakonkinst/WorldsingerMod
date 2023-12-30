@@ -1,0 +1,23 @@
+package io.github.drakonkinst.worldsinger.network;
+
+import io.github.drakonkinst.worldsinger.entity.PlayerMorphDummy;
+import java.util.UUID;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.World;
+
+// Proxy pattern that acts as a bridge to call client-specific code from the server
+public class CommonProxy {
+
+    public LivingEntity createPlayerMorph(World world, UUID uuid, String playerName) {
+        return new PlayerMorphDummy(world, uuid, playerName);
+    }
+
+    public void setRenderViewEntity(Entity entity) {
+        // Handled by client
+    }
+
+    public void resetRenderViewEntity() {
+        // Handled by client
+    }
+}

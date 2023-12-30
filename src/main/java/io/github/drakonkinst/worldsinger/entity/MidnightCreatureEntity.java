@@ -97,7 +97,8 @@ import net.tslat.smartbrainlib.util.SensoryUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class MidnightCreatureEntity extends ShapeshiftingEntity implements
-        SmartBrainOwner<MidnightCreatureEntity>, Controllable, Monster, SilverVulnerable {
+        SmartBrainOwner<MidnightCreatureEntity>, Controllable, Monster, SilverVulnerable,
+        CameraPossessable {
 
     // NBT
     public static final String MIDNIGHT_ESSENCE_AMOUNT_KEY = "MidnightEssenceAmount";
@@ -446,6 +447,11 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     protected ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
 
+        if (stack.isEmpty() && player.getUuid() == this.getControllerUuid()) {
+            Worldsinger.PROXY.setRenderViewEntity(this);
+            return ActionResult.success(true);
+        }
+
         int waterAmount = MidnightCreatureManager.getWaterAmountPerUnit(stack);
         if (waterAmount <= 0) {
             return super.interactMob(player, hand);
@@ -755,6 +761,11 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     public int getMidnightEssenceAmount() {
         return midnightEssenceAmount;
+    }
+
+    @Override
+    public boolean canSwitchPerspectives() {
+        return true;
     }
 
     public enum ControlLevel {

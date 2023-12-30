@@ -1,7 +1,6 @@
 package io.github.drakonkinst.worldsinger.entity.ai.behavior;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.cosmere.ShapeshiftingManager;
 import io.github.drakonkinst.worldsinger.entity.MidnightCreatureEntity;
@@ -144,9 +143,6 @@ public class MidnightCreatureImitation<E extends MidnightCreatureEntity> extends
             double distSq = entity.getPos().squaredDistanceTo(pos);
             if (distSq < nearestEntityDistanceSq) {
                 int essenceRequired = getMidnightEssenceRequired(entity);
-                Worldsinger.LOGGER.info(
-                        "ENTITY " + entity.getType().toString() + " -> " + essenceRequired + " " + (
-                                essenceRequired <= midnightEssenceAmount));
                 if (essenceRequired <= midnightEssenceAmount) {
                     nearestEntity = entity;
                     nearestEntityDistanceSq = distSq;
