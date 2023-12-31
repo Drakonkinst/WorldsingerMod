@@ -18,9 +18,6 @@ import net.minecraft.world.World;
 public class MidnightAetherBondData implements MidnightAetherBondComponent {
 
     private static final String BOND_COUNT_KEY = "Bonds";
-    private static final String POSSESSING_KEY = "Possessing";
-    // TODO: Can add logic for possession here
-
     private static final int EXPIRY_TIME = MidnightCreatureManager.MAX_DRAIN_INTERVAL_TICKS * 2;
     private static final int UPDATE_INTERVAL = 20;
 
@@ -52,7 +49,6 @@ public class MidnightAetherBondData implements MidnightAetherBondComponent {
         tag.putInt(BOND_COUNT_KEY, bondCount);
     }
 
-    // TODO: Currently syncs for all changes. Is this efficient?
     @Override
     public void updateBond(int id) {
         expiryMap.put(id, player.getWorld().getTime());
@@ -76,6 +72,7 @@ public class MidnightAetherBondData implements MidnightAetherBondComponent {
     }
 
     @Override
+    // Called on server-side
     public void onDeath() {
         World world = player.getWorld();
         for (Entry entry : expiryMap.int2LongEntrySet()) {

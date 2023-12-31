@@ -13,11 +13,13 @@ public class CommonProxy {
         return new PlayerMorphDummy(world, uuid, playerName);
     }
 
+    // Handled by client
     public void setRenderViewEntity(Entity entity) {
-        // Handled by client
+        throw new UnsupportedOperationException();
     }
 
+    // Handled by client
     public void resetRenderViewEntity() {
-        // Handled by client
+        throw new UnsupportedOperationException();
     }
 }

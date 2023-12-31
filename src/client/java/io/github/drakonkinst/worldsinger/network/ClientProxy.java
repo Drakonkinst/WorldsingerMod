@@ -18,6 +18,7 @@ public class ClientProxy extends CommonProxy {
     private static final Perspective[] PERSPECTIVES = Perspective.values();
 
     private Perspective previousPerspective = Perspective.FIRST_PERSON;
+    private boolean usingCustomRenderView = false;
 
     @Override
     public LivingEntity createPlayerMorph(World world, UUID uuid, String playerName) {
@@ -56,10 +57,15 @@ public class ClientProxy extends CommonProxy {
                         PERSPECTIVES[perspectiveOrdinal]);
             }
         }
+        usingCustomRenderView = true;
     }
 
     public void resetRenderViewEntity() {
+        if (!usingCustomRenderView) {
+            return;
+        }
         MinecraftClient.getInstance().setCameraEntity(MinecraftClient.getInstance().player);
         MinecraftClient.getInstance().options.setPerspective(previousPerspective);
+        usingCustomRenderView = false;
     }
 }

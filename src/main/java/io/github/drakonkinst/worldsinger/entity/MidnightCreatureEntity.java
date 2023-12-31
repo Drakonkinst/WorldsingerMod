@@ -5,6 +5,7 @@ import io.github.drakonkinst.worldsinger.block.ModBlockTags;
 import io.github.drakonkinst.worldsinger.block.ModBlocks;
 import io.github.drakonkinst.worldsinger.component.MidnightAetherBondComponent;
 import io.github.drakonkinst.worldsinger.component.ModComponents;
+import io.github.drakonkinst.worldsinger.component.PossessionComponent;
 import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightCreatureManager;
@@ -18,6 +19,7 @@ import io.github.drakonkinst.worldsinger.entity.data.MidnightOverlayAccess;
 import io.github.drakonkinst.worldsinger.item.ModItemTags;
 import io.github.drakonkinst.worldsinger.mixin.accessor.EntityAccessor;
 import io.github.drakonkinst.worldsinger.particle.ModParticleTypes;
+import io.github.drakonkinst.worldsinger.registry.ModDamageTypes;
 import io.github.drakonkinst.worldsinger.registry.ModSoundEvents;
 import io.github.drakonkinst.worldsinger.util.EntityUtil;
 import io.github.drakonkinst.worldsinger.util.ModEnums.PathNodeType;
@@ -119,7 +121,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
             Worldsinger.id("midnight_creature.morphed"));
 
     // Behavior
-
+    private static final float POSSESS_THIRST_DAMAGE = 1.0f;
     private static final int ANGER_TIME = 20 * 30;
     private static final float SPRINTING_MULTIPLIER = 1.4f;
     private static final Set<RegistryEntry<StatusEffect>> IMMUNE_TO = Set.of(StatusEffects.WITHER,
@@ -177,6 +179,9 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         if (uuid == null) {
             this.dataTracker.set(CONTROLLER_UUID, Optional.empty());
         } else {
+            if (getControllerUuid() != uuid) {
+                onStartControlling();
+            }
             this.dataTracker.set(CONTROLLER_UUID, Optional.of(uuid));
         }
     }
@@ -234,6 +239,19 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
         // Brain logic
         this.tickBrain(this);
+    }
+
+    // Called server-side only
+    private boolean isBeingPossessed() {
+        PlayerEntity controller = this.getController();
+        if (controller != null) {
+            CameraPossessable possessedEntity = ModComponents.POSSESSION.get(controller)
+                    .getPossessedEntity();
+            if (possessedEntity != null) {
+                return possessedEntity.equals(this);
+            }
+        }
+        return false;
     }
 
     @Override
@@ -321,11 +339,14 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                         new SetAttackTarget<MidnightCreatureEntity>().attackPredicate(
                                 entity -> entity.getControllerUuid() == null),
                         // Look at a player
-                        new SetPlayerLookTarget<>(),
+                        new SetPlayerLookTarget<MidnightCreatureEntity>(),
                         // Look somewhere random
-                        new SetRandomLookTarget<>()),
-                new OneRandomBehaviour<>(new SetRandomWalkTarget<>(),
-                        new Idle<>().runFor(entity -> entity.getRandom().nextBetween(30, 60))));
+                        new SetRandomLookTarget<MidnightCreatureEntity>()).startCondition(
+                        entity -> !entity.isBeingPossessed()),
+                new OneRandomBehaviour<MidnightCreatureEntity>(new SetRandomWalkTarget<>(),
+                        new Idle<>().runFor(
+                                entity -> entity.getRandom().nextBetween(30, 60))).startCondition(
+                        entity -> !entity.isBeingPossessed()));
     }
 
     @SuppressWarnings("unchecked")
@@ -335,6 +356,9 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
                 // Invalidate target if they become the mob's controller or become untargetable
                 new InvalidateAttackTarget<MidnightCreatureEntity>().invalidateIf(
                         (entity, target) -> {
+                            if (entity.isBeingPossessed()) {
+                                return true;
+                            }
                             if (target instanceof PlayerEntity player) {
                                 if (player.isCreative() || player.isSpectator()) {
                                     return true;
@@ -448,7 +472,10 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         ItemStack stack = player.getStackInHand(hand);
 
         if (stack.isEmpty() && player.getUuid() == this.getControllerUuid()) {
-            Worldsinger.PROXY.setRenderViewEntity(this);
+            ModComponents.POSSESSION.get(player).setPossessedEntity(this);
+            if (this.getWorld().isClient()) {
+                Worldsinger.PROXY.setRenderViewEntity(this);
+            }
             return ActionResult.success(true);
         }
 
@@ -472,8 +499,16 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         int currentWaterLevel = thirstManager.get();
         MidnightAetherBondComponent bondData = ModComponents.MIDNIGHT_AETHER_BOND.get(host);
         if (currentWaterLevel <= 0) {
-            bondData.removeBond(this.getId());
-            resetController();
+            CameraPossessable possessedEntity = ModComponents.POSSESSION.get(host)
+                    .getPossessedEntity();
+            if (possessedEntity != null && possessedEntity.equals(this)) {
+                // They are trapped in the bond! Start killing them
+                host.damage(ModDamageTypes.createSource(host.getWorld(), ModDamageTypes.THIRST),
+                        POSSESS_THIRST_DAMAGE);
+            } else {
+                bondData.removeBond(this.getId());
+                resetController();
+            }
         } else {
             if (!isInitial) {
                 thirstManager.remove(1);
@@ -484,6 +519,11 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     public void forgetAboutPlayer(PlayerEntity player) {
         UUID uuid = player.getUuid();
+        PossessionComponent possessionData = ModComponents.POSSESSION.get(player);
+        if (this.getUuid().equals(possessionData.getPossessedEntityUuid())) {
+            possessionData.resetPossessedEntity();
+            // Always called server-side, so no need to reset camera entity here
+        }
         if (uuid.equals(getControllerUuid())) {
             resetController();
         } else {
@@ -699,6 +739,36 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     }
 
     @Override
+    public void setLookDir(float headYaw, float bodyYaw, float pitch) {
+        this.setHeadYaw(headYaw);
+        this.setBodyYaw(bodyYaw);
+        this.setPitch(pitch);
+    }
+
+    @Override
+    public void onStartControlling() {
+        BrainUtils.clearMemory(this, MemoryModuleType.LOOK_TARGET);
+        BrainUtils.clearMemory(this, MemoryModuleType.WALK_TARGET);
+        BrainUtils.clearMemory(this, MemoryModuleType.PATH);
+        BrainUtils.clearMemory(this, MemoryModuleType.ATTACK_TARGET);
+        this.stopMovement();
+    }
+
+    @Override
+    public void onStartPossessing(PlayerEntity possessor) {
+        BrainUtils.clearMemory(this, MemoryModuleType.LOOK_TARGET);
+        BrainUtils.clearMemory(this, MemoryModuleType.WALK_TARGET);
+        BrainUtils.clearMemory(this, MemoryModuleType.PATH);
+        BrainUtils.clearMemory(this, MemoryModuleType.ATTACK_TARGET);
+        this.stopMovement();
+    }
+
+    @Override
+    public boolean shouldKeepPossessing(PlayerEntity possessor) {
+        return true;
+    }
+
+    @Override
     protected Text getDefaultName() {
         if (morph != null) {
             return Text.translatable(MORPHED_NAME_TRANSLATION_KEY, morph.getName());
@@ -761,11 +831,6 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     public int getMidnightEssenceAmount() {
         return midnightEssenceAmount;
-    }
-
-    @Override
-    public boolean canSwitchPerspectives() {
-        return true;
     }
 
     public enum ControlLevel {

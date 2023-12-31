@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameOptions.class)
-public class GameOptionsMixin {
+public abstract class GameOptionsMixin {
 
     @Inject(method = "setPerspective", at = @At("HEAD"), cancellable = true)
     private void preventSwitchingPerspectiveWhilePossessing(Perspective perspective,

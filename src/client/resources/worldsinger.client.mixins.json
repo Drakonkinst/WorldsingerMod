@@ -15,11 +15,13 @@
     "item.ItemColorsMixin",
     "network.ClientPlayerInteractionManagerMixin",
     "network.GameOptionsMixin",
-    "network.MinecraftClientMixin",
+    "network.MinecraftClientPossessionMixin",
     "world.BackgroundRendererMixin",
-    "world.CameraMixin",
+    "world.CameraFluidSubmersionMixin",
+    "world.CameraPossessionMixin",
     "world.GameRendererMixin",
-    "world.WorldRendererMixin"
+    "world.WorldRendererPossessionMixin",
+    "world.WorldRendererSkyMixin"
   ],
   "injectors": {
     "defaultRequire": 1

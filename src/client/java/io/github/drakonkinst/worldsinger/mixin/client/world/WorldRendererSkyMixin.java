@@ -36,7 +36,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldRenderer.class)
-public abstract class WorldRendererMixin {
+public abstract class WorldRendererSkyMixin {
 
     @Unique
     private static final Identifier LUMAR_MOON = Worldsinger.id(

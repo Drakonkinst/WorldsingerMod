@@ -52,6 +52,7 @@
     "entity.MobEntityMixin",
     "entity.PersistentProjectileEntityMixin",
     "entity.PlayerEntityFinishConsumingItemMixin",
+    "entity.PlayerEntityPossessionMixin",
     "entity.PlayerEntityThirstMixin",
     "entity.PotionEntityMixin",
     "entity.ProjectileUtilMixin",

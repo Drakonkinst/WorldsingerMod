@@ -13,6 +13,7 @@ import io.github.drakonkinst.worldsinger.cosmere.lumar.LumarSeethe;
 import io.github.drakonkinst.worldsinger.entity.SilverLinedBoatEntityData;
 import io.github.drakonkinst.worldsinger.entity.ThirstManager;
 import io.github.drakonkinst.worldsinger.entity.data.MidnightAetherBondData;
+import io.github.drakonkinst.worldsinger.entity.data.PossessionPlayerData;
 import net.minecraft.entity.vehicle.BoatEntity;
 
 @SuppressWarnings("UnqualifiedStaticUsage")
@@ -27,6 +28,8 @@ public final class ModComponents implements ScoreboardComponentInitializer,
             "thirst_manager", ThirstManagerComponent.class);
     public static final ComponentKey<MidnightAetherBondComponent> MIDNIGHT_AETHER_BOND = register(
             "midnight_aether_bond", MidnightAetherBondComponent.class);
+    public static final ComponentKey<PossessionComponent> POSSESSION = register("possession",
+            PossessionComponent.class);
 
     private static <T extends Component> ComponentKey<T> register(String id, Class<T> clazz) {
         return ComponentRegistry.getOrCreate(Worldsinger.id(id), clazz);
@@ -42,6 +45,8 @@ public final class ModComponents implements ScoreboardComponentInitializer,
         registry.registerFor(BoatEntity.class, SILVER_LINED, SilverLinedBoatEntityData::new);
         // Should be reset upon death
         registry.registerForPlayers(THIRST_MANAGER, ThirstManager::new,
+                RespawnCopyStrategy.LOSSLESS_ONLY);
+        registry.registerForPlayers(POSSESSION, PossessionPlayerData::new,
                 RespawnCopyStrategy.LOSSLESS_ONLY);
         // Custom handling upon death
         registry.registerForPlayers(MIDNIGHT_AETHER_BOND, MidnightAetherBondData::new,

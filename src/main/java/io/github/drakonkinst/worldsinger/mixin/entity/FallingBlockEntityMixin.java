@@ -33,8 +33,9 @@ public abstract class FallingBlockEntityMixin extends Entity {
     @Unique
     private static final float BREAKING_FALL_DISTANCE = 16.0f;
 
+    @SuppressWarnings("InvalidInjectorMethodSignature")
     @ModifyConstant(method = "tick", constant = @Constant(classValue = ConcretePowderBlock.class))
-    private static boolean alsoCheckSporeBlock(Object obj, Class<? extends Object> objClass) {
+    private static boolean alsoCheckSporeBlock(Object obj, Class<?> objClass) {
         return objClass.isAssignableFrom(obj.getClass()) || obj instanceof LivingAetherSporeBlock;
     }
 

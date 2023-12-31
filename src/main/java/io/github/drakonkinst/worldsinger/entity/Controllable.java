@@ -7,6 +7,8 @@ import net.minecraft.entity.player.PlayerEntity;
 // UUID lookups for other entities are more expensive (ServerWorld#getEntity)
 public interface Controllable {
 
+    void onStartControlling();
+    
     void setControllerUuid(UUID uuid);
 
     UUID getControllerUuid();

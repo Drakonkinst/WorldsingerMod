@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Camera.class)
-public abstract class CameraMixin implements CameraPosAccess {
+public abstract class CameraFluidSubmersionMixin implements CameraPosAccess {
 
     @Shadow
     private BlockView area;
