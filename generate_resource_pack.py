@@ -11,7 +11,7 @@ DEFAULT_OUT_PATH = os.path.join("out")
 DEFAULT_NAME = "resource_pack"
 
 # https://minecraft.wiki/w/Pack_format
-PACK_VERSION = 26
+PACK_VERSION = 22
 
 config = {
   "include_generated_assets": False,
@@ -81,14 +81,15 @@ def main():
   
   # Copy over assets
   resourcePackPath = os.path.join(outPath, config["name"])
+  assetsPath = os.path.join(resourcePackPath, "assets")
   ensure_directory_exists(resourcePackPath)
   if config["include_generated_assets"]:
     if os.path.isdir(GENERATED_ASSETS_PATH):
-      copy_resource_pack_files(GENERATED_ASSETS_PATH, resourcePackPath)
+      copy_resource_pack_files(GENERATED_ASSETS_PATH, assetsPath)
     else:
       print("Unable to locate generated assets directory")
   if os.path.isdir(ASSETS_PATH):
-    copy_resource_pack_files(ASSETS_PATH, resourcePackPath)
+    copy_resource_pack_files(ASSETS_PATH, assetsPath)
   else:
     print("Unable to locate assets directory")
   
