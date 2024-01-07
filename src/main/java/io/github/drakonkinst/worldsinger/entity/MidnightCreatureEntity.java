@@ -10,6 +10,8 @@ import io.github.drakonkinst.worldsinger.component.ThirstManagerComponent;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.AetherSpores;
 import io.github.drakonkinst.worldsinger.cosmere.lumar.MidnightCreatureManager;
 import io.github.drakonkinst.worldsinger.effect.ModStatusEffects;
+import io.github.drakonkinst.worldsinger.entity.ai.PossessableEntityNavigation;
+import io.github.drakonkinst.worldsinger.entity.ai.PossessableMoveControl;
 import io.github.drakonkinst.worldsinger.entity.ai.behavior.MidnightCreatureImitation;
 import io.github.drakonkinst.worldsinger.entity.ai.behavior.OptionalAttackTarget;
 import io.github.drakonkinst.worldsinger.entity.ai.behavior.StudyTarget;
@@ -39,6 +41,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -129,6 +132,7 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
             ModStatusEffects.MIDNIGHT_SPORES, ModStatusEffects.ROSEITE_SPORES,
             ModStatusEffects.SUNLIGHT_SPORES, ModStatusEffects.VERDANT_SPORES,
             ModStatusEffects.ZEPHYR_SPORES);
+    private static final int MAX_POSSESSION_EXPIRY = 10;
 
     // Particles
     private static final int AMBIENT_PARTICLE_INTERVAL = 10;
@@ -141,7 +145,6 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     private static final float DISPEL_PARTICLE_VELOCITY = 0.01f;
 
     private final Object2IntMap<UUID> waterBribes = new Object2IntOpenHashMap<>();
-    // private ControlLevel controlLevel = ControlLevel.OUT_OF_CONTROL;
     private int midnightEssenceAmount = 0;
     private int drainIntervalTicks = 0;
 
@@ -150,9 +153,14 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     @Nullable
     private PlayerEntity controller;
 
+    private boolean isBeingPossessed = false;
+    private int possessionExpiry = 0;
+
     public MidnightCreatureEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
         super(entityType, world);
         this.experiencePoints = 5;
+
+        this.moveControl = new PossessableMoveControl<>(this, SPRINTING_MULTIPLIER);
 
         // Allow it to swim
         this.getNavigation().setCanSwim(true);
@@ -165,6 +173,11 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     public MidnightCreatureEntity(World world) {
         this(ModEntityTypes.MIDNIGHT_CREATURE, world);
+    }
+
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        return new PossessableEntityNavigation<>(this, world);
     }
 
     // Data Tracker
@@ -207,8 +220,6 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     }
 
     // AI
-    // To avoid creating new memory module types, we take advantage of existing ones
-    // UNIVERSAL_ANGER is used when the mob has been provoked and should not stop to study targets
 
     @Override
     protected Brain.Profile<?> createBrainProfile() {
@@ -237,21 +248,15 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
             this.damage(this.getDamageSources().magic(), DAMAGE_FROM_SILVER);
         }
 
-        // Brain logic
-        this.tickBrain(this);
+        if (!isBeingPossessed) {
+            // Brain logic
+            this.tickBrain(this);
+        }
     }
 
-    // Called server-side only
-    private boolean isBeingPossessed() {
-        PlayerEntity controller = this.getController();
-        if (controller != null) {
-            CameraPossessable possessedEntity = ModComponents.POSSESSION.get(controller)
-                    .getPossessedEntity();
-            if (possessedEntity != null) {
-                return possessedEntity.equals(this);
-            }
-        }
-        return false;
+    @Override
+    public boolean isBeingPossessed() {
+        return isBeingPossessed;
     }
 
     @Override
@@ -435,6 +440,14 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         if (world.isClient() && !this.firstUpdate) {
             tickParticleEffects();
         }
+
+        // Possession expiry timer
+        if (possessionExpiry > 0) {
+            --possessionExpiry;
+        }
+        if (possessionExpiry <= 0) {
+            isBeingPossessed = false;
+        }
     }
 
     private void tickParticleEffects() {
@@ -519,10 +532,12 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     public void forgetAboutPlayer(PlayerEntity player) {
         UUID uuid = player.getUuid();
-        PossessionComponent possessionData = ModComponents.POSSESSION.get(player);
-        if (this.getUuid().equals(possessionData.getPossessedEntityUuid())) {
-            possessionData.resetPossessedEntity();
-            // Always called server-side, so no need to reset camera entity here
+        if (isBeingPossessed) {
+            PossessionComponent possessionData = ModComponents.POSSESSION.get(player);
+            if (this.getUuid().equals(possessionData.getPossessedEntityUuid())) {
+                possessionData.resetPossessedEntity();
+                // Always called server-side, so no need to reset camera entity here
+            }
         }
         if (uuid.equals(getControllerUuid())) {
             resetController();
@@ -739,10 +754,23 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     }
 
     @Override
-    public void setLookDir(float headYaw, float bodyYaw, float pitch) {
+    public void commandMovement(float headYaw, float bodyYaw, float pitch, float forwardSpeed,
+            float sidewaysSpeed, boolean jumping) {
         this.setHeadYaw(headYaw);
+        this.setYaw(headYaw);
         this.setBodyYaw(bodyYaw);
         this.setPitch(pitch);
+        EntityUtil.fixYawAndPitch(this);
+
+        if (forwardSpeed != 0 || sidewaysSpeed != 0) {
+            this.getMoveControl().strafeTo(forwardSpeed, sidewaysSpeed);
+        }
+        if (jumping) {
+            this.getJumpControl().setActive();
+        }
+
+        this.possessionExpiry = MAX_POSSESSION_EXPIRY;
+        this.isBeingPossessed = true;
     }
 
     @Override
@@ -751,16 +779,39 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
         BrainUtils.clearMemory(this, MemoryModuleType.WALK_TARGET);
         BrainUtils.clearMemory(this, MemoryModuleType.PATH);
         BrainUtils.clearMemory(this, MemoryModuleType.ATTACK_TARGET);
+        this.setForwardSpeed(0.0f);
+        this.setSidewaysSpeed(0.0f);
         this.stopMovement();
     }
 
     @Override
     public void onStartPossessing(PlayerEntity possessor) {
-        BrainUtils.clearMemory(this, MemoryModuleType.LOOK_TARGET);
-        BrainUtils.clearMemory(this, MemoryModuleType.WALK_TARGET);
-        BrainUtils.clearMemory(this, MemoryModuleType.PATH);
-        BrainUtils.clearMemory(this, MemoryModuleType.ATTACK_TARGET);
-        this.stopMovement();
+        if (this.getWorld().isClient()) {
+            possessor.playSound(ModSoundEvents.ENTITY_MIDNIGHT_CREATURE_POSSESS,
+                    SoundCategory.PLAYERS, 0.5f, 0.5f);
+        } else {
+            BrainUtils.clearMemory(this, MemoryModuleType.LOOK_TARGET);
+            BrainUtils.clearMemory(this, MemoryModuleType.WALK_TARGET);
+            BrainUtils.clearMemory(this, MemoryModuleType.PATH);
+            BrainUtils.clearMemory(this, MemoryModuleType.ATTACK_TARGET);
+            this.setForwardSpeed(0.0f);
+            this.setSidewaysSpeed(0.0f);
+            this.stopMovement();
+        }
+
+        // TODO: This doesn't work
+        // Cancel the possessor's horizontal velocity to prevent sliding
+        Vec3d velocity = possessor.getVelocity();
+        possessor.setVelocity(new Vec3d(0.0, velocity.getY(), 0.0));
+
+    }
+
+    @Override
+    public void onStopPossessing(PlayerEntity possessor) {
+        if (this.getWorld().isClient()) {
+            possessor.playSound(ModSoundEvents.ENTITY_MIDNIGHT_CREATURE_POSSESS,
+                    SoundCategory.PLAYERS, 0.5f, 0.5f);
+        }
     }
 
     @Override
@@ -792,11 +843,27 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
     }
 
     @Override
-    protected boolean isDisallowedInPeaceful() {
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        return super.canImmediatelyDespawn(distanceSquared) && !isBeingPossessed;
+    }
+
+    @Override
+    public boolean canAttack() {
+        // TODO: This currently allows breaking blocks and attacks from the player, which is not intended behavior.
+        return true;
+    }
+
+    @Override
+    public boolean canSwitchPerspectives() {
         return true;
     }
 
     /* Should act like a hostile mob though it does not extend HostileEntity */
+
+    @Override
+    protected boolean isDisallowedInPeaceful() {
+        return true;
+    }
 
     @Override
     protected SoundEvent getSwimSound() {
@@ -831,9 +898,5 @@ public class MidnightCreatureEntity extends ShapeshiftingEntity implements
 
     public int getMidnightEssenceAmount() {
         return midnightEssenceAmount;
-    }
-
-    public enum ControlLevel {
-        OUT_OF_CONTROL, NORMAL, CAN_POSSESS
     }
 }

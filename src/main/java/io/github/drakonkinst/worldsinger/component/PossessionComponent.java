@@ -19,5 +19,4 @@ public interface PossessionComponent extends AutoSyncedComponent {
     default boolean isPossessing() {
         return getPossessedEntityUuid() != null;
     }
-
 }

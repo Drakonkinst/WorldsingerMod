@@ -35,7 +35,6 @@ public class MidnightCreatureEntityRenderer extends
             MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         matrices.push();
         matrices.translate(-0.5, 0.0, -0.5);
-        // TODO: Rotate in facing direction?
         blockRenderManager.renderBlockAsEntity(ModBlocks.MIDNIGHT_ESSENCE.getDefaultState(),
                 matrices, vertexConsumers, light, LivingEntityRenderer.getOverlay(entity, 0.0f));
         matrices.pop();

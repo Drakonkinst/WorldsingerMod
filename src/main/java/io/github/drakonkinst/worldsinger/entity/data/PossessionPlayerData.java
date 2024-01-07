@@ -37,6 +37,10 @@ public class PossessionPlayerData implements PossessionComponent {
 
     @Override
     public void resetPossessedEntity() {
+        if (possessedEntity != null) {
+            possessedEntity.onStopPossessing(player);
+        }
+
         this.possessedEntityUuid = null;
         this.possessedEntity = null;
         ModComponents.POSSESSION.sync(player);

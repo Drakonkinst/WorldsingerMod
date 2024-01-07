@@ -28,6 +28,7 @@ public final class ModSoundEvents {
     public static final SoundEvent ENTITY_MIDNIGHT_CREATURE_BOND = SoundEvents.ENTITY_BREEZE_LAND;
     public static final SoundEvent ENTITY_MIDNIGHT_CREATURE_TRANSFORM = SoundEvents.ENTITY_BREEZE_SLIDE;
     public static final SoundEvent ENTITY_MIDNIGHT_CREATURE_BOND_BREAK = SoundEvents.ENTITY_BREEZE_JUMP;    // Play at ~0.5 pitch
+    public static final SoundEvent ENTITY_MIDNIGHT_CREATURE_POSSESS = SoundEvents.ENTITY_WITHER_SHOOT;    // Play at ~0.5 pitch
 
     public static void initialize() {}
 

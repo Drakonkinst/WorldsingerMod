@@ -2,7 +2,7 @@ package io.github.drakonkinst.worldsinger.entity;
 
 import io.github.drakonkinst.worldsinger.Worldsinger;
 import io.netty.buffer.Unpooled;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -17,21 +17,30 @@ public interface CameraPossessable {
 
     Identifier POSSESS_UPDATE_PACKET_ID = Worldsinger.id("possession_update");
 
-    static PacketByteBuf createSyncPacket(float headYaw, float bodyYaw, float pitch) {
+    static PacketByteBuf createSyncPacket(float headYaw, float bodyYaw, float pitch,
+            float forwardSpeed, float sidewaysSpeed, boolean jumping) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeFloat(headYaw);
         buf.writeFloat(bodyYaw);
         buf.writeFloat(pitch);
+        buf.writeFloat(forwardSpeed);
+        buf.writeFloat(sidewaysSpeed);
+        buf.writeBoolean(jumping);
         return buf;
     }
 
-    void setLookDir(float headYaw, float bodyYaw, float pitch);
+    void commandMovement(float headYaw, float bodyYaw, float pitch, float forwardSpeed,
+            float sidewaysSpeed, boolean jumping);
 
     void onStartPossessing(PlayerEntity possessor);
 
+    void onStopPossessing(PlayerEntity possessor);
+
     boolean shouldKeepPossessing(PlayerEntity possessor);
 
-    Entity toEntity();
+    boolean isBeingPossessed();
+
+    LivingEntity toEntity();
 
     default int getDefaultPerspective() {
         return FIRST_PERSON;
@@ -50,6 +59,14 @@ public interface CameraPossessable {
     }
 
     default boolean canInteractWithEntities() {
+        return false;
+    }
+
+    default boolean canSwitchHotbarItem() {
+        return false;
+    }
+
+    default boolean canMoveSelf() {
         return false;
     }
 

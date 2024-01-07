@@ -1,11 +1,14 @@
 package io.github.drakonkinst.worldsinger.mixin.client.network;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import io.github.drakonkinst.worldsinger.entity.CameraPossessable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.hit.HitResult.Type;
 import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -43,5 +46,11 @@ public abstract class MinecraftClientPossessionMixin {
             return Type.MISS;
         }
         return original;
+    }
+
+    @WrapWithCondition(method = "handleInputEvents", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerInventory;selectedSlot:I", opcode = Opcodes.PUTFIELD))
+    private boolean preventHotbarSwitchIfPossessing(PlayerInventory instance, int value) {
+        return !(getCameraEntity() instanceof CameraPossessable cameraPossessable)
+                || cameraPossessable.canSwitchHotbarItem();
     }
 }

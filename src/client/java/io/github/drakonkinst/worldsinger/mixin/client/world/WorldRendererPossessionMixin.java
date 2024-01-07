@@ -14,7 +14,7 @@ import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.MathHelper;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,13 +26,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(WorldRenderer.class)
 public abstract class WorldRendererPossessionMixin {
 
+    // For as little latency as possible, movement commands while possessing are sent on the
+    // render thread rather than only 20 times per second. This makes the client view smooth,
+    // and the server can catch up.
     @Inject(method = "render", at = @At("HEAD"))
-    private void updateCameraPossessableLookDirection(MatrixStack matrices, float tickDelta,
+    private void sendCameraPossessableCommands(MatrixStack matrices, float tickDelta,
             long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
             LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix,
             CallbackInfo ci) {
         Entity cameraEntity = MinecraftClient.getInstance().getCameraEntity();
-        PlayerEntity player = MinecraftClient.getInstance().player;
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (cameraEntity == null || cameraEntity.isRemoved()) {
             Worldsinger.PROXY.resetRenderViewEntity();
         } else if (player != null && cameraEntity instanceof CameraPossessable cameraPossessable) {
@@ -41,15 +44,24 @@ public abstract class WorldRendererPossessionMixin {
                 float headYaw = player.getHeadYaw();
                 float bodyYaw = player.getBodyYaw();
                 float pitch = player.getPitch();
-                cameraPossessable.setLookDir(headYaw, bodyYaw, pitch);
+                float forwardSpeed = player.input.movementForward;
+                float sidewaysSpeed = player.input.movementSideways;
+                boolean jumping = player.input.jumping;
+                cameraPossessable.commandMovement(headYaw, bodyYaw, pitch, forwardSpeed,
+                        sidewaysSpeed, jumping);
+
+                // Rotation should be wrapped between [-180, 180] on server-side
                 ClientPlayNetworking.send(CameraPossessable.POSSESS_UPDATE_PACKET_ID,
-                        CameraPossessable.createSyncPacket(headYaw, bodyYaw, pitch));
+                        CameraPossessable.createSyncPacket(MathHelper.wrapDegrees(headYaw),
+                                MathHelper.wrapDegrees(bodyYaw), MathHelper.wrapDegrees(pitch),
+                                forwardSpeed, sidewaysSpeed, jumping));
             } else {
                 Worldsinger.PROXY.resetRenderViewEntity();
             }
         }
     }
 
+    // Allow the player model to still be rendered while possessing another mob
     @SuppressWarnings("InvalidInjectorMethodSignature")
     @ModifyConstant(method = "render", constant = @Constant(classValue = ClientPlayerEntity.class))
     private static boolean allowRenderPlayerModel(Object obj, Class<?> clazz, MatrixStack matrices,

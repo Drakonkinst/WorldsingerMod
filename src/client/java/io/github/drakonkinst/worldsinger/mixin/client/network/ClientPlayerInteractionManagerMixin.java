@@ -28,7 +28,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
     }
 
     @Inject(method = "interactEntity", at = @At("HEAD"), cancellable = true)
-    private void preventInteractIfPossessed(PlayerEntity player, Entity entity, Hand hand,
+    private void preventInteractIfPossessing(PlayerEntity player, Entity entity, Hand hand,
             CallbackInfoReturnable<ActionResult> cir) {
         if (MinecraftClient.getInstance()
                 .getCameraEntity() instanceof CameraPossessable cameraPossessable
@@ -46,7 +46,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
     }
 
     @Inject(method = "interactEntityAtLocation", at = @At("HEAD"), cancellable = true)
-    private void preventInteractAtLocationIfPossessed(PlayerEntity player, Entity entity,
+    private void preventInteractAtLocationIfPossessing(PlayerEntity player, Entity entity,
             EntityHitResult hitResult, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         if (MinecraftClient.getInstance()
                 .getCameraEntity() instanceof CameraPossessable cameraPossessable
@@ -56,7 +56,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
     }
 
     @Inject(method = "interactBlock", at = @At("HEAD"), cancellable = true)
-    private void preventBlockInteractionIfPossessed(ClientPlayerEntity player, Hand hand,
+    private void preventBlockInteractionIfPossessing(ClientPlayerEntity player, Hand hand,
             BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
         if (MinecraftClient.getInstance()
                 .getCameraEntity() instanceof CameraPossessable cameraPossessable

@@ -4,6 +4,7 @@ import io.github.drakonkinst.worldsinger.component.ModComponents;
 import io.github.drakonkinst.worldsinger.component.PossessionComponent;
 import io.github.drakonkinst.worldsinger.entity.CameraPossessable;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.util.math.MathHelper;
 
 public class ServerNetworkHandler {
 
@@ -14,10 +15,15 @@ public class ServerNetworkHandler {
                     PossessionComponent possessionData = ModComponents.POSSESSION.get(player);
                     CameraPossessable possessedEntity = possessionData.getPossessedEntity();
                     if (possessedEntity != null) {
-                        float headYaw = buf.readFloat();
-                        float bodyYaw = buf.readFloat();
-                        float pitch = buf.readFloat();
-                        possessedEntity.setLookDir(headYaw, bodyYaw, pitch);
+                        // Ensure rotation is wrapped between [-180, 180] on server-side
+                        float headYaw = MathHelper.wrapDegrees(buf.readFloat());
+                        float bodyYaw = MathHelper.wrapDegrees(buf.readFloat());
+                        float pitch = MathHelper.wrapDegrees(buf.readFloat());
+                        float forwardSpeed = buf.readFloat();
+                        float sidewaysSpeed = buf.readFloat();
+                        boolean jumping = buf.readBoolean();
+                        possessedEntity.commandMovement(headYaw, bodyYaw, pitch, forwardSpeed,
+                                sidewaysSpeed, jumping);
                     }
                 }));
     }
